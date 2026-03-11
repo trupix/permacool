@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Request a Quote | PermaCool Extraction Cooling Systems</title>
+  <meta name="description" content="Contact PermaCool for ethanol chiller and butane recovery system pricing, lead times, and process-fit recommendations." />
+  <link rel="canonical" href="https://perma.cool/contact-us" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container row between center">
+      <a class="logo" href="index.html">PermaCool</a>
+      <nav class="nav">
+        <a href="ethanol-chilling-systems.html">Ethanol Chillers</a>
+        <a href="butane-recovery-system.html">Butane Recovery</a>
+        <a href="insights.html">Insights</a>
+        <a class="active" href="contact-us.html">Contact</a>
+      </nav>
+      <a class="phone" href="tel:+17472081001">Call 747.208.1001</a>
+    </div>
+  </header>
+
+  <main class="container section">
+    <h1>Request a Quote</h1>
+    <p>
+      Share your extraction process goals and target throughput. We’ll help scope the right ethanol chiller or butane
+      recovery configuration for your operation.
+    </p>
+
+    <form class="contact-form" action="thank-you.html" method="get">
+      <label>Name<input required type="text" name="name" autocomplete="name" /></label>
+      <label>Email<input required type="email" name="email" autocomplete="email" /></label>
+      <label>Company<input type="text" name="company" autocomplete="organization" /></label>
+      <label>Phone<input type="tel" name="phone" autocomplete="tel" /></label>
+      <label>Primary Interest
+        <select name="interest">
+          <option>Ethanol Chillers</option>
+          <option>Butane Recovery Systems</option>
+          <option>Both</option>
+        </select>
+      </label>
+      <label>Current Cooling Method
+        <select name="cooling_method">
+          <option>LN2</option>
+          <option>Direct Refrigerant</option>
+          <option>Hybrid</option>
+          <option>Other</option>
+        </select>
+      </label>
+      <label>Target Process Temperature (°C)<input type="text" name="target_temp" placeholder="ex: -40°C" /></label>
+      <label>Estimated Throughput<input type="text" name="throughput" placeholder="ex: 150 gallons / 45 min" /></label>
+      <label>Message<textarea name="message" rows="6" placeholder="Facility constraints, timeline, and project goals"></textarea></label>
+      <button class="btn" type="submit">Send Request</button>
+    </form>
+
+    <section class="card mt">
+      <h2>Why teams choose PermaCool</h2>
+      <ul class="list">
+        <li>Production-focused direct refrigerant architecture</li>
+        <li>Operational visibility via PLC/HMI controls</li>
+        <li>Systems designed for extraction throughput and uptime</li>
+      </ul>
+    </section>
+
+    <p class="mt">Prefer phone? Call <a href="tel:+17472081001">747.208.1001</a></p>
+  </main>
+  <div class="sticky-cta">
+    <div class="inner">
+      <p>Ready to scope your system? Share your throughput and target temp.</p>
+      <a class="btn" href="tel:+17472081001">Call 747.208.1001</a>
+    </div>
+  </div>
+  <script src="analytics.js" defer></script>
+</body>
+</html>
