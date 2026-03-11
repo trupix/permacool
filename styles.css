@@ -93,8 +93,32 @@ footer { border-top: 1px solid var(--line); padding: 1rem 0 2rem; color: var(--m
 }
 .sticky-cta p { margin: 0; color: var(--muted); font-size: .95rem; }
 .related { margin-top: 1.25rem; }
+.testimonial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.quote-card {
+  margin: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  color: #d9e5f2;
+}
+.quote-card cite {
+  display: block;
+  margin-top: .6rem;
+  color: var(--muted);
+  font-style: normal;
+  font-size: .92rem;
+}
+.trust-strip {
+  background: #0f1722;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+.trust-strip p { margin: 0 0 .5rem; }
+.trust-strip ul { margin: 0; padding-left: 1.1rem; }
 @media (max-width: 900px) {
-  .hero-grid, .split, .feature-grid { grid-template-columns: 1fr; }
+  .hero-grid, .split, .feature-grid, .testimonial-grid { grid-template-columns: 1fr; }
   .nav { display: none; }
   .sticky-cta .inner { flex-direction: column; align-items: stretch; }
   .sticky-cta .btn { text-align: center; }
