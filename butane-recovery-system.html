@@ -28,11 +28,12 @@
     ]
   }
   </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <header class="topbar">
     <div class="container row between center">
-      <a class="logo" href="index.html">PermaCool</a>
+      <a class="logo" href="index.html"><img src="assets/images/logo/perma-cool.png" alt="PermaCool" /></a>
       <nav class="nav">
         <a href="ethanol-chilling-systems.html">Ethanol Chillers</a>
         <a class="active" href="butane-recovery-system.html">Butane Recovery</a>
@@ -52,11 +53,11 @@
     </p>
 
     <h2>System advantages</h2>
-    <ul class="list">
-      <li>Triple Split™ architecture with dedicated process zones</li>
-      <li>Integrated in-lab process heat exchange</li>
-      <li>PLC + HMI visibility for operational monitoring</li>
-      <li>Industrial components built for high duty-cycle operation</li>
+    <ul class="list icon-list">
+      <li><i data-lucide="git-branch-plus"></i> Triple Split™ architecture with dedicated process zones</li>
+      <li><i data-lucide="repeat"></i> Integrated in-lab process heat exchange</li>
+      <li><i data-lucide="activity"></i> PLC + HMI visibility for operational monitoring</li>
+      <li><i data-lucide="shield-check"></i> Industrial components built for high duty-cycle operation</li>
     </ul>
 
     <img class="wide" src="https://perma.cool/wp-content/uploads/2023/01/butane-1-1024x561.png" alt="Butane recovery system for BHO extraction" />
@@ -88,6 +89,16 @@
       <p><a href="extraction-cooling-system-design-checklist.html">Cooling System Design Checklist</a> • <a href="industrial-process-chiller-maintenance.html">Process Chiller Maintenance</a></p>
     </section>
   </main>
+  <footer>
+    <div class="container row between center">
+      <p>© 2026 Perma Cool Systems Inc.</p>
+      <div class="links">
+        <a href="https://perma.cool/privacy-policy" target="_blank" rel="noreferrer">Privacy</a>
+        <a href="https://perma.cool/terms-and-conditions" target="_blank" rel="noreferrer">Terms</a>
+        <a href="https://www.instagram.com/permacoolsystems/" target="_blank" rel="noreferrer">Instagram</a>
+      </div>
+    </div>
+  </footer>
   <div class="sticky-cta">
     <div class="inner">
       <p>Want a butane recovery system fit assessment?</p>
@@ -95,5 +106,10 @@
     </div>
   </div>
   <script src="analytics.js" defer></script>
+  <script>
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  </script>
 </body>
 </html>
