@@ -36,35 +36,35 @@ export default function WorkflowPage() {
           <h3 className="mt">Step-by-Step Process for Using the Perma Cool Ethanol Pre-Chiller</h3>
           <div className="feature-grid">
             <article className="card">
-              <h3>1. Chill Ethanol</h3>
+              <h3><span className="icon-chip"><i data-lucide="snowflake"></i></span>1. Chill Ethanol</h3>
               <p>Ethanol is chilled to -40°C/F.</p>
             </article>
             <article className="card">
-              <h3>2. Pump Ethanol</h3>
+              <h3><span className="icon-chip"><i data-lucide="droplets"></i></span>2. Pump Ethanol</h3>
               <p>The chilled ethanol is pumped by the Perma Cool pump to fill the centrifuge.</p>
             </article>
             <article className="card">
-              <h3>3. Process Biomass</h3>
+              <h3><span className="icon-chip"><i data-lucide="settings-2"></i></span>3. Process Biomass</h3>
               <p>The centrifuge processes the biomass using the chilled ethanol.</p>
             </article>
             <article className="card">
-              <h3>4. Extract Tincture Solution</h3>
+              <h3><span className="icon-chip"><i data-lucide="flask-conical"></i></span>4. Extract Tincture Solution</h3>
               <p>The ethanol, now called the &quot;tincture solution,&quot; is spun out of the centrifuge.</p>
             </article>
             <article className="card">
-              <h3>5. Pump Tincture Solution</h3>
+              <h3><span className="icon-chip"><i data-lucide="move-right"></i></span>5. Pump Tincture Solution</h3>
               <p>A diaphragm pump moves the tincture solution out of the centrifuge.</p>
             </article>
             <article className="card">
-              <h3>6. Filter Biomass</h3>
+              <h3><span className="icon-chip"><i data-lucide="filter"></i></span>6. Filter Biomass</h3>
               <p>The tincture solution passes through a biomass strainer to filter out any biomass particles. Filtering the tincture solution helps protect the Perma Cool chiller from biomass contamination.</p>
             </article>
             <article className="card">
-              <h3>7. Return and Rechill</h3>
+              <h3><span className="icon-chip"><i data-lucide="rotate-ccw"></i></span>7. Return and Rechill</h3>
               <p>The tincture solution, now typically around -30°F (10 degrees warmer due to the extraction, pumping, and filtering stages), returns to the Perma Cool chiller.</p>
             </article>
             <article className="card">
-              <h3>8. Repeat</h3>
+              <h3><span className="icon-chip"><i data-lucide="repeat-2"></i></span>8. Repeat</h3>
               <p>The tincture solution is re-chilled to -40°C/F to continue extraction. Repeat these steps until you reach at least a 2 lbs of material to 1 gallon of ethanol ratio, processing up to 440 lbs of biomass in your 270 gallon ethanol chilling tank.</p>
             </article>
           </div>
