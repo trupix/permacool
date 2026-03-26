@@ -16,21 +16,17 @@ export default function WorkflowPage() {
 
         <section className="card mt">
           <h2>Diagram</h2>
-          <div
+          <img
+            src="/assets/images/insights/workflow-diagram.png"
+            alt="Perma Cool pre-ethanol chiller workflow diagram"
             style={{
-              minHeight: '280px',
-              border: '1px dashed rgba(151, 201, 255, 0.35)',
+              width: '100%',
+              height: 'auto',
+              display: 'block',
               borderRadius: '18px',
-              display: 'grid',
-              placeItems: 'center',
-              background: 'rgba(9, 16, 26, 0.45)',
-              color: 'rgba(220, 235, 255, 0.72)',
-              padding: '1.5rem',
-              textAlign: 'center'
+              background: '#05080d'
             }}
-          >
-            Diagram placeholder — drop workflow graphic here
-          </div>
+          />
         </section>
 
         <section className="card mt">
