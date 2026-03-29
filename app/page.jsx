@@ -46,7 +46,7 @@ export default function HomePage() {
         <div className="process-steps clean-process-steps">
           <article className="card"><h3><span className="icon-chip"><i data-lucide="thermometer-snowflake"></i></span>01 • Pull-down</h3><p>Rapid refrigerant pull-down to hit target extraction temperature windows.</p></article>
           <article className="card"><h3><span className="icon-chip"><i data-lucide="activity"></i></span>02 • Stabilize</h3><p>PLC/HMI controls maintain repeatable process temps and protect runtime consistency.</p></article>
-          <article className="card"><h3><span className="icon-chip"><i data-lucide="refresh-cw"></i></span>03 • Recover & Repeat</h3><p>Integrated cooling architecture supports high-duty production and lower consumable dependency.</p></article>
+          <article className="card"><h3><span className="icon-chip"><i data-lucide="refresh-cw"></i></span>03 • Recover & Repeat</h3><p>Integrated cooling architecture supports high-duty production and lower consumable dependency.</p><a href="/workflow">See the workflow →</a></article>
         </div>
       </section>
 
