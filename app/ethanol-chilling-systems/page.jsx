@@ -12,7 +12,13 @@ export default function EthanolChillingSystemsPage() {
         <img
           src="/assets/images/logo/blast-hero-logo.jpg"
           alt="Perma Cool Keep Extraction Moving hero logo"
-          style={{ width: '100%', height: 'auto', display: 'block', margin: '1rem 0 1.25rem' }}
+          style={{
+            width: '100%',
+            maxWidth: '960px',
+            height: 'auto',
+            display: 'block',
+            margin: '1rem auto 1.5rem'
+          }}
         />
         <section className="blast-banner" aria-label="Flash chill ethanol to -40°C and keep extraction moving">
           <p className="blast-kicker">ON-DEMAND COLD ETHANOL</p>
