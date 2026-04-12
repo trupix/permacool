@@ -10,15 +10,9 @@ export default function EthanolChillingSystemsPage() {
         <p className="eyebrow">Direct Refrigerant Ethanol Chilling</p>
         <h1>Perma Cool BLAST™ Ethanol Pre-Chiller Series</h1>
         <img
+          className="hero-inline-image"
           src="/assets/images/logo/blast-hero-logo.jpg"
           alt="Perma Cool Keep Extraction Moving hero logo"
-          style={{
-            width: '100%',
-            maxWidth: '960px',
-            height: 'auto',
-            display: 'block',
-            margin: '1rem auto 1.5rem'
-          }}
         />
         <section className="blast-banner" aria-label="Flash chill ethanol to -40°C and keep extraction moving">
           <p className="blast-kicker">ON-DEMAND COLD ETHANOL</p>

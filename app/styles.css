@@ -532,6 +532,14 @@ footer {
   text-shadow: 0 0 12px rgba(162, 233, 255, .5), 0 0 22px rgba(97, 195, 255, .35);
 }
 
+.hero-inline-image {
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  display: block;
+  margin: 1rem auto 1.5rem;
+}
+
 @media (max-width: 900px) {
   .hero-grid,
   .split,
@@ -548,6 +556,11 @@ footer {
 
   .process-steps { grid-template-columns: 1fr; }
   .process-visual { padding: .9rem; }
+
+  .hero-inline-image {
+    margin: .85rem auto 1.15rem;
+    max-width: 100%;
+  }
 
   .nav { display: none; }
 
