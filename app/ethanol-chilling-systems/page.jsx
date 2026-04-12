@@ -62,19 +62,17 @@ export default function EthanolChillingSystemsPage() {
             evaporated and recovered.
           </p>
 
-          <article className="card mt">
-            <h3>Multi-centrifuge production setups</h3>
-            <p>
-              For facilities planning around multiple centrifuges or expanded extraction capacity, Perma Cool can help
-              scope a BLAST™ configuration matched to your flow rate, utility profile, and uptime requirements.
-            </p>
-            <ul className="list">
-              <li>Configured around throughput goals</li>
-              <li>Supports scaling beyond single-line production</li>
-              <li>Built around real process constraints</li>
-            </ul>
-            <p><a href="/contact-us">Request a custom recommendation →</a></p>
-          </article>
+          <h3>Multi-centrifuge production setups</h3>
+          <p>
+            For facilities planning around multiple centrifuges or expanded extraction capacity, Perma Cool can help
+            scope a BLAST™ configuration matched to your flow rate, utility profile, and uptime requirements.
+          </p>
+          <ul className="list">
+            <li>Configured around throughput goals</li>
+            <li>Supports scaling beyond single-line production</li>
+            <li>Built around real process constraints</li>
+          </ul>
+          <p><a href="/contact-us">Request a custom recommendation →</a></p>
         </section>
 
         <section className="mt">
