@@ -52,6 +52,62 @@ export default function EthanolChillingSystemsPage() {
           </p>
         </section>
 
+        <section className="mt">
+          <h2>BLAST™ product lineup</h2>
+          <p>
+            Explore Perma Cool ethanol pre-chiller configurations built for different throughput targets, facility layouts,
+            and extraction workflows.
+          </p>
+          <div className="feature-grid">
+            <article className="card">
+              <img
+                src="/assets/images/products/blast-150-45.jpg"
+                alt="Perma Cool BLAST 150/45 ethanol pre-chiller"
+                style={{ width: '100%', height: 'auto', display: 'block', marginBottom: '1rem' }}
+              />
+              <h3>BLAST™ 150/45</h3>
+              <p>
+                A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill
+                performance, and room to support growing production schedules.
+              </p>
+              <ul className="list">
+                <li>Designed for high-throughput ethanol extraction</li>
+                <li>Fast pull-down to target low-temp process windows</li>
+                <li>Built for repeatable production cycles</li>
+              </ul>
+              <p><a href="/ethanol-chiller-blast-150">View BLAST™ 150/45 →</a></p>
+            </article>
+
+            <article className="card">
+              <h3>Multi-centrifuge production setups</h3>
+              <p>
+                For facilities planning around multiple centrifuges or expanded extraction capacity, Perma Cool can help
+                scope a BLAST™ configuration matched to your flow rate, utility profile, and uptime requirements.
+              </p>
+              <ul className="list">
+                <li>Configured around throughput goals</li>
+                <li>Supports scaling beyond single-line production</li>
+                <li>Built around real process constraints</li>
+              </ul>
+              <p><a href="/contact-us">Request a custom recommendation →</a></p>
+            </article>
+
+            <article className="card">
+              <h3>Process-fit engineering support</h3>
+              <p>
+                Not every facility needs the same chiller. Perma Cool helps match the system to your target temperature,
+                ethanol volume, process cadence, and near-term expansion plan.
+              </p>
+              <ul className="list">
+                <li>Target temp and throughput review</li>
+                <li>Utility and installation planning</li>
+                <li>Recommendations for present and future demand</li>
+              </ul>
+              <p><a href="/contact-us">Talk to engineering →</a></p>
+            </article>
+          </div>
+        </section>
+
         <h2 className="mt">Application fit</h2>
         <ul className="list">
           <li>Botanical extraction facilities scaling beyond pilot throughput</li>
