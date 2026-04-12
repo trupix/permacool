@@ -7,8 +7,8 @@ export default function EthanolChillingSystemsPage() {
   return (
     <>
       <section className="container section">
-        <p className="eyebrow">Direct Refrigerant Ethanol Chilling</p>
-        <h1>Perma Cool BLAST™ Ethanol Pre-Chiller Series</h1>
+        <p className="eyebrow" style={{ textAlign: 'center' }}>Direct Refrigerant Ethanol Chilling</p>
+        <h1 style={{ textAlign: 'center' }}>Perma Cool BLAST™ Ethanol Pre-Chiller Series</h1>
         <img
           className="hero-inline-image"
           src="/assets/images/logo/blast-hero-logo.jpg"
