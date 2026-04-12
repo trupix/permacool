@@ -18,6 +18,7 @@ export default function EthanolChillingSystemsPage() {
           className="hero-inline-image"
           src="/assets/images/logo/blast-hero-secondary.jpg"
           alt="Perma Cool industrial extraction chiller system"
+          style={{ maxWidth: '1100px' }}
         />
         <section className="blast-banner" aria-label="Flash chill ethanol to -40°C and keep extraction moving">
           <p className="blast-kicker">ON-DEMAND COLD ETHANOL</p>
