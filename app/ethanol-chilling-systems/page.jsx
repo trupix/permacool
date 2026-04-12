@@ -13,11 +13,11 @@ export default function EthanolChillingSystemsPage() {
           style={{
             maxWidth: '860px',
             margin: '1rem auto 2rem',
-            padding: '1.1rem',
-            borderRadius: '28px',
-            background: 'linear-gradient(135deg, rgba(5, 10, 18, 0.98) 0%, rgba(12, 28, 48, 0.95) 50%, rgba(18, 52, 86, 0.92) 100%)',
-            border: '1px solid rgba(125, 211, 252, 0.22)',
-            boxShadow: '0 22px 55px rgba(2, 6, 23, 0.34), 0 0 0 1px rgba(56, 189, 248, 0.08) inset'
+            padding: '1rem',
+            borderRadius: '20px',
+            background: 'linear-gradient(180deg, #0b1220 0%, #111c2d 100%)',
+            border: '1px solid rgba(148, 163, 184, 0.18)',
+            boxShadow: '0 16px 40px rgba(2, 6, 23, 0.26)'
           }}
         >
           <img
@@ -27,8 +27,9 @@ export default function EthanolChillingSystemsPage() {
               width: '100%',
               height: 'auto',
               display: 'block',
-              borderRadius: '18px',
-              boxShadow: '0 0 35px rgba(56, 189, 248, 0.14)'
+              borderRadius: '12px',
+              border: '1px solid rgba(148, 163, 184, 0.16)',
+              background: '#0f172a'
             }}
           />
         </div>
