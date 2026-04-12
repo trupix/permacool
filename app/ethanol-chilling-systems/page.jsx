@@ -61,6 +61,20 @@ export default function EthanolChillingSystemsPage() {
             solution moving downstream, with the potential to recover up to 3x more crude for every gallon of ethanol
             evaporated and recovered.
           </p>
+
+          <article className="card mt">
+            <h3>Multi-centrifuge production setups</h3>
+            <p>
+              For facilities planning around multiple centrifuges or expanded extraction capacity, Perma Cool can help
+              scope a BLAST™ configuration matched to your flow rate, utility profile, and uptime requirements.
+            </p>
+            <ul className="list">
+              <li>Configured around throughput goals</li>
+              <li>Supports scaling beyond single-line production</li>
+              <li>Built around real process constraints</li>
+            </ul>
+            <p><a href="/contact-us">Request a custom recommendation →</a></p>
+          </article>
         </section>
 
         <section className="mt">
@@ -87,20 +101,6 @@ export default function EthanolChillingSystemsPage() {
                 <li>Built for repeatable production cycles</li>
               </ul>
               <p><a href="/ethanol-chiller-blast-150">View BLAST™ 150/45 →</a></p>
-            </article>
-
-            <article className="card">
-              <h3>Multi-centrifuge production setups</h3>
-              <p>
-                For facilities planning around multiple centrifuges or expanded extraction capacity, Perma Cool can help
-                scope a BLAST™ configuration matched to your flow rate, utility profile, and uptime requirements.
-              </p>
-              <ul className="list">
-                <li>Configured around throughput goals</li>
-                <li>Supports scaling beyond single-line production</li>
-                <li>Built around real process constraints</li>
-              </ul>
-              <p><a href="/contact-us">Request a custom recommendation →</a></p>
             </article>
 
             <article className="card">
