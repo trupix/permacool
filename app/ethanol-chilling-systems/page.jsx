@@ -114,7 +114,19 @@ export default function EthanolChillingSystemsPage() {
             </article>
 
             <article className="card">
-              <h3>BLAST™ 150/45</h3>
+              <h3>BLAST™ 60/45</h3>
+              <p>
+                A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill
+                performance, and room to support growing production schedules.
+              </p>
+              <ul className="list">
+                <li>Designed for high-throughput ethanol extraction</li>
+                <li>Fast pull-down to target low-temp process windows</li>
+                <li>Built for repeatable production cycles</li>
+              </ul>
+              <p><a href="/ethanol-chiller-blast-150">View BLAST™ 60/45 →</a></p>
+
+              <h3 className="mt">BLAST™ 150/45</h3>
               <p>
                 A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill
                 performance, and room to support growing production schedules.
