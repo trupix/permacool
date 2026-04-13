@@ -99,6 +99,18 @@ export default function EthanolChillingSystemsPage() {
                 alt="Perma Cool BLAST 150/45 ethanol pre-chiller"
                 style={{ width: '100%', height: 'auto', display: 'block', marginBottom: '1rem' }}
               />
+
+              <h3>Process-fit engineering support</h3>
+              <p>
+                Not every facility needs the same chiller. Perma Cool helps match the system to your target temperature,
+                ethanol volume, process cadence, and near-term expansion plan.
+              </p>
+              <ul className="list">
+                <li>Target temp and throughput review</li>
+                <li>Utility and installation planning</li>
+                <li>Recommendations for present and future demand</li>
+              </ul>
+              <p><a href="/contact-us">Talk to engineering →</a></p>
             </article>
 
             <article className="card">
@@ -113,18 +125,6 @@ export default function EthanolChillingSystemsPage() {
                 <li>Built for repeatable production cycles</li>
               </ul>
               <p><a href="/ethanol-chiller-blast-150">View BLAST™ 150/45 →</a></p>
-
-              <h3 className="mt">Process-fit engineering support</h3>
-              <p>
-                Not every facility needs the same chiller. Perma Cool helps match the system to your target temperature,
-                ethanol volume, process cadence, and near-term expansion plan.
-              </p>
-              <ul className="list">
-                <li>Target temp and throughput review</li>
-                <li>Utility and installation planning</li>
-                <li>Recommendations for present and future demand</li>
-              </ul>
-              <p><a href="/contact-us">Talk to engineering →</a></p>
             </article>
           </div>
         </section>
