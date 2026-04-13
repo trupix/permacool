@@ -94,22 +94,28 @@ export default function EthanolChillingSystemsPage() {
           </p>
           <div className="feature-grid">
             <article className="card">
-              <img
-                src="/assets/images/products/blast-150-45.jpg"
-                alt="Perma Cool BLAST 150/45 ethanol pre-chiller"
-                style={{ width: '100%', height: 'auto', display: 'block', marginBottom: '1rem' }}
-              />
-              <h3>BLAST™ 150/45</h3>
-              <p>
-                A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill
-                performance, and room to support growing production schedules.
-              </p>
-              <ul className="list">
-                <li>Designed for high-throughput ethanol extraction</li>
-                <li>Fast pull-down to target low-temp process windows</li>
-                <li>Built for repeatable production cycles</li>
-              </ul>
-              <p><a href="/ethanol-chiller-blast-150">View BLAST™ 150/45 →</a></p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'start' }}>
+                <div>
+                  <img
+                    src="/assets/images/products/blast-150-45.jpg"
+                    alt="Perma Cool BLAST 150/45 ethanol pre-chiller"
+                    style={{ width: '100%', height: 'auto', display: 'block' }}
+                  />
+                </div>
+                <div>
+                  <h3>BLAST™ 150/45</h3>
+                  <p>
+                    A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill
+                    performance, and room to support growing production schedules.
+                  </p>
+                  <ul className="list">
+                    <li>Designed for high-throughput ethanol extraction</li>
+                    <li>Fast pull-down to target low-temp process windows</li>
+                    <li>Built for repeatable production cycles</li>
+                  </ul>
+                  <p><a href="/ethanol-chiller-blast-150">View BLAST™ 150/45 →</a></p>
+                </div>
+              </div>
             </article>
 
             <article className="card">
