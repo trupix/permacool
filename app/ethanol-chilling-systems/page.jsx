@@ -75,6 +75,19 @@ export default function EthanolChillingSystemsPage() {
           <p><a href="/contact-us">Request a custom recommendation →</a></p>
         </section>
 
+        <div className="feature-grid mt">
+          <img
+            className="wide"
+            src="/assets/images/products/blast-pair-left.jpg"
+            alt="Perma Cool multi-centrifuge expansion concept"
+          />
+          <img
+            className="wide"
+            src="/assets/images/products/blast-pair-right.jpg"
+            alt="Perma Cool ethanol chilling profitability concept"
+          />
+        </div>
+
         <section className="mt">
           <h2>BLAST™ product lineup</h2>
           <p>
