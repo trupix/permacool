@@ -125,7 +125,7 @@ export default function EthanolChillingSystemsPage() {
                   <li>Fast pull-down to target low-temp process windows</li>
                   <li>Built for repeatable production cycles</li>
                 </ul>
-                <p><a href="/ethanol-chiller-blast-150">View BLAST™ 60/45 →</a></p>
+                <p><a href="/ethanol-chiller-blast-60">View BLAST™ 60/45 →</a></p>
               </article>
 
               <article className="card" style={{ border: '1px solid rgba(125, 199, 255, 0.30)', boxShadow: '0 10px 24px rgba(44, 111, 168, 0.16)' }}>
@@ -153,7 +153,7 @@ export default function EthanolChillingSystemsPage() {
                   <li>Fast pull-down to target low-temp process windows</li>
                   <li>Built for repeatable production cycles</li>
                 </ul>
-                <p><a href="/ethanol-chiller-blast-150">View BLAST™ 240/45 →</a></p>
+                <p><a href="/ethanol-chiller-blast-240">View BLAST™ 240/45 →</a></p>
               </article>
             </div>
           </div>
