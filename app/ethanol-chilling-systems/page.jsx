@@ -76,7 +76,7 @@ export default function EthanolChillingSystemsPage() {
               </ul>
               <p><a href="/contact-us">Request a custom recommendation →</a></p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.45rem', alignItems: 'start', marginTop: '2.2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.45rem', alignItems: 'start', marginTop: '4.2rem' }}>
               <img
                 className="wide"
                 src="/assets/images/products/blast-pair-left.jpg"
