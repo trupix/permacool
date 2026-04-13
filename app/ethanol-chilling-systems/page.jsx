@@ -9,10 +9,12 @@ export default function EthanolChillingSystemsPage() {
       <section className="container section">
         <p className="eyebrow">Direct Refrigerant Ethanol Chilling</p>
         <h1 style={{ textAlign: 'center' }}>Perma Cool BLAST™ Ethanol Pre-Chiller Series</h1>
-        <div className="cta-row" style={{ justifyContent: 'center', marginBottom: '1rem' }}>
-          <a className="btn btn-ghost" href="/ethanol-chiller-blast-60">BLAST™ 60/45</a>
-          <a className="btn btn-ghost" href="/ethanol-chiller-blast-150">BLAST™ 150/45</a>
-          <a className="btn btn-ghost" href="/ethanol-chiller-blast-240">BLAST™ 240/45</a>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+          <nav style={{ display: 'inline-flex', gap: '.35rem', padding: '.35rem', borderRadius: '999px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(156, 179, 202, 0.16)' }}>
+            <a href="/ethanol-chiller-blast-60" style={{ padding: '.45rem .8rem', borderRadius: '999px', color: '#d7f0ff' }}>BLAST™ 60/45</a>
+            <a href="/ethanol-chiller-blast-150" style={{ padding: '.45rem .8rem', borderRadius: '999px', color: '#d7f0ff' }}>BLAST™ 150/45</a>
+            <a href="/ethanol-chiller-blast-240" style={{ padding: '.45rem .8rem', borderRadius: '999px', color: '#d7f0ff' }}>BLAST™ 240/45</a>
+          </nav>
         </div>
         <img
           className="hero-inline-image"
