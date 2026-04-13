@@ -62,31 +62,34 @@ export default function EthanolChillingSystemsPage() {
             evaporated and recovered.
           </p>
 
-          <h3>Multi-centrifuge production setups</h3>
-          <p>
-            For facilities planning around multiple centrifuges or expanded extraction capacity, Perma Cool can help
-            scope a BLAST™ configuration matched to your flow rate, utility profile, and uptime requirements.
-          </p>
-          <ul className="list">
-            <li>Configured around throughput goals</li>
-            <li>Supports scaling beyond single-line production</li>
-            <li>Built around real process constraints</li>
-          </ul>
-          <p><a href="/contact-us">Request a custom recommendation →</a></p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr .8fr', gap: '1rem', alignItems: 'start' }}>
+            <div>
+              <h3>Multi-centrifuge production setups</h3>
+              <p>
+                For facilities planning around multiple centrifuges or expanded extraction capacity, Perma Cool can help
+                scope a BLAST™ configuration matched to your flow rate, utility profile, and uptime requirements.
+              </p>
+              <ul className="list">
+                <li>Configured around throughput goals</li>
+                <li>Supports scaling beyond single-line production</li>
+                <li>Built around real process constraints</li>
+              </ul>
+              <p><a href="/contact-us">Request a custom recommendation →</a></p>
+            </div>
+            <div style={{ display: 'grid', gap: '.7rem' }}>
+              <img
+                className="wide"
+                src="/assets/images/products/blast-pair-left.jpg"
+                alt="Perma Cool multi-centrifuge expansion concept"
+              />
+              <img
+                className="wide"
+                src="/assets/images/products/blast-pair-right.jpg"
+                alt="Perma Cool ethanol chilling profitability concept"
+              />
+            </div>
+          </div>
         </section>
-
-        <div className="feature-grid mt">
-          <img
-            className="wide"
-            src="/assets/images/products/blast-pair-left.jpg"
-            alt="Perma Cool multi-centrifuge expansion concept"
-          />
-          <img
-            className="wide"
-            src="/assets/images/products/blast-pair-right.jpg"
-            alt="Perma Cool ethanol chilling profitability concept"
-          />
-        </div>
 
         <section className="mt">
           <h2>BLAST™ product lineup</h2>
