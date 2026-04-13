@@ -76,7 +76,7 @@ export default function EthanolChillingSystemsPage() {
               </ul>
               <p><a href="/contact-us">Request a custom recommendation →</a></p>
             </div>
-            <div style={{ marginTop: '5.3rem' }}>
+            <div style={{ marginTop: '.35rem' }}>
               <img
                 className="wide"
                 src="/assets/images/products/blast-multi-value.jpg"
