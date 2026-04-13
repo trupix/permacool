@@ -76,16 +76,11 @@ export default function EthanolChillingSystemsPage() {
               </ul>
               <p><a href="/contact-us">Request a custom recommendation →</a></p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.45rem', alignItems: 'start', marginTop: '4.2rem' }}>
+            <div style={{ marginTop: '4.2rem' }}>
               <img
                 className="wide"
-                src="/assets/images/products/blast-pair-left.jpg"
-                alt="Perma Cool multi-centrifuge expansion concept"
-              />
-              <img
-                className="wide"
-                src="/assets/images/products/blast-pair-right.jpg"
-                alt="Perma Cool ethanol chilling profitability concept"
+                src="/assets/images/products/blast-multi-value.jpg"
+                alt="Perma Cool multi-centrifuge value illustration"
               />
             </div>
           </div>
