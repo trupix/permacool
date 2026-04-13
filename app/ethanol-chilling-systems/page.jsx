@@ -62,7 +62,7 @@ export default function EthanolChillingSystemsPage() {
             evaporated and recovered.
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr .8fr', gap: '1rem', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.35fr .65fr', gap: '1rem', alignItems: 'start' }}>
             <div>
               <h3>Multi-centrifuge production setups</h3>
               <p>
@@ -76,7 +76,7 @@ export default function EthanolChillingSystemsPage() {
               </ul>
               <p><a href="/contact-us">Request a custom recommendation →</a></p>
             </div>
-            <div style={{ display: 'grid', gap: '.7rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.45rem', alignItems: 'start' }}>
               <img
                 className="wide"
                 src="/assets/images/products/blast-pair-left.jpg"
