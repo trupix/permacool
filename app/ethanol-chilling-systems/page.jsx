@@ -115,8 +115,7 @@ export default function EthanolChillingSystemsPage() {
 
             <div style={{ display: 'grid', gap: '.7rem' }}>
               <article className="card" style={{ border: '1px solid rgba(125, 199, 255, 0.30)', boxShadow: '0 10px 24px rgba(44, 111, 168, 0.16)' }}>
-                <p className="blast-kicker">MODEL OPTION</p>
-                <h3>BLAST™ 60/45</h3>
+                <h3 style={{ fontSize: '1.15rem', color: '#d7f0ff', letterSpacing: '.02em' }}>BLAST™ 60/45</h3>
                 <p>
                   A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill
                   performance, and room to support growing production schedules.
@@ -130,8 +129,7 @@ export default function EthanolChillingSystemsPage() {
               </article>
 
               <article className="card" style={{ border: '1px solid rgba(125, 199, 255, 0.30)', boxShadow: '0 10px 24px rgba(44, 111, 168, 0.16)' }}>
-                <p className="blast-kicker">MODEL OPTION</p>
-                <h3>BLAST™ 150/45</h3>
+                <h3 style={{ fontSize: '1.15rem', color: '#d7f0ff', letterSpacing: '.02em' }}>BLAST™ 150/45</h3>
                 <p>
                   A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill
                   performance, and room to support growing production schedules.
@@ -145,8 +143,7 @@ export default function EthanolChillingSystemsPage() {
               </article>
 
               <article className="card" style={{ border: '1px solid rgba(125, 199, 255, 0.30)', boxShadow: '0 10px 24px rgba(44, 111, 168, 0.16)' }}>
-                <p className="blast-kicker">MODEL OPTION</p>
-                <h3>BLAST™ 240/45</h3>
+                <h3 style={{ fontSize: '1.15rem', color: '#d7f0ff', letterSpacing: '.02em' }}>BLAST™ 240/45</h3>
                 <p>
                   A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill
                   performance, and room to support growing production schedules.
