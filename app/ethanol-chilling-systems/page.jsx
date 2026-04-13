@@ -124,8 +124,9 @@ export default function EthanolChillingSystemsPage() {
               <article className="card" style={{ border: '1px solid rgba(125, 199, 255, 0.30)', boxShadow: '0 10px 24px rgba(44, 111, 168, 0.16)' }}>
                 <h3 style={{ fontSize: '1.15rem', color: '#d7f0ff', letterSpacing: '.02em' }}>BLAST™ 60/45</h3>
                 <p>
-                  A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill
-                  performance, and room to support growing production schedules.
+                  With over 200 original Legacy ACP-30 units in the field, the BLAST™ 60/45 is the updated and upgraded
+                  evolution of a proven design. Tested, trusted, and built for demanding extraction environments, it has
+                  earned its place as a true industry workhorse.
                 </p>
                 <ul className="list">
                   <li>Designed for high-throughput ethanol extraction</li>
