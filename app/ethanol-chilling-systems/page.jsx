@@ -129,7 +129,7 @@ export default function EthanolChillingSystemsPage() {
                   earned its place as a true industry workhorse.
                 </p>
                 <ul className="list">
-                  <li>Designed for high-throughput ethanol extraction</li>
+                  <li>Flash-chill 60 gallons of room temperature ethanol down to -40°C in 45 minutes. (You can run less.)</li>
                   <li>Fast pull-down to target low-temp process windows</li>
                   <li>Built for repeatable production cycles</li>
                 </ul>
