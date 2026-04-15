@@ -10,7 +10,7 @@ export default function ContactPage() {
         <h1><span className="icon-chip"><i data-lucide="clipboard-list"></i></span>Request a Quote</h1>
         <p>Share your extraction process goals and target throughput. We’ll help scope the right ethanol chiller or butane recovery configuration for your operation.</p>
 
-        <form className="contact-form" action="/thank-you" method="get">
+        <form className="contact-form" action="/api/contact" method="post">
           <label>Name<input required type="text" name="name" autoComplete="name" /></label>
           <label>Email<input required type="email" name="email" autoComplete="email" /></label>
           <label>Company<input type="text" name="company" autoComplete="organization" /></label>
