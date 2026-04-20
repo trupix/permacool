@@ -131,7 +131,7 @@ export default function EthanolChillingSystemsPage() {
                 <ul className="list">
                   <li>Flash-chill 60 gallons of room temperature ethanol down to -40°C in 45 minutes. (You can run less.)</li>
                   <li>Fast pull-down to target low-temp process windows</li>
-                  <li>Built for repeatable production cycles</li>
+                  <li>Designed with readily available parts to keep repairs fast and affordable.</li>
                 </ul>
                 <p><a href="/ethanol-chiller-blast-60">View BLAST™ 60/45 →</a></p>
               </article>
@@ -145,7 +145,7 @@ export default function EthanolChillingSystemsPage() {
                 <ul className="list">
                   <li>Designed for high-throughput ethanol extraction</li>
                   <li>Fast pull-down to target low-temp process windows</li>
-                  <li>Built for repeatable production cycles</li>
+                  <li>Designed with readily available parts to keep repairs fast and affordable.</li>
                 </ul>
                 <p><a href="/ethanol-chiller-blast-150">View BLAST™ 150/45 →</a></p>
               </article>
@@ -159,7 +159,7 @@ export default function EthanolChillingSystemsPage() {
                 <ul className="list">
                   <li>Designed for high-throughput ethanol extraction</li>
                   <li>Fast pull-down to target low-temp process windows</li>
-                  <li>Built for repeatable production cycles</li>
+                  <li>Designed with readily available parts to keep repairs fast and affordable.</li>
                 </ul>
                 <p><a href="/ethanol-chiller-blast-240">View BLAST™ 240/45 →</a></p>
               </article>
