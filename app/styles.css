@@ -767,7 +767,7 @@ footer {
 }
 
 .product-narrative {
-  max-width: 960px;
+  width: 100%;
   scroll-margin-top: 120px;
 }
 
@@ -787,12 +787,9 @@ footer {
   margin-bottom: .45rem;
 }
 
-.product-page__footer-actions {
-  max-width: 960px;
-}
-
+.product-page__footer-actions,
 .product-related {
-  max-width: 960px;
+  width: 100%;
 }
 
 .product-sticky-cta {
