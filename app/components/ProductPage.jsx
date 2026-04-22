@@ -1,6 +1,6 @@
 function ProductHeroStat({ image, alt, value, label, suffix }) {
   return (
-    <div className="product-hero-stat">
+    <article className="product-hero-stat">
       <div className="product-hero-stat__media">
         <img src={image} alt={alt} />
       </div>
@@ -9,7 +9,7 @@ function ProductHeroStat({ image, alt, value, label, suffix }) {
         {label}
         {suffix ? <strong>{suffix}</strong> : null}
       </p>
-    </div>
+    </article>
   )
 }
 
