@@ -1,16 +1,74 @@
+import {
+  ProductFooterActions,
+  ProductHero,
+  ProductRelated,
+  ProductSimpleSection,
+  ProductStickyCTA
+} from '../components/ProductPage'
+
 export const metadata = {
   title: "BLAST 150 Ethanol Chiller | Chill 150 Gallons to -40°C | PermaCool",
-  description: "PermaCool BLAST 150 ethanol chiller is designed to chill up to 150 gallons toward -40°C with PLC/HMI visibility and direct refrigerant efficiency."
+  description:
+    "PermaCool BLAST 150 ethanol chiller is designed to chill up to 150 gallons toward -40°C with PLC/HMI visibility and direct refrigerant efficiency."
 }
 
-const mainHtml = "<p class=\"eyebrow\">BLAST™ Product Line</p>\n    <h1>BLAST 150 Ethanol Chiller</h1>\n    <p>\n      Built for extraction operators who need production-ready chilling performance, the BLAST 150 class is engineered\n      for fast pull-down, low-temp stability, and reliable PLC-based control.\n    </p>\n\n    <h2>Highlights</h2>\n    <ul class=\"list\">\n      <li>Designed for up to 150-gallon process class applications</li>\n      <li>Target low-temp operation around -40°C (config/facility dependent)</li>\n      <li>Direct refrigerant architecture with HVAC condenser integration</li>\n      <li>PLC/HMI operational visibility and compressor protection logic</li>\n    </ul>\n\n    <div class=\"cta-row mt\">\n      <a class=\"btn\" href=\"/contact-us\">Request BLAST 150 Pricing</a>\n      <a class=\"btn btn-ghost\" href=\"/ethanol-chilling-systems\">Compare Chiller Options</a>\n    </div>\n\n    <section class=\"related card\">\n      <h3>Related reading</h3>\n      <p><a href=\"/direct-refrigerant-vs-ln2\">Direct Refrigerant vs LN2</a> • <a href=\"/industrial-process-chiller-maintenance\">Maintenance Guide</a></p>\n    </section>"
-const stickyHtml = "<div class=\"inner\">\n      <p>Need lead time + pricing for BLAST 150?</p>\n      <a class=\"btn\" href=\"/contact-us\">Request Pricing</a>\n    </div>"
+const highlights = [
+  "Designed for up to 150-gallon process class applications",
+  "Target low-temp operation around -40°C (config/facility dependent)",
+  "Direct refrigerant architecture with HVAC condenser integration",
+  "PLC/HMI operational visibility and compressor protection logic"
+]
 
 export default function Page() {
   return (
     <>
-      <div dangerouslySetInnerHTML={{ __html: mainHtml }} />
-      {stickyHtml ? <div className="sticky-cta" dangerouslySetInnerHTML={{ __html: stickyHtml }} /> : null}
+      <section className="product-page">
+        <div className="container product-page__container">
+          <ProductHero
+            eyebrow="BLAST™ Product Line"
+            title="BLAST™ 150/45 Ethanol Chiller"
+            lead={(
+              <>
+                Chill <strong>150</strong> gallons of ethanol from room temperature to <strong>-40°C</strong> in{' '}
+                <strong>45</strong> minutes.
+              </>
+            )}
+            actions={[
+              <a key="pricing" className="btn" href="/contact-us">Request BLAST™ 150/45 Pricing</a>,
+              <a key="compare" className="btn btn-ghost" href="/ethanol-chilling-systems">Compare Chiller Options</a>
+            ]}
+          />
+
+          <ProductSimpleSection title="Highlights">
+            <ul className="list">
+              {highlights.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </ProductSimpleSection>
+
+          <ProductFooterActions
+            actions={[
+              <a key="pricing" className="btn" href="/contact-us">Request BLAST™ 150/45 Pricing</a>,
+              <a key="compare" className="btn btn-ghost" href="/ethanol-chilling-systems">Compare Chiller Options</a>
+            ]}
+          />
+
+          <ProductRelated>
+            <p>
+              <a href="/direct-refrigerant-vs-ln2">Direct Refrigerant vs LN2</a> •{' '}
+              <a href="/industrial-process-chiller-maintenance">Maintenance Guide</a>
+            </p>
+          </ProductRelated>
+        </div>
+      </section>
+
+      <ProductStickyCTA
+        message="Need lead time + pricing for BLAST™ 150/45?"
+        actions={[
+          <a key="pricing" className="btn" href="/contact-us">Request Pricing</a>
+        ]}
+      />
     </>
   )
 }

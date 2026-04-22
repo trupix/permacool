@@ -1,3 +1,13 @@
+import {
+  ProductComponentStack,
+  ProductFooterActions,
+  ProductHero,
+  ProductRelated,
+  ProductSimpleSection,
+  ProductStickyCTA,
+  ProductValueGrid
+} from '../components/ProductPage'
+
 export const metadata = {
   title: "BLAST™ 60/45 Ethanol Chiller | Chill 60 Gallons to -40°C | PermaCool",
   description:
@@ -84,7 +94,6 @@ const componentSections = [
     zoneLabel: "Zone two",
     zoneValue: "inside the building, outside the control area",
     imageClassName: "product-component-media product-component-media--compact",
-    layoutClassName: "product-component-layout",
     body: [
       "The flux box is part of the cascade side of the chiller and is specific to the BLAST™ 60/45.",
       "This component allows the secondary chiller to cascade the primary chiller, supporting the two-stage refrigeration design that gives the 60/45 its stronger low-temperature performance."
@@ -104,7 +113,6 @@ const componentSections = [
     zoneLabel: "Zone three",
     zoneValue: "Inside control area",
     imageClassName: "product-component-media product-component-media--compact product-component-media--tall",
-    layoutClassName: "product-component-layout",
     body: [
       "This is the PLC control system for the BLAST™ 60/45, giving operators centralized control and visibility over chiller operation.",
       "It supports the system’s monitoring, logic, and control functions so operators can manage process performance with clearer feedback and more consistent operation."
@@ -124,7 +132,6 @@ const componentSections = [
     zoneLabel: "Zone one",
     zoneValue: "outside the building",
     imageClassName: "product-component-media product-component-media--medium",
-    layoutClassName: "product-component-layout",
     body: [
       "These are the two condensers that come with the BLAST™ 60/45 system.",
       "Each condenser is rated at six horsepower, giving the unit the condenser capacity needed to support the cascade refrigeration design."
@@ -173,113 +180,37 @@ const roiPoints = [
   "Built around serviceable, common-sized components for lower long-term ownership cost"
 ]
 
-function ProductHeroStat({ image, alt, value, label, suffix }) {
-  return (
-    <div className="product-hero-stat">
-      <div className="product-hero-stat__media">
-        <img src={image} alt={alt} />
-      </div>
-      <p className="product-hero-stat__copy">
-        <strong>{value}</strong>
-        {label}
-        {suffix ? <strong>{suffix}</strong> : null}
-      </p>
-    </div>
-  )
-}
-
-function ValueCard({ icon, title, body, link }) {
-  return (
-    <article className="card product-value-card">
-      <h3>
-        <span className="icon-chip">
-          <i data-lucide={icon}></i>
-        </span>
-        {title}
-      </h3>
-      <p>{body}</p>
-      {link ? <p><a href={link.href}>{link.label}</a></p> : null}
-    </article>
-  )
-}
-
-function ComponentSection({ section }) {
-  return (
-    <section className="card product-component-card">
-      <div className={section.layoutClassName}>
-        <div className="product-component-visual">
-          <img src={section.image} alt={section.alt} className={section.imageClassName} />
-        </div>
-        <div className="product-component-content">
-          <p className="eyebrow">Component {section.number}</p>
-          <h3 className="product-component-title">{section.title}</h3>
-          <div className="product-zone-pill">
-            <strong>{section.zoneLabel}:</strong> <span>{section.zoneValue}</span>
-          </div>
-          {section.body.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-          <div className="product-spec-list">
-            {section.specs.map((item) => {
-              const [label, ...rest] = item.split(': ')
-              return (
-                <div className="product-spec-item" key={item}>
-                  <strong>{label}:</strong> {rest.join(': ')}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export default function Page() {
   return (
     <>
       <section className="product-page">
         <div className="container product-page__container">
-          <section className="product-hero card">
-            <p className="eyebrow">BLAST™ Product Line</p>
-            <h1>BLAST™ 60/45 Ethanol Chiller</h1>
-            <p className="product-hero__lead">
-              Chill <strong>60</strong> gallons of ethanol from room temperature to <strong>-40°C</strong> in{' '}
-              <strong>45</strong> minutes.
-            </p>
+          <ProductHero
+            eyebrow="BLAST™ Product Line"
+            title="BLAST™ 60/45 Ethanol Chiller"
+            lead={(
+              <>
+                Chill <strong>60</strong> gallons of ethanol from room temperature to <strong>-40°C</strong> in{' '}
+                <strong>45</strong> minutes.
+              </>
+            )}
+            stats={heroStats}
+            actions={[
+              <a key="pricing" className="btn" href="/contact-us">Request Pricing</a>,
+              <a key="call" className="btn btn-ghost" href="tel:7472081001">Call 747.208.1001</a>
+            ]}
+          />
 
-            <div className="product-hero-stats">
-              {heroStats.map((stat) => (
-                <ProductHeroStat key={stat.alt} {...stat} />
-              ))}
-            </div>
+          <ProductValueGrid cards={valueCards} />
 
-            <div className="cta-row product-hero__actions">
-              <a className="btn" href="/contact-us">Request Pricing</a>
-              <a className="btn btn-ghost" href="tel:7472081001">Call 747.208.1001</a>
-            </div>
-          </section>
+          <ProductComponentStack
+            eyebrow="Component Overview"
+            title="BLAST™ 60/45 Component Walkthrough"
+            intro="A quick visual walkthrough of the major BLAST™ 60/45 components"
+            sections={componentSections}
+          />
 
-          <section className="product-value-grid">
-            {valueCards.map((card) => (
-              <ValueCard key={card.title} {...card} />
-            ))}
-          </section>
-
-          <section className="card product-section">
-            <p className="eyebrow">Component Overview</p>
-            <h2>BLAST™ 60/45 Component Walkthrough</h2>
-            <p className="product-section__intro">A quick visual walkthrough of the major BLAST™ 60/45 components</p>
-
-            <div className="product-component-stack">
-              {componentSections.map((section) => (
-                <ComponentSection key={section.title} section={section} />
-              ))}
-            </div>
-          </section>
-
-          <section className="card product-section product-narrative" id="cascade-refrigeration-design">
-            <h2>Cascade Refrigeration Design</h2>
+          <ProductSimpleSection title="Cascade Refrigeration Design" className="product-narrative" id="cascade-refrigeration-design">
             <p>
               The BLAST™ 60/45 is built around Perma Cool’s dual-stage cascade architecture, using two smaller, more
               common-sized refrigeration stages instead of one oversized unit. The primary refrigeration circuit directly
@@ -357,36 +288,35 @@ export default function Page() {
               For many operators, that makes the BLAST™ 60/45 more than a replacement. It is a move toward lower
               operating cost, better throughput, and a more reliable production workflow.
             </p>
-          </section>
+          </ProductSimpleSection>
 
-          <div className="cta-row product-page__footer-actions">
-            <a className="btn" href="/contact-us">Request BLAST™ 60/45 Pricing</a>
-            <a className="btn btn-ghost" href="/ethanol-chilling-systems">Compare Chiller Options</a>
-          </div>
+          <ProductFooterActions
+            actions={[
+              <a key="pricing" className="btn" href="/contact-us">Request BLAST™ 60/45 Pricing</a>,
+              <a key="compare" className="btn btn-ghost" href="/ethanol-chilling-systems">Compare Chiller Options</a>
+            ]}
+          />
 
-          <section className="related card product-related">
-            <h3>Related reading</h3>
+          <ProductRelated>
             <p>
               <a href="/direct-refrigerant-vs-ln2">Direct Refrigerant vs LN2</a> •{' '}
               <a href="/industrial-process-chiller-maintenance">Maintenance Guide</a>
             </p>
-          </section>
+          </ProductRelated>
         </div>
       </section>
 
-      <div className="sticky-cta">
-        <div className="inner product-sticky-cta">
-          <div className="product-sticky-cta__meta">
-            <span><strong>60 gallons</strong> capacity</span>
-            <span><strong>45 minutes</strong> to -40°C</span>
-            <span><strong>30 gallon</strong> centrifuge workflow</span>
-          </div>
-          <div className="product-sticky-cta__actions">
-            <a className="btn" href="/contact-us">Request Pricing</a>
-            <a className="btn btn-ghost" href="tel:7472081001">Call 747.208.1001</a>
-          </div>
-        </div>
-      </div>
+      <ProductStickyCTA
+        meta={[
+          { value: '60 gallons', label: 'capacity' },
+          { value: '45 minutes', label: 'to -40°C' },
+          { value: '30 gallon', label: 'centrifuge workflow' }
+        ]}
+        actions={[
+          <a key="pricing" className="btn" href="/contact-us">Request Pricing</a>,
+          <a key="call" className="btn btn-ghost" href="tel:7472081001">Call 747.208.1001</a>
+        ]}
+      />
     </>
   )
 }
