@@ -1,29 +1,117 @@
+import Image from "next/image";
+import { ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
+import {
+  indexTopics,
+  insightArticles,
+  insightHeroImage,
+  insightIndexStats
+} from "./insights-data";
+import { InsightsFooter, InsightsHeader } from "./InsightsShell";
+
 export const metadata = {
-  title: 'PermaCool Insights | Extraction Cooling Articles',
-  description: 'Guides and technical insights on ethanol chillers, butane recovery, LN2 alternatives, and extraction cooling design.'
-}
+  title: "PermaCool Insights",
+  description:
+    "PermaCool insights covering direct refrigerant vs LN2, extraction workflow, maintenance planning, and cooling system design."
+};
 
 export default function InsightsPage() {
   return (
-    <>
-      <section className="container section">
-        <p className="eyebrow">Knowledge Hub</p>
-        <h1><span className="icon-chip"><i data-lucide="book-open"></i></span>PermaCool Insights</h1>
-        <div className="feature-grid">
-          <article className="card"><h3><span className="icon-chip"><i data-lucide="snowflake"></i></span>How to Reduce LN2 Dependence</h3><p>Steps to shift from consumable-heavy cooling to scalable operations.</p><a href="/how-to-reduce-ln2-dependence">Read article →</a></article>
-          <article className="card"><h3><span className="icon-chip"><i data-lucide="git-branch"></i></span>Workflow</h3><p>Learn how the Perma Cool pre-ethanol chillers workflow can drastically increase your extraction throughput.</p><a href="/workflow">Read article →</a></article>
-          <article className="card"><h3><span className="icon-chip"><i data-lucide="wrench"></i></span>Industrial Chiller Maintenance</h3><p>Practical upkeep guidance to protect uptime and process consistency.</p><a href="/industrial-process-chiller-maintenance">Read article →</a></article>
-          <article className="card"><h3><span className="icon-chip"><i data-lucide="clipboard-check"></i></span>Cooling System Design Checklist</h3><p>Define temp, throughput, controls, and utility constraints before buying.</p><a href="/extraction-cooling-system-design-checklist">Read article →</a></article>
-          <article className="card"><h3><span className="icon-chip"><i data-lucide="scale"></i></span>Direct Refrigerant vs LN2</h3><p>Compare cost profile, control, and scale readiness.</p><a href="/direct-refrigerant-vs-ln2">Read article →</a></article>
+    <main className="site-shell insights-page">
+      <InsightsHeader />
+      <section className="insights-hero">
+        <Image src={insightHeroImage} alt="" fill priority className="insights-hero-image" sizes="100vw" />
+        <div className="insights-hero-overlay" />
+        <div className="insights-hero-content">
+          <p className="eyebrow">Knowledge Hub</p>
+          <h1>Educational pages that help technical buyers trust the process.</h1>
+          <p>
+            Use insights content to answer the questions that usually slow a sale down: cost profile, workflow behavior,
+            maintenance burden, and what system fit actually means.
+          </p>
+          <div className="hero-actions">
+            <a className="button primary" href="/direct-refrigerant-vs-ln2">
+              Start with LN2 comparison
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+            <a className="button secondary" href="/contact-us">
+              Ask for a recommendation
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          </div>
         </div>
       </section>
 
-      <div className="sticky-cta">
-        <div className="inner">
-          <p>Want a recommendation based on your facility profile?</p>
-          <a className="btn" href="/contact-us">Talk to PermaCool</a>
+      <section className="insights-topic-panel">
+        <div className="insights-topic-card">
+          <div>
+            <span className="micro-label">Live-Site Topics</span>
+            <h2>Current content tracks rebuilt into this Next.js site.</h2>
+          </div>
+          <ul>
+            {indexTopics.map((topic) => (
+              <li key={topic}>
+                <CheckCircle2 size={18} aria-hidden="true" />
+                <span>{topic}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
-    </>
-  )
+      </section>
+
+      <section className="insights-stat-strip">
+        {insightIndexStats.map(([value, label]) => (
+          <article key={label}>
+            <strong>{value}</strong>
+            <span>{label}</span>
+          </article>
+        ))}
+      </section>
+
+      <section className="section insights-index-section">
+        <div className="section-heading narrow">
+          <p className="eyebrow">Article Library</p>
+          <h2>Practical cooling education with a cleaner buyer path.</h2>
+          <p>
+            Each article keeps the live-site copy, then wraps it in stronger visuals, clearer cards, and working links.
+          </p>
+        </div>
+
+        <div className="insight-card-grid">
+          {insightArticles.map((article) => (
+            <article className="insight-card" key={article.slug}>
+              <a className="insight-card-media" href={article.href} aria-label={article.title}>
+                <Image src={article.image} alt="" width={720} height={420} />
+              </a>
+              <div className="insight-card-copy">
+                <p className="pill">{article.category}</p>
+                <h3>{article.shortTitle}</h3>
+                <p>{article.summary}</p>
+                <a className="inline-link" href={article.href}>
+                  Read article →
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="insights-bottom-cta">
+        <BookOpen size={34} aria-hidden="true" />
+        <div>
+          <p className="eyebrow">Recommendation Path</p>
+          <h2>Want content mapped to your facility profile?</h2>
+          <p>
+            Insights pages work best when they connect directly to a consultative quote flow, not a dead-end brochure
+            experience.
+          </p>
+        </div>
+        <a className="button primary" href="/contact-us">
+          Request a recommendation
+          <ArrowRight size={18} aria-hidden="true" />
+        </a>
+      </section>
+
+      <InsightsFooter />
+    </main>
+  );
 }

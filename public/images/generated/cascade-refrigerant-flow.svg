@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024" role="img" aria-labelledby="title desc">
+  <title id="title">BLAST 60/45 cascade refrigerant flow diagram</title>
+  <desc id="desc">Corrected refrigerant piping diagram showing Compressor 1, Compressor 2, HX Box, Flux Box, C1 and C2 liquid and vapor return paths, and ethanol in and out.</desc>
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#e8eef1" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1397e8"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f25a45"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#91c919"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7f35c8"/>
+    </marker>
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#009d91"/>
+    </marker>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#6b7c83" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      .label { font-family: Arial, Helvetica, sans-serif; fill: #111820; font-size: 28px; }
+      .small { font-family: Arial, Helvetica, sans-serif; fill: #111820; font-size: 21px; }
+      .tiny { font-family: Arial, Helvetica, sans-serif; fill: #111820; font-size: 18px; }
+      .box-title { font-family: Arial, Helvetica, sans-serif; font-weight: 700; fill: #111820; font-size: 26px; letter-spacing: 0.04em; }
+      .line-blue { fill: none; stroke: #1397e8; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-blue); }
+      .line-red { fill: none; stroke: #f25a45; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-red); }
+      .line-green { fill: none; stroke: #91c919; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-green); }
+      .line-purple { fill: none; stroke: #7f35c8; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-purple); }
+      .line-teal { fill: none; stroke: #009d91; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow-teal); }
+      .line-case { fill: none; stroke: rgba(255,255,255,.72); stroke-width: 18; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="1536" height="1024" fill="#fbfcfd"/>
+  <rect width="1536" height="1024" fill="url(#grid)" opacity="0.9"/>
+  <path d="M32 48H346l22 22h800l22-22h314v92l-28 22v700l28 22v92h-314l-22-22H368l-22 22H32v-92l28-22V162L32 140z" fill="none" stroke="#d4dee3" stroke-width="3"/>
+
+  <rect x="44" y="400" width="1448" height="560" fill="#ffffff" stroke="#9ba7ad" stroke-width="4"/>
+  <text x="744" y="232" text-anchor="middle" class="label">Outside Building</text>
+  <text x="1260" y="858" class="label">Inside Building</text>
+  <text x="92" y="670" class="label">Lab / C1D2</text>
+  <text x="92" y="704" class="label">Ethanol Area</text>
+
+  <g id="compressor-2" filter="url(#soft-shadow)">
+    <text x="360" y="86" text-anchor="middle" class="label">Compressor 2</text>
+    <rect x="230" y="118" width="260" height="160" rx="7" fill="#f4f6f7" stroke="#6f787d" stroke-width="2"/>
+    <rect x="254" y="140" width="212" height="112" fill="#e9eef1" stroke="#606a70" stroke-width="2"/>
+    <g stroke="#151b20" stroke-width="2">
+      <path d="M268 150H452M268 160H452M268 170H452M268 180H452M268 190H452M268 200H452M268 210H452M268 220H452M268 230H452M268 240H452"/>
+    </g>
+    <ellipse cx="360" cy="118" rx="88" ry="14" fill="#dfe5e8" stroke="#7a858a"/>
+    <rect x="240" y="278" width="240" height="18" fill="#778187"/>
+  </g>
+
+  <g id="compressor-1" filter="url(#soft-shadow)">
+    <text x="1168" y="86" text-anchor="middle" class="label">Compressor 1</text>
+    <rect x="1038" y="118" width="260" height="160" rx="7" fill="#f4f6f7" stroke="#6f787d" stroke-width="2"/>
+    <rect x="1062" y="140" width="212" height="112" fill="#e9eef1" stroke="#606a70" stroke-width="2"/>
+    <g stroke="#151b20" stroke-width="2">
+      <path d="M1076 150H1260M1076 160H1260M1076 170H1260M1076 180H1260M1076 190H1260M1076 200H1260M1076 210H1260M1076 220H1260M1076 230H1260M1076 240H1260"/>
+    </g>
+    <ellipse cx="1168" cy="118" rx="88" ry="14" fill="#dfe5e8" stroke="#7a858a"/>
+    <rect x="1048" y="278" width="240" height="18" fill="#778187"/>
+  </g>
+
+  <g id="hx-box" filter="url(#soft-shadow)">
+    <rect x="408" y="532" width="264" height="290" rx="14" fill="#f8f9fa" stroke="#30383d" stroke-width="3"/>
+    <rect x="426" y="548" width="228" height="258" rx="8" fill="none" stroke="#8f989e" stroke-width="2" stroke-dasharray="8 8"/>
+    <text x="540" y="672" text-anchor="middle" class="box-title">HX BOX</text>
+    <circle cx="468" cy="582" r="25" fill="#eaf8ff" stroke="#1397e8" stroke-width="3"/>
+    <circle cx="602" cy="582" r="25" fill="#e9fbf7" stroke="#009d91" stroke-width="3"/>
+    <circle cx="468" cy="762" r="25" fill="#f5edff" stroke="#7f35c8" stroke-width="3"/>
+    <circle cx="602" cy="762" r="25" fill="#e9fbf7" stroke="#009d91" stroke-width="3"/>
+  </g>
+
+  <g id="flux-box" filter="url(#soft-shadow)">
+    <rect x="826" y="575" width="260" height="247" rx="14" fill="#f8f9fa" stroke="#30383d" stroke-width="3"/>
+    <rect x="844" y="592" width="224" height="214" rx="8" fill="none" stroke="#8f989e" stroke-width="2" stroke-dasharray="8 8"/>
+    <text x="956" y="702" text-anchor="middle" class="box-title">FLUX BOX</text>
+    <circle cx="874" cy="620" r="24" fill="#eaf8ff" stroke="#1397e8" stroke-width="3"/>
+    <circle cx="1024" cy="620" r="24" fill="#fff0ed" stroke="#f25a45" stroke-width="3"/>
+    <circle cx="874" cy="764" r="24" fill="#f5edff" stroke="#7f35c8" stroke-width="3"/>
+    <circle cx="1024" cy="764" r="24" fill="#fff0ed" stroke="#f25a45" stroke-width="3"/>
+  </g>
+
+  <!-- C2 vapor return: HX BOX back to Compressor 2 -->
+  <path class="line-case" d="M468 582 V480 H280 V292"/>
+  <path class="line-blue" d="M468 582 V480 H280 V292"/>
+  <text x="302" y="443" class="small">C2 Vapor Return</text>
+
+  <!-- C2 liquid: Compressor 2 to Flux Box, then into HX Box -->
+  <path class="line-case" d="M406 292 V370 H922 V620"/>
+  <path class="line-green" d="M406 292 V370 H922 V620"/>
+  <path class="line-case" d="M922 620 V462 H602 V582"/>
+  <path class="line-green" d="M922 620 V462 H602 V582"/>
+  <text x="548" y="350" class="small">C2 Liquid</text>
+
+  <!-- C1 vapor return: Flux Box back to Compressor 1 -->
+  <path class="line-case" d="M874 620 V490 H1116 V292"/>
+  <path class="line-blue" d="M874 620 V490 H1116 V292"/>
+  <text x="1014" y="458" class="small">C1 Vapor</text>
+  <text x="1014" y="486" class="small">Return</text>
+
+  <!-- C1 liquid: Compressor 1 to Flux Box -->
+  <path class="line-case" d="M1242 292 V792 H1024 V764"/>
+  <path class="line-red" d="M1242 292 V792 H1024 V764"/>
+  <text x="1192" y="560" class="small">C1</text>
+  <text x="1176" y="588" class="small">Liquid</text>
+
+  <!-- C2 liquid bridge: HX BOX to FLUX BOX -->
+  <path class="line-case" d="M468 762 V840 H874 V764"/>
+  <path class="line-purple" d="M468 762 V840 H874 V764"/>
+  <text x="618" y="880" class="small">C2 Liquid Bridge</text>
+
+  <!-- Ethanol process flow through HX BOX -->
+  <path class="line-teal" d="M760 582 H628"/>
+  <text x="682" y="570" class="tiny" fill="#009d91">Ethanol In</text>
+  <path class="line-teal" d="M628 762 H760"/>
+  <text x="682" y="748" class="tiny" fill="#009d91">Ethanol Out</text>
+
+  <g opacity="0.55" stroke="#bdc7cc" stroke-width="2">
+    <path d="M44 400H1492"/>
+    <path d="M120 400V960"/>
+  </g>
+</svg>

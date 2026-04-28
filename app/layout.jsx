@@ -1,25 +1,15 @@
-import Script from 'next/script'
-import './globals.css'
-import SiteHeader from './components/SiteHeader'
-import SiteFooter from './components/SiteFooter'
-import LucideInit from './components/LucideInit'
+import "./globals.css";
 
 export const metadata = {
-  title: 'PermaCool Systems',
-  description: 'Industrial extraction cooling systems by PermaCool.'
-}
+  title: "BLAST 60/45 Ethanol Chiller | PermaCool",
+  description:
+    "Chill 60 gallons of ethanol from room temperature to -40°C in 45 minutes with the PermaCool BLAST 60/45 ethanol chiller."
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
-        <Script src="https://unpkg.com/lucide@latest" strategy="afterInteractive" />
-        <Script src="/analytics.js" strategy="afterInteractive" />
-        <LucideInit />
-        <SiteHeader />
-        <main>{children}</main>
-        <SiteFooter />
-      </body>
+      <body>{children}</body>
     </html>
-  )
+  );
 }

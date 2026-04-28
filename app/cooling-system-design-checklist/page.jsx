@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function Page() {
-  redirect("/ethanol-chilling-systems");
+  redirect("/extraction-cooling-system-design-checklist");
 }
