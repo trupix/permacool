@@ -221,12 +221,6 @@ export default function EthanolChillingSystemsPage() {
           <p className="eyebrow">Direct Refrigerant Ethanol Chilling</p>
           <p className="ecs-series-title">Perma Cool BLAST Ethanol Pre-Chiller Series</p>
           <h1>Flash chill ethanol to -40 °C and keep extraction moving.</h1>
-          <p className="ecs-hero-lede">
-            The Perma Cool BLAST Ethanol Pre-Chiller Series is purpose-built for ethanol extraction labs that need fast,
-            on-demand direct chilling from room temperature to -40 °C. Engineered as a true BLAST chiller from the
-            condensing through the process side, it helps processors increase throughput, reduce LN2 dependency, and
-            optimize their extraction workflow.
-          </p>
           <div className="ecs-series-links" aria-label="BLAST product pages">
             {seriesLinks.map(([label, href]) => (
               <a href={href} key={href}>
@@ -370,14 +364,10 @@ export default function EthanolChillingSystemsPage() {
           </div>
           <div className="ecs-workflow-copy">
             <p>
-              The most persuasive ethanol chiller conversation connects temperature claims to what the buyer actually
-              feels: better throughput, better reuse of chilled ethanol, fewer supply interruptions, and clearer
-              control over extraction rhythm.
-            </p>
-            <p>
-              For operators still relying on consumables or slower legacy chilling, the BLAST lineup creates a cleaner
-              buying frame: direct refrigerant chilling, practical capacity classes, and a system designed around
-              repeatable production cadence.
+              The Perma Cool BLAST Ethanol Pre-Chiller Series is purpose-built for ethanol extraction labs that need
+              fast, on-demand direct chilling from room temperature to -40 °C. Engineered as a true BLAST chiller from
+              the condensing through the process side, it helps processors increase throughput, reduce LN2 dependency,
+              and optimize their extraction workflow.
             </p>
           </div>
         </div>
