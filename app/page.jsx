@@ -36,6 +36,22 @@ const systems = [
     cta: "View BLAST 60/45"
   },
   {
+    title: "BLAST 150/45",
+    body:
+      "Mid-scale production chilling for up to 150-gallon process class applications, with the same direct refrigerant control philosophy and PLC/HMI visibility.",
+    href: "/ethanol-chiller-blast-150",
+    image: "/images/generated/blast60-component-02-flux-box-wall.png",
+    cta: "View BLAST 150/45"
+  },
+  {
+    title: "BLAST 240/45",
+    body:
+      "Large process-class chilling for facilities that need more ethanol capacity, HVAC condenser integration, and a clearer path away from consumable-heavy cooling.",
+    href: "/ethanol-chiller-blast-240",
+    image: "/images/generated/blast60-component-04-condensers.png",
+    cta: "View BLAST 240/45"
+  },
+  {
     title: "Butane Recovery",
     body:
       "A live path for BHO recovery buyers who need better process control, cleaner system planning, and a direct way to talk with PermaCool.",
