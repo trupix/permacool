@@ -1,22 +1,25 @@
 import Image from "next/image";
 import {
   ArrowRight,
+  Beaker,
   CheckCircle2,
   Cpu,
   Fan,
+  FlaskConical,
   Gauge,
+  Layers,
   Mail,
   Phone,
-  RefreshCw,
-  ShieldCheck,
   Snowflake,
+  ThermometerSnowflake,
+  TrendingUp,
   Zap
 } from "lucide-react";
 
 export const metadata = {
-  title: "Ethanol Chilling Systems | Perma Cool",
+  title: "Ethanol Chillers for Extraction Facilities | Perma Cool BLAST Systems",
   description:
-    "Explore the PermaCool BLAST ethanol chiller lineup for direct refrigerant chilling, PLC visibility, and repeatable low-temperature extraction workflows."
+    "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, -40 C operation, reduced LN2 dependence, and commercial extraction throughput."
 };
 
 const navItems = [
@@ -26,28 +29,70 @@ const navItems = [
   ["Contact", "/contact-us"]
 ];
 
+const seriesLinks = [
+  ["BLAST 60/45", "/ethanol-chiller-blast-60"],
+  ["BLAST 150/45", "/ethanol-chiller-blast-150"],
+  ["BLAST 240/45", "/ethanol-chiller-blast-240"]
+];
+
 const performancePoints = [
-  "Target operation around -40°C for extraction-ready process windows.",
-  "PLC + HMI visibility for monitoring and compressor protection.",
-  "HVAC condenser integration for streamlined direct refrigerant architecture.",
-  "Re-chill workflow designed for repeat extraction cycles instead of one-off batches."
+  {
+    icon: ThermometerSnowflake,
+    title: "-40 C operation",
+    body: "Rapid purpose-built hot-to-cold chilling from room temperature to -40 C."
+  },
+  {
+    icon: Beaker,
+    title: "Increase solution saturation",
+    body: "Enables processors to reach biomass-to-ethanol ratios up to 3:1."
+  },
+  {
+    icon: Gauge,
+    title: "Increase speed, accuracy, and efficiency",
+    body: "Re-chill and re-extract at -40 C with repeatable process control."
+  },
+  {
+    icon: TrendingUp,
+    title: "Make more money",
+    body: "Ditch LN2 and dry ice consumables and move cooling spend into planned utility operation."
+  },
+  {
+    icon: Layers,
+    title: "Built to feed multiple centrifuges",
+    body: "Drastically increase your BLAST with a BLAST chiller, then double that with a second centrifuge."
+  },
+  {
+    icon: Snowflake,
+    title: "High pull-down speed",
+    body: "Designed for fast chilling cycles in commercial production environments."
+  },
+  {
+    icon: Cpu,
+    title: "PLC + HMI control",
+    body: "On-screen monitoring, compressor protection, and clearer system visibility."
+  },
+  {
+    icon: Fan,
+    title: "HVAC condenser integration",
+    body: "Efficient direct chilling architecture built to reduce operational overhead."
+  }
 ];
 
 const metrics = [
   {
     label: "Series 01",
-    title: "BLAST™ 60/45",
-    body: "Compact unit sized for 30-gallon centrifuge workflows and rapid room-temp to -40°C pull-down."
+    title: "BLAST 60/45",
+    body: "Compact unit sized for 30-gallon centrifuge workflows and rapid room-temp to -40 C pull-down."
   },
   {
     label: "Series 02",
-    title: "BLAST™ 150/45",
-    body: "Production-ready configuration for up to 150-gallon process class applications."
+    title: "BLAST 150/45",
+    body: "Production-ready configuration for high-throughput ethanol extraction."
   },
   {
     label: "Series 03",
-    title: "BLAST™ 240",
-    body: "Larger process-class option with the same direct refrigerant control philosophy."
+    title: "BLAST 240/45",
+    body: "Large process-class option with the same direct refrigerant control philosophy."
   },
   {
     label: "Commercial Value",
@@ -56,70 +101,106 @@ const metrics = [
   }
 ];
 
-const products = [
+const flowStories = [
   {
-    eyebrow: "Compact Production",
-    title: "BLAST™ 60/45 Ethanol Chiller",
-    image: "/images/generated/blast60-component-01-temperature-sensor.png",
-    href: "/ethanol-chiller-blast-60",
-    copy:
-      "Chills 60 gallons of ethanol from room temperature to -40°C in 45 minutes. Designed as the most compact unit in the current BLAST™ lineup.",
-    meta: ["30-gallon centrifuge workflow", "60-gallon ethanol capacity", "45 minutes to -40°C"],
-    bullets: [
-      "Cascade-style architecture supporting strong low-temperature performance.",
-      "Made for operators moving from small-batch chilling to real production cadence.",
-      "Useful anchor page for component walk-throughs and ROI proof points."
-    ]
+    title: "Operations: keep production moving",
+    body:
+      "The BLAST Ethanol Pre-Chiller Series is engineered for processors who need more than cold ethanol. From room-temperature pull-down to repeat low-temperature re-chills, BLAST systems reduce cooling lag, improve process consistency, and help extraction labs increase throughput with dramatically less overhead."
   },
   {
-    eyebrow: "Mid-Scale Production",
-    title: "BLAST™ 150/45 Ethanol Chiller",
-    image: "/images/generated/blast60-component-02-flux-box-wall.png",
-    copy:
-      "Chills 150 gallons of ethanol from room temperature to -40°C in 45 minutes. Built for up to 150-gallon process class applications.",
-    meta: ["Up to 150-gallon class", "Direct refrigerant architecture", "PLC/HMI operational visibility"],
-    bullets: [
-      "Supports commercial production teams prioritizing throughput consistency.",
-      "Pairs useful product-level claims with system-level education pages.",
-      "Strong candidate for customer stories and lead-time messaging."
-    ]
+    title: "Yield impact: drive more value per run",
+    body:
+      "Built to feed multiple centrifuges, the BLAST series helps processors re-chill and re-run ethanol at temperature while achieving biomass-to-ethanol ratios up to 3:1. The result is a more saturated ethanol solution moving downstream, with the potential to recover up to 3x more crude for every gallon of ethanol evaporated and recovered."
   },
   {
-    eyebrow: "Large Process Class",
-    title: "BLAST™ 240 Ethanol Chiller",
-    image: "/images/generated/blast60-component-04-condensers.png",
-    copy:
-      "Designed for up to 240-gallon process class applications, with target low-temperature operation around -40°C depending on facility configuration.",
-    meta: ["Up to 240-gallon class", "HVAC condenser integration", "Compressor protection logic"],
+    title: "Multi-centrifuge production setups",
+    body:
+      "For facilities planning around multiple centrifuges or expanded extraction capacity, Perma Cool can help scope a BLAST configuration matched to flow rate, utility profile, and uptime requirements.",
     bullets: [
-      "Gives larger facilities a straightforward path to communicate fit and capacity.",
-      "Ideal place to surface install requirements, utility needs, and service access.",
-      "Built to connect buyer questions directly to quote-ready conversations."
+      "Configured around throughput goals",
+      "Supports scaling beyond single-line production",
+      "Built around real process constraints"
     ]
   }
 ];
 
-const switchReasons = [
+const products = [
   {
-    icon: ShieldCheck,
-    title: "Recurring spend shifts from supply chain to utility planning.",
-    body: "Electric chilling reduces dependence on constant LN2 deliveries, storage handling, and supply disruptions."
+    eyebrow: "Compact Production",
+    title: "BLAST 60/45",
+    image: "/images/generated/blast60-component-01-temperature-sensor.png",
+    href: "/ethanol-chiller-blast-60",
+    cta: "View BLAST 60/45",
+    copy:
+      "With over 200 original Legacy ACP-30 units in the field, the BLAST 60/45 is the updated and upgraded evolution of a proven design. Tested, trusted, and built for demanding extraction environments, it has earned its place as a true industry workhorse.",
+    meta: ["60 gallons", "45 minutes", "30-gallon centrifuge workflow"],
+    bullets: [
+      "Flash-chill 60 gallons of room-temperature ethanol down to -40 C in 45 minutes. You can run less.",
+      "Fast pull-down to target low-temp process windows.",
+      "Designed with readily available parts to keep repairs fast and affordable."
+    ]
   },
   {
-    icon: RefreshCw,
-    title: "Re-chill cycles protect cadence after extraction warms the solution.",
-    body: "Operators spend less time improvising between runs and more time keeping production moving."
+    eyebrow: "Mid-Scale Production",
+    title: "BLAST 150/45",
+    image: "/images/generated/blast60-component-02-flux-box-wall.png",
+    href: "/ethanol-chiller-blast-150",
+    cta: "View BLAST 150/45",
+    copy:
+      "A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill performance, and room to support growing production schedules.",
+    meta: ["150-gallon process class", "Direct refrigerant architecture", "PLC/HMI visibility"],
+    bullets: [
+      "Designed for high-throughput ethanol extraction.",
+      "Fast pull-down to target low-temp process windows.",
+      "Designed with readily available parts to keep repairs fast and affordable."
+    ]
   },
   {
-    icon: Cpu,
-    title: "On-screen visibility helps standardize operation across shifts.",
-    body: "PLC/HMI controls make temperature and protection logic easier to understand and repeat."
-  },
-  {
-    icon: Gauge,
-    title: "Direct refrigerant architecture stays legible for technical buyers.",
-    body: "Facilities evaluating upgrades can more easily map performance claims to real plant constraints."
+    eyebrow: "Large Process Class",
+    title: "BLAST 240/45",
+    image: "/images/generated/blast60-component-04-condensers.png",
+    href: "/ethanol-chiller-blast-240",
+    cta: "View BLAST 240/45",
+    copy:
+      "A strong fit for teams that need commercial-scale ethanol chilling with fast pull-down, repeatable re-chill performance, and room to support growing production schedules.",
+    meta: ["240-gallon process class", "HVAC condenser integration", "Compressor protection logic"],
+    bullets: [
+      "Designed for high-throughput ethanol extraction.",
+      "Fast pull-down to target low-temp process windows.",
+      "Designed with readily available parts to keep repairs fast and affordable."
+    ]
   }
+];
+
+const applicationFit = [
+  "Botanical extraction facilities scaling beyond pilot throughput.",
+  "Teams transitioning from LN2-heavy cooling operations.",
+  "Operators prioritizing predictable batch temperature control."
+];
+
+const faqs = [
+  {
+    question: "What temperature range do Perma Cool ethanol chillers target?",
+    answer:
+      "Typical process targets include operation down to approximately -40 C depending on system configuration and facility conditions."
+  },
+  {
+    question: "Why choose direct refrigerant chilling over LN2?",
+    answer:
+      "Direct refrigerant systems can lower recurring consumable costs while delivering stable, repeatable process cooling for extraction lines."
+  },
+  {
+    question: "How quickly can this be deployed?",
+    answer:
+      "Lead times vary by configuration; Perma Cool aligns scope early to reduce procurement friction and commissioning surprises."
+  }
+];
+
+const quoteConfidence = [
+  "Process-fit recommendations based on throughput, temperature target, and utility constraints.",
+  "No generic one-size quote sheets.",
+  "Sized for present demand plus near-term growth.",
+  "Commissioning sequence guidance included."
 ];
 
 export default function EthanolChillingSystemsPage() {
@@ -138,15 +219,24 @@ export default function EthanolChillingSystemsPage() {
         <div className="ecs-hero-overlay" />
         <div className="ecs-hero-content">
           <p className="eyebrow">Direct Refrigerant Ethanol Chilling</p>
-          <h1>BLAST™ pre-chiller systems built for on-demand cold ethanol.</h1>
+          <p className="ecs-series-title">Perma Cool BLAST Ethanol Pre-Chiller Series</p>
+          <h1>Flash chill ethanol to -40 C and keep extraction moving.</h1>
           <p className="ecs-hero-lede">
-            The PermaCool BLAST™ series is designed for labs that need fast pull-down from room temperature to
-            approximately -40°C, repeated re-chill cycles, and a clearer path away from recurring liquid nitrogen
-            spend.
+            The Perma Cool BLAST Ethanol Pre-Chiller Series is purpose-built for ethanol extraction labs that need fast,
+            on-demand direct chilling from room temperature to -40 C. Engineered as a true BLAST chiller from the
+            condensing through the process side, it helps processors increase throughput, reduce LN2 dependency, and
+            optimize their extraction workflow.
           </p>
+          <div className="ecs-series-links" aria-label="BLAST product pages">
+            {seriesLinks.map(([label, href]) => (
+              <a href={href} key={href}>
+                {label}
+              </a>
+            ))}
+          </div>
           <div className="hero-actions">
             <a className="button primary" href="/contact-us">
-              Request lineup guidance
+              Request a custom recommendation
               <ArrowRight size={18} aria-hidden="true" />
             </a>
             <a className="button secondary" href="/direct-refrigerant-vs-ln2">
@@ -160,15 +250,15 @@ export default function EthanolChillingSystemsPage() {
       <section className="ecs-profile">
         <div className="ecs-profile-card">
           <span className="micro-label">Core Performance Profile</span>
-          <h2>What buyers care about before they commit.</h2>
+          <h2>Purpose-built chilling for extraction-ready ethanol.</h2>
           <ul>
-            {performancePoints.map((point, index) => (
-              <li key={point}>
-                {index === 0 ? <Snowflake size={20} /> : null}
-                {index === 1 ? <Cpu size={20} /> : null}
-                {index === 2 ? <Fan size={20} /> : null}
-                {index === 3 ? <RefreshCw size={20} /> : null}
-                <span>{point}</span>
+            {performancePoints.map(({ icon: Icon, title, body }) => (
+              <li key={title}>
+                <Icon size={20} aria-hidden="true" />
+                <span>
+                  <strong>{title}</strong>
+                  {body}
+                </span>
               </li>
             ))}
           </ul>
@@ -187,11 +277,39 @@ export default function EthanolChillingSystemsPage() {
         </div>
       </section>
 
+      <section className="section ecs-flow-section">
+        <div className="section-heading">
+          <p className="eyebrow">Why BLAST Changes Extraction Flow</p>
+          <h2>Cold ethanol on demand, fast enough to keep centrifuges spinning.</h2>
+        </div>
+        <div className="ecs-flow-grid">
+          {flowStories.map((story) => (
+            <article className="ecs-flow-card" key={story.title}>
+              <h3>{story.title}</h3>
+              <p>{story.body}</p>
+              {story.bullets ? (
+                <ul>
+                  {story.bullets.map((bullet) => (
+                    <li key={bullet}>
+                      <CheckCircle2 size={17} aria-hidden="true" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="section ecs-lineup">
         <div className="section-heading">
-          <p className="eyebrow">BLAST™ Lineup</p>
-          <h2>Pick the capacity class that fits today’s workflow and tomorrow’s run rate.</h2>
-          <p>The page is built to support deeper spec tables, component diagrams, and media as the lineup grows.</p>
+          <p className="eyebrow">BLAST Product Lineup</p>
+          <h2>Explore ethanol pre-chiller configurations built around throughput, layout, and workflow.</h2>
+          <p>
+            Perma Cool helps match the system to target temperature, ethanol volume, process cadence, utility and
+            installation planning, and near-term expansion demand.
+          </p>
         </div>
 
         <div className="ecs-product-grid">
@@ -217,11 +335,10 @@ export default function EthanolChillingSystemsPage() {
                     </li>
                   ))}
                 </ul>
-                {product.href ? (
-                  <a className="inline-link" href={product.href}>
-                    View BLAST 60/45 page →
-                  </a>
-                ) : null}
+                <a className="inline-link" href={product.href}>
+                  {product.cta}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </a>
               </div>
             </article>
           ))}
@@ -230,15 +347,14 @@ export default function EthanolChillingSystemsPage() {
 
       <section className="section ecs-advantage">
         <div className="section-heading narrow">
-          <p className="eyebrow">Why Teams Switch</p>
-          <h2>Operational reasons buyers move away from consumable-heavy cooling.</h2>
+          <p className="eyebrow">Application Fit</p>
+          <h2>Built for teams scaling ethanol extraction capacity.</h2>
         </div>
-        <div className="ecs-feature-grid">
-          {switchReasons.map(({ icon: Icon, title, body }) => (
-            <article className="ecs-feature-card" key={title}>
-              <Icon aria-hidden="true" size={24} />
-              <h3>{title}</h3>
-              <p>{body}</p>
+        <div className="ecs-fit-grid">
+          {applicationFit.map((item) => (
+            <article className="ecs-fit-card" key={item}>
+              <FlaskConical size={22} aria-hidden="true" />
+              <p>{item}</p>
             </article>
           ))}
         </div>
@@ -248,33 +364,71 @@ export default function EthanolChillingSystemsPage() {
         <div className="ecs-workflow-inner">
           <div>
             <p className="eyebrow">Workflow Story</p>
-            <h2>Move the page from “cold equipment” to “operational advantage.”</h2>
+            <h2>Move the page from cold equipment to operational advantage.</h2>
           </div>
           <div className="ecs-workflow-copy">
             <p>
-              The most persuasive ethanol chiller pages connect temperature claims to what the buyer actually feels:
-              better throughput, better reuse of chilled ethanol, fewer supply interruptions, and clearer control over
-              extraction rhythm.
+              The most persuasive ethanol chiller conversation connects temperature claims to what the buyer actually
+              feels: better throughput, better reuse of chilled ethanol, fewer supply interruptions, and clearer
+              control over extraction rhythm.
             </p>
             <p>
-              For operators still relying on consumables or slower legacy chilling, the BLAST™ lineup gives the buying
-              conversation a cleaner frame: direct refrigerant chilling, practical capacity classes, and a system
-              designed around repeatable production cadence.
+              For operators still relying on consumables or slower legacy chilling, the BLAST lineup creates a cleaner
+              buying frame: direct refrigerant chilling, practical capacity classes, and a system designed around
+              repeatable production cadence.
             </p>
           </div>
         </div>
       </section>
 
+      <section className="section ecs-faq-section">
+        <div className="section-heading">
+          <p className="eyebrow">Frequently Asked Questions</p>
+          <h2>Answers buyers need before they request pricing.</h2>
+        </div>
+        <div className="ecs-faq-grid">
+          {faqs.map((faq) => (
+            <article className="ecs-faq-card" key={faq.question}>
+              <h3>{faq.question}</h3>
+              <p>{faq.answer}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="ecs-quote-band">
+        <div>
+          <p className="eyebrow">Quote Confidence</p>
+          <h2>Process-fit recommendations based on your throughput, temp target, and utility constraints.</h2>
+        </div>
+        <ul>
+          {quoteConfidence.map((item) => (
+            <li key={item}>
+              <CheckCircle2 size={18} aria-hidden="true" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section className="related-section ecs-related">
         <div>
-          <p className="eyebrow">Next Step</p>
-          <h2>Turn product interest into a better-fit recommendation.</h2>
-          <p>Capture system interest, batch profile, and facility notes before pricing is discussed.</p>
+          <p className="eyebrow">Building Out Ethanol Chilling Capacity?</p>
+          <h2>Get chiller recommendations before the quote conversation gets too generic.</h2>
+          <p>Capture system interest, batch profile, facility notes, and expansion goals before pricing is discussed.</p>
+          <div className="ecs-related-reading">
+            <a href="/direct-refrigerant-vs-ln2">Direct Refrigerant vs LN2</a>
+            <a href="/how-to-reduce-ln2-dependence">How to Reduce LN2 Dependence</a>
+          </div>
         </div>
         <div className="related-actions">
           <a className="button primary" href="/contact-us">
-            Request a quote
+            Request Chiller Pricing
             <ArrowRight size={18} aria-hidden="true" />
+          </a>
+          <a className="button secondary light" href="tel:+17472081001">
+            Call Engineering
+            <Phone size={18} aria-hidden="true" />
           </a>
           <a className="button secondary light" href="/cooling-system-design-checklist">
             Review design checklist
@@ -315,7 +469,7 @@ function Footer() {
     <footer className="site-footer">
       <div>
         <img src="/images/brand/perma-cool.png" alt="PermaCool" />
-        <p>© 2026 Perma Cool Systems Inc.</p>
+        <p>&copy; 2026 Perma Cool Systems Inc.</p>
       </div>
       <div className="footer-actions">
         <a href="tel:+17472081001">

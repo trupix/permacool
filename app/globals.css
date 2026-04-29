@@ -822,6 +822,33 @@ h4 {
   margin-bottom: 1.8rem;
 }
 
+.ecs-series-title {
+  max-width: 680px;
+  margin: -0.2rem 0 1rem;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ecs-series-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0 0 1.5rem;
+}
+
+.ecs-series-links a {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
 .ecs-profile {
   width: min(var(--max), calc(100% - 2rem));
   margin: -5.5rem auto 0;
@@ -880,6 +907,17 @@ h4 {
 .ecs-profile-card li svg {
   color: #78d9ee;
   margin-top: 0.15rem;
+}
+
+.ecs-profile-card ul {
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.ecs-profile-card li strong {
+  display: block;
+  color: #fff;
+  margin-bottom: 0.15rem;
 }
 
 .ecs-metric-band {
@@ -977,6 +1015,77 @@ h4 {
   margin-top: 0.2rem;
 }
 
+.ecs-product-card .inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ecs-flow-section {
+  padding-top: 5rem;
+}
+
+.ecs-flow-grid,
+.ecs-fit-grid,
+.ecs-faq-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.ecs-flow-card,
+.ecs-fit-card,
+.ecs-faq-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.ecs-flow-card {
+  min-height: 360px;
+  padding: 1.35rem;
+}
+
+.ecs-flow-card ul {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ecs-flow-card li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 0.5rem;
+  color: var(--muted);
+}
+
+.ecs-flow-card li svg {
+  color: var(--cyan-dark);
+  margin-top: 0.2rem;
+}
+
+.ecs-fit-card {
+  min-height: 170px;
+  padding: 1.25rem;
+  background:
+    linear-gradient(135deg, rgba(19, 167, 199, 0.09), rgba(145, 200, 62, 0.08)),
+    #fff;
+}
+
+.ecs-fit-card svg {
+  color: var(--cyan-dark);
+  margin-bottom: 1rem;
+}
+
+.ecs-fit-card p {
+  color: var(--graphite);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
 .ecs-advantage {
   width: 100%;
   padding-inline: max(1rem, calc((100% - var(--max)) / 2));
@@ -1003,6 +1112,67 @@ h4 {
 .ecs-feature-card svg {
   color: var(--cyan-dark);
   margin-bottom: 1rem;
+}
+
+.ecs-faq-card {
+  padding: 1.25rem;
+}
+
+.ecs-faq-card h3 {
+  font-size: 1.18rem;
+}
+
+.ecs-quote-band {
+  width: min(var(--max), calc(100% - 2rem));
+  margin: 0 auto 6rem;
+  display: grid;
+  grid-template-columns: 0.75fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.ecs-quote-band h2 {
+  font-size: 2rem;
+}
+
+.ecs-quote-band ul {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ecs-quote-band li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 0.55rem;
+  color: var(--muted);
+}
+
+.ecs-quote-band li svg {
+  color: var(--cyan-dark);
+  margin-top: 0.2rem;
+}
+
+.ecs-related-reading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.ecs-related-reading a {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 900;
 }
 
 .ecs-workflow {
@@ -1595,6 +1765,10 @@ h4 {
   .ecs-metrics,
   .ecs-product-card,
   .ecs-feature-grid,
+  .ecs-flow-grid,
+  .ecs-fit-grid,
+  .ecs-faq-grid,
+  .ecs-quote-band,
   .ecs-workflow-inner,
   .insights-topic-card,
   .insights-stat-strip,
@@ -1617,6 +1791,10 @@ h4 {
 
   .ecs-metrics {
     gap: 1px;
+  }
+
+  .ecs-profile-card ul {
+    grid-template-columns: 1fr;
   }
 
   .ecs-product-media {
@@ -1721,6 +1899,10 @@ h4 {
   .highlight-panel,
   .ecs-profile-card,
   .ecs-product-copy,
+  .ecs-flow-card,
+  .ecs-fit-card,
+  .ecs-faq-card,
+  .ecs-quote-band,
   .ecs-feature-card,
   .insights-topic-card,
   .insight-card-copy,
