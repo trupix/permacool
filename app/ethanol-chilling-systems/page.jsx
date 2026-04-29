@@ -280,7 +280,7 @@ export default function EthanolChillingSystemsPage() {
       <section className="section ecs-flow-section">
         <div className="section-heading">
           <p className="eyebrow">Why BLAST Changes Extraction Flow</p>
-          <h2>Cold ethanol on demand, fast enough to keep centrifuges spinning.</h2>
+          <h2>Chill, Extract, Repeat</h2>
         </div>
         <div className="ecs-flow-grid">
           {flowStories.map((story) => (
