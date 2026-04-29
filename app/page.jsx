@@ -22,7 +22,7 @@ const systems = [
   {
     title: "Ethanol Chilling Systems",
     body:
-      "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around -40 C while reducing LN2 dependency and consumable spend.",
+      "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around -40 °C while reducing LN2 dependency and consumable spend.",
     href: "/ethanol-chilling-systems",
     image: "/images/generated/ethanol-systems-hero.png",
     cta: "Explore Ethanol Chillers"
@@ -30,7 +30,7 @@ const systems = [
   {
     title: "BLAST 60/45",
     body:
-      "A compact cascade ethanol chiller built around the 30-gallon centrifuge workflow, 60 gallons of ethanol capacity, and fast recovery back toward -40 C.",
+      "A compact cascade ethanol chiller built around the 30-gallon centrifuge workflow, 60 gallons of ethanol capacity, and fast recovery back toward -40 °C.",
     href: "/ethanol-chiller-blast-60",
     image: "/images/generated/blast60-hero-most-accurate-outdoor-condensers.png",
     cta: "View BLAST 60/45"
@@ -135,7 +135,7 @@ export default function HomePage() {
       <section className="home-proof-strip" aria-label="PermaCool operating highlights">
         <article>
           <ThermometerSnowflake size={24} aria-hidden="true" />
-          <strong>-40 C</strong>
+          <strong>-40 °C</strong>
           <span>target process window</span>
         </article>
         <article>

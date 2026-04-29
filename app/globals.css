@@ -959,6 +959,27 @@ h4 {
   padding-top: 5.5rem;
 }
 
+.ecs-solution-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 1rem 0 0.85rem;
+}
+
+.ecs-solution-chips span {
+  padding: 0.62rem 0.82rem;
+  border: 1px solid rgba(19, 167, 199, 0.28);
+  border-radius: 999px;
+  color: #062e37;
+  background:
+    linear-gradient(135deg, rgba(19, 167, 199, 0.13), rgba(145, 200, 62, 0.14)),
+    #fff;
+  font-size: 0.86rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 .ecs-product-grid {
   display: grid;
   gap: 1rem;

@@ -85,7 +85,7 @@ export default async function Page({ searchParams }) {
             </label>
             <label>
               Target Process Temperature (C)
-              <input type="text" name="target_temp" placeholder="ex: -40 C" />
+              <input type="text" name="target_temp" placeholder="ex: -40 °C" />
             </label>
             <label>
               Estimated Throughput
