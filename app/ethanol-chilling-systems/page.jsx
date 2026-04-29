@@ -108,7 +108,7 @@ const flowStories = [
       "The BLAST Ethanol Pre-Chiller Series is engineered for processors who need more than cold ethanol. From room-temperature pull-down to repeat low-temperature re-chills, BLAST systems reduce cooling lag, improve process consistency, and help extraction labs increase throughput with dramatically less overhead."
   },
   {
-    title: "Elite workflow unlocked: More throughput",
+    title: "Extract",
     body:
       "Built to feed multiple centrifuges, the BLAST series helps processors re-chill and re-run ethanol at temperature while achieving biomass-to-ethanol ratios up to 3:1. The result is a more saturated ethanol solution moving downstream, with the potential to recover up to 3x more crude for every gallon of ethanol evaporated and recovered."
   },
