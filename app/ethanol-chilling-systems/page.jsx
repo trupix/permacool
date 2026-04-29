@@ -275,6 +275,10 @@ export default function EthanolChillingSystemsPage() {
         <div className="section-heading">
           <p className="eyebrow">Why BLAST Changes Extraction Flow</p>
           <h2>Chill, Extract, Repeat</h2>
+          <a className="button primary ecs-heading-cta" href="/workflow">
+            Workflow Breakdown
+            <ArrowRight size={18} aria-hidden="true" />
+          </a>
         </div>
         <div className="ecs-flow-grid">
           {flowStories.map((story) => (
