@@ -306,12 +306,12 @@ export default function EthanolChillingSystemsPage() {
         <div className="section-heading">
           <p className="eyebrow">BLAST Product Lineup</p>
           <h2>Not just a chiller, full turnkey chilling solutions.</h2>
+          <p>One system, 3 dimensional solution.</p>
           <div className="ecs-solution-chips" aria-label="Turnkey solution areas">
             <span>Process side</span>
             <span>Refrigeration side</span>
             <span>Control side</span>
           </div>
-          <p>One system, 3 dimensional solution.</p>
         </div>
 
         <div className="ecs-product-grid">
