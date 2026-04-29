@@ -103,7 +103,7 @@ const metrics = [
 
 const flowStories = [
   {
-    title: "Operations: keep production moving",
+    title: "Chill",
     body:
       "The BLAST Ethanol Pre-Chiller Series is engineered for processors who need more than cold ethanol. From room-temperature pull-down to repeat low-temperature re-chills, BLAST systems reduce cooling lag, improve process consistency, and help extraction labs increase throughput with dramatically less overhead."
   },
