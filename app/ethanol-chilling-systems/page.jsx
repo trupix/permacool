@@ -105,7 +105,7 @@ const flowStories = [
   {
     title: "Chill",
     body:
-      "The BLAST Ethanol Pre-Chiller Series is engineered for processors who need more than cold ethanol. From room-temperature pull-down to repeat low-temperature re-chills, BLAST systems reduce cooling lag, improve process consistency, and help extraction labs increase throughput with dramatically less overhead."
+      "FAST - Purpose built direct refrigeration for speed. Nothing compares to the Perma Cool BLAST series pulldown speed in the entire extraction industry. Fast, consistent, reliable, electric ethanol chilling without consumables makes you MORE MONEY."
   },
   {
     title: "Extract",
