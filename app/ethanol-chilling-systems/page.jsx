@@ -113,7 +113,7 @@ const flowStories = [
       "Built to feed multiple centrifuges, the BLAST series helps processors re-chill and re-run ethanol at temperature while achieving biomass-to-ethanol ratios up to 3:1. The result is a more saturated ethanol solution moving downstream, with the potential to recover up to 3x more crude for every gallon of ethanol evaporated and recovered."
   },
   {
-    title: "Multi-centrifuge production setups",
+    title: "Repeat",
     body:
       "For facilities planning around multiple centrifuges or expanded extraction capacity, Perma Cool can help scope a BLAST configuration matched to flow rate, utility profile, and uptime requirements.",
     bullets: [
