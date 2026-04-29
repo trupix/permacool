@@ -311,10 +311,7 @@ export default function EthanolChillingSystemsPage() {
             <span>Refrigeration side</span>
             <span>Control side</span>
           </div>
-          <p>
-            Perma Cool helps match the system to target temperature, ethanol volume, process cadence, utility and
-            installation planning, and near-term expansion demand.
-          </p>
+          <p>One system, 3 dimensional solution.</p>
         </div>
 
         <div className="ecs-product-grid">
