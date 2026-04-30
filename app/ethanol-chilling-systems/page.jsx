@@ -110,7 +110,8 @@ const flowStories = [
   {
     title: "Extract",
     body:
-      "Built to feed multiple centrifuges, the BLAST series helps processors re-chill and re-run ethanol at temperature while achieving biomass-to-ethanol ratios up to 3:1. The result is a more saturated ethanol solution moving downstream, with the potential to recover up to 3x more crude for every gallon of ethanol evaporated and recovered."
+      "Built to re-chill, re-run, the same ethanol always at temp. The BLAST series enables processors to achieve biomass-to-ethanol ratios up to 3:1. The result is a more saturated ethanol solution moving downstream, with the potential to recover up to 3x more crude for every gallon of ethanol evaporated.",
+    callout: "Ratio 3lbs biomass : 1gallon ethanol"
   },
   {
     title: "Repeat",
@@ -285,6 +286,7 @@ export default function EthanolChillingSystemsPage() {
             <article className="ecs-flow-card" key={story.title}>
               <h3>{story.title}</h3>
               <p>{story.body}</p>
+              {story.callout ? <strong className="ecs-flow-callout">{story.callout}</strong> : null}
               {story.bullets ? (
                 <ul>
                   {story.bullets.map((bullet) => (

@@ -1096,6 +1096,14 @@ h4 {
   margin-top: 0.2rem;
 }
 
+.ecs-flow-callout {
+  display: block;
+  margin-top: 1.1rem;
+  color: var(--graphite);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  line-height: 1.15;
+}
+
 .ecs-fit-card {
   min-height: 170px;
   padding: 1.25rem;
