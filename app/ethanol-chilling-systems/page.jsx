@@ -105,7 +105,8 @@ const flowStories = [
   {
     title: "Chill",
     body:
-      "FAST - Purpose built direct refrigeration for speed. Nothing compares to the Perma Cool BLAST series pulldown speed in the entire extraction industry. Fast, consistent, reliable, electric ethanol chilling without consumables makes you MORE MONEY."
+      "FAST - Purpose built direct refrigeration for speed. Nothing compares to the Perma Cool BLAST series pulldown speed in the entire extraction industry. Fast, consistent, reliable, electric ethanol chilling without consumables makes you MORE MONEY.",
+    callout: "No consumables = MORE MONEY"
   },
   {
     title: "Extract",
