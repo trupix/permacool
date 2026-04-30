@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 840" role="img" aria-labelledby="title desc">
+  <title id="title">Extract re-chill and re-run ethanol workflow</title>
+  <desc id="desc">A stylized Perma Cool process graphic showing ethanol cycling through chilling, extraction, straining, re-chilling, and recovery.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#061012"/>
+      <stop offset="0.55" stop-color="#102528"/>
+      <stop offset="1" stop-color="#0b1718"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#70e8ff"/>
+      <stop offset="1" stop-color="#058aa9"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b7f05b"/>
+      <stop offset="1" stop-color="#61b322"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#92d83e"/>
+    </marker>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#ffffff" stroke-opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="1440" height="840" fill="url(#bg)"/>
+  <rect width="1440" height="840" fill="url(#grid)"/>
+  <circle cx="1170" cy="140" r="310" fill="#13a7c7" opacity="0.12"/>
+  <circle cx="160" cy="720" r="280" fill="#91c83e" opacity="0.1"/>
+  <path d="M830 124h520c34 0 62 28 62 62v486c0 34-28 62-62 62H830c-34 0-62-28-62-62V186c0-34 28-62 62-62Z" fill="#ffffff" opacity="0.04" stroke="#70e8ff" stroke-opacity="0.16"/>
+  <g transform="translate(895 224) scale(0.66)">
+    <path d="M180 78H245" stroke="#92d83e" stroke-width="12" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.95"/>
+    <path d="M440 78H505" stroke="#92d83e" stroke-width="12" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.95"/>
+    <path d="M625 160C625 260 500 322 386 300" fill="none" stroke="#70e8ff" stroke-width="12" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.92"/>
+    <path d="M260 300C105 318 20 250 38 168" fill="none" stroke="#70e8ff" stroke-width="12" stroke-linecap="round" marker-end="url(#arrow)" opacity="0.84"/>
+    <g filter="url(#shadow)">
+      <rect x="0" y="0" width="190" height="150" rx="24" fill="#f7fbfa"/>
+      <path d="M62 44h66v62H62z" fill="url(#cyan)" opacity="0.9"/>
+      <path d="M64 44c0-24 62-24 62 0" fill="none" stroke="#b7e9f5" stroke-width="9"/>
+      <path d="M73 72c13-10 32 10 45 0" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity="0.8"/>
+      <text x="95" y="128" text-anchor="middle" fill="#102528" font-family="Arial, sans-serif" font-size="19" font-weight="900">CHILL</text>
+    </g>
+    <g transform="translate(260 0)" filter="url(#shadow)">
+      <rect x="0" y="0" width="190" height="150" rx="24" fill="#f7fbfa"/>
+      <rect x="52" y="40" width="86" height="70" rx="16" fill="#d9c4a0"/>
+      <path d="M69 40v70M86 40v70M103 40v70M120 40v70" stroke="#8d744f" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="140" cy="75" r="20" fill="url(#green)"/>
+      <text x="95" y="128" text-anchor="middle" fill="#102528" font-family="Arial, sans-serif" font-size="19" font-weight="900">EXTRACT</text>
+    </g>
+    <g transform="translate(520 0)" filter="url(#shadow)">
+      <rect x="0" y="0" width="190" height="150" rx="24" fill="#f7fbfa"/>
+      <path d="M57 43h76l-15 66H72z" fill="#e9eef0"/>
+      <path d="M69 58h52M65 76h60M62 94h66" stroke="#13a7c7" stroke-width="6" stroke-linecap="round"/>
+      <text x="95" y="128" text-anchor="middle" fill="#102528" font-family="Arial, sans-serif" font-size="19" font-weight="900">STRAIN</text>
+    </g>
+    <g transform="translate(270 250)" filter="url(#shadow)">
+      <rect x="0" y="0" width="240" height="150" rx="24" fill="#f7fbfa"/>
+      <text x="120" y="62" text-anchor="middle" fill="#13a7c7" font-family="Arial, sans-serif" font-size="44" font-weight="900">3:1</text>
+      <text x="120" y="102" text-anchor="middle" fill="#102528" font-family="Arial, sans-serif" font-size="18" font-weight="900">BIOMASS : ETHANOL</text>
+      <path d="M62 118h116" stroke="url(#green)" stroke-width="9" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

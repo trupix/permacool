@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 620" role="img" aria-labelledby="title desc">
+  <title id="title">Extract re-chill and re-run loop</title>
+  <desc id="desc">A loop diagram showing extract, strain, re-chill, re-run, and repeat until the target biomass-to-ethanol ratio is reached.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fcfb"/>
+      <stop offset="1" stop-color="#eaf6f4"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#13a7c7"/>
+    </marker>
+  </defs>
+  <rect width="1280" height="620" rx="32" fill="url(#bg)"/>
+  <path d="M90 190h1090v240H90z" fill="none" stroke="#d7e4e1" stroke-width="2"/>
+  <text x="70" y="82" fill="#052f38" font-family="Arial, sans-serif" font-size="42" font-weight="900">Extract, Re-Chill, Re-Run Loop</text>
+  <text x="72" y="122" fill="#4e6367" font-family="Arial, sans-serif" font-size="21">Keep the same ethanol cold and working before it reaches recovery.</text>
+  <g font-family="Arial, sans-serif" font-weight="900" text-anchor="middle">
+    <g transform="translate(110 215)">
+      <rect width="180" height="150" rx="24" fill="#102528"/>
+      <text x="90" y="70" fill="#70e8ff" font-size="26">1</text>
+      <text x="90" y="108" fill="#fff" font-size="23">Extract</text>
+    </g>
+    <g transform="translate(350 215)">
+      <rect width="180" height="150" rx="24" fill="#ffffff" stroke="#cfe0dd"/>
+      <text x="90" y="70" fill="#13a7c7" font-size="26">2</text>
+      <text x="90" y="108" fill="#102528" font-size="23">Strain</text>
+    </g>
+    <g transform="translate(590 215)">
+      <rect width="180" height="150" rx="24" fill="#ffffff" stroke="#cfe0dd"/>
+      <text x="90" y="70" fill="#13a7c7" font-size="26">3</text>
+      <text x="90" y="108" fill="#102528" font-size="23">Re-Chill</text>
+    </g>
+    <g transform="translate(830 215)">
+      <rect width="180" height="150" rx="24" fill="#ffffff" stroke="#cfe0dd"/>
+      <text x="90" y="70" fill="#13a7c7" font-size="26">4</text>
+      <text x="90" y="108" fill="#102528" font-size="23">Re-Run</text>
+    </g>
+    <g transform="translate(1070 215)">
+      <rect width="150" height="150" rx="24" fill="#91c83e"/>
+      <text x="75" y="68" fill="#0b1718" font-size="26">5</text>
+      <text x="75" y="108" fill="#0b1718" font-size="23">Repeat</text>
+    </g>
+  </g>
+  <g fill="none" stroke="#13a7c7" stroke-width="9" stroke-linecap="round" marker-end="url(#arrow)">
+    <path d="M296 290h35"/>
+    <path d="M536 290h35"/>
+    <path d="M776 290h35"/>
+    <path d="M1016 290h35"/>
+    <path d="M1138 382c-55 94-819 92-898 3"/>
+  </g>
+  <rect x="396" y="455" width="490" height="80" rx="22" fill="#fff" stroke="#d4e2df"/>
+  <text x="641" y="490" text-anchor="middle" fill="#102528" font-family="Arial, sans-serif" font-size="24" font-weight="900">Target: 3 lbs biomass : 1 gallon ethanol</text>
+  <text x="641" y="520" text-anchor="middle" fill="#607479" font-family="Arial, sans-serif" font-size="17">A heavier-loaded gallon does more work before evaporation.</text>
+</svg>

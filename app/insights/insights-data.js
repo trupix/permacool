@@ -24,6 +24,30 @@ import {
 
 export const insightArticles = [
   {
+    slug: "more-output-per-gallon",
+    category: "Workflow Efficiency",
+    title: "More Output Per Gallon: Extract, Re-Chill, and Re-Run Ethanol",
+    shortTitle: "More Output Per Gallon",
+    summary: "How repeated ethanol reuse can move more extracted value through the recovery bottleneck.",
+    description:
+      "Learn how extract, re-chill, and re-run ethanol workflows help processors increase biomass processed per gallon of ethanol.",
+    image: "/images/generated/insights-more-output-per-gallon.svg",
+    href: "/more-output-per-gallon",
+    intro:
+      "Solvent recovery is often the slowest part of cold ethanol extraction. This workflow helps each gallon of ethanol do more work before it reaches recovery.",
+    related: [
+      ["Workflow Breakdown", "/workflow"],
+      ["Explore Ethanol Chillers", "/ethanol-chilling-systems"],
+      ["Reduce LN2 Dependence", "/how-to-reduce-ln2-dependence"]
+    ],
+    cta: {
+      eyebrow: "Want to increase output per gallon?",
+      title: "Build an extract, re-chill, and re-run workflow around reliable ethanol chilling.",
+      primary: ["Talk to Perma Cool", "/contact-us"],
+      secondary: ["Read Workflow Article", "/workflow"]
+    }
+  },
+  {
     slug: "how-to-reduce-ln2-dependence",
     category: "LN2 Transition",
     title: "How to Reduce LN2 Dependence in Extraction Facilities",
@@ -320,7 +344,7 @@ export const insightArticles = [
 export const articlesBySlug = Object.fromEntries(insightArticles.map((article) => [article.slug, article]));
 
 export const insightIndexStats = [
-  ["5", "active knowledge pages"],
+  ["6", "active knowledge pages"],
   ["3", "buyer objections covered"],
   ["1", "clear path to a recommendation"]
 ];
@@ -335,6 +359,7 @@ export const navItems = [
 ];
 
 export const indexTopics = [
+  "Extract, re-chill, and re-run ethanol efficiency",
   "LN2 dependence and operating cost",
   "Extraction workflow and repeat-cycle chilling",
   "Industrial maintenance and uptime planning",

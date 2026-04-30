@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 620" role="img" aria-labelledby="title desc">
+  <title id="title">Evaporation bottleneck comparison</title>
+  <desc id="desc">A comparison showing lightly loaded ethanol versus heavier loaded ethanol entering the evaporator.</desc>
+  <defs>
+    <linearGradient id="dark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1718"/>
+      <stop offset="1" stop-color="#26302e"/>
+    </linearGradient>
+    <linearGradient id="value" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#13a7c7"/>
+      <stop offset="1" stop-color="#91c83e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="620" rx="32" fill="url(#dark)"/>
+  <text x="70" y="82" fill="#fff" font-family="Arial, sans-serif" font-size="42" font-weight="900">Recovery Is the Bottleneck</text>
+  <text x="72" y="122" fill="#c6d6d8" font-family="Arial, sans-serif" font-size="21">The goal is not more ethanol. The goal is more value per gallon sent downstream.</text>
+  <g transform="translate(80 200)">
+    <rect width="500" height="290" rx="28" fill="#ffffff" opacity="0.96"/>
+    <text x="45" y="65" fill="#102528" font-family="Arial, sans-serif" font-size="30" font-weight="900">Single light pass</text>
+    <text x="45" y="105" fill="#607479" font-family="Arial, sans-serif" font-size="19">One gallon still has to be evaporated.</text>
+    <rect x="45" y="155" width="370" height="30" rx="15" fill="#e7efee"/>
+    <rect x="45" y="155" width="125" height="30" rx="15" fill="#13a7c7"/>
+    <text x="45" y="224" fill="#102528" font-family="Arial, sans-serif" font-size="22" font-weight="900">Lightly loaded solvent</text>
+  </g>
+  <g transform="translate(700 200)">
+    <rect width="500" height="290" rx="28" fill="#ffffff" opacity="0.96"/>
+    <text x="45" y="65" fill="#102528" font-family="Arial, sans-serif" font-size="30" font-weight="900">Extract + re-chill + re-run</text>
+    <text x="45" y="105" fill="#607479" font-family="Arial, sans-serif" font-size="19">The same gallon carries more extracted value.</text>
+    <rect x="45" y="155" width="370" height="30" rx="15" fill="#e7efee"/>
+    <rect x="45" y="155" width="335" height="30" rx="15" fill="url(#value)"/>
+    <text x="45" y="224" fill="#102528" font-family="Arial, sans-serif" font-size="22" font-weight="900">Heavier-loaded solvent</text>
+  </g>
+  <path d="M586 340h98" fill="none" stroke="#91c83e" stroke-width="12" stroke-linecap="round"/>
+  <path d="M672 318l34 22-34 22z" fill="#91c83e"/>
+  <text x="640" y="535" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="28" font-weight="900">More extracted value reaches recovery without immediately increasing recovery capacity.</text>
+</svg>
