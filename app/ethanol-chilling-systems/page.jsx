@@ -130,7 +130,7 @@ const products = [
   {
     eyebrow: "Compact Production",
     title: "BLAST 60/45",
-    image: "/images/generated/blast60-component-01-temperature-sensor.png",
+    image: "/images/generated/blast60-flash-chilling.png",
     href: "/ethanol-chiller-blast-60",
     cta: "View BLAST 60/45",
     copy:

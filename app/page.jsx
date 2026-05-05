@@ -32,7 +32,7 @@ const systems = [
     body:
       "A compact cascade ethanol chiller built around the 30-gallon centrifuge workflow, 60 gallons of ethanol capacity, and fast recovery back toward -40 °C.",
     href: "/ethanol-chiller-blast-60",
-    image: "/images/generated/blast60-hero-most-accurate-outdoor-condensers.png",
+    image: "/images/generated/blast60-flash-chilling.png",
     cta: "View BLAST 60/45"
   },
   {
