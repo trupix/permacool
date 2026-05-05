@@ -24,7 +24,7 @@ const systems = [
     body:
       "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around -40 °C while reducing LN2 dependency and consumable spend.",
     href: "/ethanol-chilling-systems",
-    image: "/images/generated/ethanol-systems-hero.png",
+    image: "/images/generated/blast60-hero-most-accurate-outdoor-condensers.png",
     cta: "Explore Ethanol Chillers"
   },
   {
