@@ -13,13 +13,7 @@ import {
   Wrench,
   Zap
 } from "lucide-react";
-
-const navItems = [
-  ["Ethanol Chillers", "/ethanol-chilling-systems"],
-  ["Butane Recovery", "/butane-recovery-system"],
-  ["Insights", "/insights"],
-  ["Contact", "/contact-us"]
-];
+import { InsightsHeader } from "./insights/InsightsShell";
 
 const heroStats = [
   {
@@ -139,7 +133,7 @@ const roiBullets = [
 export default function Blast60Page() {
   return (
     <main className="site-shell">
-      <Header />
+      <InsightsHeader />
       <Hero />
       <section className="stat-rail" aria-label="BLAST 60/45 quick specifications">
         {heroStats.map((item) => (
@@ -161,28 +155,6 @@ export default function Blast60Page() {
       <RelatedCta />
       <Footer />
     </main>
-  );
-}
-
-function Header() {
-  return (
-    <header className="site-header">
-      <a className="brand" href="/">
-        <img className="brand-mark" src="/images/brand/perma-cool.png" alt="" />
-        <img className="brand-wordmark" src="/images/brand/perma-cool-wordmark.png" alt="PermaCool" />
-      </a>
-      <nav aria-label="Primary navigation">
-        {navItems.map(([label, href]) => (
-          <a href={href} key={label}>
-            {label}
-          </a>
-        ))}
-      </nav>
-      <a className="header-phone" href="tel:+17472081001">
-        <Phone size={18} aria-hidden="true" />
-        <span>747.208.1001</span>
-      </a>
-    </header>
   );
 }
 

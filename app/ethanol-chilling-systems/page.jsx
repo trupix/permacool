@@ -15,19 +15,13 @@ import {
   TrendingUp,
   Zap
 } from "lucide-react";
+import { InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   title: "Ethanol Chillers for Extraction Facilities | Perma Cool BLAST Systems",
   description:
     "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, -40 °C operation, reduced LN2 dependence, and commercial extraction throughput."
 };
-
-const navItems = [
-  ["Ethanol Chillers", "/ethanol-chilling-systems"],
-  ["Butane Recovery", "/butane-recovery-system"],
-  ["Insights", "/insights"],
-  ["Contact", "/contact-us"]
-];
 
 const seriesLinks = [
   ["BLAST 60/45", "/ethanol-chiller-blast-60"],
@@ -208,7 +202,7 @@ const quoteConfidence = [
 export default function EthanolChillingSystemsPage() {
   return (
     <main className="site-shell ethanol-systems-page">
-      <Header />
+      <InsightsHeader />
       <section className="ecs-hero">
         <Image
           src="/images/generated/ethanol-systems-hero.png"
@@ -444,28 +438,6 @@ export default function EthanolChillingSystemsPage() {
 
       <Footer />
     </main>
-  );
-}
-
-function Header() {
-  return (
-    <header className="site-header">
-      <a className="brand" href="/">
-        <img className="brand-mark" src="/images/brand/perma-cool.png" alt="" />
-        <img className="brand-wordmark" src="/images/brand/perma-cool-wordmark.png" alt="PermaCool" />
-      </a>
-      <nav aria-label="Primary navigation">
-        {navItems.map(([label, href]) => (
-          <a href={href} key={label}>
-            {label}
-          </a>
-        ))}
-      </nav>
-      <a className="header-phone" href="tel:+17472081001">
-        <Phone size={18} aria-hidden="true" />
-        <span>747.208.1001</span>
-      </a>
-    </header>
   );
 }
 
