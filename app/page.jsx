@@ -40,7 +40,7 @@ const systems = [
     body:
       "Mid-scale production chilling for up to 150-gallon process class applications, with the same direct refrigerant control philosophy and PLC/HMI visibility.",
     href: "/ethanol-chiller-blast-150",
-    image: "/images/generated/blast60-component-02-flux-box-wall.png",
+    image: "/images/generated/blast150-flash-chilling.png",
     cta: "View BLAST 150/45"
   },
   {
@@ -48,7 +48,7 @@ const systems = [
     body:
       "Large process-class chilling for facilities that need more ethanol capacity, HVAC condenser integration, and a clearer path away from consumable-heavy cooling.",
     href: "/ethanol-chiller-blast-240",
-    image: "/images/generated/blast60-component-04-condensers.png",
+    image: "/images/generated/blast240-flash-chilling.png",
     cta: "View BLAST 240/45"
   },
   {

@@ -145,7 +145,7 @@ const products = [
   {
     eyebrow: "Mid-Scale Production",
     title: "BLAST 150/45",
-    image: "/images/generated/blast60-component-02-flux-box-wall.png",
+    image: "/images/generated/blast150-flash-chilling.png",
     href: "/ethanol-chiller-blast-150",
     cta: "View BLAST 150/45",
     copy:
@@ -160,7 +160,7 @@ const products = [
   {
     eyebrow: "Large Process Class",
     title: "BLAST 240/45",
-    image: "/images/generated/blast60-component-04-condensers.png",
+    image: "/images/generated/blast240-flash-chilling.png",
     href: "/ethanol-chiller-blast-240",
     cta: "View BLAST 240/45",
     copy:
@@ -319,7 +319,13 @@ export default function EthanolChillingSystemsPage() {
           {products.map((product) => (
             <article className="ecs-product-card" key={product.title}>
               <div className="ecs-product-media">
-                <Image src={product.image} alt="" width={720} height={520} />
+                <Image
+                  src={product.image}
+                  alt=""
+                  width={720}
+                  height={520}
+                  className={product.image.includes("flash-chilling") ? "ecs-product-spec-image" : undefined}
+                />
               </div>
               <div className="ecs-product-copy">
                 <p className="pill">{product.eyebrow}</p>

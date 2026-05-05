@@ -1060,6 +1060,11 @@ h4 {
   object-fit: cover;
 }
 
+.ecs-product-media img.ecs-product-spec-image {
+  object-fit: contain;
+  padding: 0.35rem;
+}
+
 .ecs-product-copy {
   padding: 1.65rem;
 }
