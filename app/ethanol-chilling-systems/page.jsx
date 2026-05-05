@@ -145,7 +145,7 @@ const products = [
   {
     eyebrow: "Mid-Scale Production",
     title: "BLAST 150/45",
-    image: "/images/generated/blast150-flash-chilling.png",
+    image: "/images/generated/blast150-flash-chilling-purple.png",
     href: "/ethanol-chiller-blast-150",
     cta: "View BLAST 150/45",
     copy:

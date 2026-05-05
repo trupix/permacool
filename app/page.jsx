@@ -40,7 +40,7 @@ const systems = [
     body:
       "Mid-scale production chilling for up to 150-gallon process class applications, with the same direct refrigerant control philosophy and PLC/HMI visibility.",
     href: "/ethanol-chiller-blast-150",
-    image: "/images/generated/blast150-flash-chilling.png",
+    image: "/images/generated/blast150-flash-chilling-purple.png",
     cta: "View BLAST 150/45"
   },
   {
