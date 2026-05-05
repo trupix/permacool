@@ -1,27 +1,10 @@
 import Image from "next/image";
 import { ArrowRight, CheckCircle2, Mail, Phone } from "lucide-react";
+import ResponsiveHeader from "../components/ResponsiveHeader";
 import { navItems } from "./insights-data";
 
 export function InsightsHeader() {
-  return (
-    <header className="site-header">
-      <a className="brand" href="/">
-        <img className="brand-mark" src="/images/brand/perma-cool.png" alt="" />
-        <img className="brand-wordmark" src="/images/brand/perma-cool-wordmark.png" alt="PermaCool" />
-      </a>
-      <nav aria-label="Primary navigation">
-        {navItems.map(([label, href]) => (
-          <a href={href} key={label}>
-            {label}
-          </a>
-        ))}
-      </nav>
-      <a className="header-phone" href="tel:+17472081001">
-        <Phone size={18} aria-hidden="true" />
-        <span>747.208.1001</span>
-      </a>
-    </header>
-  );
+  return <ResponsiveHeader navItems={navItems} />;
 }
 
 export function InsightsFooter() {
