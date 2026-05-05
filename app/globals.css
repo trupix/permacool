@@ -130,6 +130,7 @@ h4 {
 
 .site-header nav a,
 .header-phone,
+.header-contact,
 .footer-actions a {
   display: inline-flex;
   align-items: center;
@@ -147,7 +148,8 @@ h4 {
 }
 
 .site-header nav a:hover,
-.header-phone:hover {
+.header-phone:hover,
+.header-contact:hover {
   color: #fff;
 }
 
@@ -165,12 +167,9 @@ h4 {
   border-radius: 8px;
 }
 
-.mobile-contact-button {
-  display: none;
-  align-items: center;
+.header-contact {
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  padding: 0.72rem 0.9rem;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.08);
@@ -200,7 +199,7 @@ h4 {
   background: rgba(255, 255, 255, 0.14);
 }
 
-.mobile-contact-button:hover {
+.header-contact:hover {
   background: rgba(255, 255, 255, 0.14);
   color: #fff;
 }
@@ -1996,11 +1995,6 @@ h4 {
     flex: 0 0 auto;
   }
 
-  .mobile-contact-button {
-    display: inline-flex;
-    flex: 0 0 auto;
-  }
-
   .mobile-nav-backdrop {
     display: block;
     position: fixed;
@@ -2182,7 +2176,7 @@ h4 {
     gap: 0.45rem;
   }
 
-  .mobile-contact-button,
+  .header-contact,
   .mobile-menu-toggle,
   .header-phone {
     width: 46px;
@@ -2191,6 +2185,10 @@ h4 {
   }
 
   .header-phone span {
+    display: none;
+  }
+
+  .header-contact span {
     display: none;
   }
 

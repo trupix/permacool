@@ -69,8 +69,9 @@ export default function ResponsiveHeader({ navItems = [] }) {
           <Phone size={18} aria-hidden="true" />
           <span>747.208.1001</span>
         </a>
-        <Link className="mobile-contact-button" href="/contact-us" aria-label="Open contact page" onClick={() => setIsOpen(false)}>
+        <Link className="header-contact" href="/contact-us" aria-label="Open contact page" onClick={() => setIsOpen(false)}>
           <Mail size={18} aria-hidden="true" />
+          <span>Contact</span>
         </Link>
         <button
           className="mobile-menu-toggle"
