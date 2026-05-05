@@ -23,7 +23,7 @@ export default function InsightsPage() {
         <div className="insights-hero-overlay" />
         <div className="insights-hero-content">
           <p className="eyebrow">Knowledge Hub</p>
-          <h1>Educational pages that help technical buyers trust the process.</h1>
+          <h1>The Science of Extraction - If you can’t explain it simply, you don’t understand it well enough.</h1>
           <p>
             Use insights content to answer the questions that usually slow a sale down: cost profile, workflow behavior,
             maintenance burden, and what system fit actually means.
