@@ -1994,11 +1994,13 @@ h4 {
     inset: 74px 0 auto;
     z-index: 2;
     display: grid;
+    align-content: start;
     gap: 1rem;
     height: calc(100vh - 74px);
     max-height: calc(100vh - 74px);
-    padding: 1rem;
+    padding: 1rem 1rem calc(7rem + env(safe-area-inset-bottom));
     overflow-y: auto;
+    scroll-padding-bottom: calc(7rem + env(safe-area-inset-bottom));
     border-top: 1px solid rgba(255, 255, 255, 0.14);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     background: #151816;
