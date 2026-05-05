@@ -24,6 +24,31 @@ import {
 
 export const insightArticles = [
   {
+    slug: "owning-an-extraction-lab-means-owning-the-process",
+    category: "Process Ownership",
+    title: "Owning an Extraction Lab Means Owning the Process",
+    shortTitle: "Owning the Process",
+    summary: "Why extraction lab success comes from disciplined process ownership, not equipment alone.",
+    description:
+      "Learn why owning an extraction lab means mastering yield, quality, workflow, recovery, and repeatable process discipline.",
+    image: "/images/generated/insights-process-ownership.svg",
+    heroClass: "process-ownership-hero",
+    href: "/owning-an-extraction-lab-means-owning-the-process",
+    intro:
+      "Owning an extraction lab means mastering the discipline behind the equipment: material prep, temperature control, recovery, SOPs, data, maintenance, and continuous improvement.",
+    related: [
+      ["Workflow", "/workflow"],
+      ["More Output Per Gallon", "/more-output-per-gallon"],
+      ["Explore Ethanol Chillers", "/ethanol-chilling-systems"]
+    ],
+    cta: {
+      eyebrow: "Building a stronger extraction operation?",
+      title: "Design the chilling workflow around the process discipline that makes the lab scale.",
+      primary: ["Talk to PermaCool", "/contact-us"],
+      secondary: ["Explore Ethanol Chillers", "/ethanol-chilling-systems"]
+    }
+  },
+  {
     slug: "more-output-per-gallon",
     category: "Workflow Efficiency",
     title: "More Output Per Gallon: Extract, Re-Chill, and Re-Run Ethanol",
@@ -344,7 +369,7 @@ export const insightArticles = [
 export const articlesBySlug = Object.fromEntries(insightArticles.map((article) => [article.slug, article]));
 
 export const insightIndexStats = [
-  ["6", "active knowledge pages"],
+  ["7", "active knowledge pages"],
   ["3", "buyer objections covered"],
   ["1", "clear path to a recommendation"]
 ];
@@ -359,6 +384,7 @@ export const navItems = [
 ];
 
 export const indexTopics = [
+  "Process ownership as the core extraction lab discipline",
   "Extract, re-chill, and re-run ethanol efficiency",
   "LN2 dependence and operating cost",
   "Extraction workflow and repeat-cycle chilling",

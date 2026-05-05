@@ -1341,6 +1341,16 @@ h4 {
     linear-gradient(0deg, rgba(7, 12, 13, 0.68), transparent 42%);
 }
 
+.process-ownership-hero .insight-article-hero-image {
+  opacity: 0.58;
+}
+
+.process-ownership-hero .insight-article-hero-overlay {
+  background:
+    linear-gradient(90deg, rgba(7, 12, 13, 0.99) 0%, rgba(7, 12, 13, 0.96) 42%, rgba(7, 12, 13, 0.76) 78%, rgba(7, 12, 13, 0.52) 100%),
+    linear-gradient(0deg, rgba(7, 12, 13, 0.76), transparent 48%);
+}
+
 .insights-hero-content,
 .insight-article-hero-content,
 .simple-page-hero {
@@ -1750,6 +1760,230 @@ h4 {
     #fff;
 }
 
+.process-ownership-article {
+  gap: 2.5rem;
+}
+
+.process-ownership-lede,
+.process-ownership-section,
+.process-ownership-map,
+.process-pullquote,
+.process-lab-compare article,
+.process-takeaways article,
+.process-closing {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.process-ownership-lede {
+  display: grid;
+  grid-template-columns: 0.7fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  padding: 2.1rem;
+}
+
+.process-ownership-lede h2,
+.process-ownership-section h2,
+.process-closing h2 {
+  font-size: 2.65rem;
+}
+
+.process-ownership-lede p:last-child,
+.process-ownership-section p:last-child,
+.process-closing p:last-child {
+  margin-bottom: 0;
+}
+
+.process-ownership-figure {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #101615;
+  box-shadow: var(--shadow);
+}
+
+.process-ownership-figure img {
+  width: 100%;
+  height: auto;
+}
+
+.process-ownership-section {
+  display: grid;
+  grid-template-columns: 0.68fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  padding: 2rem;
+}
+
+.process-ownership-map {
+  display: grid;
+  grid-template-columns: 0.82fr repeat(2, 1fr);
+  grid-auto-rows: minmax(84px, auto);
+  gap: 1rem;
+  padding: 1.25rem;
+  color: #fff;
+  background:
+    radial-gradient(circle at 20% 12%, rgba(19, 167, 199, 0.28), transparent 26rem),
+    radial-gradient(circle at 86% 80%, rgba(145, 200, 62, 0.24), transparent 24rem),
+    #151816;
+}
+
+.process-map-center {
+  grid-row: span 2;
+  display: grid;
+  place-content: center;
+  min-height: 220px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  text-align: center;
+}
+
+.process-map-center span {
+  color: #7edff0;
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.process-map-center strong {
+  color: #fff;
+  font-size: 2.15rem;
+  line-height: 1;
+}
+
+.process-map-chip {
+  display: grid;
+  place-items: center;
+  min-height: 84px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 900;
+  text-align: center;
+}
+
+.process-pullquote {
+  margin: 0;
+  padding: 2.4rem;
+  color: #fff;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(19, 167, 199, 0.3), transparent 24rem),
+    linear-gradient(135deg, #151816 0%, #28302d 100%);
+}
+
+.process-pullquote p {
+  max-width: 880px;
+  margin: 0;
+  color: #fff;
+  font-size: 2.3rem;
+  font-weight: 900;
+  line-height: 1.06;
+}
+
+.process-lab-compare {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.process-lab-compare article {
+  padding: 1.5rem;
+}
+
+.process-lab-compare h3 {
+  min-height: 3.2rem;
+  color: var(--graphite);
+}
+
+.process-lab-compare ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.process-lab-compare li {
+  position: relative;
+  padding-left: 1.25rem;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.process-lab-compare li::before {
+  position: absolute;
+  top: 0.63rem;
+  left: 0;
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 50%;
+  background: var(--cyan-dark);
+  content: "";
+}
+
+.process-ownership-dark {
+  color: #fff;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(145, 200, 62, 0.2), transparent 24rem),
+    var(--graphite);
+}
+
+.process-ownership-dark h2,
+.process-ownership-dark p {
+  color: #fff;
+}
+
+.process-ownership-dark div:last-child p {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.process-takeaways {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.process-takeaways article {
+  padding: 1.35rem;
+}
+
+.process-takeaways svg {
+  color: var(--cyan-dark);
+  margin-bottom: 0.9rem;
+}
+
+.process-takeaways h3 {
+  font-size: 1.18rem;
+}
+
+.process-takeaways p {
+  margin-bottom: 0;
+}
+
+.process-closing {
+  padding: 2.4rem;
+  background:
+    linear-gradient(135deg, rgba(19, 167, 199, 0.11), rgba(145, 200, 62, 0.12)),
+    #fff;
+}
+
+.process-closing p {
+  max-width: 840px;
+  font-size: 1.12rem;
+}
+
+.process-closing h2 {
+  max-width: 980px;
+  margin-bottom: 0;
+}
+
 .simple-page {
   min-height: 100vh;
 }
@@ -2121,6 +2355,11 @@ h4 {
   .more-output-strainer,
   .more-output-highlights,
   .more-output-workflow-link,
+  .process-ownership-lede,
+  .process-ownership-section,
+  .process-ownership-map,
+  .process-lab-compare,
+  .process-takeaways,
   .contact-hero,
   .contact-trust-strip {
     grid-template-columns: 1fr;
@@ -2145,6 +2384,14 @@ h4 {
   .insight-card:first-child,
   .insight-card:nth-child(2) {
     grid-column: span 1;
+  }
+
+  .process-map-center {
+    grid-row: auto;
+  }
+
+  .process-lab-compare h3 {
+    min-height: 0;
   }
 }
 
@@ -2213,6 +2460,17 @@ h4 {
     padding: 7.5rem 1rem 5rem;
   }
 
+  .process-ownership-hero .insight-article-hero-image {
+    opacity: 0.42;
+    object-position: 58% center;
+  }
+
+  .process-ownership-hero .insight-article-hero-overlay {
+    background:
+      linear-gradient(90deg, rgba(7, 12, 13, 0.99), rgba(7, 12, 13, 0.9)),
+      linear-gradient(0deg, rgba(7, 12, 13, 0.78), transparent 46%);
+  }
+
   .hero-overlay {
     background:
       linear-gradient(90deg, rgba(11, 17, 18, 0.95), rgba(11, 17, 18, 0.66)),
@@ -2276,8 +2534,29 @@ h4 {
   .more-output-strainer,
   .more-output-note,
   .more-output-workflow-link,
+  .process-ownership-lede,
+  .process-ownership-section,
+  .process-ownership-map,
+  .process-pullquote,
+  .process-lab-compare article,
+  .process-takeaways article,
+  .process-closing,
   .site-footer {
     padding: 1.2rem;
+  }
+
+  .process-ownership-lede h2,
+  .process-ownership-section h2,
+  .process-closing h2 {
+    font-size: 2rem;
+  }
+
+  .process-pullquote p {
+    font-size: 1.8rem;
+  }
+
+  .process-map-center {
+    min-height: 180px;
   }
 
   .ecs-profile {

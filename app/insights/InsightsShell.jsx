@@ -30,7 +30,7 @@ export function InsightsFooter() {
 
 export function ArticleHero({ article }) {
   return (
-    <section className="insight-article-hero">
+    <section className={`insight-article-hero ${article.heroClass || ""}`}>
       <Image src={article.image} alt="" fill priority className="insight-article-hero-image" sizes="100vw" />
       <div className="insight-article-hero-overlay" />
       <div className="insight-article-hero-content">

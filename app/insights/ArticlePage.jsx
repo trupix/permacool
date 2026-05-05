@@ -23,6 +23,47 @@ const moreOutputHighlights = [
   "Better throughput through a common recovery bottleneck."
 ];
 
+const processOwnershipDrivers = [
+  "Material preparation",
+  "Run management",
+  "Temperature control",
+  "Solvent recovery",
+  "Throughput improvement",
+  "Loss reduction",
+  "Quality protection",
+  "Repeatable SOPs"
+];
+
+const processLabComparison = [
+  {
+    title: "Lab A: Equipment without process discipline",
+    points: ["Bottlenecks appear late", "Output changes batch to batch", "Troubleshooting becomes the operating rhythm"]
+  },
+  {
+    title: "Lab B: Equipment guided by process knowledge",
+    points: ["Constraints are measured", "Output becomes predictable", "Scaling has a controlled path forward"]
+  }
+];
+
+const processTakeaways = [
+  {
+    title: "Process is the business",
+    body: "The lab creates value through operating knowledge, not equipment ownership alone."
+  },
+  {
+    title: "Knowledge compounds",
+    body: "A few points of yield, faster recovery, and fewer failed batches become a durable advantage."
+  },
+  {
+    title: "Scaling is control",
+    body: "More volume only helps when the process can repeat quality with less waste and downtime."
+  },
+  {
+    title: "Machines need operators",
+    body: "Equipment becomes productive when trained people, SOPs, maintenance, and data make it reliable."
+  }
+];
+
 export function StandardArticlePage({ article }) {
   return (
     <main className="site-shell insight-article-page">
@@ -202,6 +243,186 @@ export function MoreOutputPerGallonArticlePage({ article }) {
             Read the Workflow Article
             <ArrowRight size={18} aria-hidden="true" />
           </a>
+        </section>
+
+        <RelatedReading links={article.related} />
+      </section>
+
+      <InsightCta cta={article.cta} />
+      <InsightsFooter />
+    </main>
+  );
+}
+
+export function ProcessOwnershipArticlePage({ article }) {
+  return (
+    <main className="site-shell insight-article-page">
+      <InsightsHeader />
+      <ArticleHero article={article} />
+
+      <section className="section insight-article-body process-ownership-article">
+        <article className="process-ownership-lede">
+          <div>
+            <p className="eyebrow">Core Idea</p>
+            <h2>The extraction process is the business.</h2>
+          </div>
+          <div>
+            <p>A lot of people misunderstand what it means to own an extraction lab.</p>
+            <p>
+              From the outside, it can look simple: buy extraction equipment, put it in a compliant lab, run material
+              through the machine, make oil, sell the product. That version of the business sounds almost automatic, as
+              if the equipment itself is the company.
+            </p>
+            <p>But that is not how real extraction works.</p>
+          </div>
+        </article>
+
+        <figure className="process-ownership-figure">
+          <img src="/images/generated/insights-process-ownership.svg" alt="Process ownership operating discipline visual" />
+        </figure>
+
+        <section className="process-ownership-section">
+          <div>
+            <p className="eyebrow">Where Value Lives</p>
+            <h2>Real value is created in daily operation.</h2>
+          </div>
+          <div>
+            <p>
+              The equipment matters, of course. The facility matters. Compliance matters. But none of those things
+              create a successful operation by themselves.
+            </p>
+            <p>
+              The real value is created in how the lab is operated every day: how material is prepared, how runs are
+              managed, how temperature is controlled, how solvent is recovered, how throughput is improved, how losses
+              are reduced, how quality is protected, and how repeatable the entire process becomes.
+            </p>
+            <p>That is where the business actually lives.</p>
+          </div>
+        </section>
+
+        <section className="process-ownership-map" aria-label="Extraction process ownership operating areas">
+          <div className="process-map-center">
+            <span>Operating</span>
+            <strong>Discipline</strong>
+          </div>
+          {processOwnershipDrivers.map((driver) => (
+            <span className="process-map-chip" key={driver}>
+              {driver}
+            </span>
+          ))}
+        </section>
+
+        <section className="process-ownership-section">
+          <div>
+            <p className="eyebrow">Compounding Advantage</p>
+            <h2>Small improvements inside the process become major advantages.</h2>
+          </div>
+          <div>
+            <p>
+              Owning an extraction lab means mastering the discipline of extraction itself. It means understanding every
+              detail that affects yield, quality, consistency, labor, downtime, recovery speed, energy use, and
+              scalability.
+            </p>
+            <p>
+              Small improvements inside the process can become major advantages over time. A few percentage points of
+              better yield, a faster recovery cycle, cleaner workflow, fewer failed batches, or more consistent output
+              can be the difference between a lab that survives and a lab that leads its market.
+            </p>
+          </div>
+        </section>
+
+        <blockquote className="process-pullquote">
+          <p>Extraction is not a button you press. It is a system you build.</p>
+        </blockquote>
+
+        <section className="process-ownership-section">
+          <div>
+            <p className="eyebrow">The Competitive Gap</p>
+            <h2>Two labs can buy similar equipment and get very different results.</h2>
+          </div>
+          <div>
+            <p>This is also where competition happens.</p>
+            <p>
+              Two companies can buy similar equipment and build similar rooms, but they will not get the same results.
+              One lab may struggle with bottlenecks, inconsistent product, and constant troubleshooting. Another may run
+              with discipline, predictable output, and a clear path to higher volume.
+            </p>
+            <p>The difference is not just the hardware. The difference is the operating knowledge behind the hardware.</p>
+          </div>
+        </section>
+
+        <section className="process-lab-compare" aria-label="Extraction lab operating comparison">
+          {processLabComparison.map((lab) => (
+            <article key={lab.title}>
+              <h3>{lab.title}</h3>
+              <ul>
+                {lab.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </section>
+
+        <section className="process-ownership-section">
+          <div>
+            <p className="eyebrow">The Restaurant Comparison</p>
+            <h2>The equipment is the kitchen. The process is the cuisine.</h2>
+          </div>
+          <div>
+            <p>A good comparison is a restaurant.</p>
+            <p>
+              Nobody opens a restaurant, buys the most expensive kitchen equipment, and assumes the food will cook
+              itself. A great kitchen needs more than ovens, ranges, refrigerators, and prep tables. It needs a chef who
+              understands the menu, ingredients, timing, technique, consistency, and presentation. It needs a trained
+              team that can execute that standard every day, even under pressure.
+            </p>
+            <p>An extraction lab is no different.</p>
+            <p>
+              The equipment is the kitchen. The process is the cuisine. The operators, managers, and technical leaders
+              are the people who turn raw inputs into a high-quality, repeatable product. Without that expertise, even
+              the best equipment becomes underused, misused, or wasted.
+            </p>
+          </div>
+        </section>
+
+        <section className="process-ownership-section process-ownership-dark">
+          <div>
+            <p className="eyebrow">Scaling Is Process Control</p>
+            <h2>Scaling is not just buying a bigger machine.</h2>
+          </div>
+          <div>
+            <p>
+              The labs that succeed long term are the ones that stop thinking of extraction as a simple production step
+              and start treating it as the core business discipline.
+            </p>
+            <p>
+              They know that scaling is not just buying a bigger machine. Scaling means building a process that can
+              handle more volume without losing control. It means creating systems that produce the same high-quality
+              result again and again, with less waste, less downtime, and more confidence.
+            </p>
+            <p>That is what separates serious operators from everyone else.</p>
+          </div>
+        </section>
+
+        <div className="process-takeaways">
+          {processTakeaways.map((item) => (
+            <article key={item.title}>
+              <CheckCircle2 size={22} aria-hidden="true" />
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <section className="process-closing">
+          <p>
+            The future of extraction will not belong only to the companies with the most expensive equipment. It will
+            belong to the companies that understand the process better, execute it more consistently, and keep improving
+            it over time.
+          </p>
+          <p>Owning an extraction lab is not just owning machines.</p>
+          <h2>It is owning the craft, the system, and the discipline of extraction. That is the business.</h2>
         </section>
 
         <RelatedReading links={article.related} />
