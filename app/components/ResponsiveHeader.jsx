@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowRight, Menu, Phone, X } from "lucide-react";
+import { ArrowRight, Mail, Menu, Phone, X } from "lucide-react";
 
 const mobileProductItems = [
   ["Ethanol Chillers", "/ethanol-chilling-systems"],
@@ -69,6 +69,9 @@ export default function ResponsiveHeader({ navItems = [] }) {
           <Phone size={18} aria-hidden="true" />
           <span>747.208.1001</span>
         </a>
+        <Link className="mobile-contact-button" href="/contact-us" aria-label="Open contact page" onClick={() => setIsOpen(false)}>
+          <Mail size={18} aria-hidden="true" />
+        </Link>
         <button
           className="mobile-menu-toggle"
           type="button"
