@@ -25,8 +25,10 @@ export default function InsightsPage() {
           <p className="eyebrow">Knowledge Hub</p>
           <h1>The Science of Extraction - If you can’t explain it simply, you don’t understand it well enough.</h1>
           <p>
-            Use insights content to answer the questions that usually slow a sale down: cost profile, workflow behavior,
-            maintenance burden, and what system fit actually means.
+            Owning and operating an extraction lab means mastering the business of extraction itself. Long-term
+            competitiveness depends on understanding every detail of the process, continuously improving efficiency, and
+            building systems that can scale reliably. The labs that succeed are the ones that treat extraction not just
+            as a service, but as a discipline to be refined, optimized, and executed at the highest level.
           </p>
           <div className="hero-actions">
             <a className="button primary" href="/direct-refrigerant-vs-ln2">
