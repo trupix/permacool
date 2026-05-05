@@ -145,8 +145,8 @@ export default function HomePage() {
         </article>
         <article>
           <BadgeDollarSign size={24} aria-hidden="true" />
-          <strong>LN2</strong>
-          <span>dependency reduction</span>
+          <strong>LN2 + DRY ICE</strong>
+          <span>Consumable Elimination</span>
         </article>
       </section>
 
