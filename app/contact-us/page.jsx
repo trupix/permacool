@@ -38,7 +38,7 @@ export default async function Page({ searchParams }) {
           <div className="contact-form-head">
             <ClipboardList size={24} aria-hidden="true" />
             <div>
-              <h2>Project details</h2>
+              <h2>Contact - Perma Cool</h2>
               <p>Required fields are name and email. Everything else helps us qualify faster.</p>
             </div>
           </div>
