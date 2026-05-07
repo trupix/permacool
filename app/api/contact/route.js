@@ -4,7 +4,7 @@ import { Resend } from 'resend'
 export async function POST(req) {
   try {
     const resendKey = process.env.RESEND_API_KEY
-    const toEmail = process.env.CONTACT_FORM_TO || 'david@perma.cool'
+    const toEmail = 'david@perma.cool'
     const fromEmail = process.env.CONTACT_FORM_FROM || 'PermaCool Contact <onboarding@resend.dev>'
 
     if (!resendKey) {
