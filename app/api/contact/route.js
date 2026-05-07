@@ -56,7 +56,7 @@ export async function POST(req) {
       <p>${(payload.message || '(none)').replace(/\n/g, '<br/>')}</p>
     `
 
-    await resend.emails.send({
+    const sendResult = await resend.emails.send({
       from: fromEmail,
       to: [toEmail],
       replyTo: payload.email || undefined,
@@ -64,6 +64,13 @@ export async function POST(req) {
       text,
       html
     })
+
+    if (sendResult.error) {
+      console.error('Resend email send failed:', sendResult.error)
+      return NextResponse.redirect(new URL('/contact-us?error=submit_failed', req.url), 303)
+    }
+
+    console.log('Contact form email sent:', sendResult.data?.id)
 
     return NextResponse.redirect(new URL('/thank-you', req.url), 303)
   } catch (error) {
