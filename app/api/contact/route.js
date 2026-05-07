@@ -5,7 +5,7 @@ export async function POST(req) {
   try {
     const resendKey = process.env.RESEND_API_KEY
     const toEmail = 'david@perma.cool'
-    const fromEmail = process.env.CONTACT_FORM_FROM || 'PermaCool Contact <onboarding@resend.dev>'
+    const fromEmail = 'david@perma.cool'
 
     if (!resendKey) {
       return NextResponse.json({ error: 'Missing RESEND_API_KEY' }, { status: 500 })
