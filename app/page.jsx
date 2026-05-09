@@ -114,7 +114,7 @@ export default function HomePage() {
         <div className="home-hero-overlay" />
         <div className="home-hero-content">
           <p className="eyebrow">Industrial Extraction Cooling</p>
-          <h1>Ethanol chillers and butane recovery systems engineered for production facilities.</h1>
+          <h1>Purpose built chillers for botanical plant extraction</h1>
           <p>
             PermaCool systems are designed for extraction teams that need fast pull-down times, stable low-temperature
             operation, and lower recurring costs than liquid nitrogen workflows.
