@@ -116,8 +116,8 @@ export default function HomePage() {
           <p className="eyebrow">Industrial Extraction Cooling</p>
           <h1>Purpose built chillers for botanical plant extraction</h1>
           <p>
-            PermaCool systems are designed for extraction teams that need fast pull-down times, stable low-temperature
-            operation, and lower recurring costs than liquid nitrogen workflows.
+            Perma Cool systems are full turnkey chilling solutions for extraction labs looking to make more money,
+            eliminate bottlenecks and outperform the competition.
           </p>
           <div className="hero-actions">
             <a className="button primary" href="/ethanol-chilling-systems">
