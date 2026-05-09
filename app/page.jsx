@@ -157,7 +157,7 @@ export default function HomePage() {
       <section className="section home-systems-section">
         <div className="section-heading">
           <p className="eyebrow">Ethanol Extraction Chilling Systems</p>
-          <h2>Start with the cooling path that fits the production problem.</h2>
+          <h2>Ethanol extration pre-chiller systems for distilate production</h2>
         </div>
         <div className="home-system-grid">
           {systems.map((system) => (
