@@ -120,16 +120,14 @@ export default function HomePage() {
             eliminate bottlenecks and outperform the competition.
           </p>
           <div className="hero-actions">
-            <div className="hero-product-actions">
-              <a className="button primary" href="/ethanol-chilling-systems">
-                Explore Ethanol Chillers
-                <ArrowRight size={18} aria-hidden="true" />
-              </a>
-              <a className="button butane" href="/butane-recovery-system">
-                Explore butane recovery
-                <ArrowRight size={18} aria-hidden="true" />
-              </a>
-            </div>
+            <a className="button primary" href="/ethanol-chilling-systems">
+              Explore Ethanol Chillers
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+            <a className="button butane" href="/butane-recovery-system">
+              Explore Butane Recovery
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
             <a className="button secondary" href="/contact-us">
               Request a Quote
               <ArrowRight size={18} aria-hidden="true" />

@@ -265,12 +265,6 @@ h4 {
   align-items: flex-start;
 }
 
-.hero-product-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
 .button {
   display: inline-flex;
   min-height: 48px;
@@ -281,10 +275,6 @@ h4 {
   padding: 0.82rem 1rem;
   font-weight: 800;
   transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
-}
-
-.hero-product-actions .button {
-  width: 100%;
 }
 
 .button:hover {
