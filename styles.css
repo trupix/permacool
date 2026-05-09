@@ -46,6 +46,11 @@ h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin: .3rem 0 1rem;
   border-radius: 12px;
   padding: 1.2rem;
 }
+.butane-section .card {
+  border-color: rgba(214, 163, 46, .65);
+  box-shadow: 0 0 0 1px rgba(214, 163, 46, .18);
+}
+.butane-section h2 { color: var(--butane-gold); }
 .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.2rem; }
 .btn {
   display: inline-block;

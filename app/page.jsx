@@ -50,16 +50,17 @@ const systems = [
     href: "/ethanol-chiller-blast-240",
     image: "/images/generated/blast240-flash-chilling.png",
     cta: "View BLAST 240/45"
-  },
-  {
-    title: "Butane Recovery",
-    body:
-      "A live path for BHO recovery buyers who need better process control, cleaner system planning, and a direct way to talk with PermaCool.",
-    href: "/butane-recovery-system",
-    image: "/images/generated/insights-direct-refrigerant-vs-ln2.png",
-    cta: "Learn More"
   }
 ];
+
+const butaneRecovery = {
+  title: "Butane Recovery",
+  body:
+    "A live path for BHO recovery buyers who need better process control, cleaner system planning, and a direct way to talk with PermaCool.",
+  href: "/butane-recovery-system",
+  image: "/images/generated/insights-direct-refrigerant-vs-ln2.png",
+  cta: "Explore Butane Recovery"
+};
 
 const processSteps = [
   {
@@ -175,6 +176,23 @@ export default function HomePage() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="home-butane-section" aria-labelledby="home-butane-heading">
+        <div className="home-butane-inner">
+          <a className="home-butane-media" href={butaneRecovery.href} aria-label={butaneRecovery.title}>
+            <Image src={butaneRecovery.image} alt="" width={720} height={440} />
+          </a>
+          <div className="home-butane-copy">
+            <p className="eyebrow">Butane Recovery</p>
+            <h2 id="home-butane-heading">Butane recovery systems for BHO production support.</h2>
+            <p>{butaneRecovery.body}</p>
+            <a className="button butane" href={butaneRecovery.href}>
+              {butaneRecovery.cta}
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          </div>
         </div>
       </section>
 

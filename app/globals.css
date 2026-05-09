@@ -743,6 +743,57 @@ h4 {
   gap: 0.35rem;
 }
 
+.home-butane-section {
+  padding: 6rem max(1rem, calc((100% - var(--max)) / 2));
+  background:
+    linear-gradient(90deg, rgba(214, 163, 46, 0.18), transparent 58%),
+    linear-gradient(135deg, #17130a 0%, #2b2415 100%);
+}
+
+.home-butane-inner {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.home-butane-media {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border: 1px solid rgba(214, 163, 46, 0.38);
+  border-radius: 14px;
+  background: #120f08;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+}
+
+.home-butane-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-butane-copy {
+  max-width: 650px;
+}
+
+.home-butane-copy .eyebrow {
+  color: var(--butane-gold);
+}
+
+.home-butane-copy h2,
+.home-butane-copy p {
+  color: #fff;
+}
+
+.home-butane-copy p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.home-butane-copy .button {
+  margin-top: 0.4rem;
+}
+
 .home-process-section {
   padding: 6rem max(1rem, calc((100% - var(--max)) / 2));
   color: #fff;
@@ -2595,6 +2646,7 @@ h4 {
 @media (max-width: 980px) {
   .home-proof-strip,
   .home-system-grid,
+  .home-butane-inner,
   .home-process-grid,
   .home-switch-grid,
   .home-ln2-card {
@@ -2641,6 +2693,11 @@ h4 {
   }
 
   .home-process-section {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+
+  .home-butane-section {
     padding-top: 4.5rem;
     padding-bottom: 4.5rem;
   }
