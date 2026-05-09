@@ -8,6 +8,7 @@
   --cyan: #13a7c7;
   --cyan-dark: #087992;
   --lime: #91c83e;
+  --butane-gold: #d6a32e;
   --graphite: #252a28;
   --graphite-2: #373d3a;
   --shadow: 0 18px 50px rgba(19, 44, 48, 0.12);
@@ -260,6 +261,16 @@ h4 {
   gap: 0.8rem;
 }
 
+.hero-actions {
+  align-items: flex-start;
+}
+
+.hero-product-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
 .button {
   display: inline-flex;
   min-height: 48px;
@@ -272,6 +283,10 @@ h4 {
   transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
+.hero-product-actions .button {
+  width: 100%;
+}
+
 .button:hover {
   transform: translateY(-2px);
 }
@@ -279,6 +294,12 @@ h4 {
 .button.primary {
   background: var(--lime);
   color: #10150f;
+}
+
+.button.butane {
+  background: var(--butane-gold);
+  color: #211705;
+  box-shadow: 0 14px 34px rgba(214, 163, 46, 0.28);
 }
 
 .button.secondary {
