@@ -39,7 +39,7 @@ export default async function Page({ searchParams }) {
             <ClipboardList size={24} aria-hidden="true" />
             <div>
               <h2>Contact - Perma Cool</h2>
-              <p>Required fields are name and email. Everything else helps us qualify faster.</p>
+              <p>We will get back to you right away - don't hesitate to call us</p>
             </div>
           </div>
 
