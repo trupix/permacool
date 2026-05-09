@@ -18,7 +18,16 @@ export const metadata = {
     "PermaCool builds industrial ethanol chilling systems and butane recovery solutions for extraction labs."
 };
 
-const systems = [
+const ethanolOverview = {
+  title: "Ethanol Chilling Systems",
+  body:
+    "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around -40 Â°C while reducing LN2 dependency and consumable spend.",
+  href: "/ethanol-chilling-systems",
+  image: "/images/generated/blast60-hero-most-accurate-outdoor-condensers.png",
+  cta: "Explore Ethanol Chillers"
+};
+
+const blastSystems = [
   {
     title: "Ethanol Chilling Systems",
     body:
@@ -51,7 +60,7 @@ const systems = [
     image: "/images/generated/blast240-flash-chilling.png",
     cta: "View BLAST 240/45"
   }
-];
+].filter((system) => system.title !== "Ethanol Chilling Systems");
 
 const butaneRecovery = {
   title: "Butane Recovery",
@@ -160,22 +169,44 @@ export default function HomePage() {
           <p className="eyebrow">Ethanol Extraction Chilling Systems</p>
           <h2>Ethanol extration pre-chiller systems for distilate production</h2>
         </div>
-        <div className="home-system-grid">
-          {systems.map((system) => (
-            <article className="home-system-card" key={system.title}>
-              <a className="home-system-media" href={system.href} aria-label={system.title}>
-                <Image src={system.image} alt="" width={720} height={440} />
+        <div className="home-ethanol-layout">
+          <article className="home-ethanol-overview">
+            <a className="home-ethanol-overview-media" href={ethanolOverview.href} aria-label={ethanolOverview.title}>
+              <Image src={ethanolOverview.image} alt="" width={900} height={540} />
+            </a>
+            <div className="home-ethanol-overview-copy">
+              <p className="eyebrow">Category Overview</p>
+              <h3>{ethanolOverview.title}</h3>
+              <p>{ethanolOverview.body}</p>
+              <a className="button primary" href={ethanolOverview.href}>
+                {ethanolOverview.cta}
+                <ArrowRight size={18} aria-hidden="true" />
               </a>
-              <div className="home-system-copy">
-                <h3>{system.title}</h3>
-                <p>{system.body}</p>
-                <a className="inline-link" href={system.href}>
-                  {system.cta}
-                  <ArrowRight size={16} aria-hidden="true" />
-                </a>
-              </div>
-            </article>
-          ))}
+            </div>
+          </article>
+          <div className="home-blast-lineup">
+            <div className="home-blast-heading">
+              <p className="eyebrow">BLAST Lineup</p>
+              <h3>Choose the production class that matches your extraction volume.</h3>
+            </div>
+            <div className="home-system-grid">
+              {blastSystems.map((system) => (
+                <article className="home-system-card" key={system.title}>
+                  <a className="home-system-media" href={system.href} aria-label={system.title}>
+                    <Image src={system.image} alt="" width={720} height={440} />
+                  </a>
+                  <div className="home-system-copy">
+                    <h3>{system.title}</h3>
+                    <p>{system.body}</p>
+                    <a className="inline-link" href={system.href}>
+                      {system.cta}
+                      <ArrowRight size={16} aria-hidden="true" />
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 

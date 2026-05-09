@@ -704,6 +704,59 @@ h4 {
   padding-top: 6rem;
 }
 
+.home-ethanol-layout {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.home-ethanol-overview {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.home-ethanol-overview-media {
+  display: block;
+  min-height: 360px;
+  background: #111716;
+}
+
+.home-ethanol-overview-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-ethanol-overview-copy {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  padding: 1.75rem;
+}
+
+.home-ethanol-overview-copy h3 {
+  font-size: clamp(1.85rem, 3vw, 2.45rem);
+}
+
+.home-blast-lineup {
+  display: grid;
+  gap: 1rem;
+}
+
+.home-blast-heading {
+  display: grid;
+  gap: 0.2rem;
+  max-width: 760px;
+}
+
+.home-blast-heading h3 {
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+}
+
 .home-system-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -716,10 +769,6 @@ h4 {
   border-radius: 14px;
   background: #fff;
   box-shadow: var(--shadow);
-}
-
-.home-system-card:first-child {
-  grid-column: span 2;
 }
 
 .home-system-media {
@@ -2887,16 +2936,13 @@ h4 {
 
 @media (max-width: 980px) {
   .home-proof-strip,
+  .home-ethanol-overview,
   .home-system-grid,
   .home-butane-inner,
   .home-process-grid,
   .home-switch-grid,
   .home-ln2-card {
     grid-template-columns: 1fr;
-  }
-
-  .home-system-card:first-child {
-    grid-column: span 1;
   }
 
   .home-proof-strip {
@@ -2923,6 +2969,7 @@ h4 {
   }
 
   .home-proof-strip article,
+  .home-ethanol-overview-copy,
   .home-system-copy,
   .home-process-card,
   .home-switch-card,
