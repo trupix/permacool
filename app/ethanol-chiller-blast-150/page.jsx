@@ -189,7 +189,7 @@ function Hero() {
             Request BLAST 150 pricing
             <ArrowRight size={18} aria-hidden="true" />
           </a>
-          <a className="button secondary" href="/ethanol-chilling-systems">
+          <a className="button secondary" href="/ethanol-chiller-comparison">
             Compare BLAST lineup
             <ArrowRight size={18} aria-hidden="true" />
           </a>

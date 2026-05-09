@@ -188,6 +188,10 @@ export default function HomePage() {
             <div className="home-blast-heading">
               <p className="eyebrow">BLAST Lineup</p>
               <h3>Choose the production class that matches your extraction volume.</h3>
+              <a className="inline-link home-blast-compare-link" href="/ethanol-chiller-comparison">
+                Compare all three BLAST chillers
+                <ArrowRight size={16} aria-hidden="true" />
+              </a>
             </div>
             <div className="home-system-grid">
               {blastSystems.map((system) => (
