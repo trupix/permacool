@@ -18,7 +18,7 @@ export default function SiteHeader() {
         <nav className="nav">
           <Link className={isActive(pathname, '/ethanol-chilling-systems') ? 'active' : ''} href="/ethanol-chilling-systems">Ethanol Chillers</Link>
           <Link className={isActive(pathname, '/butane-recovery-system') ? 'active' : ''} href="/butane-recovery-system">Butane Recovery</Link>
-          <Link className={isActive(pathname, '/insights') ? 'active' : ''} href="/insights">Insights</Link>
+          <Link className={isActive(pathname, '/learning-center') ? 'active' : ''} href="/learning-center">Learning Center</Link>
           <Link className={isActive(pathname, '/contact-us') ? 'active' : ''} href="/contact-us">Contact</Link>
         </nav>
         <a className="phone" href="tel:+17472081001">Call 747.208.1001</a>

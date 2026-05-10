@@ -34,8 +34,8 @@ export function ArticleHero({ article }) {
       <Image src={article.image} alt="" fill priority className="insight-article-hero-image" sizes="100vw" />
       <div className="insight-article-hero-overlay" />
       <div className="insight-article-hero-content">
-        <a className="insight-back-link" href="/insights">
-          ← Back to Insights
+        <a className="insight-back-link" href="/learning-center">
+          ← Back to Learning Center
         </a>
         <p className="eyebrow">{article.category}</p>
         <h1>{article.title}</h1>

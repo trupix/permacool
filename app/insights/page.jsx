@@ -9,9 +9,9 @@ import {
 import { InsightsFooter, InsightsHeader } from "./InsightsShell";
 
 export const metadata = {
-  title: "PermaCool Insights",
+  title: "PermaCool Learning Center",
   description:
-    "PermaCool insights covering direct refrigerant vs LN2, extraction workflow, maintenance planning, and cooling system design."
+    "PermaCool learning center covering direct refrigerant vs LN2, extraction workflow, maintenance planning, and cooling system design."
 };
 
 export default function InsightsPage() {
@@ -101,8 +101,8 @@ export default function InsightsPage() {
           <p className="eyebrow">Recommendation Path</p>
           <h2>Want content mapped to your facility profile?</h2>
           <p>
-            Insights pages work best when they connect directly to a consultative quote flow, not a dead-end brochure
-            experience.
+            Learning center pages work best when they connect directly to a consultative quote flow, not a dead-end
+            brochure experience.
           </p>
         </div>
         <a className="button primary" href="/contact-us">

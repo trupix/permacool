@@ -256,7 +256,7 @@ export const insightArticles = [
     ],
     related: [
       ["BLAST 150", "/ethanol-chiller-blast-150"],
-      ["All Insights", "/insights"]
+      ["Learning Center", "/learning-center"]
     ],
     cta: {
       eyebrow: "Protecting uptime on a high-duty system?",
@@ -355,7 +355,7 @@ export const insightArticles = [
       "LN2 may still be useful in specific short-term, niche, or legacy workflows. But for sustained production, many operators evaluate total annual cost and control consistency before committing.",
     related: [
       ["How to Reduce LN2 Dependence", "/how-to-reduce-ln2-dependence"],
-      ["More Insights", "/insights"]
+      ["Learning Center", "/learning-center"]
     ],
     cta: {
       eyebrow: "Need help modeling LN2 replacement economics?",
@@ -379,7 +379,7 @@ export const insightHeroImage = "/images/generated/insights-hero.png";
 export const navItems = [
   ["Ethanol Chillers", "/ethanol-chilling-systems"],
   ["Butane Recovery", "/butane-recovery-system"],
-  ["Insights", "/insights"],
+  ["Learning Center", "/learning-center"],
   ["Contact", "/contact-us"]
 ];
 

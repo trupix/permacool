@@ -21,7 +21,10 @@ function isActive(pathname, href) {
 export default function ResponsiveHeader({ navItems = [] }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const resourceItems = [["Home", "/"], ...(navItems || []).filter(([label]) => label === "Insights" || label === "Contact")];
+  const resourceItems = [
+    ["Home", "/"],
+    ...(navItems || []).filter(([, href]) => href === "/learning-center" || href === "/contact-us")
+  ];
 
   useEffect(() => {
     setIsOpen(false);
