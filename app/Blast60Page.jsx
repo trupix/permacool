@@ -13,6 +13,7 @@ import {
   Wrench,
   Zap
 } from "lucide-react";
+import LearningCenterSection from "./components/LearningCenterSection";
 import { InsightsHeader } from "./insights/InsightsShell";
 
 const heroStats = [
@@ -152,6 +153,7 @@ export default function Blast60Page() {
       <CascadeDesign />
       <CentrifugePairing />
       <HighlightsAndRoi />
+      <LearningCenterSection />
       <RelatedCta />
       <Footer />
     </main>

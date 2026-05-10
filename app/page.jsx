@@ -10,6 +10,7 @@ import {
   Snowflake,
   ThermometerSnowflake
 } from "lucide-react";
+import LearningCenterSection from "./components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "./insights/InsightsShell";
 
 export const metadata = {
@@ -274,6 +275,8 @@ export default function HomePage() {
           </a>
         </div>
       </section>
+
+      <LearningCenterSection />
 
       <section className="related-section">
         <div>

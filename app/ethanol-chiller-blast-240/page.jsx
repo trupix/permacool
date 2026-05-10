@@ -14,6 +14,7 @@ import {
   TrendingUp,
   Zap
 } from "lucide-react";
+import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
@@ -160,6 +161,7 @@ export default function Blast240Page() {
       <SystemOverview />
       <Workflow />
       <Highlights />
+      <LearningCenterSection />
       <RelatedCta />
       <InsightsFooter />
     </main>

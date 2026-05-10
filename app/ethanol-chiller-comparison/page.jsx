@@ -9,6 +9,7 @@ import {
   ThermometerSnowflake,
   TrendingUp
 } from "lucide-react";
+import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
@@ -217,6 +218,8 @@ export default function EthanolChillerComparisonPage() {
           ))}
         </div>
       </section>
+
+      <LearningCenterSection />
 
       <section className="related-section comparison-related">
         <div>

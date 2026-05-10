@@ -15,6 +15,7 @@ import {
   TrendingUp,
   Zap
 } from "lucide-react";
+import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
@@ -409,6 +410,8 @@ export default function EthanolChillingSystemsPage() {
           ))}
         </ul>
       </section>
+
+      <LearningCenterSection />
 
       <section className="related-section ecs-related">
         <div>

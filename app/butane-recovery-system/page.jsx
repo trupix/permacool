@@ -9,6 +9,7 @@ import {
   Snowflake,
   Wrench
 } from "lucide-react";
+import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
@@ -244,6 +245,8 @@ export default function ButaneRecoveryPage() {
           ))}
         </div>
       </section>
+
+      <LearningCenterSection />
 
       <section className="related-section br-related">
         <div>
