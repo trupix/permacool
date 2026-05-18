@@ -1,0 +1,109 @@
+<svg width="1440" height="760" viewBox="0 0 1440 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Imperial and metric temperature truce at minus forty</title>
+  <desc id="desc">A playful technical illustration showing Fahrenheit and Celsius unit systems ending their argument at minus forty degrees.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071011"/>
+      <stop offset="0.55" stop-color="#162523"/>
+      <stop offset="1" stop-color="#0b1618"/>
+    </linearGradient>
+    <linearGradient id="lime" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b8e86a"/>
+      <stop offset="1" stop-color="#91c83e"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#74e8ff"/>
+      <stop offset="1" stop-color="#13a7c7"/>
+    </linearGradient>
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="760" rx="0" fill="url(#bg)"/>
+  <g opacity="0.16" stroke="#ffffff">
+    <path d="M84 122H1356M84 244H1356M84 366H1356M84 488H1356M84 610H1356"/>
+    <path d="M188 84V676M388 84V676M588 84V676M852 84V676M1052 84V676M1252 84V676"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="720" y="72" text-anchor="middle" font-size="28" font-weight="900" fill="#d4eeef">THE UNIT DEBATE FREEZES HERE</text>
+
+    <g transform="translate(112 150)">
+      <rect x="0" y="0" width="378" height="430" rx="22" fill="#0b1516" stroke="#91c83e" stroke-width="3" stroke-opacity="0.7"/>
+      <text x="189" y="58" text-anchor="middle" font-size="32" font-weight="900" fill="#91c83e">IMPERIAL</text>
+      <text x="189" y="94" text-anchor="middle" font-size="20" font-weight="800" fill="#dbe9da">miles, gallons, inches, °F</text>
+
+      <g transform="translate(58 130)">
+        <rect x="0" y="0" width="72" height="250" rx="36" fill="#132321" stroke="#ffffff" stroke-opacity="0.28" stroke-width="3"/>
+        <rect x="24" y="34" width="24" height="168" rx="12" fill="url(#lime)"/>
+        <circle cx="36" cy="212" r="42" fill="url(#lime)" filter="url(#glow)"/>
+        <g stroke="#ffffff" stroke-width="3" stroke-opacity="0.55">
+          <path d="M82 42H120"/>
+          <path d="M82 82H108"/>
+          <path d="M82 122H120"/>
+          <path d="M82 162H108"/>
+          <path d="M82 202H120"/>
+        </g>
+      </g>
+
+      <g transform="translate(210 168)" fill="#ffffff">
+        <path d="M36 0h40v102H36z" opacity="0.12"/>
+        <path d="M36 0h40v102H36z" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3"/>
+        <path d="M36 18h25M36 38h18M36 58h25M36 78h18" stroke="#ffffff" stroke-width="3"/>
+        <text x="56" y="158" text-anchor="middle" font-size="58" font-weight="900" fill="#ffffff">°F</text>
+      </g>
+
+      <path d="M286 324l48 32-48 32" fill="none" stroke="#91c83e" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="188" y="392" text-anchor="middle" font-size="18" font-weight="900" fill="#b8e86a">"72 sounds normal."</text>
+    </g>
+
+    <g transform="translate(950 150)">
+      <rect x="0" y="0" width="378" height="430" rx="22" fill="#0b1516" stroke="#74e8ff" stroke-width="3" stroke-opacity="0.72"/>
+      <text x="189" y="58" text-anchor="middle" font-size="32" font-weight="900" fill="#74e8ff">METRIC</text>
+      <text x="189" y="94" text-anchor="middle" font-size="20" font-weight="800" fill="#d4eeef">meters, liters, grams, °C</text>
+
+      <g transform="translate(248 130)">
+        <rect x="0" y="0" width="72" height="250" rx="36" fill="#132321" stroke="#ffffff" stroke-opacity="0.28" stroke-width="3"/>
+        <rect x="24" y="34" width="24" height="168" rx="12" fill="url(#cyan)"/>
+        <circle cx="36" cy="212" r="42" fill="url(#cyan)" filter="url(#glow)"/>
+        <g stroke="#ffffff" stroke-width="3" stroke-opacity="0.55">
+          <path d="M-48 42H-10"/>
+          <path d="M-36 82H-10"/>
+          <path d="M-48 122H-10"/>
+          <path d="M-36 162H-10"/>
+          <path d="M-48 202H-10"/>
+        </g>
+      </g>
+
+      <g transform="translate(82 168)" fill="#ffffff">
+        <rect x="0" y="0" width="104" height="34" rx="6" fill="#ffffff" opacity="0.12" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3"/>
+        <path d="M14 0v20M34 0v14M54 0v20M74 0v14M94 0v20" stroke="#ffffff" stroke-width="3"/>
+        <text x="52" y="158" text-anchor="middle" font-size="58" font-weight="900" fill="#ffffff">°C</text>
+      </g>
+
+      <path d="M92 324l-48 32 48 32" fill="none" stroke="#74e8ff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="188" y="392" text-anchor="middle" font-size="18" font-weight="900" fill="#74e8ff">"Use the sane scale."</text>
+    </g>
+
+    <g transform="translate(498 176)">
+      <path d="M70 112l76 66l-54 36l62 50" fill="none" stroke="#ffffff" stroke-opacity="0.32" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M374 112l-76 66l54 36l-62 50" fill="none" stroke="#ffffff" stroke-opacity="0.32" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="222" y="86" text-anchor="middle" font-size="21" font-weight="900" fill="#d4eeef">conversion chart abandoned</text>
+      <rect x="58" y="152" width="328" height="238" rx="34" fill="#071011" stroke="#ffffff" stroke-opacity="0.24" stroke-width="3"/>
+      <text x="222" y="234" text-anchor="middle" font-size="34" font-weight="900" fill="#d4eeef">TRUCE POINT</text>
+      <text x="222" y="314" text-anchor="middle" font-size="96" font-weight="900" fill="#ffffff" filter="url(#glow)">−40°</text>
+      <text x="222" y="356" text-anchor="middle" font-size="28" font-weight="900" fill="#91c83e">°F</text>
+      <text x="222" y="356" dx="52" text-anchor="middle" font-size="28" font-weight="900" fill="#74e8ff">= °C</text>
+    </g>
+
+    <g transform="translate(468 618)">
+      <rect x="0" y="0" width="504" height="70" rx="18" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.16"/>
+      <text x="252" y="44" text-anchor="middle" font-size="24" font-weight="900" fill="#ffffff">At −40°, everybody gets to be right.</text>
+    </g>
+  </g>
+</svg>

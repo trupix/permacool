@@ -40,8 +40,18 @@ export function ArticleHero({ article }) {
         <p className="eyebrow">{article.category}</p>
         <h1>{article.title}</h1>
         <p>{article.intro}</p>
+        {article.goalTicket ? <LearningGoalTicket text={article.goalTicket} /> : null}
       </div>
     </section>
+  );
+}
+
+export function LearningGoalTicket({ text }) {
+  return (
+    <div className="learning-goal-ticket">
+      <img src="/images/generated/permacool-golden-ticket-original.png" alt="" aria-hidden="true" />
+      <p>{text}</p>
+    </div>
   );
 }
 

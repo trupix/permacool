@@ -1987,6 +1987,17 @@ h4 {
     linear-gradient(0deg, rgba(7, 12, 13, 0.76), transparent 48%);
 }
 
+.minus-40-hero .insight-article-hero-image {
+  opacity: 0.76;
+}
+
+.minus-40-hero .insight-article-hero-overlay {
+  background:
+    linear-gradient(90deg, rgba(7, 12, 13, 0.98) 0%, rgba(7, 12, 13, 0.9) 44%, rgba(7, 12, 13, 0.54) 100%),
+    radial-gradient(circle at 76% 36%, rgba(19, 167, 199, 0.24), transparent 22rem),
+    linear-gradient(0deg, rgba(7, 12, 13, 0.72), transparent 50%);
+}
+
 .insights-hero-content,
 .insight-article-hero-content,
 .simple-page-hero {
@@ -2006,6 +2017,33 @@ h4 {
   max-width: 660px;
   color: rgba(255, 255, 255, 0.82);
   font-size: 1.16rem;
+}
+
+.learning-goal-ticket {
+  position: relative;
+  width: min(540px, 69%);
+  margin-top: 1.5rem;
+}
+
+.learning-goal-ticket img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.insight-article-hero-content .learning-goal-ticket p {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: 17%;
+  max-width: none;
+  margin: 0;
+  color: #301a00;
+  font-size: clamp(0.59rem, 1.02vw, 0.84rem);
+  font-weight: 900;
+  line-height: 1.16;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 238, 164, 0.62);
 }
 
 .insights-topic-panel {
@@ -2620,6 +2658,174 @@ h4 {
   margin-bottom: 0;
 }
 
+.minus-40-article {
+  gap: 2.5rem;
+}
+
+.minus-40-hook,
+.minus-40-lede,
+.minus-40-split,
+.minus-40-process-note,
+.minus-40-pullquote,
+.minus-40-fact-grid article,
+.minus-40-takeaways article,
+.minus-40-closing {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.minus-40-hook {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  padding: 1.4rem;
+}
+
+.minus-40-hook > div {
+  padding: 0.6rem;
+}
+
+.minus-40-hook p:last-child {
+  margin-bottom: 0;
+}
+
+.minus-40-battle-figure {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #0d1516;
+}
+
+.minus-40-battle-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.minus-40-lede,
+.minus-40-split,
+.minus-40-process-note {
+  display: grid;
+  grid-template-columns: 0.68fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  padding: 2rem;
+}
+
+.minus-40-lede h2,
+.minus-40-split h2,
+.minus-40-process-note h2,
+.minus-40-closing h2 {
+  font-size: 2.65rem;
+}
+
+.minus-40-lede strong {
+  color: var(--graphite);
+}
+
+.minus-40-figure {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #0d1516;
+  box-shadow: var(--shadow);
+}
+
+.minus-40-figure img {
+  width: 100%;
+  height: auto;
+}
+
+.minus-40-fact-grid,
+.minus-40-takeaways {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.minus-40-fact-grid article,
+.minus-40-takeaways article {
+  padding: 1.35rem;
+}
+
+.minus-40-fact-grid strong {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--graphite);
+  font-size: clamp(2rem, 3vw, 3.5rem);
+  line-height: 0.95;
+}
+
+.minus-40-pullquote {
+  margin: 0;
+  padding: 2.4rem;
+  color: #fff;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(19, 167, 199, 0.3), transparent 24rem),
+    linear-gradient(135deg, #101718 0%, #253532 100%);
+}
+
+.minus-40-pullquote p {
+  max-width: 940px;
+  margin: 0;
+  color: #fff;
+  font-size: 2.25rem;
+  font-weight: 900;
+  line-height: 1.06;
+}
+
+.minus-40-process-note {
+  color: #fff;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(145, 200, 62, 0.19), transparent 24rem),
+    radial-gradient(circle at 86% 72%, rgba(19, 167, 199, 0.22), transparent 24rem),
+    var(--graphite);
+}
+
+.minus-40-process-note h2,
+.minus-40-process-note p {
+  color: #fff;
+}
+
+.minus-40-process-note div:last-child p {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.minus-40-takeaways article {
+  min-height: 168px;
+}
+
+.minus-40-takeaways svg {
+  color: var(--cyan-dark);
+  margin-bottom: 0.9rem;
+}
+
+.minus-40-takeaways p {
+  color: var(--graphite);
+  font-weight: 900;
+}
+
+.minus-40-closing {
+  padding: 2.4rem;
+  background:
+    linear-gradient(135deg, rgba(19, 167, 199, 0.11), rgba(145, 200, 62, 0.12)),
+    #fff;
+}
+
+.minus-40-closing p {
+  max-width: 900px;
+  font-size: 1.12rem;
+}
+
+.minus-40-closing h2 {
+  max-width: 980px;
+  margin-bottom: 0;
+}
+
 .simple-page {
   min-height: 100vh;
 }
@@ -3007,6 +3213,12 @@ h4 {
   .process-ownership-map,
   .process-lab-compare,
   .process-takeaways,
+  .minus-40-hook,
+  .minus-40-lede,
+  .minus-40-split,
+  .minus-40-process-note,
+  .minus-40-fact-grid,
+  .minus-40-takeaways,
   .contact-hero,
   .contact-trust-strip {
     grid-template-columns: 1fr;
@@ -3128,12 +3340,36 @@ h4 {
     padding: 7.5rem 1rem 5rem;
   }
 
+  .learning-goal-ticket {
+    width: 75%;
+    margin-top: 1rem;
+  }
+
+  .insight-article-hero-content .learning-goal-ticket p {
+    left: 10%;
+    right: 10%;
+    bottom: 12%;
+    font-size: clamp(0.44rem, 1.65vw, 0.62rem);
+    line-height: 1.08;
+  }
+
   .process-ownership-hero .insight-article-hero-image {
     opacity: 0.42;
     object-position: 58% center;
   }
 
   .process-ownership-hero .insight-article-hero-overlay {
+    background:
+      linear-gradient(90deg, rgba(7, 12, 13, 0.99), rgba(7, 12, 13, 0.9)),
+      linear-gradient(0deg, rgba(7, 12, 13, 0.78), transparent 46%);
+  }
+
+  .minus-40-hero .insight-article-hero-image {
+    opacity: 0.54;
+    object-position: 60% center;
+  }
+
+  .minus-40-hero .insight-article-hero-overlay {
     background:
       linear-gradient(90deg, rgba(7, 12, 13, 0.99), rgba(7, 12, 13, 0.9)),
       linear-gradient(0deg, rgba(7, 12, 13, 0.78), transparent 46%);
@@ -3215,17 +3451,30 @@ h4 {
   .process-lab-compare article,
   .process-takeaways article,
   .process-closing,
+  .minus-40-hook,
+  .minus-40-lede,
+  .minus-40-split,
+  .minus-40-process-note,
+  .minus-40-pullquote,
+  .minus-40-fact-grid article,
+  .minus-40-takeaways article,
+  .minus-40-closing,
   .site-footer {
     padding: 1.2rem;
   }
 
   .process-ownership-lede h2,
   .process-ownership-section h2,
-  .process-closing h2 {
+  .process-closing h2,
+  .minus-40-lede h2,
+  .minus-40-split h2,
+  .minus-40-process-note h2,
+  .minus-40-closing h2 {
     font-size: 2rem;
   }
 
-  .process-pullquote p {
+  .process-pullquote p,
+  .minus-40-pullquote p {
     font-size: 1.8rem;
   }
 

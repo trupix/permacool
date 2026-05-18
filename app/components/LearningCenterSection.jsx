@@ -3,9 +3,9 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import { insightArticles } from "../insights/insights-data";
 
 const featuredSlugs = [
+  "minus-40-celsius-fahrenheit",
   "direct-refrigerant-vs-ln2",
-  "how-to-reduce-ln2-dependence",
-  "extraction-cooling-system-design-checklist"
+  "how-to-reduce-ln2-dependence"
 ];
 
 const featuredArticles = featuredSlugs

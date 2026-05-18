@@ -1,0 +1,42 @@
+<svg width="1440" height="840" viewBox="0 0 1440 840" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Celsius and Fahrenheit meet at -40</title>
+  <desc id="desc">Dark technical hero artwork showing Celsius and Fahrenheit scales converging at negative forty degrees.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071011"/>
+      <stop offset="0.52" stop-color="#142423"/>
+      <stop offset="1" stop-color="#0b1618"/>
+    </linearGradient>
+    <linearGradient id="cyanLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#74e8ff"/>
+      <stop offset="1" stop-color="#13a7c7"/>
+    </linearGradient>
+    <linearGradient id="limeLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b8e86a"/>
+      <stop offset="1" stop-color="#91c83e"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1440" height="840" fill="url(#bg)"/>
+  <path d="M954 112H1278M922 148H1246M890 184H1214" stroke="#74e8ff" stroke-width="2" stroke-opacity="0.18"/>
+  <path d="M164 640H488M196 676H520M228 712H552" stroke="#91c83e" stroke-width="2" stroke-opacity="0.18"/>
+  <g opacity="0.16" stroke="#ffffff">
+    <path d="M150 140H1290M150 280H1290M150 420H1290M150 560H1290M150 700H1290"/>
+    <path d="M210 100V740M410 100V740M610 100V740M810 100V740M1010 100V740M1210 100V740"/>
+  </g>
+  <path d="M190 660C360 574 494 510 600 462C706 414 806 368 920 292C1034 216 1150 154 1280 118" fill="none" stroke="url(#cyanLine)" stroke-width="14" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M166 170C338 258 496 338 640 410C784 482 916 548 1038 610C1160 672 1244 714 1294 740" fill="none" stroke="url(#limeLine)" stroke-width="14" stroke-linecap="round" filter="url(#glow)"/>
+  <circle cx="720" cy="450" r="116" fill="#071011" opacity="0.88" stroke="#ffffff" stroke-opacity="0.2"/>
+  <circle cx="720" cy="450" r="86" fill="#0d1c1d" stroke="#7ee7f7" stroke-width="3"/>
+  <text x="720" y="430" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#7ee7f7">C = F</text>
+  <text x="720" y="492" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="900" fill="#ffffff">-40</text>
+  <text x="214" y="124" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#91c83e">Fahrenheit</text>
+  <text x="1110" y="106" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#74e8ff">Celsius</text>
+  <text x="100" y="782" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="800" fill="#ffffff">One clean crossing between two temperature scales</text>
+</svg>

@@ -24,6 +24,33 @@ import {
 
 export const insightArticles = [
   {
+    slug: "minus-40-celsius-fahrenheit",
+    category: "Temperature Science",
+    title: "−40°: The Coldest Handshake in Science",
+    shortTitle: "Why -40°C Equals -40°F",
+    summary: "The rare point where Celsius and Fahrenheit meet, and why that matters in cold ethanol extraction.",
+    description:
+      "Learn why -40°C equals -40°F, why the Celsius and Fahrenheit scales meet at that exact point, and why -40 is a memorable target in ethanol chilling.",
+    image: "/images/generated/insights-minus-40-meeting.svg",
+    heroClass: "minus-40-hero",
+    href: "/minus-40-celsius-fahrenheit",
+    intro:
+      "There is one temperature where Fahrenheit and Celsius finally agree: −40°. No conversion. No debate. Just one brutally cold number where two different scales meet in perfect alignment. It feels like a scientific anomaly, but it’s really the beautiful math of temperature measurement.",
+    goalTicket:
+      "The reader will clearly understand that −40° is the same temperature in Celsius and Fahrenheit.",
+    related: [
+      ["Workflow", "/workflow"],
+      ["Explore Ethanol Chillers", "/ethanol-chilling-systems"],
+      ["Direct Refrigerant vs LN2", "/direct-refrigerant-vs-ln2"]
+    ],
+    cta: {
+      eyebrow: "Need reliable -40 performance?",
+      title: "Build your extraction process around a temperature target operators remember and equipment can repeat.",
+      primary: ["Talk to Perma Cool", "/contact-us"],
+      secondary: ["Explore Ethanol Chillers", "/ethanol-chilling-systems"]
+    }
+  },
+  {
     slug: "owning-an-extraction-lab-means-owning-the-process",
     category: "Process Ownership",
     title: "Owning an Extraction Lab Means Owning the Process",
@@ -369,7 +396,7 @@ export const insightArticles = [
 export const articlesBySlug = Object.fromEntries(insightArticles.map((article) => [article.slug, article]));
 
 export const insightIndexStats = [
-  ["7", "active knowledge pages"],
+  ["8", "active knowledge pages"],
   ["3", "buyer objections covered"],
   ["1", "clear path to a recommendation"]
 ];
@@ -384,6 +411,7 @@ export const navItems = [
 ];
 
 export const indexTopics = [
+  "-40 Celsius and Fahrenheit temperature science",
   "Process ownership as the core extraction lab discipline",
   "Extract, re-chill, and re-run ethanol efficiency",
   "LN2 dependence and operating cost",
