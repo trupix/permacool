@@ -2,7 +2,9 @@ import Image from "next/image";
 import {
   ArrowRight,
   CheckCircle2,
+  Clock,
   Cpu,
+  Droplets,
   Fan,
   Gauge,
   Mail,
@@ -20,20 +22,23 @@ const heroStats = [
   {
     label: "30",
     unit: "gallon",
-    text: "centrifuge workflow or 2x 15 gallon",
-    image: "/images/product/blast-60-centrifuge-icon.jpg"
+    text: "30-gallon centrifuge workflow pairing",
+    icon: RefreshCw,
+    tone: "workflow"
   },
   {
     label: "60",
-    unit: "gallon",
-    text: "ethanol capacity",
-    image: "/images/product/blast-60-capacity-icon.jpg"
+    unit: "gallons",
+    text: "Commercial scale operating capacity",
+    icon: Droplets,
+    tone: "capacity"
   },
   {
     label: "45",
-    unit: "Minutes",
-    text: "to -40°C",
-    image: "/images/product/blast-60-cold-icon.jpg"
+    unit: "minutes",
+    text: "Room temp to -40°C flash chilling",
+    icon: Clock,
+    tone: "pull-down"
   }
 ];
 
@@ -136,17 +141,23 @@ export default function Blast60Page() {
     <main className="site-shell">
       <InsightsHeader />
       <Hero />
-      <section className="stat-rail" aria-label="BLAST 60/45 quick specifications">
-        {heroStats.map((item) => (
-          <article className="stat-card" key={item.text}>
-            <Image src={item.image} alt="" width={96} height={96} />
-            <div>
-              <strong>{item.label}</strong>
-              <span>{item.unit}</span>
-              <p>{item.text}</p>
-            </div>
-          </article>
-        ))}
+      <section className="stat-rail blast60-stat-rail" aria-label="BLAST 60/45 quick specifications">
+        {heroStats.map((item) => {
+          const Icon = item.icon;
+
+          return (
+            <article className={`stat-card blast60-stat-card blast60-stat-card--${item.tone}`} key={item.text}>
+              <span className="blast60-stat-icon" aria-hidden="true">
+                <Icon size={34} strokeWidth={2.4} />
+              </span>
+              <div>
+                <strong>{item.label}</strong>
+                <span>{item.unit}</span>
+                <p>{item.text}</p>
+              </div>
+            </article>
+          );
+        })}
       </section>
       <ValueProps />
       <Components />
@@ -162,9 +173,9 @@ export default function Blast60Page() {
 
 function Hero() {
   return (
-    <section className="hero">
+    <section className="hero blast60-product-hero">
       <Image
-        src="/images/generated/blast60-hero-most-accurate-outdoor-condensers.png"
+        src="/images/generated/blast60-hero-crystal-bear.png"
         alt="Industrial ethanol chilling platform in a clean production facility"
         fill
         priority
@@ -174,7 +185,9 @@ function Hero() {
       <div className="hero-overlay" />
       <div className="hero-content">
         <p className="eyebrow">BLAST™ Product Line</p>
-        <h1>BLAST™ 60/45 Ethanol Chiller</h1>
+        <h1>
+          <span className="blast60-hero-title-accent">BLAST™ 60/45</span> Ethanol Chiller
+        </h1>
         <p className="hero-lede">Chill 60 gallons of ethanol from room temperature to -40°C in 45 minutes.</p>
         <div className="hero-actions">
           <a className="button primary" href="/contact-us">
@@ -302,10 +315,10 @@ function CentrifugePairing() {
       </div>
       <figure className="workflow-visual">
         <Image
-          src="/images/generated/workflow-banner.png"
-          alt="Visual workflow showing a centrifuge paired with a chilled ethanol tank"
-          width={1792}
-          height={768}
+          src="/images/generated/blast60-bear-card.png"
+          alt="BLAST 60/45 crystal bear ethanol chilling performance card"
+          width={1600}
+          height={1100}
         />
       </figure>
       <div className="workflow-copy">
