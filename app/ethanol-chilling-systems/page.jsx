@@ -73,6 +73,27 @@ const performancePoints = [
   }
 ];
 
+const solutionHighlights = [
+  {
+    tone: "cyan",
+    stat: "30% more",
+    title: "Direct refrigeration horsepower",
+    body: "More applied horsepower than traditional chillers, built into the chilling architecture instead of bolted on later."
+  },
+  {
+    tone: "lime",
+    stat: "10x speed",
+    title: "Purpose-built process side",
+    body: "A process-side design built around heat exchange surface area, contact, and pull-down speed from the start."
+  },
+  {
+    tone: "ice",
+    stat: "PLC + HMI",
+    title: "Integrated control side",
+    body: "On-screen monitoring, compressor protection, and clearer system visibility built into the chilling package."
+  }
+];
+
 const metrics = [
   {
     label: "Series 01",
@@ -125,7 +146,7 @@ const products = [
   {
     eyebrow: "Compact Production",
     title: "BLAST 60/45",
-    image: "/images/generated/blast60-flash-chilling.png",
+    image: "/images/generated/blast60-bear-card.png",
     href: "/ethanol-chiller-blast-60",
     cta: "View BLAST 60/45",
     copy:
@@ -140,7 +161,7 @@ const products = [
   {
     eyebrow: "Mid-Scale Production",
     title: "BLAST 150/45",
-    image: "/images/generated/blast150-flash-chilling-purple.png",
+    image: "/images/generated/blast150-bear-card-purple.png",
     href: "/ethanol-chiller-blast-150",
     cta: "View BLAST 150/45",
     copy:
@@ -155,7 +176,7 @@ const products = [
   {
     eyebrow: "Large Process Class",
     title: "BLAST 240/45",
-    image: "/images/generated/blast240-flash-chilling.png",
+    image: "/images/generated/blast240-bear-card.png",
     href: "/ethanol-chiller-blast-240",
     cta: "View BLAST 240/45",
     copy:
@@ -253,6 +274,22 @@ export default function EthanolChillingSystemsPage() {
               </li>
             ))}
           </ul>
+          <div className="ecs-solution-callout">
+            <div className="ecs-solution-callout-copy">
+              <span className="micro-label">Whole Chilling Solution</span>
+              <h3>NOT JUST A CHILLER - A WHOLE CHILLING SOLUTION</h3>
+              <p>For the cost of what you normally pay for just a chiller.</p>
+            </div>
+            <div className="ecs-solution-highlight-grid">
+              {solutionHighlights.map((highlight) => (
+                <article className={`ecs-solution-highlight ecs-solution-highlight--${highlight.tone}`} key={highlight.title}>
+                  <strong>{highlight.stat}</strong>
+                  <span>{highlight.title}</span>
+                  <p>{highlight.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -319,7 +356,7 @@ export default function EthanolChillingSystemsPage() {
                   alt=""
                   width={720}
                   height={520}
-                  className={product.image.includes("flash-chilling") ? "ecs-product-spec-image" : undefined}
+                  className={product.image.includes("flash-chilling") || product.image.includes("tier-badge") || product.image.includes("bear-card") ? "ecs-product-spec-image" : undefined}
                 />
               </div>
               <div className="ecs-product-copy">
