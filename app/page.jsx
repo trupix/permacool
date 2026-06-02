@@ -42,7 +42,7 @@ const blastSystems = [
     body:
       "A compact cascade ethanol chiller built around the 30-gallon centrifuge workflow, 60 gallons of ethanol capacity, and fast recovery back toward -40 °C.",
     href: "/ethanol-chiller-blast-60",
-    image: "/images/generated/blast60-flash-chilling.png",
+    image: "/images/generated/blast60-bear-card.png",
     cta: "View BLAST 60/45"
   },
   {
@@ -50,7 +50,7 @@ const blastSystems = [
     body:
       "Mid-scale production chilling for up to 150-gallon process class applications, with the same direct refrigerant control philosophy and PLC/HMI visibility.",
     href: "/ethanol-chiller-blast-150",
-    image: "/images/generated/blast150-flash-chilling-purple.png",
+    image: "/images/generated/blast150-bear-card-purple.png",
     cta: "View BLAST 150/45"
   },
   {
@@ -58,7 +58,7 @@ const blastSystems = [
     body:
       "Large process-class chilling for facilities that need more ethanol capacity, HVAC condenser integration, and a clearer path away from consumable-heavy cooling.",
     href: "/ethanol-chiller-blast-240",
-    image: "/images/generated/blast240-flash-chilling.png",
+    image: "/images/generated/blast240-bear-card.png",
     cta: "View BLAST 240/45"
   }
 ].filter((system) => system.title !== "Ethanol Chilling Systems");
