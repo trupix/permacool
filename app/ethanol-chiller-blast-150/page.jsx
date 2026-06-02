@@ -2,8 +2,9 @@ import Image from "next/image";
 import {
   ArrowRight,
   CheckCircle2,
+  Clock,
   Cpu,
-  Fan,
+  Droplets,
   Gauge,
   Phone,
   RefreshCw,
@@ -17,29 +18,53 @@ import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
-  title: "BLAST 150/45 Ethanol Chiller | 150 Gallons to -40C in 45 Minutes | PermaCool",
+  title: "BLAST 150/45 Ethanol Chiller | 150 Gallons to -40°C in 45 Minutes | PermaCool",
   description:
-    "PermaCool BLAST 150/45 ethanol chiller flash-chills 150 gallons to -40C in 45 minutes with 3.33 GPM of flash chilling, direct refrigerant architecture, and PLC/HMI visibility."
+    "PermaCool BLAST 150/45 standard 150-gallon ethanol pre-chiller chills toward -40°C in 45 minutes with 3.33 GPM chilling, direct refrigerant architecture, and PLC/HMI visibility."
 };
 
 const heroStats = [
   {
     label: "150",
     unit: "gallons",
-    text: "process-class ethanol chilling capacity",
-    image: "/images/product/blast-60-capacity-icon.jpg"
+    text: "Commercial scale operating capacity",
+    icon: Droplets,
+    tone: "capacity"
   },
   {
     label: "45",
     unit: "minutes",
-    text: "from room temperature toward -40C",
-    image: "/images/product/blast-60-cold-icon.jpg"
+    text: "Room temp to -40°C - continuous duty 24/7 operation",
+    icon: Clock,
+    tone: "pull-down"
   },
   {
     label: "3.33",
     unit: "GPM",
-    text: "of flash chilling performance",
-    image: "/images/generated/blast150-flash-chilling-purple.png"
+    text: "Full tank flash chilling performance average",
+    icon: Gauge,
+    tone: "flow"
+  }
+];
+
+const breakdownCards = [
+  {
+    title: "Standard 150-gallon pre-chiller",
+    icon: TrendingUp,
+    body:
+      "The BLAST 150/45 is PermaCool's standard 150-gallon ethanol pre-chiller for commercial labs that need real production capacity without jumping into the largest tank class."
+  },
+  {
+    title: "The model name is the target",
+    icon: Gauge,
+    body:
+      "The name is literal: 150 gallons of ethanol chilled from room temperature toward -40°C in 45 minutes, or about 3.33 gallons per minute of chilling performance."
+  },
+  {
+    title: "The mid-size workhorse",
+    icon: ShieldCheck,
+    body:
+      "If the 60/45 is the entry production system, the 150/45 is the standard mid-size workhorse for commercial extraction teams."
   }
 ];
 
@@ -48,25 +73,25 @@ const valueProps = [
     title: "Mid-scale production capacity",
     icon: TrendingUp,
     body:
-      "The BLAST 150/45 is built for labs that have outgrown compact chilling capacity but do not need the full 240-gallon process class yet."
+      "The BLAST 150/45 is built for labs moving beyond small-batch chilling but not yet ready for the larger 240-gallon class."
   },
   {
-    title: "Fast pull-down for real scheduling",
+    title: "Predictable pull-down scheduling",
     icon: Gauge,
     body:
-      "Flash-chill 150 gallons of ethanol to -40C in 45 minutes so operators can plan production around a predictable chilling window."
+      "A 45-minute pull-down window gives operators a chilling target they can build daily extraction schedules around."
   },
   {
-    title: "Direct refrigerant architecture",
-    icon: Snowflake,
+    title: "Built for repeat-cycle extraction",
+    icon: RefreshCw,
     body:
-      "Electric direct refrigerant chilling helps reduce dependence on LN2 and dry ice consumables while keeping the process easier to control."
+      "The system supports the extract, return, re-chill, and repeat rhythm of ethanol processing with less waiting on slow recovery."
   },
   {
-    title: "PLC/HMI visibility",
+    title: "Controls and component protection",
     icon: Cpu,
     body:
-      "Control visibility, compressor protection logic, and operator feedback help the system feel like production equipment instead of a workaround."
+      "PermaCool controls give operators process visibility, while compressor self-protection and control logic help protect major refrigeration components."
   }
 ];
 
@@ -81,11 +106,11 @@ const overviewCards = [
   },
   {
     eyebrow: "System Architecture",
-    title: "Built around direct refrigerant chilling.",
+    title: "Single piston compressor/condenser platform.",
     image: "/images/generated/ethanol-systems-hero.png",
     alt: "Industrial ethanol chilling system in a clean production facility",
     body:
-      "The system is planned around process chilling, refrigeration, controls, and service access so the equipment can support day-to-day extraction work."
+      "The BLAST 150/45 uses a hardier low-temperature refrigeration setup for production use, with direct refrigerant chilling and HVAC condenser integration."
   },
   {
     eyebrow: "Workflow Fit",
@@ -124,19 +149,26 @@ const workflowPoints = [
 ];
 
 const highlights = [
-  "150 gallons to -40C in 45 minutes",
-  "3.33 GPM of flash chilling",
-  "Direct refrigerant process chilling",
-  "HVAC condenser integration",
-  "PLC/HMI control visibility",
-  "Designed for commercial extraction schedules"
+  "150-gallon ethanol capacity",
+  "Room temperature toward -40°C in 45 minutes",
+  "About 3.33 gallons per minute of chilling performance",
+  "Built for repeat-cycle extraction workflows",
+  "Designed to reduce dependence on LN2 and dry ice",
+  "Middle option between the BLAST 60/45 and 240-gallon class"
 ];
 
 const fitPoints = [
-  "Extraction labs moving beyond pilot-scale chilling capacity.",
+  "Customers who want a true 150-gallon ethanol chilling platform.",
   "Teams that need more capacity than the BLAST 60/45 but are not ready for the 240-gallon class.",
-  "Operators replacing LN2 or dry ice workflows with electric process chilling.",
-  "Facilities that want a clearer path to repeatable re-chill and re-extract workflows."
+  "Operators who want a standard production unit instead of the faster 150/25 model.",
+  "Labs moving away from LN2, dry ice, or freezer-based chilling.",
+  "Facilities that need repeatable re-chill performance for daily extraction scheduling."
+];
+
+const architecturePoints = [
+  "Single piston compressor/condenser platform for hardier low-temperature production use.",
+  "Direct refrigerant chilling focused on moving heat out of the ethanol process efficiently.",
+  "Comfortably supports around 100 feet of copper run each way when facility layout requires separation between process equipment and condenser placement."
 ];
 
 export default function Blast150Page() {
@@ -144,18 +176,25 @@ export default function Blast150Page() {
     <main className="site-shell">
       <InsightsHeader />
       <Hero />
-      <section className="stat-rail" aria-label="BLAST 150/45 quick specifications">
-        {heroStats.map((item) => (
-          <article className="stat-card" key={item.text}>
-            <Image src={item.image} alt="" width={96} height={96} />
-            <div>
-              <strong>{item.label}</strong>
-              <span>{item.unit}</span>
-              <p>{item.text}</p>
-            </div>
-          </article>
-        ))}
+      <section className="stat-rail blast150-stat-rail" aria-label="BLAST 150/45 quick specifications">
+        {heroStats.map((item) => {
+          const Icon = item.icon;
+
+          return (
+            <article className={`stat-card blast150-stat-card blast150-stat-card--${item.tone}`} key={item.text}>
+              <span className="blast150-stat-icon" aria-hidden="true">
+                <Icon size={34} strokeWidth={2.4} />
+              </span>
+              <div>
+                <strong>{item.label}</strong>
+                <span>{item.unit}</span>
+                <p>{item.text}</p>
+              </div>
+            </article>
+          );
+        })}
       </section>
+      <Breakdown />
       <ValueProps />
       <SystemOverview />
       <Workflow />
@@ -171,7 +210,7 @@ function Hero() {
   return (
     <section className="hero blast150-product-hero">
       <Image
-        src="/images/generated/ethanol-systems-hero.png"
+        src="/images/generated/blast150-hero-crystal-bear.png"
         alt=""
         fill
         priority
@@ -181,9 +220,11 @@ function Hero() {
       <div className="hero-overlay" />
       <div className="hero-content">
         <p className="eyebrow">BLAST Product Line</p>
-        <h1>BLAST 150/45 Ethanol Chiller</h1>
+        <h1>
+          <span className="blast150-hero-title-accent">BLAST 150/45</span> Ethanol Chiller
+        </h1>
         <p className="hero-lede">
-          Flash-chill 150 gallons of ethanol to -40C in 45 minutes, with 3.33 GPM of flash chilling for commercial
+          Flash-chill 150 gallons of ethanol to -40°C in 45 minutes, with 3.33 GPM of flash chilling for commercial
           extraction workflows.
         </p>
         <div className="hero-actions">
@@ -201,15 +242,39 @@ function Hero() {
   );
 }
 
+function Breakdown() {
+  return (
+    <section className="section value-section">
+      <div className="section-heading">
+        <p className="eyebrow">BLAST 150/45 Breakdown</p>
+        <h2>Standard 150-gallon production chilling.</h2>
+        <p>
+          The 150/45 gives extraction labs 150 gallons of cold ethanol capacity, a predictable 45-minute pull-down
+          target, and a production refrigeration platform for commercial daily use.
+        </p>
+      </div>
+      <div className="value-grid">
+        {breakdownCards.map(({ title, icon: Icon, body }) => (
+          <article className="value-card" key={title}>
+            <Icon aria-hidden="true" size={26} />
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function ValueProps() {
   return (
     <section className="section value-section">
       <div className="section-heading">
-        <p className="eyebrow">Production Fit</p>
-        <h2>Mid-scale capacity with a real extraction workflow behind it.</h2>
+        <p className="eyebrow">What It's Built For</p>
+        <h2>Repeat ethanol extraction cycles where recovery and consistency matter.</h2>
         <p>
-          The BLAST 150/45 is a practical step up for operators who need stronger production capacity, faster chilling
-          recovery, and a system sized for commercial extraction growth.
+          Instead of waiting on consumables or improvised freezer workflows, the BLAST 150/45 gives the lab a dedicated
+          electric chilling platform built around repeatable ethanol processing.
         </p>
       </div>
       <div className="value-grid">
@@ -230,8 +295,8 @@ function SystemOverview() {
     <section className="section component-section" id="system-overview">
       <div className="section-heading narrow">
         <p className="eyebrow">System Overview</p>
-        <h2>BLAST 150/45 performance, controls, and workflow fit.</h2>
-        <p>Scan the system by what matters in production: pull-down speed, repeatability, controls, and operating cost.</p>
+        <h2>BLAST 150/45 performance, refrigeration architecture, and workflow fit.</h2>
+        <p>Scan the system by what matters in production: pull-down speed, repeatability, controls, and facility fit.</p>
       </div>
       <div className="component-grid">
         {overviewCards.map((item) => (
@@ -260,8 +325,8 @@ function Workflow() {
       </div>
       <figure className="workflow-visual">
         <Image
-          src="/images/generated/blast150-flash-chilling-purple.png"
-          alt="BLAST 150/45 ethanol chilling performance graphic"
+          src="/images/generated/blast150-bear-card-purple.png"
+          alt="BLAST 150/45 crystal bear ethanol chilling performance card"
           width={1600}
           height={1100}
         />
@@ -276,6 +341,16 @@ function Workflow() {
             </div>
           </article>
         ))}
+        <article className="ratio-callout">
+          <Snowflake aria-hidden="true" size={28} />
+          <div>
+            <strong>Protect</strong>
+            <p>
+              Compressor self-protection and PermaCool control logic help the refrigeration platform handle changing
+              extraction-room conditions.
+            </p>
+          </div>
+        </article>
       </div>
     </section>
   );
@@ -292,11 +367,11 @@ function Highlights() {
         <ul className="icon-list">
           {highlights.map((item, index) => (
             <li key={item}>
-              {index === 0 ? <ThermometerSnowflake size={19} aria-hidden="true" /> : null}
-              {index === 1 ? <Gauge size={19} aria-hidden="true" /> : null}
-              {index === 2 ? <Snowflake size={19} aria-hidden="true" /> : null}
-              {index === 3 ? <Fan size={19} aria-hidden="true" /> : null}
-              {index === 4 ? <Cpu size={19} aria-hidden="true" /> : null}
+              {index === 0 ? <TrendingUp size={19} aria-hidden="true" /> : null}
+              {index === 1 ? <ThermometerSnowflake size={19} aria-hidden="true" /> : null}
+              {index === 2 ? <Gauge size={19} aria-hidden="true" /> : null}
+              {index === 3 ? <RefreshCw size={19} aria-hidden="true" /> : null}
+              {index === 4 ? <Snowflake size={19} aria-hidden="true" /> : null}
               {index === 5 ? <Zap size={19} aria-hidden="true" /> : null}
               <span>{item}</span>
             </li>
@@ -314,15 +389,14 @@ function Highlights() {
           />
         </figure>
         <div className="roi-copy">
-          <p className="eyebrow">Application Fit</p>
-          <h2>A strong middle option for growing extraction labs.</h2>
+          <p className="eyebrow">Refrigeration Architecture</p>
+          <h2>A hardier platform for commercial extraction work.</h2>
           <p>
-            The BLAST 150/45 gives operators a production-class chilling target without jumping straight to the largest
-            process class. It is meant for teams that need stronger batch support, better temperature recovery, and a
-            clearer path away from consumable-heavy chilling.
+            The BLAST 150/45 is built for direct refrigerant chilling, which means the equipment is focused on moving
+            heat out of the ethanol process efficiently instead of relying on consumable cryogenic media.
           </p>
           <ul className="icon-list">
-            {fitPoints.map((item) => (
+            {architecturePoints.map((item) => (
               <li key={item}>
                 <ShieldCheck size={19} aria-hidden="true" />
                 <span>{item}</span>
@@ -330,6 +404,21 @@ function Highlights() {
             ))}
           </ul>
         </div>
+      </div>
+
+      <div className="highlight-panel">
+        <div>
+          <p className="eyebrow">Best Customer Fit</p>
+          <h2>The right starting point for a true 150-gallon platform.</h2>
+        </div>
+        <ul className="icon-list">
+          {fitPoints.map((item) => (
+            <li key={item}>
+              <ShieldCheck size={19} aria-hidden="true" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
@@ -342,8 +431,8 @@ function RelatedCta() {
         <p className="eyebrow">Need lead time + pricing?</p>
         <h2>Match the BLAST 150/45 to your ethanol volume, batch schedule, and facility utilities.</h2>
         <p>
-          PermaCool can help compare the 60/45, 150/45, and 240/45 against your current process instead of guessing
-          from capacity alone.
+          PermaCool can help compare the 60/45, standard 150/45, faster 150/25, and 240/45 against your current process
+          instead of guessing from capacity alone.
         </p>
       </div>
       <div className="related-actions">
