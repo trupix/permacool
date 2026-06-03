@@ -68,7 +68,7 @@ const butaneRecovery = {
   body:
     "A live path for BHO recovery buyers who need better process control, cleaner system planning, and a direct way to talk with PermaCool.",
   href: "/butane-recovery-system",
-  image: "/images/generated/insights-direct-refrigerant-vs-ln2.png",
+  image: "/images/generated/bho-blast15-bear-card.png",
   cta: "Explore Butane Recovery"
 };
 
