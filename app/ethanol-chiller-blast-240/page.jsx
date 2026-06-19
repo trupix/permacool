@@ -51,7 +51,7 @@ const heroStats = [
 
 const valueProps = [
   {
-    title: "Large process-class capacity",
+    title: "Enterprise process-class capacity",
     icon: TrendingUp,
     body:
       "The BLAST™ 240/45 is built for facilities that need the largest BLAST™ ethanol chilling capacity and a clearer path to higher production volume."
@@ -80,26 +80,32 @@ const overviewCards = [
   {
     eyebrow: "Performance Profile",
     title: "240 gallons to -40C in 45 minutes.",
-    image: "/images/generated/blast240-flash-chilling.png",
-    alt: "BLAST™ 240/45 green performance graphic showing 240 gallons to -40C in 45 minutes",
+    image: "/images/generated/blast240-bear-card.png",
+    imageWidth: 1440,
+    imageHeight: 1040,
+    alt: "BLAST™ 240/45 crystal bear ethanol chilling performance stats card",
     body:
       "The BLAST™ 240/45 is the large process-class option in the BLAST™ lineup, designed for teams that need more ethanol capacity and stronger schedule support."
   },
   {
     eyebrow: "System Architecture",
-    title: "Built for larger direct refrigerant chilling loads.",
-    image: "/images/generated/ethanol-systems-hero.png",
-    alt: "Industrial ethanol chilling system in a clean production facility",
+    title: "Direct refrigerant chilling with regeneration recovery.",
+    image: "/images/generated/blast240-system-architecture-flow.png",
+    imageWidth: 1672,
+    imageHeight: 941,
+    alt: "BLAST 240/45 direct refrigerant system architecture with process tank, heat exchangers, pump, and flow arrows",
     body:
-      "The system is planned around process chilling, refrigeration, controls, condenser integration, and service access for commercial extraction environments."
+      "Regeneration adds heat-transfer surface that lets returning ethanol exchange energy with the colder side of the loop before final pull-down. The system reclaims useful cold from the process stream, lowers the load the refrigeration circuit has to absorb, and helps the 240-gallon tank recover faster between extraction cycles."
   },
   {
     eyebrow: "Workflow Fit",
     title: "More chilled ethanol for higher-volume production.",
-    image: "/images/generated/workflow-banner.png",
-    alt: "Cold ethanol extraction workflow visual",
+    image: "/images/generated/blast240-workflow-fit-two-centrifuges.png",
+    imageWidth: 1672,
+    imageHeight: 941,
+    alt: "BLAST 240/45 workflow fit showing two 70-gallon centrifuges feeding a high-capacity ethanol chilling system",
     body:
-      "Higher process volume gives operators more room to support repeat-cycle extraction where ethanol needs to be re-chilled and put back to work."
+      "With 240 gallons of cold ethanol capacity, the BLAST™ 240/45 can fully support extraction workflows built around two 70-gallon centrifuges, with reserve volume left for re-chilling, staging, and repeat cycles. Larger facilities can plan around two centrifuges or more without making the chiller the bottleneck."
   },
   {
     eyebrow: "Operating Model",
@@ -253,8 +259,20 @@ function SystemOverview() {
       <div className="component-grid">
         {overviewCards.map((item) => (
           <article className="component-card" key={item.title}>
-            <div className="component-media">
-              <Image src={item.image} alt={item.alt} width={720} height={520} />
+            <div
+              className="component-media"
+              style={
+                item.imageWidth && item.imageHeight
+                  ? { aspectRatio: `${item.imageWidth} / ${item.imageHeight}` }
+                  : undefined
+              }
+            >
+              <Image
+                src={item.image}
+                alt={item.alt}
+                width={item.imageWidth || 720}
+                height={item.imageHeight || 520}
+              />
             </div>
             <div className="component-copy">
               <p className="eyebrow">{item.eyebrow}</p>
