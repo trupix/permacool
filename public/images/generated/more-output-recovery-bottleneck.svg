@@ -1,7 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 620" role="img" aria-labelledby="title desc">
-  <title id="title">Evaporation bottleneck comparison</title>
-  <desc id="desc">A comparison showing lightly loaded ethanol versus heavier loaded ethanol entering the evaporator.</desc>
+  <title id="title">Recovery bottleneck comparison</title>
+  <desc id="desc">A comparison showing lightly loaded ethanol and heavier-loaded tincture entering the same recovery bottleneck.</desc>
   <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fcfb"/>
+      <stop offset="1" stop-color="#e7f4f2"/>
+    </linearGradient>
     <linearGradient id="dark" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0b1718"/>
       <stop offset="1" stop-color="#26302e"/>
@@ -10,27 +14,60 @@
       <stop offset="0" stop-color="#13a7c7"/>
       <stop offset="1" stop-color="#91c83e"/>
     </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#163337" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#13a7c7"/>
+    </marker>
   </defs>
-  <rect width="1280" height="620" rx="32" fill="url(#dark)"/>
-  <text x="70" y="82" fill="#fff" font-family="Arial, sans-serif" font-size="42" font-weight="900">Recovery Is the Bottleneck</text>
-  <text x="72" y="122" fill="#c6d6d8" font-family="Arial, sans-serif" font-size="21">The goal is not more ethanol. The goal is more value per gallon sent downstream.</text>
-  <g transform="translate(80 200)">
-    <rect width="500" height="290" rx="28" fill="#ffffff" opacity="0.96"/>
-    <text x="45" y="65" fill="#102528" font-family="Arial, sans-serif" font-size="30" font-weight="900">Single light pass</text>
-    <text x="45" y="105" fill="#607479" font-family="Arial, sans-serif" font-size="19">One gallon still has to be evaporated.</text>
-    <rect x="45" y="155" width="370" height="30" rx="15" fill="#e7efee"/>
-    <rect x="45" y="155" width="125" height="30" rx="15" fill="#13a7c7"/>
-    <text x="45" y="224" fill="#102528" font-family="Arial, sans-serif" font-size="22" font-weight="900">Lightly loaded solvent</text>
+
+  <rect width="1280" height="620" rx="34" fill="url(#bg)"/>
+  <text x="70" y="78" fill="#102528" font-family="Arial, sans-serif" font-size="42" font-weight="900">Recovery Is the Bottleneck</text>
+  <text x="72" y="120" fill="#607479" font-family="Arial, sans-serif" font-size="21">Send fewer lightly loaded gallons and more extracted value through the same slow stage.</text>
+
+  <g transform="translate(74 178)" filter="url(#shadow)">
+    <rect width="502" height="326" rx="28" fill="#ffffff"/>
+    <text x="38" y="58" fill="#102528" font-family="Arial, sans-serif" font-size="29" font-weight="900">Single light pass</text>
+    <text x="38" y="92" fill="#607479" font-family="Arial, sans-serif" font-size="18">One gallon still takes recovery time.</text>
+
+    <g transform="translate(38 132)">
+      <rect width="426" height="44" rx="22" fill="#e7efee"/>
+      <rect width="128" height="44" rx="22" fill="#13a7c7"/>
+      <text x="22" y="29" fill="#ffffff" font-family="Arial, sans-serif" font-size="17" font-weight="900">LOW VALUE</text>
+    </g>
+
+    <g transform="translate(38 215)">
+      <rect width="426" height="52" rx="16" fill="#f2f7f6"/>
+      <path d="M24 26H386" stroke="#13a7c7" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
+      <text x="24" y="86" fill="#102528" font-family="Arial, sans-serif" font-size="21" font-weight="900">Lightly loaded solvent to evaporation</text>
+    </g>
   </g>
-  <g transform="translate(700 200)">
-    <rect width="500" height="290" rx="28" fill="#ffffff" opacity="0.96"/>
-    <text x="45" y="65" fill="#102528" font-family="Arial, sans-serif" font-size="30" font-weight="900">Extract + re-chill + re-run</text>
-    <text x="45" y="105" fill="#607479" font-family="Arial, sans-serif" font-size="19">The same gallon carries more extracted value.</text>
-    <rect x="45" y="155" width="370" height="30" rx="15" fill="#e7efee"/>
-    <rect x="45" y="155" width="335" height="30" rx="15" fill="url(#value)"/>
-    <text x="45" y="224" fill="#102528" font-family="Arial, sans-serif" font-size="22" font-weight="900">Heavier-loaded solvent</text>
+
+  <g transform="translate(704 178)" filter="url(#shadow)">
+    <rect width="502" height="326" rx="28" fill="#ffffff"/>
+    <text x="38" y="58" fill="#102528" font-family="Arial, sans-serif" font-size="29" font-weight="900">Extract + strain + re-chill</text>
+    <text x="38" y="92" fill="#607479" font-family="Arial, sans-serif" font-size="18">The same gallon carries more extracted value.</text>
+
+    <g transform="translate(38 132)">
+      <rect width="426" height="44" rx="22" fill="#e7efee"/>
+      <rect width="364" height="44" rx="22" fill="url(#value)"/>
+      <text x="22" y="29" fill="#ffffff" font-family="Arial, sans-serif" font-size="17" font-weight="900">HIGHER VALUE</text>
+    </g>
+
+    <g transform="translate(38 215)">
+      <rect width="426" height="52" rx="16" fill="#f2f7f6"/>
+      <path d="M24 26H386" stroke="#91c83e" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
+      <text x="24" y="86" fill="#102528" font-family="Arial, sans-serif" font-size="21" font-weight="900">Heavier-loaded tincture to recovery</text>
+    </g>
   </g>
-  <path d="M586 340h98" fill="none" stroke="#91c83e" stroke-width="12" stroke-linecap="round"/>
-  <path d="M672 318l34 22-34 22z" fill="#91c83e"/>
-  <text x="640" y="535" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="28" font-weight="900">More extracted value reaches recovery without immediately increasing recovery capacity.</text>
+
+  <g transform="translate(569 278)">
+    <circle cx="71" cy="62" r="60" fill="url(#dark)"/>
+    <path d="M41 62h54" stroke="#91c83e" stroke-width="10" stroke-linecap="round"/>
+    <path d="M84 38l29 24-29 24z" fill="#91c83e"/>
+  </g>
+
+  <rect x="216" y="535" width="848" height="54" rx="18" fill="#102528"/>
+  <text x="640" y="570" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="21" font-weight="900">Same recovery stage. Better value per gallon sent downstream.</text>
 </svg>

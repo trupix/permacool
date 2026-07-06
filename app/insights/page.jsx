@@ -77,10 +77,10 @@ export default function InsightsPage() {
         </div>
 
         <div className="insight-card-grid">
-          {insightArticles.map((article) => (
+          {insightArticles.filter((article) => !article.hidden).map((article) => (
             <article className="insight-card" key={article.slug}>
               <a className="insight-card-media" href={article.href} aria-label={article.title}>
-                <Image src={article.image} alt="" width={720} height={420} />
+                <Image src={article.previewImage || article.image} alt="" width={720} height={420} />
               </a>
               <div className="insight-card-copy">
                 <p className="pill">{article.category}</p>

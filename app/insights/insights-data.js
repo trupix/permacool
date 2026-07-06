@@ -8,7 +8,6 @@ import {
   Factory,
   Funnel,
   Gauge,
-  GitBranch,
   Infinity,
   MonitorCog,
   Network,
@@ -18,8 +17,7 @@ import {
   Snowflake,
   Timer,
   TrendingUp,
-  Wrench,
-  Zap
+  Wrench
 } from "lucide-react";
 
 export const insightArticles = [
@@ -65,7 +63,7 @@ export const insightArticles = [
       "Owning an extraction lab means mastering the discipline behind the equipment: material prep, temperature control, recovery, SOPs, data, maintenance, and continuous improvement.",
     related: [
       ["Workflow", "/workflow"],
-      ["More Output Per Gallon", "/more-output-per-gallon"],
+      ["Output Per Gallon Workflow", "/workflow"],
       ["Explore Ethanol Chillers", "/ethanol-chilling-systems"]
     ],
     cta: {
@@ -77,18 +75,19 @@ export const insightArticles = [
   },
   {
     slug: "more-output-per-gallon",
+    hidden: true,
     category: "Workflow Efficiency",
-    title: "More Output Per Gallon: Extract, Re-Chill, and Re-Run Ethanol",
+    title: "More Output Per Gallon Is Now Part of the Cold Ethanol Workflow",
     shortTitle: "More Output Per Gallon",
-    summary: "How repeated ethanol reuse can move more extracted value through the recovery bottleneck.",
+    summary: "A short pointer to the full cold ethanol workflow now consolidated at /workflow.",
     description:
-      "Learn how extract, re-chill, and re-run ethanol workflows help processors increase biomass processed per gallon of ethanol.",
+      "The more-output-per-gallon article now points readers to the consolidated cold ethanol workflow at /workflow.",
     image: "/images/generated/insights-more-output-per-gallon.svg",
-    href: "/more-output-per-gallon",
+    href: "/workflow",
     intro:
-      "Solvent recovery is often the slowest part of cold ethanol extraction. This workflow helps each gallon of ethanol do more work before it reaches recovery.",
+      "The full output-per-gallon article has been folded into the cold ethanol workflow so readers can follow the complete extract, strain, re-chill, repeat process in one place.",
     related: [
-      ["Workflow Breakdown", "/workflow"],
+      ["Read the Full Workflow", "/workflow"],
       ["Explore Ethanol Chillers", "/ethanol-chilling-systems"],
       ["Reduce LN2 Dependence", "/how-to-reduce-ln2-dependence"]
     ],
@@ -141,66 +140,62 @@ export const insightArticles = [
   },
   {
     slug: "workflow",
-    category: "Process Story",
-    title: "Workflow",
-    shortTitle: "Workflow",
+    category: "Cold Ethanol Workflow",
+    title: "Cold Ethanol Workflow: Extract, Strain, Re-Chill, Repeat",
+    shortTitle: "Cold Ethanol Workflow",
     summary:
-      "Learn how the Perma Cool pre-ethanol chillers workflow can drastically increase your extraction throughput.",
+      "The complete extract, strain, re-chill, repeat workflow, including how each gallon can carry more value before recovery.",
     description:
-      "See how the PermaCool pre-ethanol chilling workflow supports extraction throughput, re-chill cycles, and lower LN2 dependence.",
-    image: "/images/generated/insights-workflow.png",
+      "See the Perma Cool cold ethanol workflow for extraction throughput, straining, re-chill cycles, output per gallon, and lower LN2 dependence.",
+    image: "/images/generated/cold-ethanol-workflow-label-style-option-3-repeat-logo.png",
+    previewImage: "/images/generated/cold-ethanol-workflow-label-style-option-3-repeat-logo.png",
     href: "/workflow",
     intro:
-      "Learn how the Perma Cool pre-ethanol chiller workflow can drastically increase extraction throughput while improving consistency, safety, and operating efficiency.",
+      "Use the Perma Cool pre-ethanol chiller workflow to move from chilled ethanol to extraction, straining, re-chilling, and repeat passes with better throughput discipline.",
     kicker: "Perma Cool Ethanol Pre-Chiller",
-    deck: "Step-by-Step Process & The Electric Advantage",
+    deck: "Step-by-step process before the output-per-gallon loop.",
+    processIntro:
+      "The core operating rhythm is simple: chill ethanol, move it through the centrifuge, strain the tincture, return it to the chiller, and repeat the cycle once it is back at the target temperature.",
     steps: [
       {
         icon: Snowflake,
-        title: "1. Chill Ethanol",
-        body: "Ethanol is chilled to -40°C/F."
-      },
-      {
-        icon: Gauge,
-        title: "2. Pump Ethanol",
-        body: "The chilled ethanol is pumped by the Perma Cool pump to fill the centrifuge."
+        title: "1. Chill",
+        body: "Bring the ethanol down to the target cold operating range before it enters extraction.",
+        actions: ["Chill ethanol to -40°C (-40°F).", "Pump chilled ethanol into the centrifuge."]
       },
       {
         icon: Activity,
-        title: "3. Process Biomass",
-        body: "The centrifuge processes the biomass using the chilled ethanol."
-      },
-      {
-        icon: Zap,
-        title: "4. Extract Tincture Solution",
-        body: 'The ethanol, now called the "tincture solution," is spun out of the centrifuge.'
-      },
-      {
-        icon: GitBranch,
-        title: "5. Pump Tincture Solution",
-        body: "A diaphragm pump moves the tincture solution out of the centrifuge."
+        title: "2. Extract",
+        body: "Use the centrifuge to contact cold ethanol with biomass and separate the tincture solution.",
+        actions: ["Process biomass in the centrifuge.", "Spin out the ethanol tincture solution."]
       },
       {
         icon: Funnel,
-        title: "6. Filter Biomass",
-        body:
-          "The tincture solution passes through a biomass strainer to filter out any biomass particles. Filtering the tincture solution helps protect the Perma Cool chiller from biomass contamination."
+        title: "3. Strain",
+        body: "Move tincture through the strainer before it returns to the chiller.",
+        actions: ["Pump tincture with the diaphragm pump.", "Pass tincture through the biomass strainer."]
       },
       {
-        icon: Activity,
-        title: "7. Return and Rechill",
-        body:
-          "The tincture solution, now typically around -30°F (10 degrees warmer due to the extraction, pumping, and filtering stages), returns to the Perma Cool chiller."
+        icon: Gauge,
+        title: "4. Re-Chill",
+        body: "Return the filtered tincture to the Perma Cool chiller and pull it back down to target temperature.",
+        actions: [
+          "Return filtered tincture to the chiller.",
+          "Re-chill from the extraction temperature rise back to -40°C (-40°F)."
+        ]
       },
       {
         icon: Infinity,
-        title: "8. Repeat",
-        body:
-          "The tincture solution is re-chilled to -40°C/F to continue extraction. Repeat these steps until you reach at least a 2 lbs of material to 1 gallon of ethanol ratio, processing up to 440 lbs of biomass in your 270 gallon ethanol chilling tank."
+        title: "5. Repeat",
+        body: "Reuse the re-chilled tincture on fresh biomass so each gallon of ethanol carries more extracted value.",
+        actions: [
+          "Run the re-chilled tincture through fresh biomass.",
+          "Repeat until the target material-to-ethanol ratio is reached."
+        ]
       }
     ],
     callout:
-      "Pro Tip: By following these steps, you ensure efficient and consistent extraction using the Perma Cool Ethanol Pre-Chiller.",
+      "Pro Tip: The five stages match the image above. The bullets inside each stage show the operating actions that used to be listed as separate steps.",
     advantageIntro:
       "Switching from liquid nitrogen (LN2) to electricity with the Perma Cool Ethanol Pre-Chiller delivers major benefits in cost, efficiency, safety, and reliability.",
     groups: [
@@ -216,7 +211,7 @@ export const insightArticles = [
         bullets: [
           "Extraction Efficiency: Each gallon of ethanol can be used to extract at least two pounds of material. Ethanol that has already gone through extraction can be reused, maximizing efficiency.",
           "Optimized Ethanol Usage: Re-washing material with previously extracted ethanol maintains the proper ethanol-to-material ratio for centrifuge operation, while also allowing larger ethanol batches to be chilled at once. This speeds up overall throughput.",
-          "Consistent Temperature Control: The system quickly rechills ethanol back to -40°C/°F after extraction. Because the ethanol only needs to be cooled from a small temperature rise, chilling is faster, and overall productivity is higher."
+          "Consistent Temperature Control: The system quickly re-chills ethanol back to -40°C (-40°F) after extraction. Because the ethanol only needs to be cooled from a small temperature rise, chilling is faster, and overall productivity is higher."
         ]
       },
       {
@@ -229,8 +224,8 @@ export const insightArticles = [
       {
         title: "Safety",
         bullets: [
-          "LN2 is one of the leading causes of laboratory accidents in the United States.",
-          "By removing LN2 from the large-scale chilling process, the Perma Cool system minimizes safety risks for staff and reduces environmental hazards."
+          "LN2 handling can introduce serious lab safety risks, including cryogenic burn and oxygen-displacement hazards.",
+          "By reducing LN2 dependence in the large-scale chilling process, the Perma Cool system can lower handling risk for staff and simplify the operating environment."
         ]
       },
       {
@@ -396,7 +391,7 @@ export const insightArticles = [
 export const articlesBySlug = Object.fromEntries(insightArticles.map((article) => [article.slug, article]));
 
 export const insightIndexStats = [
-  ["8", "active knowledge pages"],
+  ["7", "primary knowledge pages"],
   ["3", "buyer objections covered"],
   ["1", "clear path to a recommendation"]
 ];
@@ -413,9 +408,9 @@ export const navItems = [
 export const indexTopics = [
   "-40 Celsius and Fahrenheit temperature science",
   "Process ownership as the core extraction lab discipline",
-  "Extract, re-chill, and re-run ethanol efficiency",
+  "Extract, strain, re-chill, repeat ethanol efficiency",
   "LN2 dependence and operating cost",
-  "Extraction workflow and repeat-cycle chilling",
+  "Cold ethanol workflow and output-per-gallon reuse",
   "Industrial maintenance and uptime planning",
   "Cooling system design and pre-quote discovery",
   "Direct refrigerant vs consumable-heavy chilling"

@@ -2752,8 +2752,108 @@ h4 {
   margin-top: 0.22rem;
 }
 
+.workflow-article {
+  gap: 2.5rem;
+}
+
+.workflow-primary-lede {
+  display: grid;
+  grid-template-columns: 0.72fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  padding: 2rem;
+  border: 1px solid rgba(19, 167, 199, 0.18);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(19, 167, 199, 0.12), rgba(145, 200, 62, 0.12)),
+    #fff;
+  box-shadow: var(--shadow);
+}
+
+.workflow-primary-lede h2 {
+  font-size: clamp(2rem, 3vw, 3.1rem);
+}
+
+.workflow-primary-lede p:last-child {
+  margin-bottom: 0;
+  color: var(--graphite);
+  font-size: 1.14rem;
+  font-weight: 800;
+}
+
+.workflow-stage-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.workflow-stage-card {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  padding: 1.25rem;
+  border: 1px solid rgba(19, 167, 199, 0.18);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(19, 167, 199, 0.08), rgba(145, 200, 62, 0.05)),
+    #fff;
+  box-shadow: var(--shadow);
+}
+
+.workflow-stage-card-head {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.workflow-stage-card-head svg {
+  color: var(--cyan-dark);
+}
+
+.workflow-stage-card h3 {
+  margin: 0;
+  color: var(--graphite);
+  font-size: 1.24rem;
+}
+
+.workflow-stage-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.workflow-stage-card ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workflow-stage-card li {
+  position: relative;
+  padding-left: 1.25rem;
+  color: var(--graphite);
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.workflow-stage-card li::before {
+  position: absolute;
+  top: 0.54em;
+  left: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--lime);
+  content: "";
+}
+
 .more-output-article {
   gap: 2.5rem;
+}
+
+.workflow-merged-sections {
+  display: grid;
 }
 
 .more-output-lede,
@@ -2898,6 +2998,14 @@ h4 {
   background:
     linear-gradient(135deg, rgba(19, 167, 199, 0.12), rgba(145, 200, 62, 0.13)),
     #fff;
+}
+
+.more-output-teaser-page {
+  gap: 2.5rem;
+}
+
+.more-output-teaser-card {
+  border-color: rgba(19, 167, 199, 0.2);
 }
 
 .process-ownership-article {
@@ -3667,8 +3775,10 @@ h4 {
   .insights-bottom-cta,
   .insight-cta,
   .insight-section-grid,
+  .workflow-stage-grid,
   .insight-related-card,
   .insight-bullet-grid,
+  .workflow-primary-lede,
   .more-output-lede,
   .more-output-split,
   .more-output-strainer,
@@ -3991,9 +4101,11 @@ h4 {
   .insights-topic-card,
   .insight-card-copy,
   .insight-section-card,
+  .workflow-stage-card,
   .insight-note,
   .insight-related-card,
   .insight-bullet-panel,
+  .workflow-primary-lede,
   .more-output-lede,
   .more-output-split,
   .more-output-strainer,
