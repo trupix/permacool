@@ -17,7 +17,7 @@ export default function LearningCenterSection() {
     <section className="learning-center-section" aria-labelledby="learning-center-heading">
       <div className="learning-center-copy">
         <p className="eyebrow">Learning Center</p>
-        <h2 id="learning-center-heading">Extraction cooling education before the quote conversation.</h2>
+        <h2 id="learning-center-heading">Practical extraction cooling guidance for better system decisions.</h2>
         <p>
           Compare chilling methods, reduce LN2 dependency, and plan system fit with practical guides built for
           extraction operators.
