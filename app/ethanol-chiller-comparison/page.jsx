@@ -10,7 +10,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import LearningCenterSection from "../components/LearningCenterSection";
-import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
+import { InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   title: "Compare BLAST™ Ethanol Chillers | 60/45 vs 150/45 vs 240/45 | Perma Cool",
@@ -240,7 +240,6 @@ export default function EthanolChillerComparisonPage() {
         </div>
       </section>
 
-      <InsightsFooter />
     </main>
   );
 }

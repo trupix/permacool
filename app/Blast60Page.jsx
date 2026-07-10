@@ -7,8 +7,6 @@ import {
   Droplets,
   Fan,
   Gauge,
-  Mail,
-  Phone,
   RefreshCw,
   ShieldCheck,
   Snowflake,
@@ -166,11 +164,9 @@ export default function Blast60Page() {
       <HighlightsAndRoi />
       <LearningCenterSection />
       <RelatedCta />
-      <Footer />
     </main>
   );
 }
-
 function Hero() {
   return (
     <section className="hero blast60-product-hero">
@@ -420,26 +416,5 @@ function RelatedCta() {
         </a>
       </div>
     </section>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="site-footer">
-      <div>
-        <img src="/images/brand/perma-cool.png" alt="Perma Cool" />
-        <p>© 2026 Perma Cool Systems Inc.</p>
-      </div>
-      <div className="footer-actions">
-        <a href="tel:+17472081001">
-          <Phone size={17} aria-hidden="true" />
-          747.208.1001
-        </a>
-        <a href="mailto:sales@perma.cool">
-          <Mail size={17} aria-hidden="true" />
-          sales@perma.cool
-        </a>
-      </div>
-    </footer>
   );
 }

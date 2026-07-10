@@ -1,31 +1,10 @@
 import Image from "next/image";
-import { ArrowRight, CheckCircle2, Mail, Phone } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import ResponsiveHeader from "../components/ResponsiveHeader";
 import { navItems } from "./insights-data";
 
 export function InsightsHeader() {
   return <ResponsiveHeader navItems={navItems} />;
-}
-
-export function InsightsFooter() {
-  return (
-    <footer className="site-footer">
-      <div>
-        <img src="/images/brand/perma-cool.png" alt="Perma Cool" />
-        <p>© 2026 Perma Cool Systems Inc.</p>
-      </div>
-      <div className="footer-actions">
-        <a href="tel:+17472081001">
-          <Phone size={17} aria-hidden="true" />
-          747.208.1001
-        </a>
-        <a href="mailto:sales@perma.cool">
-          <Mail size={17} aria-hidden="true" />
-          sales@perma.cool
-        </a>
-      </div>
-    </footer>
-  );
 }
 
 export function ArticleHero({ article }) {

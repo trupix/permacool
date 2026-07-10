@@ -3,7 +3,6 @@ import {
   ArticleHero,
   BulletPanel,
   InsightCta,
-  InsightsFooter,
   InsightsHeader,
   RelatedReading,
   SectionCardGrid
@@ -115,7 +114,6 @@ export function StandardArticlePage({ article }) {
         <RelatedReading links={article.related} />
       </section>
       <InsightCta cta={article.cta} />
-      <InsightsFooter />
     </main>
   );
 }
@@ -169,7 +167,6 @@ export function WorkflowArticlePage({ article }) {
         </div>
       </section>
       <InsightCta cta={article.cta} />
-      <InsightsFooter />
     </main>
   );
 }
@@ -357,7 +354,6 @@ export function MoreOutputPerGallonArticlePage({ article }) {
       </section>
 
       <InsightCta cta={article.cta} />
-      <InsightsFooter />
     </main>
   );
 }
@@ -537,7 +533,6 @@ export function ProcessOwnershipArticlePage({ article }) {
       </section>
 
       <InsightCta cta={article.cta} />
-      <InsightsFooter />
     </main>
   );
 }
@@ -678,7 +673,6 @@ export function Minus40ArticlePage({ article }) {
       </section>
 
       <InsightCta cta={article.cta} />
-      <InsightsFooter />
     </main>
   );
 }

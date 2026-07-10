@@ -1,5 +1,5 @@
 import { ArrowRight, CheckCircle2, ClipboardList, Mail, Phone } from "lucide-react";
-import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
+import { InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   alternates: { canonical: "https://perma.cool/contact-us" },
@@ -131,7 +131,6 @@ export default async function Page({ searchParams }) {
         </ul>
       </section>
 
-      <InsightsFooter />
     </main>
   );
 }

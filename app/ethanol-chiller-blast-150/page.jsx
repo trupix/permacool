@@ -15,7 +15,7 @@ import {
   Zap
 } from "lucide-react";
 import LearningCenterSection from "../components/LearningCenterSection";
-import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
+import { InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   alternates: { canonical: "https://perma.cool/ethanol-chiller-blast-150" },
@@ -202,7 +202,6 @@ export default function Blast150Page() {
       <Highlights />
       <LearningCenterSection />
       <RelatedCta />
-      <InsightsFooter />
     </main>
   );
 }

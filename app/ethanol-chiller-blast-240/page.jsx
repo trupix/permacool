@@ -17,7 +17,7 @@ import {
   Zap
 } from "lucide-react";
 import LearningCenterSection from "../components/LearningCenterSection";
-import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
+import { InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   title: "BLAST™ 240/45 Ethanol Chiller | 240 Gallons to −40 °C in 45 Minutes | Perma Cool",
@@ -181,7 +181,6 @@ export default function Blast240Page() {
       <Highlights />
       <LearningCenterSection />
       <RelatedCta />
-      <InsightsFooter />
     </main>
   );
 }

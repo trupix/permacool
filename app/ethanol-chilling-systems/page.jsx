@@ -8,7 +8,6 @@ import {
   FlaskConical,
   Gauge,
   Layers,
-  Mail,
   Phone,
   Snowflake,
   ThermometerSnowflake,
@@ -259,7 +258,6 @@ export default function EthanolChillingSystemsPage() {
           </div>
         </div>
       </section>
-
       <section className="ecs-profile">
         <div className="ecs-profile-card">
           <span className="micro-label">Core Performance Profile</span>
@@ -477,28 +475,6 @@ export default function EthanolChillingSystemsPage() {
         </div>
       </section>
 
-      <Footer />
     </main>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="site-footer">
-      <div>
-        <img src="/images/brand/perma-cool.png" alt="Perma Cool" />
-        <p>&copy; 2026 Perma Cool Systems Inc.</p>
-      </div>
-      <div className="footer-actions">
-        <a href="tel:+17472081001">
-          <Phone size={17} aria-hidden="true" />
-          747.208.1001
-        </a>
-        <a href="mailto:sales@perma.cool">
-          <Mail size={17} aria-hidden="true" />
-          sales@perma.cool
-        </a>
-      </div>
-    </footer>
   );
 }

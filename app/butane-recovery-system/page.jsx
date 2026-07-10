@@ -10,7 +10,7 @@ import {
   Wrench
 } from "lucide-react";
 import LearningCenterSection from "../components/LearningCenterSection";
-import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
+import { InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   title: "Butane Recovery Systems for BHO Extraction | Perma Cool",
@@ -267,7 +267,6 @@ export default function ButaneRecoveryPage() {
         </div>
       </section>
 
-      <InsightsFooter />
     </main>
   );
 }

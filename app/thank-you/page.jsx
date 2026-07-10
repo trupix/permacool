@@ -1,5 +1,5 @@
 import { ArrowRight, CheckCircle2, Phone } from "lucide-react";
-import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
+import { InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   title: "Thank You | Perma Cool",
@@ -40,7 +40,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-      <InsightsFooter />
     </main>
   );
 }

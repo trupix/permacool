@@ -7,7 +7,7 @@ import {
   insightHeroImage,
   insightIndexStats
 } from "./insights-data";
-import { InsightsFooter, InsightsHeader } from "./InsightsShell";
+import { InsightsHeader } from "./InsightsShell";
 
 export const metadata = {
   title: "Perma Cool Learning Center",
@@ -114,7 +114,6 @@ export function LearningCenterPage() {
         </a>
       </section>
 
-      <InsightsFooter />
     </main>
   );
 }

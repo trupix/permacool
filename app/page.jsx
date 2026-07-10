@@ -11,7 +11,7 @@ import {
   ThermometerSnowflake
 } from "lucide-react";
 import LearningCenterSection from "./components/LearningCenterSection";
-import { InsightsFooter, InsightsHeader } from "./insights/InsightsShell";
+import { InsightsHeader } from "./insights/InsightsShell";
 
 export const metadata = {
   title: "Perma Cool Ethanol Chillers & Butane Recovery Systems | Industrial Extraction Cooling",
@@ -296,7 +296,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <InsightsFooter />
     </main>
   );
 }

@@ -1,4 +1,5 @@
 import "./globals.css";
+import SiteFooter from "./components/SiteFooter";
 
 export const metadata = {
   metadataBase: new URL("https://perma.cool"),
@@ -42,7 +43,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }
