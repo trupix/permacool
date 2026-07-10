@@ -126,7 +126,7 @@ export default function HomePage() {
         <div className="home-hero-overlay" />
         <div className="home-hero-content">
           <p className="eyebrow">Industrial Extraction Cooling</p>
-          <h1>Purpose built chillers for botanical plant extraction</h1>
+          <h1>Purpose built chillers for botanical extraction</h1>
           <p>
             Perma Cool systems are full turnkey chilling solutions for extraction labs looking to make more money,
             eliminate bottlenecks and outperform the competition.
@@ -236,7 +236,7 @@ export default function HomePage() {
       <section className="home-process-section">
         <div className="section-heading narrow">
           <p className="eyebrow">Process Cooling Flow</p>
-          <h2>How Perma Cool moves from equipment specs to operational advantage.</h2>
+          <h2>From rapid pull-down to repeat-cycle production.</h2>
         </div>
         <div className="home-process-grid">
           {processSteps.map(({ icon: Icon, title, body }, index) => (
@@ -253,7 +253,7 @@ export default function HomePage() {
       <section className="home-ln2-section">
         <div>
           <p className="eyebrow">Why Operators Switch</p>
-          <h2>Lower consumable drag, clearer process control, and a better commercial cooling stack.</h2>
+          <h2>Reduce consumable costs without giving up process control.</h2>
         </div>
         <div className="home-switch-grid">
           {switchReasons.map(({ icon: Icon, title, body }) => (
