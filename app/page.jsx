@@ -14,9 +14,9 @@ import LearningCenterSection from "./components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "./insights/InsightsShell";
 
 export const metadata = {
-  title: "Perma Cool Ethanol Chillers & Butane Recovery Systems | Industrial Extraction Cooling",
+  title: "Industrial Ethanol Chillers & Butane Recovery Systems | Perma Cool",
   description:
-    "Perma Cool builds industrial ethanol chilling systems and butane recovery solutions for extraction labs.",
+    "Perma Cool designs industrial ethanol chilling and butane recovery systems for commercial botanical extraction facilities.",
   alternates: { canonical: "https://perma.cool/" }
 };
 
@@ -49,7 +49,7 @@ const blastSystems = [
   {
     title: "BLAST 150/45",
     body:
-      "Mid-scale production chilling for up to 150-gallon process class applications, with the same direct refrigerant control philosophy and PLC/HMI visibility.",
+      "Mid-scale production chilling for 150-gallon process applications, with direct refrigerant control and PLC/HMI visibility.",
     href: "/ethanol-chiller-blast-150",
     image: "/images/generated/blast150-bear-card-purple.png",
     cta: "View BLAST 150/45"
@@ -125,11 +125,11 @@ export default function HomePage() {
         />
         <div className="home-hero-overlay" />
         <div className="home-hero-content">
-          <p className="eyebrow">Industrial Extraction Cooling</p>
-          <h1>Purpose built chillers for botanical plant extraction</h1>
+          <p className="eyebrow">Industrial Process Cooling for Extraction</p>
+          <h1>Purpose-built process chillers for botanical extraction</h1>
           <p>
-            Perma Cool systems are full turnkey chilling solutions for extraction labs looking to make more money,
-            eliminate bottlenecks and outperform the competition.
+            Perma Cool designs turnkey ethanol chilling and butane recovery systems for extraction facilities that need
+            repeatable low-temperature performance, higher throughput, and less dependence on consumable cooling.
           </p>
           <div className="hero-actions">
             <a className="button primary" href="/ethanol-chilling-systems">
@@ -152,7 +152,7 @@ export default function HomePage() {
         <article>
           <ThermometerSnowflake size={24} aria-hidden="true" />
           <strong>−40 °C</strong>
-          <span>target process window</span>
+          <span>target process temperature</span>
         </article>
         <article>
           <Gauge size={24} aria-hidden="true" />
@@ -161,15 +161,15 @@ export default function HomePage() {
         </article>
         <article>
           <BadgeDollarSign size={24} aria-hidden="true" />
-          <strong>LN2 + DRY ICE</strong>
-          <span>Consumable Elimination</span>
+          <strong>LOWER USE</strong>
+          <span>LN2 + dry ice consumables</span>
         </article>
       </section>
 
       <section className="section home-systems-section">
         <div className="section-heading">
           <p className="eyebrow">Ethanol Extraction Chilling Systems</p>
-          <h2>Ethanol extraction pre-chiller systems for distillate production</h2>
+          <h2>Industrial ethanol pre-chillers built for repeatable extraction throughput.</h2>
         </div>
         <div className="home-ethanol-layout">
           <article className="home-ethanol-overview">
@@ -223,7 +223,7 @@ export default function HomePage() {
           </a>
           <div className="home-butane-copy">
             <p className="eyebrow">Butane Recovery</p>
-            <h2 id="home-butane-heading">Butane recovery systems for BHO production support.</h2>
+            <h2 id="home-butane-heading">Butane recovery systems sized for commercial BHO production.</h2>
             <p>{butaneRecovery.body}</p>
             <a className="button butane" href={butaneRecovery.href}>
               {butaneRecovery.cta}
@@ -236,7 +236,7 @@ export default function HomePage() {
       <section className="home-process-section">
         <div className="section-heading narrow">
           <p className="eyebrow">Process Cooling Flow</p>
-          <h2>How Perma Cool moves from equipment specs to operational advantage.</h2>
+          <h2>From rapid pull-down to repeat-cycle production.</h2>
         </div>
         <div className="home-process-grid">
           {processSteps.map(({ icon: Icon, title, body }, index) => (
@@ -253,7 +253,7 @@ export default function HomePage() {
       <section className="home-ln2-section">
         <div>
           <p className="eyebrow">Why Operators Switch</p>
-          <h2>Lower consumable drag, clearer process control, and a better commercial cooling stack.</h2>
+          <h2>Reduce consumable costs without giving up process control.</h2>
         </div>
         <div className="home-switch-grid">
           {switchReasons.map(({ icon: Icon, title, body }) => (
@@ -282,7 +282,7 @@ export default function HomePage() {
       <section className="related-section">
         <div>
           <p className="eyebrow">Build-Spec Quote</p>
-          <h2>Need pricing fast? Tell us your extraction throughput.</h2>
+          <h2>Tell us your ethanol volume, target temperature, and run schedule.</h2>
         </div>
         <div className="related-actions">
           <a className="button primary" href="/contact-us">
