@@ -5,7 +5,8 @@ const article = articlesBySlug["minus-40-celsius-fahrenheit"];
 
 export const metadata = {
   title: `${article.title} | PermaCool Insights`,
-  description: article.description
+  description: article.description,
+  alternates: { canonical: "https://perma.cool/minus-40-celsius-fahrenheit" }
 };
 
 export default function Page() {

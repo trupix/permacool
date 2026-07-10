@@ -22,7 +22,8 @@ import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 export const metadata = {
   title: "BLAST™ 240/45 Ethanol Chiller | 240 Gallons to -40C in 45 Minutes | PermaCool",
   description:
-    "PermaCool BLAST™ 240/45 ethanol chiller flash-chills 240 gallons to -40C in 45 minutes with 6.0 GPM of flash chilling, direct refrigerant architecture, and PLC/HMI visibility."
+    "PermaCool BLAST™ 240/45 ethanol chiller flash-chills 240 gallons to -40C in 45 minutes with 6.0 GPM of flash chilling, direct refrigerant architecture, and PLC/HMI visibility.",
+  alternates: { canonical: "https://perma.cool/ethanol-chiller-blast-240" }
 };
 
 const heroStats = [

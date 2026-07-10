@@ -5,7 +5,8 @@ const article = articlesBySlug["extraction-cooling-system-design-checklist"];
 
 export const metadata = {
   title: `${article.title} | PermaCool Insights`,
-  description: article.description
+  description: article.description,
+  alternates: { canonical: "https://perma.cool/extraction-cooling-system-design-checklist" }
 };
 
 export default function Page() {
