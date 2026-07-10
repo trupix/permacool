@@ -126,7 +126,7 @@ export default function HomePage() {
         <div className="home-hero-overlay" />
         <div className="home-hero-content">
           <p className="eyebrow">Industrial Extraction Cooling</p>
-          <h1>Purpose built chillers for botanical plant extraction</h1>
+          <h1>Purpose built chillers for botanical extraction</h1>
           <p>
             Perma Cool systems are full turnkey chilling solutions for extraction labs looking to make more money,
             eliminate bottlenecks and outperform the competition.
