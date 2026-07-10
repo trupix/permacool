@@ -3,7 +3,11 @@ import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   title: "Thank You | PermaCool",
-  description: "Thanks for contacting PermaCool. Our team will follow up with recommendations and pricing."
+  description: "Thanks for contacting PermaCool. Our team will follow up with recommendations and pricing.",
+  robots: {
+    index: false,
+    follow: false
+  }
 };
 
 export default function Page() {

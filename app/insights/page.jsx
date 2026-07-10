@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { permanentRedirect } from "next/navigation";
 import { ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
 import {
   indexTopics,
@@ -15,7 +16,7 @@ export const metadata = {
   alternates: { canonical: "https://perma.cool/learning-center" }
 };
 
-export default function InsightsPage() {
+export function LearningCenterPage() {
   return (
     <main className="site-shell insights-page">
       <InsightsHeader />
@@ -116,4 +117,8 @@ export default function InsightsPage() {
       <InsightsFooter />
     </main>
   );
+}
+
+export default function InsightsRedirect() {
+  permanentRedirect("/learning-center");
 }
