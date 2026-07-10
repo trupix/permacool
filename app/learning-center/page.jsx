@@ -1,2 +1,1 @@
-export { metadata } from "../insights/page";
-export { default } from "../insights/page";
+export { metadata, LearningCenterPage as default } from "../insights/page";

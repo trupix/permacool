@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export default function Page() {
-  redirect("/extraction-cooling-system-design-checklist");
+  permanentRedirect("/extraction-cooling-system-design-checklist");
 }
