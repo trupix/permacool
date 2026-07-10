@@ -45,8 +45,8 @@ export default function InsightsPage() {
       <section className="insights-topic-panel">
         <div className="insights-topic-card">
           <div>
-            <span className="micro-label">Live-Site Topics</span>
-            <h2>Current content tracks rebuilt into this Next.js site.</h2>
+            <span className="micro-label">Cooling Topics</span>
+            <h2>Practical guidance for extraction cooling decisions.</h2>
           </div>
           <ul>
             {indexTopics.map((topic) => (
@@ -71,9 +71,10 @@ export default function InsightsPage() {
       <section className="section insights-index-section">
         <div className="section-heading narrow">
           <p className="eyebrow">Article Library</p>
-          <h2>Practical cooling education with a cleaner buyer path.</h2>
+          <h2>Technical guidance for better cooling and extraction decisions.</h2>
           <p>
-            Each article keeps the live-site copy, then wraps it in stronger visuals, clearer cards, and working links.
+            Explore cooling methods, operating workflows, maintenance planning, and system-design considerations for
+            commercial extraction facilities.
           </p>
         </div>
 
@@ -99,11 +100,11 @@ export default function InsightsPage() {
       <section className="insights-bottom-cta">
         <BookOpen size={34} aria-hidden="true" />
         <div>
-          <p className="eyebrow">Recommendation Path</p>
-          <h2>Want content mapped to your facility profile?</h2>
+          <p className="eyebrow">System Recommendation</p>
+          <h2>Need guidance for your facility?</h2>
           <p>
-            Learning center pages work best when they connect directly to a consultative quote flow, not a dead-end
-            brochure experience.
+            Share your throughput, temperature target, current cooling method, and facility constraints. PermaCool can
+            help identify the most appropriate next step.
           </p>
         </div>
         <a className="button primary" href="/contact-us">

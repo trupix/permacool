@@ -67,7 +67,7 @@ const blastSystems = [
 const butaneRecovery = {
   title: "Butane Recovery",
   body:
-    "A live path for BHO recovery buyers who need better process control, cleaner system planning, and a direct way to talk with PermaCool.",
+    "Commercial BHO recovery systems planned around process control, cooling load, facility utilities, and production throughput.",
   href: "/butane-recovery-system",
   image: "/images/generated/bho-blast15-bear-card.png",
   cta: "Explore Butane Recovery"

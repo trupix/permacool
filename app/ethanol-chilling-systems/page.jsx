@@ -405,8 +405,8 @@ export default function EthanolChillingSystemsPage() {
       <section className="ecs-workflow">
         <div className="ecs-workflow-inner">
           <div>
-            <p className="eyebrow">Workflow Story</p>
-            <h2>Move the page from cold equipment to operational advantage.</h2>
+            <p className="eyebrow">Operational Advantage</p>
+            <h2>Turn reliable process cooling into higher extraction throughput.</h2>
           </div>
           <div className="ecs-workflow-copy">
             <p>
@@ -454,8 +454,8 @@ export default function EthanolChillingSystemsPage() {
       <section className="related-section ecs-related">
         <div>
           <p className="eyebrow">Building Out Ethanol Chilling Capacity?</p>
-          <h2>Get chiller recommendations before the quote conversation gets too generic.</h2>
-          <p>Capture system interest, batch profile, facility notes, and expansion goals before pricing is discussed.</p>
+          <h2>Match the right chiller to your production requirements.</h2>
+          <p>Share your ethanol volume, batch profile, facility utilities, and expansion goals for a system-fit review.</p>
           <div className="ecs-related-reading">
             <a href="/direct-refrigerant-vs-ln2">Direct Refrigerant vs LN2</a>
             <a href="/how-to-reduce-ln2-dependence">How to Reduce LN2 Dependence</a>

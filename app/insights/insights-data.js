@@ -77,11 +77,11 @@ export const insightArticles = [
     slug: "more-output-per-gallon",
     hidden: true,
     category: "Workflow Efficiency",
-    title: "More Output Per Gallon Is Now Part of the Cold Ethanol Workflow",
+    title: "More Output Per Gallon in Cold Ethanol Extraction",
     shortTitle: "More Output Per Gallon",
-    summary: "A short pointer to the full cold ethanol workflow now consolidated at /workflow.",
+    summary: "See how straining, re-chilling, and repeating the extraction cycle can improve ethanol utilization.",
     description:
-      "The more-output-per-gallon article now points readers to the consolidated cold ethanol workflow at /workflow.",
+      "Learn how cold ethanol workflow design can improve solvent utilization before material moves to recovery.",
     image: "/images/generated/insights-more-output-per-gallon.svg",
     href: "/workflow",
     intro:
