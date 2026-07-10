@@ -110,7 +110,7 @@ const faqs = [
   {
     question: "Can Perma Cool help with system fit before a purchase?",
     answer:
-      "Yes. The page is built around a fit-assessment workflow because recovery systems should be scoped to the production environment, not sold as a generic box."
+      "Yes. PermaCool reviews recovery volume, run cadence, solvent handling requirements, available utilities, and existing equipment before recommending a system configuration."
   }
 ];
 

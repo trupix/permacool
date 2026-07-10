@@ -126,7 +126,7 @@ export default async function Page({ searchParams }) {
           </li>
           <li>
             <CheckCircle2 size={18} aria-hidden="true" />
-            Clear next-step quote path instead of a generic brochure dump.
+            Clear recommendations and next steps for pricing and system planning.
           </li>
         </ul>
       </section>

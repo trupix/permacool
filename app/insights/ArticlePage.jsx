@@ -300,10 +300,10 @@ function MoreOutputWorkflowSections() {
       <section className="more-output-workflow-link">
         <div>
           <p className="eyebrow">Full Sequence</p>
-          <h2>The re-chill and re-extract sequence is now part of this workflow article.</h2>
+          <h2>Re-chill and re-extract to get more value from each gallon.</h2>
           <p>
-            The operating rhythm includes pumping, straining, returning, and repeating the cycle so the output-per-gallon
-            strategy and workflow breakdown live in one place.
+            Pumping, straining, returning, and repeating the cycle helps operators use cold ethanol more effectively
+            before it moves to recovery.
           </p>
         </div>
         <a className="button primary" href="/contact-us">
