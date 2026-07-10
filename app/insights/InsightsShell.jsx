@@ -11,7 +11,7 @@ export function InsightsFooter() {
   return (
     <footer className="site-footer">
       <div>
-        <img src="/images/brand/perma-cool.png" alt="PermaCool" />
+        <img src="/images/brand/perma-cool.png" alt="Perma Cool" />
         <p>© 2026 Perma Cool Systems Inc.</p>
       </div>
       <div className="footer-actions">

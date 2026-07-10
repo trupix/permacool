@@ -14,16 +14,16 @@ import LearningCenterSection from "./components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "./insights/InsightsShell";
 
 export const metadata = {
-  title: "PermaCool Ethanol Chillers & Butane Recovery Systems | Industrial Extraction Cooling",
+  title: "Perma Cool Ethanol Chillers & Butane Recovery Systems | Industrial Extraction Cooling",
   description:
-    "PermaCool builds industrial ethanol chilling systems and butane recovery solutions for extraction labs.",
+    "Perma Cool builds industrial ethanol chilling systems and butane recovery solutions for extraction labs.",
   alternates: { canonical: "https://perma.cool/" }
 };
 
 const ethanolOverview = {
   title: "Ethanol Chilling Systems",
   body:
-    "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around -40 °C while reducing LN2 dependency and consumable spend.",
+    "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around −40 °C while reducing LN2 dependency and consumable spend.",
   href: "/ethanol-chilling-systems",
   image: "/images/generated/blast60-hero-most-accurate-outdoor-condensers.png",
   cta: "Explore Ethanol Chillers"
@@ -33,7 +33,7 @@ const blastSystems = [
   {
     title: "Ethanol Chilling Systems",
     body:
-      "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around -40 °C while reducing LN2 dependency and consumable spend.",
+      "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around −40 °C while reducing LN2 dependency and consumable spend.",
     href: "/ethanol-chilling-systems",
     image: "/images/generated/blast60-hero-most-accurate-outdoor-condensers.png",
     cta: "Explore Ethanol Chillers"
@@ -41,7 +41,7 @@ const blastSystems = [
   {
     title: "BLAST 60/45",
     body:
-      "A compact cascade ethanol chiller built around the 30-gallon centrifuge workflow, 60 gallons of ethanol capacity, and fast recovery back toward -40 °C.",
+      "A compact cascade ethanol chiller built around the 30-gallon centrifuge workflow, 60 gallons of ethanol capacity, and fast recovery back toward −40 °C.",
     href: "/ethanol-chiller-blast-60",
     image: "/images/generated/blast60-bear-card.png",
     cta: "View BLAST 60/45"
@@ -148,10 +148,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="home-proof-strip" aria-label="PermaCool operating highlights">
+      <section className="home-proof-strip" aria-label="Perma Cool operating highlights">
         <article>
           <ThermometerSnowflake size={24} aria-hidden="true" />
-          <strong>-40 °C</strong>
+          <strong>−40 °C</strong>
           <span>target process window</span>
         </article>
         <article>
@@ -188,7 +188,7 @@ export default function HomePage() {
           </article>
           <div className="home-blast-lineup">
             <div className="home-blast-heading">
-              <p className="eyebrow">BLAST Lineup</p>
+              <p className="eyebrow">BLAST™ Lineup</p>
               <h3>Choose the production class that matches your extraction volume.</h3>
               <a className="inline-link home-blast-compare-link" href="/ethanol-chiller-comparison">
                 Compare all three BLAST chillers
@@ -236,7 +236,7 @@ export default function HomePage() {
       <section className="home-process-section">
         <div className="section-heading narrow">
           <p className="eyebrow">Process Cooling Flow</p>
-          <h2>How PermaCool moves from equipment specs to operational advantage.</h2>
+          <h2>How Perma Cool moves from equipment specs to operational advantage.</h2>
         </div>
         <div className="home-process-grid">
           {processSteps.map(({ icon: Icon, title, body }, index) => (

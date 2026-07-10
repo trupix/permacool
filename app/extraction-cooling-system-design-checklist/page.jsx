@@ -4,7 +4,7 @@ import { articlesBySlug } from "../insights/insights-data";
 const article = articlesBySlug["extraction-cooling-system-design-checklist"];
 
 export const metadata = {
-  title: `${article.title} | PermaCool Insights`,
+  title: `${article.title} | Perma Cool Insights`,
   description: article.description,
   alternates: { canonical: "https://perma.cool/extraction-cooling-system-design-checklist" }
 };

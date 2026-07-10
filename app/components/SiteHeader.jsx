@@ -14,7 +14,7 @@ export default function SiteHeader() {
   return (
     <header className="topbar">
       <div className="container row between center">
-        <Link className="logo" href="/"><img src="/assets/images/logo/perma-cool.png" alt="PermaCool" /></Link>
+        <Link className="logo" href="/"><img src="/assets/images/logo/perma-cool.png" alt="Perma Cool" /></Link>
         <nav className="nav">
           <Link className={isActive(pathname, '/ethanol-chilling-systems') ? 'active' : ''} href="/ethanol-chilling-systems">Ethanol Chillers</Link>
           <Link className={isActive(pathname, '/butane-recovery-system') ? 'active' : ''} href="/butane-recovery-system">Butane Recovery</Link>

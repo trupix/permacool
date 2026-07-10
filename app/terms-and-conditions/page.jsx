@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Terms & Conditions | PermaCool',
-  description: 'Terms and Conditions for use of the PermaCool website and inquiry services.'
+  title: 'Terms & Conditions | Perma Cool',
+  description: 'Terms and Conditions for use of the Perma Cool website and inquiry services.'
 }
 
 export default function TermsPage() {
@@ -37,7 +37,7 @@ export default function TermsPage() {
       <div className="card mt">
         <h3>Intellectual property</h3>
         <p>
-          Website content, branding, and materials are owned by PermaCool or its licensors and may not be
+          Website content, branding, and materials are owned by Perma Cool Systems Inc. or its licensors and may not be
           reproduced without permission.
         </p>
       </div>
@@ -45,7 +45,7 @@ export default function TermsPage() {
       <div className="card mt">
         <h3>Limitation of liability</h3>
         <p>
-          To the maximum extent permitted by law, PermaCool is not liable for indirect or consequential damages
+          To the maximum extent permitted by law, Perma Cool Systems Inc. is not liable for indirect or consequential damages
           arising from website use.
         </p>
       </div>

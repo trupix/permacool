@@ -4,7 +4,7 @@ import { articlesBySlug } from "../insights/insights-data";
 const article = articlesBySlug["how-to-reduce-ln2-dependence"];
 
 export const metadata = {
-  title: `${article.title} | PermaCool`,
+  title: `${article.title} | Perma Cool`,
   description: article.description,
   alternates: { canonical: "https://perma.cool/how-to-reduce-ln2-dependence" }
 };

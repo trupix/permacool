@@ -4,7 +4,7 @@ import { articlesBySlug } from "../insights/insights-data";
 const article = articlesBySlug["owning-an-extraction-lab-means-owning-the-process"];
 
 export const metadata = {
-  title: `${article.title} | PermaCool Insights`,
+  title: `${article.title} | Perma Cool Insights`,
   description: article.description
 };
 

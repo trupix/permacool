@@ -10,9 +10,9 @@ import {
 import { InsightsFooter, InsightsHeader } from "./InsightsShell";
 
 export const metadata = {
-  title: "PermaCool Learning Center",
+  title: "Perma Cool Learning Center",
   description:
-    "PermaCool learning center covering direct refrigerant vs LN2, extraction workflow, maintenance planning, and cooling system design.",
+    "Perma Cool learning center covering direct refrigerant vs LN2, extraction workflow, maintenance planning, and cooling system design.",
   alternates: { canonical: "https://perma.cool/learning-center" }
 };
 
@@ -104,7 +104,7 @@ export function LearningCenterPage() {
           <p className="eyebrow">System Recommendation</p>
           <h2>Need guidance for your facility?</h2>
           <p>
-            Share your throughput, temperature target, current cooling method, and facility constraints. PermaCool can
+            Share your throughput, temperature target, current cooling method, and facility constraints. Perma Cool can
             help identify the most appropriate next step.
           </p>
         </div>

@@ -36,7 +36,7 @@ const heroStats = [
   {
     label: "45",
     unit: "minutes",
-    text: "Room temp to -40°C flash chilling",
+    text: "Room temperature to −40 °C flash chilling",
     icon: Clock,
     tone: "pull-down"
   }
@@ -47,7 +47,7 @@ const valueProps = [
     title: "Built smart, cascade design",
     icon: Snowflake,
     body:
-      "The BLAST™ 60/45 is the most compact unit in the BLAST™ lineup and the only model built around Perma Cool’s cascade-style architecture, combining strong low-temperature performance with long-term serviceability.",
+      "The BLAST 60/45 is the most compact unit in the BLAST lineup and the only model built around Perma Cool’s cascade-style architecture, combining strong low-temperature performance with long-term serviceability.",
     link: "More →"
   },
   {
@@ -72,7 +72,7 @@ const components = [
     image: "/images/generated/blast60-component-01-temperature-sensor.png",
     alt: "Labeled Perma Cool BLAST 60/45 ethanol chilling platform diagram",
     body:
-      "This is the main process-side assembly of the BLAST™ 60/45, combining the tank, circulation hardware, and heat-transfer components into the core chilling package."
+      "This is the main process-side assembly of the BLAST 60/45, combining the tank, circulation hardware, and heat-transfer components into the core chilling package."
   },
   {
     eyebrow: "Component 02",
@@ -80,7 +80,7 @@ const components = [
     image: "/images/generated/blast60-component-02-flux-box-wall.png",
     alt: "Wall-mounted Perma Cool BLAST 60/45 flux box heat exchanger",
     body:
-      "The flux box is part of the cascade side of the chiller and is specific to the BLAST™ 60/45. This component allows the secondary chiller to cascade the primary chiller, supporting the two-stage refrigeration design that gives the 60/45 its stronger low-temperature performance."
+      "The flux box is part of the cascade side of the chiller and is specific to the BLAST 60/45. This component allows the secondary chiller to cascade the primary chiller, supporting the two-stage refrigeration design that gives the 60/45 its stronger low-temperature performance."
   },
   {
     eyebrow: "Component 03",
@@ -88,7 +88,7 @@ const components = [
     image: "/images/generated/blast60-component-03-plc-control-system.png",
     alt: "Wall-mounted Perma Cool BLAST 60/45 PLC control system cabinet",
     body:
-      "This is the PLC control system for the BLAST™ 60/45, giving operators centralized control and visibility over chiller operation. It supports the system’s monitoring, logic, and control functions so operators can manage process performance with clearer feedback and more consistent operation."
+      "This is the PLC control system for the BLAST 60/45, giving operators centralized control and visibility over chiller operation. It supports the system’s monitoring, logic, and control functions so operators can manage process performance with clearer feedback and more consistent operation."
   },
   {
     eyebrow: "Component 04",
@@ -96,7 +96,7 @@ const components = [
     image: "/images/generated/blast60-component-04-condensers.png",
     alt: "Two outdoor Perma Cool BLAST 60/45 condenser units",
     body:
-      "These are the two condensers that come with the BLAST™ 60/45 system. Each condenser is rated at six horsepower, giving the unit the condenser capacity needed to support the cascade refrigeration design."
+      "These are the two condensers that come with the BLAST 60/45 system. Each condenser is rated at six horsepower, giving the unit the condenser capacity needed to support the cascade refrigeration design."
   }
 ];
 
@@ -125,7 +125,7 @@ const cascadeBenefits = [
 
 const highlights = [
   "Designed for up to 60-gallon process class applications",
-  "Target low-temp operation around -40°C (config/facility dependent)",
+  "Target low-temp operation around −40 °C (config/facility dependent)",
   "Direct refrigerant architecture with HVAC condenser integration",
   "PLC/HMI operational visibility and compressor protection logic"
 ];
@@ -184,11 +184,11 @@ function Hero() {
       />
       <div className="hero-overlay" />
       <div className="hero-content">
-        <p className="eyebrow">BLAST™ Product Line</p>
+        <p className="eyebrow">BLAST Product Line</p>
         <h1>
           <span className="blast60-hero-title-accent">BLAST™ 60/45</span> Ethanol Chiller
         </h1>
-        <p className="hero-lede">Chill 60 gallons of ethanol from room temperature to -40°C in 45 minutes.</p>
+        <p className="hero-lede">Chill 60 gallons of ethanol from room temperature to −40 °C in 45 minutes.</p>
         <div className="hero-actions">
           <a className="button primary" href="/contact-us">
             Request lead time + pricing
@@ -230,8 +230,8 @@ function Components() {
     <section className="section component-section" id="components">
       <div className="section-heading narrow">
         <p className="eyebrow">Component Overview</p>
-        <h2>BLAST™ 60/45 Component Walkthrough</h2>
-        <p>A quick visual walkthrough of the major BLAST™ 60/45 components.</p>
+        <h2>BLAST 60/45 Component Walkthrough</h2>
+        <p>A quick visual walkthrough of the major BLAST 60/45 components.</p>
       </div>
       <div className="component-grid">
         {components.map((item) => (
@@ -259,13 +259,13 @@ function CascadeDesign() {
           <p className="eyebrow">Cascade Refrigeration Design</p>
           <h2>Dual-stage architecture designed around lower temperatures and better serviceability.</h2>
           <p>
-            The BLAST™ 60/45 is built around Perma Cool’s dual-stage cascade architecture, using two smaller,
+            The BLAST 60/45 is built around Perma Cool’s dual-stage cascade architecture, using two smaller,
             more common-sized refrigeration stages instead of one oversized unit. The primary refrigeration
             circuit directly chills the ethanol, while the cascade refrigeration circuit cools the primary
             circuit so the system can reach lower temperatures with efficient, consistent pull-down.
           </p>
           <p>
-            That two-stage design gives the BLAST™ 60/45 strong low-temperature performance while keeping the
+            That two-stage design gives the BLAST 60/45 strong low-temperature performance while keeping the
             system built around more serviceable, widely available components. The result is easier parts
             sourcing, lower service cost, and a machine that is simpler to maintain in real production use.
           </p>
@@ -334,14 +334,14 @@ function CentrifugePairing() {
         </div>
         <p>
           With that ratio, returning ethanol mixes back into a substantial reserve of already cold ethanol
-          instead of resetting the whole tank. The temperature shift stays much smaller, recovery back to -40 is
+          instead of resetting the whole tank. The temperature shift stays much smaller, recovery back to −40 is
           faster, and operators can move back into extraction sooner.
         </p>
         <p>
           This allows repeated extraction and re-chill cycles until the ethanol reaches roughly 2 to 3 lb of
           material per gallon, at which point it is ready to move to filtration and evaporation.
         </p>
-        <p>The BLAST™ 60/45 is built around that more efficient real-world workflow.</p>
+        <p>The BLAST 60/45 is built around that more efficient real-world workflow.</p>
       </div>
     </section>
   );
@@ -380,7 +380,7 @@ function HighlightsAndRoi() {
           <h2>A cleaner production path for operators replacing consumables or slower legacy chilling.</h2>
           <p>
             For operators still relying on consumables, slower legacy chilling methods, or improvised
-            cold-ethanol workflows, the BLAST™ 60/45 offers a cleaner production path. Instead of ongoing
+            cold-ethanol workflows, the BLAST 60/45 offers a cleaner production path. Instead of ongoing
             consumable spend and workflow drag, you get dedicated electric chilling built for repeatable
             low-temperature performance, faster recovery between cycles, and simpler day-to-day operation.
           </p>
@@ -393,7 +393,7 @@ function HighlightsAndRoi() {
             ))}
           </ul>
           <p>
-            For many operators, that makes the BLAST™ 60/45 more than a replacement. It is a move toward
+            For many operators, that makes the BLAST 60/45 more than a replacement. It is a move toward
             lower operating cost, better throughput, and a more reliable production workflow.
           </p>
         </div>
@@ -427,7 +427,7 @@ function Footer() {
   return (
     <footer className="site-footer">
       <div>
-        <img src="/images/brand/perma-cool.png" alt="PermaCool" />
+        <img src="/images/brand/perma-cool.png" alt="Perma Cool" />
         <p>© 2026 Perma Cool Systems Inc.</p>
       </div>
       <div className="footer-actions">

@@ -74,22 +74,22 @@ const minus40Facts = [
   },
   {
     label: "The crossing",
-    value: "C = F = -40",
-    body: "When you set the Celsius and Fahrenheit numbers equal, the only solution is -40. There is not a second meeting point."
+    value: "C = F = −40",
+    body: "When you set the Celsius and Fahrenheit numbers equal, the only solution is −40. There is not a second meeting point."
   },
   {
     label: "The practical target",
-    value: "-40°C / -40°F",
+    value: "−40 °C / −40 °F",
     body: "For Perma Cool, that makes a deep-cold process target easy to communicate. Operators, engineers, and buyers are all using the same number."
   }
 ];
 
 const minus40Takeaways = [
   "Most converted temperature numbers look different across the two scales.",
-  "-40 is the single point where Celsius and Fahrenheit share the same reading.",
+  "−40 is the single point where Celsius and Fahrenheit share the same reading.",
   "The match happens because the Fahrenheit scale has both a different degree size and a different zero point.",
   "The conversion is linear, so the two lines can meet only once.",
-  "That makes -40 rare in everyday science communication: simple, exact, and useful.",
+  "That makes −40 rare in everyday science communication: simple, exact, and useful.",
   "For cold ethanol extraction, the shared number makes the temperature target easier to remember."
 ];
 
@@ -146,7 +146,7 @@ export function WorkflowArticlePage({ article }) {
         <figure className="more-output-figure">
           <img
             src={workflowFlowImage}
-            alt="Cold ethanol workflow showing centrifuge extraction, diaphragm pump transfer, straining, and return to the BLAST 240 chiller"
+            alt="Cold ethanol workflow showing centrifuge extraction, diaphragm pump transfer, straining, and return to the BLAST 240/45 chiller"
           />
         </figure>
 
@@ -340,7 +340,7 @@ export function MoreOutputPerGallonArticlePage({ article }) {
         <figure className="more-output-figure">
           <img
             src={workflowFlowImage}
-            alt="Cold ethanol workflow showing centrifuge extraction, diaphragm pump transfer, straining, and return to the BLAST 240 chiller"
+            alt="Cold ethanol workflow showing centrifuge extraction, diaphragm pump transfer, straining, and return to the BLAST 240/45 chiller"
           />
         </figure>
 
@@ -574,7 +574,7 @@ export function Minus40ArticlePage({ article }) {
         <article className="minus-40-lede">
           <div>
             <p className="eyebrow">The rare overlap</p>
-            <h2>At -40, Celsius and Fahrenheit finally agree.</h2>
+            <h2>At −40, Celsius and Fahrenheit finally agree.</h2>
           </div>
           <div>
             <p>
@@ -583,7 +583,7 @@ export function Minus40ArticlePage({ article }) {
               same number.
             </p>
             <p>
-              But at -40, something unexpected happens: <strong>-40°C is exactly -40°F.</strong> It’s the one
+              But at −40, something unexpected happens: <strong>−40 °C is exactly −40 °F.</strong> It’s the one
               temperature where both systems meet, which makes it feel like a little mathematical magic was left for us
               in the cold.
             </p>
@@ -615,7 +615,7 @@ export function Minus40ArticlePage({ article }) {
         </div>
 
         <blockquote className="minus-40-pullquote">
-          <p>-40 is not a rounded marketing number. It is a real mathematical crossing between two temperature worlds.</p>
+          <p>−40 is not a rounded marketing number. It is a real mathematical crossing between two temperature worlds.</p>
         </blockquote>
 
         <section className="minus-40-split">
@@ -630,7 +630,7 @@ export function Minus40ArticlePage({ article }) {
               and the converted numbers usually stay different.
             </p>
             <p>
-              The -40 temperature match is different. It is simple enough for any operator to remember, but it still
+              The −40 temperature match is different. It is simple enough for any operator to remember, but it still
               comes from the underlying math of the scales. That combination is rare in day-to-day technical language:
               memorable, useful, exact, and not just a rounding trick.
             </p>
@@ -645,7 +645,7 @@ export function Minus40ArticlePage({ article }) {
           <div>
             <p>
               Perma Cool ethanol pre-chillers are built around pulling ethanol down into the deep-cold operating range
-              used by extraction teams. When the target is -40, the number carries cleanly between Celsius and
+              used by extraction teams. When the target is −40, the number carries cleanly between Celsius and
               Fahrenheit. A spec sheet, a controller screen, a field note, and an operator conversation can all point to
               the same target without extra mental math.
             </p>
@@ -667,11 +667,11 @@ export function Minus40ArticlePage({ article }) {
 
         <section className="minus-40-closing">
           <p>
-            The fact that -40°C and -40°F are the same temperature does not make -40 cold by itself. The cold is real
+            The fact that −40 °C and −40 °F are the same temperature does not make −40 cold by itself. The cold is real
             because of the process target. The special part is that two major measurement systems meet right there, at a
             number that is already important to ethanol chilling.
           </p>
-          <h2>That makes -40 more than a setpoint. It is a rare place where math, science, and process language line up.</h2>
+          <h2>That makes −40 more than a setpoint. It is a rare place where math, science, and process language line up.</h2>
         </section>
 
         <RelatedReading links={article.related} />

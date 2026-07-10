@@ -13,7 +13,7 @@ import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
-  title: "Compare BLAST Ethanol Chillers | 60/45 vs 150/45 vs 240/45 | Perma Cool",
+  title: "Compare BLAST™ Ethanol Chillers | 60/45 vs 150/45 vs 240/45 | Perma Cool",
   description:
     "Compare Perma Cool BLAST 60/45, BLAST 150/45, and BLAST 240/45 ethanol chillers by capacity, pull-down target, workflow fit, controls, and production scale.",
   alternates: { canonical: "https://perma.cool/ethanol-chiller-comparison" }
@@ -26,7 +26,7 @@ const models = [
     image: "/images/generated/blast60-flash-chilling.png",
     capacity: "60 gallons",
     time: "45 minutes",
-    rate: "60 gallons / 45 minutes",
+    rate: "1.33 GPM",
     fit: "Compact production and 30-gallon centrifuge workflows",
     architecture: "Dual-stage cascade architecture",
     controls: "PLC/HMI visibility",
@@ -69,9 +69,9 @@ const models = [
 
 const comparisonRows = [
   ["Ethanol capacity", "60 gallons", "150 gallons", "240 gallons"],
-  ["Pull-down target", "Room temperature to -40C", "Room temperature to -40C", "Room temperature to -40C"],
+  ["Pull-down target", "Room temperature to −40 °C", "Room temperature to −40 °C", "Room temperature to −40 °C"],
   ["Target timing", "45 minutes", "45 minutes", "45 minutes"],
-  ["Flash chilling profile", "60 gallons / 45 minutes", "3.33 GPM", "6.0 GPM"],
+  ["Flash-chilling rate", "1.33 GPM", "3.33 GPM", "6.0 GPM"],
   ["Best production fit", "Compact production", "Mid-scale production", "Large process class"],
   ["Workflow match", "30-gallon centrifuge or 2x 15-gallon workflow", "Growing commercial extraction schedules", "Higher-volume extraction schedules"],
   ["System architecture", "Dual-stage cascade design", "Direct refrigerant chilling", "Direct refrigerant chilling"],
@@ -117,7 +117,7 @@ export default function EthanolChillerComparisonPage() {
         <div className="comparison-hero-overlay" />
         <div className="comparison-hero-content">
           <p className="eyebrow">BLAST Ethanol Chiller Comparison</p>
-          <h1>Compare BLAST 60/45, 150/45, and 240/45 ethanol chillers.</h1>
+          <h1>Compare BLAST™ 60/45, 150/45, and 240/45 ethanol chillers.</h1>
           <p>
             Pick the production class that matches your ethanol volume, centrifuge workflow, facility utilities, and
             throughput target.
@@ -141,7 +141,7 @@ export default function EthanolChillerComparisonPage() {
             <Image src={model.image} alt="" width={520} height={320} />
             <div>
               <h2>{model.name}</h2>
-              <p>{model.capacity} to -40C in {model.time}</p>
+              <p>{model.capacity} to −40 °C in {model.time}</p>
             </div>
           </article>
         ))}

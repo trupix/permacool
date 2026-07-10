@@ -54,9 +54,9 @@ export default function ResponsiveHeader({ navItems = [] }) {
 
   return (
     <header className={`site-header${isOpen ? " menu-open" : ""}`}>
-      <Link className="brand" href="/" aria-label="PermaCool home" onClick={() => setIsOpen(false)}>
+      <Link className="brand" href="/" aria-label="Perma Cool home" onClick={() => setIsOpen(false)}>
         <img className="brand-mark" src="/images/brand/perma-cool.png" alt="" />
-        <img className="brand-wordmark" src="/images/brand/perma-cool-wordmark.png" alt="PermaCool" />
+        <img className="brand-wordmark" src="/images/brand/perma-cool-wordmark.png" alt="Perma Cool" />
       </Link>
 
       <nav aria-label="Primary navigation">
@@ -68,7 +68,7 @@ export default function ResponsiveHeader({ navItems = [] }) {
       </nav>
 
       <div className="header-actions">
-        <a className="header-phone" href="tel:+17472081001" aria-label="Call PermaCool at 747.208.1001">
+        <a className="header-phone" href="tel:+17472081001" aria-label="Call Perma Cool at 747.208.1001">
           <Phone size={18} aria-hidden="true" />
           <span>747.208.1001</span>
         </a>

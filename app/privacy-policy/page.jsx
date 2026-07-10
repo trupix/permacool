@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Privacy Policy | PermaCool',
-  description: 'Privacy Policy for PermaCool website visitors and inquiry submissions.'
+  title: 'Privacy Policy | Perma Cool',
+  description: 'Privacy Policy for Perma Cool website visitors and inquiry submissions.'
 }
 
 export default function PrivacyPolicyPage() {
@@ -24,7 +24,7 @@ export default function PrivacyPolicyPage() {
           <li>Respond to quote requests and support inquiries</li>
           <li>Provide product and engineering-fit recommendations</li>
           <li>Improve website performance and user experience</li>
-          <li>Communicate about relevant PermaCool services</li>
+          <li>Communicate about relevant Perma Cool Systems Inc. services</li>
         </ul>
       </div>
 
@@ -55,7 +55,7 @@ export default function PrivacyPolicyPage() {
       <div className="card mt">
         <h3>Contact</h3>
         <p>
-          For privacy questions, contact PermaCool at <a href="/contact-us">/contact-us</a> or call
+          For privacy questions, contact Perma Cool Systems Inc. at <a href="/contact-us">/contact-us</a> or call
           <a href="tel:+17472081001"> 747.208.1001</a>.
         </p>
       </div>

@@ -25,10 +25,10 @@ export const insightArticles = [
     slug: "minus-40-celsius-fahrenheit",
     category: "Temperature Science",
     title: "−40°: The Coldest Handshake in Science",
-    shortTitle: "Why -40°C Equals -40°F",
+    shortTitle: "Why −40 °C Equals −40 °F",
     summary: "The rare point where Celsius and Fahrenheit meet, and why that matters in cold ethanol extraction.",
     description:
-      "Learn why -40°C equals -40°F, why the Celsius and Fahrenheit scales meet at that exact point, and why -40 is a memorable target in ethanol chilling.",
+      "Learn why −40 °C equals −40 °F, why the Celsius and Fahrenheit scales meet at that exact point, and why −40 is a memorable target in ethanol chilling.",
     image: "/images/generated/insights-minus-40-meeting.svg",
     heroClass: "minus-40-hero",
     href: "/minus-40-celsius-fahrenheit",
@@ -42,7 +42,7 @@ export const insightArticles = [
       ["Direct Refrigerant vs LN2", "/direct-refrigerant-vs-ln2"]
     ],
     cta: {
-      eyebrow: "Need reliable -40 performance?",
+      eyebrow: "Need reliable −40 performance?",
       title: "Build your extraction process around a temperature target operators remember and equipment can repeat.",
       primary: ["Talk to Perma Cool", "/contact-us"],
       secondary: ["Explore Ethanol Chillers", "/ethanol-chilling-systems"]
@@ -69,7 +69,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Building a stronger extraction operation?",
       title: "Design the chilling workflow around the process discipline that makes the lab scale.",
-      primary: ["Talk to PermaCool", "/contact-us"],
+      primary: ["Talk to Perma Cool", "/contact-us"],
       secondary: ["Explore Ethanol Chillers", "/ethanol-chilling-systems"]
     }
   },
@@ -161,7 +161,7 @@ export const insightArticles = [
         icon: Snowflake,
         title: "1. Chill",
         body: "Bring the ethanol down to the target cold operating range before it enters extraction.",
-        actions: ["Chill ethanol to -40°C (-40°F).", "Pump chilled ethanol into the centrifuge."]
+        actions: ["Chill ethanol to −40 °C (−40 °F).", "Pump chilled ethanol into the centrifuge."]
       },
       {
         icon: Activity,
@@ -181,7 +181,7 @@ export const insightArticles = [
         body: "Return the filtered tincture to the Perma Cool chiller and pull it back down to target temperature.",
         actions: [
           "Return filtered tincture to the chiller.",
-          "Re-chill from the extraction temperature rise back to -40°C (-40°F)."
+          "Re-chill from the extraction temperature rise back to −40 °C (−40 °F)."
         ]
       },
       {
@@ -211,7 +211,7 @@ export const insightArticles = [
         bullets: [
           "Extraction Efficiency: Each gallon of ethanol can be used to extract at least two pounds of material. Ethanol that has already gone through extraction can be reused, maximizing efficiency.",
           "Optimized Ethanol Usage: Re-washing material with previously extracted ethanol maintains the proper ethanol-to-material ratio for centrifuge operation, while also allowing larger ethanol batches to be chilled at once. This speeds up overall throughput.",
-          "Consistent Temperature Control: The system quickly re-chills ethanol back to -40°C (-40°F) after extraction. Because the ethanol only needs to be cooled from a small temperature rise, chilling is faster, and overall productivity is higher."
+          "Consistent Temperature Control: The system quickly re-chills ethanol back to −40 °C (−40 °F) after extraction. Because the ethanol only needs to be cooled from a small temperature rise, chilling is faster, and overall productivity is higher."
         ]
       },
       {
@@ -244,7 +244,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Want help matching a workflow to your extraction process?",
       title: "Map your extraction rhythm to the right chilling architecture.",
-      primary: ["Talk to PermaCool", "/contact-us"],
+      primary: ["Talk to Perma Cool", "/contact-us"],
       secondary: ["See BLAST lineup", "/ethanol-chilling-systems"]
     }
   },
@@ -277,7 +277,7 @@ export const insightArticles = [
       }
     ],
     related: [
-      ["BLAST 150", "/ethanol-chiller-blast-150"],
+      ["BLAST 150/45", "/ethanol-chiller-blast-150"],
       ["Learning Center", "/learning-center"]
     ],
     cta: {
@@ -303,7 +303,7 @@ export const insightArticles = [
       {
         icon: Snowflake,
         title: "Target process temperature",
-        body: "Target process temperature, for example around -40°C."
+        body: "Target process temperature, for example around −40 °C."
       },
       {
         icon: Timer,
@@ -383,7 +383,7 @@ export const insightArticles = [
       eyebrow: "Need help modeling LN2 replacement economics?",
       title: "Compare annual cost, control, and install fit against your current process.",
       primary: ["Get a Cost Comparison Call", "/contact-us"],
-      secondary: ["See BLAST 150", "/ethanol-chiller-blast-150"]
+      secondary: ["See BLAST 150/45", "/ethanol-chiller-blast-150"]
     }
   }
 ];
@@ -406,7 +406,7 @@ export const navItems = [
 ];
 
 export const indexTopics = [
-  "-40 Celsius and Fahrenheit temperature science",
+  "−40 Celsius and Fahrenheit temperature science",
   "Process ownership as the core extraction lab discipline",
   "Extract, strain, re-chill, repeat ethanol efficiency",
   "LN2 dependence and operating cost",

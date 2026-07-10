@@ -2,8 +2,8 @@ import { ArrowRight, CheckCircle2, Phone } from "lucide-react";
 import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
-  title: "Thank You | PermaCool",
-  description: "Thanks for contacting PermaCool. Our team will follow up with recommendations and pricing.",
+  title: "Thank You | Perma Cool",
+  description: "Thanks for contacting Perma Cool. Our team will follow up with recommendations and pricing.",
   robots: {
     index: false,
     follow: false
@@ -20,7 +20,7 @@ export default function Page() {
           <p className="eyebrow">Request Received</p>
           <h1>Thanks. We got your request.</h1>
           <p>
-            A PermaCool specialist will review your submission and follow up with system-fit recommendations, pricing
+            A Perma Cool specialist will review your submission and follow up with system-fit recommendations, pricing
             direction, and practical next steps.
           </p>
           <ul>
