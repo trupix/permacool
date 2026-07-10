@@ -19,9 +19,9 @@ import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
-  title: "Ethanol Chillers for Extraction Facilities | Perma Cool BLAST Systems",
+  title: "Ethanol Chillers for Extraction Facilities | Perma Cool BLAST™ Systems",
   description:
-    "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, -40 °C operation, reduced LN2 dependence, and commercial extraction throughput.",
+    "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, −40 °C operation, reduced LN2 dependence, and commercial extraction throughput.",
   alternates: { canonical: "https://perma.cool/ethanol-chilling-systems" }
 };
 
@@ -34,8 +34,8 @@ const seriesLinks = [
 const performancePoints = [
   {
     icon: ThermometerSnowflake,
-    title: "-40 °C operation",
-    body: "Rapid purpose-built hot-to-cold chilling from room temperature to -40 °C."
+    title: "−40 °C operation",
+    body: "Rapid purpose-built hot-to-cold chilling from room temperature to −40 °C."
   },
   {
     icon: Beaker,
@@ -45,7 +45,7 @@ const performancePoints = [
   {
     icon: Gauge,
     title: "Increase speed, accuracy, and efficiency",
-    body: "Re-chill and re-extract at -40 °C with repeatable process control."
+    body: "Re-chill and re-extract at −40 °C with repeatable process control."
   },
   {
     icon: TrendingUp,
@@ -99,7 +99,7 @@ const metrics = [
   {
     label: "Series 01",
     title: "BLAST 60/45",
-    body: "Compact unit sized for 30-gallon centrifuge workflows and rapid room-temp to -40 °C pull-down."
+    body: "Compact unit sized for 30-gallon centrifuge workflows and rapid pull-down from room temperature to −40 °C."
   },
   {
     label: "Series 02",
@@ -154,7 +154,7 @@ const products = [
       "With over 200 original Legacy ACP-30 units in the field, the BLAST 60/45 is the updated and upgraded evolution of a proven design. Tested, trusted, and built for demanding extraction environments, it has earned its place as a true industry workhorse.",
     meta: ["60 gallons", "45 minutes", "30-gallon centrifuge workflow"],
     bullets: [
-      "Flash-chill 60 gallons of room-temperature ethanol down to -40 °C in 45 minutes. You can run less.",
+      "Flash-chill 60 gallons of room-temperature ethanol down to −40 °C in 45 minutes. You can run less.",
       "Fast pull-down to target low-temp process windows.",
       "Designed with readily available parts to keep repairs fast and affordable."
     ]
@@ -201,7 +201,7 @@ const faqs = [
   {
     question: "What temperature range do Perma Cool ethanol chillers target?",
     answer:
-      "Typical process targets include operation down to approximately -40 °C depending on system configuration and facility conditions."
+      "Typical process targets include operation down to approximately −40 °C depending on system configuration and facility conditions."
   },
   {
     question: "Why choose direct refrigerant chilling over LN2?",
@@ -238,8 +238,8 @@ export default function EthanolChillingSystemsPage() {
         <div className="ecs-hero-overlay" />
         <div className="ecs-hero-content">
           <p className="eyebrow">Direct Refrigerant Ethanol Chilling</p>
-          <p className="ecs-series-title">Perma Cool BLAST Ethanol Pre-Chiller Series</p>
-          <h1>Flash chill ethanol to -40 °C and keep extraction moving.</h1>
+          <p className="ecs-series-title">Perma Cool BLAST™ Ethanol Pre-Chiller Series</p>
+          <h1>Flash chill ethanol to −40 °C and keep extraction moving.</h1>
           <div className="ecs-series-links" aria-label="BLAST product pages">
             {seriesLinks.map(([label, href]) => (
               <a href={href} key={href}>
@@ -411,7 +411,7 @@ export default function EthanolChillingSystemsPage() {
           <div className="ecs-workflow-copy">
             <p>
               The Perma Cool BLAST Ethanol Pre-Chiller Series is purpose-built for ethanol extraction labs that need
-              fast, on-demand direct chilling from room temperature to -40 °C. Engineered as a true BLAST chiller from
+              fast, on-demand direct chilling from room temperature to −40 °C. Engineered as a true BLAST chiller from
               the condensing through the process side, it helps processors increase throughput, reduce LN2 dependency,
               and optimize their extraction workflow.
             </p>
@@ -486,7 +486,7 @@ function Footer() {
   return (
     <footer className="site-footer">
       <div>
-        <img src="/images/brand/perma-cool.png" alt="PermaCool" />
+        <img src="/images/brand/perma-cool.png" alt="Perma Cool" />
         <p>&copy; 2026 Perma Cool Systems Inc.</p>
       </div>
       <div className="footer-actions">

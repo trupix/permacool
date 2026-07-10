@@ -20,9 +20,9 @@ import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
-  title: "BLAST™ 240/45 Ethanol Chiller | 240 Gallons to -40C in 45 Minutes | PermaCool",
+  title: "BLAST™ 240/45 Ethanol Chiller | 240 Gallons to −40 °C in 45 Minutes | Perma Cool",
   description:
-    "PermaCool BLAST™ 240/45 ethanol chiller flash-chills 240 gallons to -40C in 45 minutes with 6.0 GPM of flash chilling, direct refrigerant architecture, and PLC/HMI visibility.",
+    "Perma Cool BLAST 240/45 ethanol chiller flash-chills 240 gallons to −40 °C in 45 minutes with 6.0 GPM of flash chilling, direct refrigerant architecture, and PLC/HMI visibility.",
   alternates: { canonical: "https://perma.cool/ethanol-chiller-blast-240" }
 };
 
@@ -37,7 +37,7 @@ const heroStats = [
   {
     label: "45",
     unit: "minutes",
-    text: "Room temp to -40°C - continuous duty 24/7 operation",
+    text: "Room temperature to −40 °C — continuous-duty 24/7 operation",
     icon: Clock,
     tone: "pull-down"
   },
@@ -55,13 +55,13 @@ const valueProps = [
     title: "Enterprise process-class capacity",
     icon: TrendingUp,
     body:
-      "The BLAST™ 240/45 is built for facilities that need the largest BLAST™ ethanol chilling capacity and a clearer path to higher production volume."
+      "The BLAST 240/45 is built for facilities that need the largest BLAST ethanol chilling capacity and a clearer path to higher production volume."
   },
   {
     title: "High-volume pull-down",
     icon: Gauge,
     body:
-      "Flash-chill 240 gallons of ethanol to -40C in 45 minutes so larger extraction teams can plan around a strong chilling target."
+      "Flash-chill 240 gallons of ethanol to −40 °C in 45 minutes so larger extraction teams can plan around a strong chilling target."
   },
   {
     title: "Facility-ready integration",
@@ -80,13 +80,13 @@ const valueProps = [
 const overviewCards = [
   {
     eyebrow: "Performance Profile",
-    title: "240 gallons to -40C in 45 minutes.",
+    title: "240 gallons to −40 °C in 45 minutes.",
     image: "/images/generated/blast240-bear-card.png",
     imageWidth: 1440,
     imageHeight: 1040,
-    alt: "BLAST™ 240/45 crystal bear ethanol chilling performance stats card",
+    alt: "BLAST 240/45 crystal bear ethanol chilling performance stats card",
     body:
-      "The BLAST™ 240/45 is the large process-class option in the BLAST™ lineup, designed for teams that need more ethanol capacity and stronger schedule support."
+      "The BLAST 240/45 is the large process-class option in the BLAST lineup, designed for teams that need more ethanol capacity and stronger schedule support."
   },
   {
     eyebrow: "System Architecture",
@@ -106,7 +106,7 @@ const overviewCards = [
     imageHeight: 941,
     alt: "BLAST 240/45 workflow fit showing two 70-gallon centrifuges feeding a high-capacity ethanol chilling system",
     body:
-      "With 240 gallons of cold ethanol capacity, the BLAST™ 240/45 can fully support extraction workflows built around two 70-gallon centrifuges, with reserve volume left for re-chilling, staging, and repeat cycles. Larger facilities can plan around two centrifuges or more without making the chiller the bottleneck."
+      "With 240 gallons of cold ethanol capacity, the BLAST 240/45 can fully support extraction workflows built around two 70-gallon centrifuges, with reserve volume left for re-chilling, staging, and repeat cycles. Larger facilities can plan around two centrifuges or more without making the chiller the bottleneck."
   },
   {
     eyebrow: "Operating Model",
@@ -137,7 +137,7 @@ const workflowPoints = [
 ];
 
 const highlights = [
-  "240 gallons to -40C in 45 minutes",
+  "240 gallons to −40 °C in 45 minutes",
   "6.0 GPM of flash chilling",
   "Large process-class ethanol capacity",
   "Direct refrigerant process chilling",
@@ -147,7 +147,7 @@ const highlights = [
 
 const fitPoints = [
   "Commercial extraction facilities planning around higher ethanol volume.",
-  "Teams that need more process capacity than the BLAST™ 150/45.",
+  "Teams that need more process capacity than the BLAST 150/45.",
   "Facilities replacing consumable-heavy cooling with electric process chilling.",
   "Operators who want larger-scale chilling without giving up process visibility and control."
 ];
@@ -157,7 +157,7 @@ export default function Blast240Page() {
     <main className="site-shell">
       <InsightsHeader />
       <Hero />
-      <section className="stat-rail blast240-stat-rail" aria-label="BLAST™ 240/45 quick specifications">
+      <section className="stat-rail blast240-stat-rail" aria-label="BLAST 240/45 quick specifications">
         {heroStats.map((item) => {
           const Icon = item.icon;
 
@@ -199,21 +199,21 @@ function Hero() {
       />
       <div className="hero-overlay" />
       <div className="hero-content">
-        <p className="eyebrow">BLAST™ Product Line</p>
+        <p className="eyebrow">BLAST Product Line</p>
         <h1>
           <span className="blast240-hero-title-accent">BLAST™ 240/45</span> Ethanol Chiller
         </h1>
         <p className="hero-lede">
-          Flash-chill 240 gallons of ethanol to -40°C in 45 minutes, with 6.0 GPM of flash chilling for large
+          Flash-chill 240 gallons of ethanol to −40 °C in 45 minutes, with 6.0 GPM of flash chilling for large
           enterprise level extraction workflows.
         </p>
         <div className="hero-actions">
           <a className="button primary" href="/contact-us">
-            Request BLAST™ 240 pricing
+            Request BLAST 240/45 pricing
             <ArrowRight size={18} aria-hidden="true" />
           </a>
           <a className="button secondary" href="/ethanol-chiller-comparison">
-            Compare BLAST™ lineup
+            Compare BLAST lineup
             <ArrowRight size={18} aria-hidden="true" />
           </a>
         </div>
@@ -227,13 +227,12 @@ function ValueProps() {
     <section className="section value-section">
       <div className="section-heading">
         <p className="eyebrow">Enterprise Level</p>
-        <h2>Oversized high-volume capacity for the largest, experienced, world-class extraction facilities on earth.</h2>
+        <h2>High-volume capacity for large commercial extraction facilities.</h2>
         <p>
-          The BLAST™ 240/45 is built for teams that are using multiple large centrifuges. The fastest 6gpm flash
-          chilling speeds. 100kw of direct refrigeration with a *NEW* bonus of 100kw of regeneration surface area.
-          *NEW* In tank directional mixing. With a full 19&quot; C1D2 HMI touch screen, upgraded PLC. With full automation
-          upgrades available. Enterprise level of speed and control that the extraction industry has never experienced
-          before.
+          The BLAST 240/45 is built for facilities running multiple large centrifuges. Its nominal 6.0 GPM
+          flash-chilling rate is supported by 100 kW of direct refrigeration and 100 kW of regeneration surface
+          capacity. In-tank directional mixing, a 19-inch C1D2 HMI touchscreen, an upgraded PLC, and optional automation
+          upgrades give operators high-volume process control.
         </p>
       </div>
       <div className="value-grid">
@@ -254,7 +253,7 @@ function SystemOverview() {
     <section className="section component-section" id="system-overview">
       <div className="section-heading narrow">
         <p className="eyebrow">System Overview</p>
-        <h2>BLAST™ 240/45 performance, integration, and workflow fit.</h2>
+        <h2>BLAST 240/45 performance, integration, and workflow fit.</h2>
         <p>Scan the system by what matters at scale: capacity, pull-down speed, utility fit, and production control.</p>
       </div>
       <div className="component-grid">
@@ -297,7 +296,7 @@ function Workflow() {
       <figure className="workflow-visual">
         <Image
           src="/images/generated/blast240-bear-card.png"
-          alt="BLAST™ 240/45 crystal bear ethanol chilling performance card"
+          alt="BLAST 240/45 crystal bear ethanol chilling performance card"
           width={1600}
           height={1100}
         />
@@ -353,7 +352,7 @@ function Highlights() {
           <p className="eyebrow">Application Fit</p>
           <h2>The high-capacity option for large extraction operators.</h2>
           <p>
-            The BLAST™ 240/45 is the right direction when the process needs more ethanol capacity, more chilling duty,
+            The BLAST 240/45 is the right direction when the process needs more ethanol capacity, more chilling duty,
             and a stronger path away from consumable-heavy cooling. It is built for teams planning around higher
             throughput and more repeatable production schedules.
           </p>
@@ -376,15 +375,15 @@ function RelatedCta() {
     <section className="related-section">
       <div>
         <p className="eyebrow">Need lead time + pricing?</p>
-        <h2>Match the BLAST™ 240/45 to your ethanol volume, batch schedule, and facility utilities.</h2>
+        <h2>Match the BLAST 240/45 to your ethanol volume, batch schedule, and facility utilities.</h2>
         <p>
-          PermaCool can help compare the 60/45, 150/45, and 240/45 against your process goals, utility constraints,
+          Perma Cool can help compare the 60/45, 150/45, and 240/45 against your process goals, utility constraints,
           and expansion plan.
         </p>
       </div>
       <div className="related-actions">
         <a className="button primary" href="/contact-us">
-          Request BLAST™ 240 pricing
+          Request BLAST 240/45 pricing
           <ArrowRight size={18} aria-hidden="true" />
         </a>
         <a className="button secondary light" href="tel:+17472081001">

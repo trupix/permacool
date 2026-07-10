@@ -4,7 +4,7 @@ import { articlesBySlug } from "../insights/insights-data";
 const article = articlesBySlug["industrial-process-chiller-maintenance"];
 
 export const metadata = {
-  title: `${article.title} | PermaCool Insights`,
+  title: `${article.title} | Perma Cool Insights`,
   description: article.description,
   alternates: { canonical: "https://perma.cool/industrial-process-chiller-maintenance" }
 };

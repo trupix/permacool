@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
-  title: 'FreshBooks Connection Result | PermaCool',
+  title: 'FreshBooks Connection Result | Perma Cool',
   description: 'FreshBooks OAuth connection status.'
 }
 

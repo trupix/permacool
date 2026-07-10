@@ -3,9 +3,9 @@ import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   alternates: { canonical: "https://perma.cool/contact-us" },
-  title: "Request a Quote | PermaCool Extraction Cooling Systems",
+  title: "Request a Quote | Perma Cool Extraction Cooling Systems",
   description:
-    "Contact PermaCool for ethanol chiller and butane recovery system pricing, lead times, and process-fit recommendations."
+    "Contact Perma Cool for ethanol chiller and butane recovery system pricing, lead times, and process-fit recommendations."
 };
 
 export default async function Page({ searchParams }) {
@@ -20,7 +20,7 @@ export default async function Page({ searchParams }) {
           <p className="eyebrow">Request a Quote</p>
           <h1>Tell us what your extraction cooling workflow needs to do.</h1>
           <p>
-            Share your target temperature, throughput, and current cooling method. PermaCool will use that information
+            Share your target temperature, throughput, and current cooling method. Perma Cool will use that information
             to scope the right ethanol chiller or butane recovery configuration for your operation.
           </p>
           <div className="contact-direct-links">
@@ -86,7 +86,7 @@ export default async function Page({ searchParams }) {
             </label>
             <label>
               Target Process Temperature (C)
-              <input type="text" name="target_temp" placeholder="ex: -40 °C" />
+              <input type="text" name="target_temp" placeholder="ex: −40 °C" />
             </label>
             <label>
               Estimated Throughput
@@ -113,12 +113,12 @@ export default async function Page({ searchParams }) {
       <section className="contact-trust-strip">
         <div>
           <p className="eyebrow">What happens after you submit</p>
-          <h2>A PermaCool specialist reviews the process fit, not just the form.</h2>
+          <h2>A Perma Cool specialist reviews the process fit, not just the form.</h2>
         </div>
         <ul>
           <li>
             <CheckCircle2 size={18} aria-hidden="true" />
-            Fast qualification review by a PermaCool specialist.
+            Fast qualification review by a Perma Cool specialist.
           </li>
           <li>
             <CheckCircle2 size={18} aria-hidden="true" />

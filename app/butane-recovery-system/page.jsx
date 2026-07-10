@@ -110,7 +110,7 @@ const faqs = [
   {
     question: "Can Perma Cool help with system fit before a purchase?",
     answer:
-      "Yes. PermaCool reviews recovery volume, run cadence, solvent handling requirements, available utilities, and existing equipment before recommending a system configuration."
+      "Yes. Perma Cool reviews recovery volume, run cadence, solvent handling requirements, available utilities, and existing equipment before recommending a system configuration."
   }
 ];
 

@@ -19,9 +19,9 @@ import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
   alternates: { canonical: "https://perma.cool/ethanol-chiller-blast-150" },
-  title: "BLAST 150/45 Ethanol Chiller | 150 Gallons to -40°C in 45 Minutes | PermaCool",
+  title: "BLAST™ 150/45 Ethanol Chiller | 150 Gallons to −40 °C in 45 Minutes | Perma Cool",
   description:
-    "PermaCool BLAST 150/45 standard 150-gallon ethanol pre-chiller chills toward -40°C in 45 minutes with 3.33 GPM chilling, direct refrigerant architecture, and PLC/HMI visibility."
+    "Perma Cool BLAST 150/45 standard 150-gallon ethanol pre-chiller chills to −40 °C in 45 minutes with 3.33 GPM chilling, direct refrigerant architecture, and PLC/HMI visibility."
 };
 
 const heroStats = [
@@ -35,7 +35,7 @@ const heroStats = [
   {
     label: "45",
     unit: "minutes",
-    text: "Room temp to -40°C - continuous duty 24/7 operation",
+    text: "Room temperature to −40 °C — continuous-duty 24/7 operation",
     icon: Clock,
     tone: "pull-down"
   },
@@ -53,13 +53,13 @@ const breakdownCards = [
     title: "Standard 150-gallon pre-chiller",
     icon: TrendingUp,
     body:
-      "The BLAST 150/45 is PermaCool's standard 150-gallon ethanol pre-chiller for commercial labs that need real production capacity without jumping into the largest tank class."
+      "The BLAST 150/45 is Perma Cool's standard 150-gallon ethanol pre-chiller for commercial labs that need real production capacity without jumping into the largest tank class."
   },
   {
     title: "The model name is the target",
     icon: Gauge,
     body:
-      "The name is literal: 150 gallons of ethanol chilled from room temperature toward -40°C in 45 minutes, or about 3.33 gallons per minute of chilling performance."
+      "The name is literal: 150 gallons of ethanol chilled from room temperature to −40 °C in 45 minutes, or about 3.33 gallons per minute of chilling performance."
   },
   {
     title: "The mid-size workhorse",
@@ -92,16 +92,16 @@ const valueProps = [
     title: "Controls and component protection",
     icon: Cpu,
     body:
-      "PermaCool controls give operators process visibility, while compressor self-protection and control logic help protect major refrigeration components."
+      "Perma Cool controls give operators process visibility, while compressor self-protection and control logic help protect major refrigeration components."
   }
 ];
 
 const overviewCards = [
   {
     eyebrow: "Performance Profile",
-    title: "150 gallons to -40C in 45 minutes.",
+    title: "150 gallons to −40 °C in 45 minutes.",
     image: "/images/generated/blast150-flash-chilling-purple.png",
-    alt: "BLAST 150/45 purple performance graphic showing 150 gallons to -40C in 45 minutes",
+    alt: "BLAST 150/45 purple performance graphic showing 150 gallons to −40 °C in 45 minutes",
     body:
       "The BLAST 150/45 sits in the middle of the BLAST lineup: more capacity than the compact 60/45, with a production footprint designed for growing extraction schedules."
   },
@@ -151,7 +151,7 @@ const workflowPoints = [
 
 const highlights = [
   "150-gallon ethanol capacity",
-  "Room temperature toward -40°C in 45 minutes",
+  "Room temperature to −40 °C in 45 minutes",
   "About 3.33 gallons per minute of chilling performance",
   "Built for repeat-cycle extraction workflows",
   "Designed to reduce dependence on LN2 and dry ice",
@@ -222,15 +222,15 @@ function Hero() {
       <div className="hero-content">
         <p className="eyebrow">BLAST Product Line</p>
         <h1>
-          <span className="blast150-hero-title-accent">BLAST 150/45</span> Ethanol Chiller
+          <span className="blast150-hero-title-accent">BLAST™ 150/45</span> Ethanol Chiller
         </h1>
         <p className="hero-lede">
-          Flash-chill 150 gallons of ethanol to -40°C in 45 minutes, with 3.33 GPM of flash chilling for commercial
+          Flash-chill 150 gallons of ethanol to −40 °C in 45 minutes, with 3.33 GPM of flash chilling for commercial
           extraction workflows.
         </p>
         <div className="hero-actions">
           <a className="button primary" href="/contact-us">
-            Request BLAST 150 pricing
+            Request BLAST 150/45 pricing
             <ArrowRight size={18} aria-hidden="true" />
           </a>
           <a className="button secondary" href="/ethanol-chiller-comparison">
@@ -347,7 +347,7 @@ function Workflow() {
           <div>
             <strong>Protect</strong>
             <p>
-              Compressor self-protection and PermaCool control logic help the refrigeration platform handle changing
+              Compressor self-protection and Perma Cool control logic help the refrigeration platform handle changing
               extraction-room conditions.
             </p>
           </div>
@@ -432,13 +432,13 @@ function RelatedCta() {
         <p className="eyebrow">Need lead time + pricing?</p>
         <h2>Match the BLAST 150/45 to your ethanol volume, batch schedule, and facility utilities.</h2>
         <p>
-          PermaCool can help compare the 60/45, standard 150/45, faster 150/25, and 240/45 against your current process
+          Perma Cool can help compare the 60/45, standard 150/45, faster 150/25, and 240/45 against your current process
           instead of guessing from capacity alone.
         </p>
       </div>
       <div className="related-actions">
         <a className="button primary" href="/contact-us">
-          Request BLAST 150 pricing
+          Request BLAST 150/45 pricing
           <ArrowRight size={18} aria-hidden="true" />
         </a>
         <a className="button secondary light" href="tel:+17472081001">

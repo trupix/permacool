@@ -27,7 +27,7 @@ export async function POST(req) {
     const resend = new Resend(resendKey)
 
     const text = [
-      'New PermaCool contact form submission',
+      'New Perma Cool contact form submission',
       '',
       `Name: ${payload.name}`,
       `Email: ${payload.email}`,
@@ -43,7 +43,7 @@ export async function POST(req) {
     ].join('\n')
 
     const html = `
-      <h2>New PermaCool contact form submission</h2>
+      <h2>New Perma Cool contact form submission</h2>
       <p><strong>Name:</strong> ${payload.name || ''}</p>
       <p><strong>Email:</strong> ${payload.email || ''}</p>
       <p><strong>Company:</strong> ${payload.company || ''}</p>
@@ -60,7 +60,7 @@ export async function POST(req) {
       from: fromEmail,
       to: [toEmail],
       replyTo: payload.email || undefined,
-      subject: `PermaCool Quote Request${payload.name ? ` from ${payload.name}` : ''}`,
+      subject: `Perma Cool Quote Request${payload.name ? ` from ${payload.name}` : ''}`,
       text,
       html
     })
