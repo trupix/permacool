@@ -15,7 +15,8 @@ import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 export const metadata = {
   title: "Butane Recovery Systems for BHO Extraction | Perma Cool",
   description:
-    "Perma Cool butane recovery systems for commercial BHO extraction labs, with process-zone planning, cooling integration, PLC/HMI visibility, and production support."
+    "Perma Cool butane recovery systems for commercial BHO extraction labs, with process-zone planning, cooling integration, PLC/HMI visibility, and production support.",
+  alternates: { canonical: "https://perma.cool/butane-recovery-system" }
 };
 
 const heroStats = [

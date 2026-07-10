@@ -18,6 +18,7 @@ import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
+  alternates: { canonical: "https://perma.cool/ethanol-chiller-blast-150" },
   title: "BLAST 150/45 Ethanol Chiller | 150 Gallons to -40°C in 45 Minutes | PermaCool",
   description:
     "PermaCool BLAST 150/45 standard 150-gallon ethanol pre-chiller chills toward -40°C in 45 minutes with 3.33 GPM chilling, direct refrigerant architecture, and PLC/HMI visibility."

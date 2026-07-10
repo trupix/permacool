@@ -15,7 +15,8 @@ import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 export const metadata = {
   title: "Compare BLAST Ethanol Chillers | 60/45 vs 150/45 vs 240/45 | Perma Cool",
   description:
-    "Compare Perma Cool BLAST 60/45, BLAST 150/45, and BLAST 240/45 ethanol chillers by capacity, pull-down target, workflow fit, controls, and production scale."
+    "Compare Perma Cool BLAST 60/45, BLAST 150/45, and BLAST 240/45 ethanol chillers by capacity, pull-down target, workflow fit, controls, and production scale.",
+  alternates: { canonical: "https://perma.cool/ethanol-chiller-comparison" }
 };
 
 const models = [

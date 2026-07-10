@@ -21,7 +21,8 @@ import { InsightsHeader } from "../insights/InsightsShell";
 export const metadata = {
   title: "Ethanol Chillers for Extraction Facilities | Perma Cool BLAST Systems",
   description:
-    "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, -40 °C operation, reduced LN2 dependence, and commercial extraction throughput."
+    "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, -40 °C operation, reduced LN2 dependence, and commercial extraction throughput.",
+  alternates: { canonical: "https://perma.cool/ethanol-chilling-systems" }
 };
 
 const seriesLinks = [

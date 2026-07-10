@@ -2,6 +2,7 @@ import { ArrowRight, CheckCircle2, ClipboardList, Mail, Phone } from "lucide-rea
 import { InsightsFooter, InsightsHeader } from "../insights/InsightsShell";
 
 export const metadata = {
+  alternates: { canonical: "https://perma.cool/contact-us" },
   title: "Request a Quote | PermaCool Extraction Cooling Systems",
   description:
     "Contact PermaCool for ethanol chiller and butane recovery system pricing, lead times, and process-fit recommendations."

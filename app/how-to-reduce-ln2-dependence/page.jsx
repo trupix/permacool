@@ -5,7 +5,8 @@ const article = articlesBySlug["how-to-reduce-ln2-dependence"];
 
 export const metadata = {
   title: `${article.title} | PermaCool`,
-  description: article.description
+  description: article.description,
+  alternates: { canonical: "https://perma.cool/how-to-reduce-ln2-dependence" }
 };
 
 export default function Page() {

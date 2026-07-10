@@ -11,7 +11,8 @@ import { InsightsFooter, InsightsHeader } from "./InsightsShell";
 export const metadata = {
   title: "PermaCool Learning Center",
   description:
-    "PermaCool learning center covering direct refrigerant vs LN2, extraction workflow, maintenance planning, and cooling system design."
+    "PermaCool learning center covering direct refrigerant vs LN2, extraction workflow, maintenance planning, and cooling system design.",
+  alternates: { canonical: "https://perma.cool/learning-center" }
 };
 
 export default function InsightsPage() {

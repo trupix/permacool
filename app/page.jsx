@@ -16,13 +16,14 @@ import { InsightsFooter, InsightsHeader } from "./insights/InsightsShell";
 export const metadata = {
   title: "PermaCool Ethanol Chillers & Butane Recovery Systems | Industrial Extraction Cooling",
   description:
-    "PermaCool builds industrial ethanol chilling systems and butane recovery solutions for extraction labs."
+    "PermaCool builds industrial ethanol chilling systems and butane recovery solutions for extraction labs.",
+  alternates: { canonical: "https://perma.cool/" }
 };
 
 const ethanolOverview = {
   title: "Ethanol Chilling Systems",
   body:
-    "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around -40 Â°C while reducing LN2 dependency and consumable spend.",
+    "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around -40 °C while reducing LN2 dependency and consumable spend.",
   href: "/ethanol-chilling-systems",
   image: "/images/generated/blast60-hero-most-accurate-outdoor-condensers.png",
   cta: "Explore Ethanol Chillers"
@@ -168,7 +169,7 @@ export default function HomePage() {
       <section className="section home-systems-section">
         <div className="section-heading">
           <p className="eyebrow">Ethanol Extraction Chilling Systems</p>
-          <h2>Ethanol extration pre-chiller systems for distilate production</h2>
+          <h2>Ethanol extraction pre-chiller systems for distillate production</h2>
         </div>
         <div className="home-ethanol-layout">
           <article className="home-ethanol-overview">
