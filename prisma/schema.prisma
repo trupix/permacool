@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrganizationStatus {
+  active
+  trial
+}
+
+enum DeviceStatus {
+  online
+  offline
+  degraded
+}
+
+enum AlertSeverity {
+  critical
+  warning
+  info
+}
+
+enum AlertStatus {
+  open
+  acknowledged
+  resolved
+}
+
+enum UserRole {
+  owner
+  operator
+  viewer
+}
+
+model User {
+  id              String             @id @default(cuid())
+  email           String             @unique
+  name            String
+  role            UserRole
+  memberships     UserOrganization[]
+  auditLogEntries AuditLog[]         @relation("AuditActor")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+model Organization {
+  id            String             @id @default(cuid())
+  name          String
+  status        OrganizationStatus @default(active)
+  memberships   UserOrganization[]
+  sites         Site[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+}
+
+model UserOrganization {
+  id             String       @id @default(cuid())
+  userId         String
+  organizationId String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+}
+
+model Site {
+  id             String       @id @default(cuid())
+  organizationId String
+  name           String
+  region         String
+  timezone       String
+  gatewayStatus  DeviceStatus @default(online)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  devices        Device[]
+  alerts         Alert[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Device {
+  id              String           @id @default(cuid())
+  siteId          String
+  name            String
+  plcModel        String
+  protocol        String
+  serialNumber    String?
+  status          DeviceStatus     @default(online)
+  firmwareVersion String?
+  lastSeenAt      DateTime?
+  site            Site             @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  telemetryPoints TelemetryPoint[]
+  alerts          Alert[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model TelemetryPoint {
+  id              String   @id @default(cuid())
+  deviceId        String
+  key             String
+  label           String
+  unit            String
+  latestValue     Float
+  latestTimestamp DateTime
+  device          Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([deviceId, key])
+}
+
+model Alert {
+  id         String        @id @default(cuid())
+  siteId     String
+  deviceId   String
+  severity   AlertSeverity
+  status     AlertStatus   @default(open)
+  message    String
+  startedAt  DateTime
+  endedAt    DateTime?
+  site       Site          @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  device     Device        @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String
+  entityType  String
+  entityId    String
+  action      String
+  metadata    Json?
+  actor       User     @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
