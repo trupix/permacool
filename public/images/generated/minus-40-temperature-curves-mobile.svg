@@ -1,0 +1,81 @@
+<svg width="390" height="760" viewBox="0 0 390 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Mobile chart of Celsius and Fahrenheit crossing at minus forty</title>
+  <desc id="desc">An accurately plotted mobile chart showing the Celsius and Fahrenheit lines crossing once at negative forty.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#061012"/>
+      <stop offset="0.58" stop-color="#102326"/>
+      <stop offset="1" stop-color="#111c17"/>
+    </linearGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="390" height="760" fill="url(#bg)"/>
+  <path d="M0 0H195V6H0Z" fill="#74e8ff"/>
+  <path d="M195 0H390V6H195Z" fill="#a8d65c"/>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="20" y="34" font-size="11" font-weight="900" letter-spacing="2.4" fill="#84edfd">THE TEMPERATURE CURVES</text>
+    <text x="20" y="66" font-size="25" font-weight="900" fill="#ffffff">One exact crossing.</text>
+    <text x="20" y="92" font-size="17" font-weight="900" fill="#d8e5e2">No rounding. No second meeting point.</text>
+
+    <g transform="translate(20 112)">
+      <rect width="350" height="78" rx="7" fill="#ffffff" fill-opacity="0.055" stroke="#ffffff" stroke-opacity="0.15"/>
+      <path d="M16 25H58" stroke="#74e8ff" stroke-width="6" stroke-linecap="round"/>
+      <text x="70" y="30" font-size="13" font-weight="900" fill="#d9f7fb">Celsius reading: C = C</text>
+      <path d="M16 56H58" stroke="#a8d65c" stroke-width="6" stroke-linecap="round"/>
+      <text x="70" y="61" font-size="13" font-weight="900" fill="#edf6db">Fahrenheit: F = 1.8C + 32</text>
+    </g>
+
+    <g>
+      <rect x="52" y="220" width="308" height="400" rx="7" fill="#020708" fill-opacity="0.45" stroke="#ffffff" stroke-opacity="0.14"/>
+      <g stroke="#ffffff" stroke-opacity="0.12">
+        <path d="M52 220H360M52 300H360M52 380H360M52 460H360M52 540H360M52 620H360"/>
+        <path d="M52 220V620M113.6 220V620M175.2 220V620M236.8 220V620M298.4 220V620M360 220V620"/>
+      </g>
+
+      <g font-size="10" font-weight="800" fill="#afc0be">
+        <text x="45" y="224" text-anchor="end">80</text>
+        <text x="45" y="304" text-anchor="end">40</text>
+        <text x="45" y="384" text-anchor="end">0</text>
+        <text x="45" y="464" text-anchor="end">-40</text>
+        <text x="45" y="544" text-anchor="end">-80</text>
+        <text x="45" y="624" text-anchor="end">-120</text>
+
+        <text x="52" y="642" text-anchor="middle">-80</text>
+        <text x="113.6" y="642" text-anchor="middle">-60</text>
+        <text x="175.2" y="642" text-anchor="middle" fill="#ffffff">-40</text>
+        <text x="236.8" y="642" text-anchor="middle">-20</text>
+        <text x="298.4" y="642" text-anchor="middle">0</text>
+        <text x="360" y="642" text-anchor="middle">20</text>
+      </g>
+
+      <path d="M52 540L360 340" fill="none" stroke="#74e8ff" stroke-width="6" stroke-linecap="round"/>
+      <path d="M52 604L360 244" fill="none" stroke="#a8d65c" stroke-width="6" stroke-linecap="round"/>
+      <path d="M175.2 460V620M52 460H175.2" stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="6 7"/>
+      <circle cx="175.2" cy="460" r="19" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-width="2" filter="url(#glow)"/>
+      <circle cx="175.2" cy="460" r="7" fill="#ffffff"/>
+
+      <g transform="translate(68 318)">
+        <rect width="260" height="96" rx="7" fill="#071113" stroke="#ffffff" stroke-opacity="0.32"/>
+        <text x="130" y="28" text-anchor="middle" font-size="10" font-weight="900" letter-spacing="2" fill="#afc0be">THE ONE SHARED READING</text>
+        <text x="130" y="67" text-anchor="middle" font-size="27" font-weight="900" fill="#ffffff">
+          <tspan fill="#74e8ff">&#8722;40&#176;C</tspan>
+          <tspan fill="#ffffff"> = </tspan>
+          <tspan fill="#a8d65c">&#8722;40&#176;F</tspan>
+        </text>
+      </g>
+      <path d="M175.2 414V441" stroke="#ffffff" stroke-width="1.5"/>
+    </g>
+
+    <text x="206" y="682" text-anchor="middle" font-size="14" font-weight="900" fill="#ffffff">Celsius input (&#176;C)</text>
+    <text x="16" y="420" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff" transform="rotate(-90 16 420)">Scale reading</text>
+    <text x="195" y="718" text-anchor="middle" font-size="12" font-weight="800" fill="#aebfbd">Different slopes make one exact meeting point.</text>
+    <text x="195" y="739" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">That point is &#8722;40.</text>
+  </g>
+</svg>

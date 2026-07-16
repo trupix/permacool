@@ -1,0 +1,71 @@
+<svg width="390" height="620" viewBox="0 0 390 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Imperial and metric units agree at minus forty</title>
+  <desc id="desc">A mobile illustration showing imperial and metric unit camps reaching the same temperature at negative forty.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#061013"/>
+      <stop offset="0.52" stop-color="#102124"/>
+      <stop offset="1" stop-color="#111a14"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="390" height="620" fill="url(#bg)"/>
+  <g opacity="0.1" stroke="#ffffff">
+    <path d="M0 100H390M0 200H390M0 300H390M0 400H390M0 500H390"/>
+    <path d="M65 0V620M130 0V620M195 0V620M260 0V620M325 0V620"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="195" y="34" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="2.5" fill="#9db3b3">THE GREAT UNIT ARGUMENT</text>
+    <text x="195" y="67" text-anchor="middle" font-size="23" font-weight="900" fill="#ffffff">The debate freezes here.</text>
+
+    <g transform="translate(16 94)">
+      <rect width="168" height="170" rx="8" fill="#091416" stroke="#e0b84c" stroke-width="2"/>
+      <text x="84" y="28" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="2" fill="#efc85d">IMPERIAL</text>
+      <text x="84" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="#ffffff">IN  MI  GAL  &#176;F</text>
+      <g transform="translate(16 74)">
+        <rect width="136" height="42" rx="6" fill="#d6a32e" fill-opacity="0.1" stroke="#d6a32e" stroke-opacity="0.4"/>
+        <text x="68" y="18" text-anchor="middle" font-size="10" font-weight="900" fill="#f0d687">32&#176;F  /  72&#176;F  /  100&#176;F</text>
+        <text x="68" y="34" text-anchor="middle" font-size="9" font-weight="800" fill="#cbd7d4">"It has character."</text>
+      </g>
+      <path d="M84 132V158" stroke="#d9cc55" stroke-width="5" stroke-linecap="round"/>
+    </g>
+
+    <g transform="translate(206 94)">
+      <rect width="168" height="170" rx="8" fill="#081416" stroke="#69e3f6" stroke-width="2"/>
+      <text x="84" y="28" text-anchor="middle" font-size="12" font-weight="900" letter-spacing="2" fill="#83ecfc">METRIC</text>
+      <text x="84" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="#ffffff">CM  KM  L  &#176;C</text>
+      <g transform="translate(16 74)">
+        <rect width="136" height="42" rx="6" fill="#13a7c7" fill-opacity="0.1" stroke="#13a7c7" stroke-opacity="0.4"/>
+        <text x="68" y="18" text-anchor="middle" font-size="10" font-weight="900" fill="#9aefff">0&#176;C  /  20&#176;C  /  100&#176;C</text>
+        <text x="68" y="34" text-anchor="middle" font-size="9" font-weight="800" fill="#cbd7d4">"Water did the math."</text>
+      </g>
+      <path d="M84 132V158" stroke="#70e7fb" stroke-width="5" stroke-linecap="round"/>
+    </g>
+
+    <path d="M100 264C118 286 135 299 150 310" fill="none" stroke="#d9cc55" stroke-width="6" stroke-linecap="round"/>
+    <path d="M290 264C272 286 255 299 240 310" fill="none" stroke="#70e7fb" stroke-width="6" stroke-linecap="round"/>
+
+    <g transform="translate(55 294)">
+      <path d="M140 0L238 42L280 140L238 238L140 280L42 238L0 140L42 42Z" fill="#071113" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3"/>
+      <path d="M140 18L225 55L262 140L225 225L140 262L55 225L18 140L55 55Z" fill="#102b2e" stroke="#74e8ff" stroke-width="3"/>
+      <path d="M140 44V236M44 140H236M72 72L208 208M208 72L72 208" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3"/>
+      <text x="140" y="101" text-anchor="middle" font-size="11" font-weight="900" letter-spacing="2.5" fill="#b8cac8">COLD AGREEMENT</text>
+      <text x="140" y="165" text-anchor="middle" font-size="64" font-weight="900" fill="#ffffff" filter="url(#glow)">&#8722;40&#176;</text>
+      <text x="140" y="204" text-anchor="middle" font-size="24" font-weight="900" fill="#ffffff">
+        <tspan fill="#74e8ff">&#176;C</tspan>
+        <tspan fill="#ffffff"> = </tspan>
+        <tspan fill="#a8d65c">&#176;F</tspan>
+      </text>
+    </g>
+
+    <rect x="35" y="581" width="320" height="25" rx="6" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.15"/>
+    <text x="195" y="598" text-anchor="middle" font-size="11" font-weight="900" fill="#ffffff">At &#8722;40&#176;, both sides accidentally win.</text>
+  </g>
+</svg>

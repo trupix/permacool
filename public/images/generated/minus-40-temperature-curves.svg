@@ -1,60 +1,98 @@
-<svg width="1440" height="840" viewBox="0 0 1440 840" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Temperature conversion curves crossing at minus forty</title>
-  <desc id="desc">A chart showing the Fahrenheit conversion line and the same-number Celsius line meeting at negative forty.</desc>
+<svg width="1280" height="800" viewBox="0 0 1280 800" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Celsius and Fahrenheit conversion lines cross at minus forty</title>
+  <desc id="desc">An accurately plotted chart with Celsius input on the horizontal axis and scale reading on the vertical axis. The Celsius and Fahrenheit lines cross once at negative forty.</desc>
   <defs>
-    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0b1415"/>
-      <stop offset="1" stop-color="#172321"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#061012"/>
+      <stop offset="0.58" stop-color="#102326"/>
+      <stop offset="1" stop-color="#111c17"/>
     </linearGradient>
-    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="8" result="blur"/>
+    <linearGradient id="cyanLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#85efff"/>
+      <stop offset="1" stop-color="#13a7c7"/>
+    </linearGradient>
+    <linearGradient id="limeLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e0c85e"/>
+      <stop offset="1" stop-color="#91c83e"/>
+    </linearGradient>
+    <filter id="pointGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <rect width="1440" height="840" fill="#f7fbfa"/>
-  <rect x="64" y="54" width="1312" height="734" rx="28" fill="url(#panel)"/>
-  <path d="M1036 92H1294M1004 126H1262M972 160H1230" stroke="#13a7c7" stroke-width="2" stroke-opacity="0.2"/>
-  <path d="M118 612H376M148 646H406M178 680H436" stroke="#91c83e" stroke-width="2" stroke-opacity="0.18"/>
-  <g transform="translate(170 104)">
-    <rect width="1100" height="520" rx="18" fill="#071011" opacity="0.42" stroke="#ffffff" stroke-opacity="0.13"/>
-    <g stroke="#ffffff" stroke-opacity="0.15" stroke-width="1">
-      <path d="M0 432H1100M0 346H1100M0 260H1100M0 174H1100M0 88H1100"/>
-      <path d="M183 0V520M367 0V520M550 0V520M733 0V520M917 0V520"/>
-    </g>
-    <g font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="800" fill="#aebcba">
-      <text x="-46" y="438">-80</text>
-      <text x="-46" y="352">-40</text>
-      <text x="-22" y="266">0</text>
-      <text x="-32" y="180">40</text>
-      <text x="-32" y="94">80</text>
-      <text x="0" y="558" text-anchor="middle">-80</text>
-      <text x="183" y="558" text-anchor="middle">-40</text>
-      <text x="367" y="558" text-anchor="middle">0</text>
-      <text x="550" y="558" text-anchor="middle">40</text>
-      <text x="733" y="558" text-anchor="middle">80</text>
-      <text x="917" y="558" text-anchor="middle">120</text>
-    </g>
-    <path d="M0 432L183 346L367 260L550 174L733 88L1100 -84" fill="none" stroke="#91c83e" stroke-width="8" stroke-linecap="round" opacity="0.95" filter="url(#softGlow)"/>
-    <path d="M0 502L183 346L367 190L550 34L733 -122L1100 -434" fill="none" stroke="#70e5fb" stroke-width="8" stroke-linecap="round" opacity="0.95" filter="url(#softGlow)"/>
-    <circle cx="183" cy="346" r="16" fill="#fff"/>
-    <circle cx="183" cy="346" r="48" fill="none" stroke="#ffffff" stroke-width="3" stroke-opacity="0.58"/>
-    <line x1="183" y1="346" x2="183" y2="520" stroke="#ffffff" stroke-width="2" stroke-dasharray="7 8" opacity="0.55"/>
-    <line x1="0" y1="346" x2="183" y2="346" stroke="#ffffff" stroke-width="2" stroke-dasharray="7 8" opacity="0.55"/>
-    <g font-family="Arial, Helvetica, sans-serif">
-      <text x="214" y="284" font-size="28" font-weight="900" fill="#ffffff">same reading</text>
-      <text x="214" y="360" font-size="54" font-weight="900" fill="#ffffff">-40°C = -40°F</text>
-      <text x="760" y="92" font-size="28" font-weight="900" fill="#70e5fb">F = 9/5C + 32</text>
-      <text x="770" y="136" font-size="22" font-weight="800" fill="#d4eeef">Fahrenheit conversion line</text>
-      <text x="716" y="246" font-size="28" font-weight="900" fill="#91c83e">F = C</text>
-      <text x="716" y="288" font-size="22" font-weight="800" fill="#dbe9da">same-number line</text>
-    </g>
-  </g>
+
+  <rect width="1280" height="800" fill="url(#bg)"/>
+  <path d="M0 0H1280V9H0Z" fill="url(#cyanLine)"/>
+  <path d="M640 0H1280V9H640Z" fill="url(#limeLine)"/>
+
   <g font-family="Arial, Helvetica, sans-serif">
-    <text x="96" y="100" font-size="24" font-weight="900" fill="#78e4f4">Temperature curve visual</text>
-    <text x="96" y="728" font-size="26" font-weight="900" fill="#ffffff">X-axis: Celsius input. Y-axis: Fahrenheit reading.</text>
-    <text x="96" y="760" font-size="21" font-weight="700" fill="#b8c8c5">The two lines cross once because Fahrenheit uses a different zero point and a different degree size.</text>
+    <text x="70" y="51" font-size="17" font-weight="900" letter-spacing="4" fill="#85efff">THE TEMPERATURE CURVES</text>
+    <text x="70" y="92" font-size="35" font-weight="900" fill="#ffffff">One crossing.</text>
+    <text x="70" y="126" font-size="26" font-weight="900" fill="#d9e6e3">No rounding. No second meeting point.</text>
+
+    <g transform="translate(694 27)">
+      <rect width="516" height="105" rx="8" fill="#ffffff" fill-opacity="0.055" stroke="#ffffff" stroke-opacity="0.15"/>
+      <path d="M24 32H82" stroke="#74e8ff" stroke-width="7" stroke-linecap="round"/>
+      <text x="100" y="39" font-size="18" font-weight="900" fill="#d9f7fb">Celsius reading: C = C</text>
+      <path d="M24 75H82" stroke="#a8d65c" stroke-width="7" stroke-linecap="round"/>
+      <text x="100" y="82" font-size="18" font-weight="900" fill="#edf6db">Fahrenheit reading: F = 1.8C + 32</text>
+    </g>
+
+    <g>
+      <rect x="170" y="160" width="980" height="490" rx="8" fill="#020708" fill-opacity="0.42" stroke="#ffffff" stroke-opacity="0.13"/>
+
+      <g stroke="#ffffff" stroke-opacity="0.12" stroke-width="1">
+        <path d="M170 160H1150M170 221.25H1150M170 282.5H1150M170 343.75H1150M170 405H1150M170 466.25H1150M170 527.5H1150M170 588.75H1150M170 650H1150"/>
+        <path d="M170 160V650M292.5 160V650M415 160V650M537.5 160V650M660 160V650M782.5 160V650M905 160V650M1027.5 160V650M1150 160V650"/>
+      </g>
+
+      <g font-size="17" font-weight="800" fill="#aebfbd">
+        <text x="143" y="166" text-anchor="end">160</text>
+        <text x="143" y="227" text-anchor="end">120</text>
+        <text x="143" y="288" text-anchor="end">80</text>
+        <text x="143" y="349" text-anchor="end">40</text>
+        <text x="143" y="411" text-anchor="end">0</text>
+        <text x="143" y="472" text-anchor="end">-40</text>
+        <text x="143" y="533" text-anchor="end">-80</text>
+        <text x="143" y="594" text-anchor="end">-120</text>
+        <text x="143" y="656" text-anchor="end">-160</text>
+
+        <text x="170" y="686" text-anchor="middle">-100</text>
+        <text x="292.5" y="686" text-anchor="middle">-80</text>
+        <text x="415" y="686" text-anchor="middle">-60</text>
+        <text x="537.5" y="686" text-anchor="middle" fill="#ffffff" font-weight="900">-40</text>
+        <text x="660" y="686" text-anchor="middle">-20</text>
+        <text x="782.5" y="686" text-anchor="middle">0</text>
+        <text x="905" y="686" text-anchor="middle">20</text>
+        <text x="1027.5" y="686" text-anchor="middle">40</text>
+        <text x="1150" y="686" text-anchor="middle">60</text>
+      </g>
+
+      <path d="M170 558.125L1150 313.125" fill="none" stroke="url(#cyanLine)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M170 631.625L1150 190.625" fill="none" stroke="url(#limeLine)" stroke-width="8" stroke-linecap="round"/>
+
+      <path d="M537.5 466.25V650M170 466.25H537.5" stroke="#ffffff" stroke-opacity="0.55" stroke-width="2" stroke-dasharray="8 9"/>
+      <circle cx="537.5" cy="466.25" r="27" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-width="2" filter="url(#pointGlow)"/>
+      <circle cx="537.5" cy="466.25" r="9" fill="#ffffff"/>
+
+      <g transform="translate(282 313)">
+        <rect width="510" height="114" rx="8" fill="#071113" stroke="#ffffff" stroke-opacity="0.32"/>
+        <text x="255" y="34" text-anchor="middle" font-size="15" font-weight="900" letter-spacing="3" fill="#a9bcba">THE ONE SHARED READING</text>
+        <text x="255" y="83" text-anchor="middle" font-size="43" font-weight="900" fill="#ffffff">
+          <tspan fill="#74e8ff">&#8722;40&#176;C</tspan>
+          <tspan fill="#ffffff"> = </tspan>
+          <tspan fill="#a8d65c">&#8722;40&#176;F</tspan>
+        </text>
+      </g>
+
+      <path d="M537.5 427V446" stroke="#ffffff" stroke-width="2"/>
+    </g>
+
+    <text x="660" y="739" text-anchor="middle" font-size="20" font-weight="900" fill="#ffffff">Celsius input (&#176;C)</text>
+    <text x="58" y="405" text-anchor="middle" font-size="20" font-weight="900" fill="#ffffff" transform="rotate(-90 58 405)">Scale reading</text>
+    <text x="660" y="773" text-anchor="middle" font-size="16" font-weight="800" fill="#9eb0ae">Straight lines with different slopes can cross once. Here, that exact point is &#8722;40.</text>
   </g>
 </svg>

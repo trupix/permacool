@@ -1,109 +1,128 @@
 <svg width="1440" height="760" viewBox="0 0 1440 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Imperial and metric temperature truce at minus forty</title>
-  <desc id="desc">A playful technical illustration showing Fahrenheit and Celsius unit systems ending their argument at minus forty degrees.</desc>
+  <title id="title">The imperial and metric unit battle freezes at minus forty</title>
+  <desc id="desc">A playful editorial battle map showing imperial and metric units converging on the shared temperature of minus forty degrees.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#071011"/>
-      <stop offset="0.55" stop-color="#162523"/>
-      <stop offset="1" stop-color="#0b1618"/>
+      <stop offset="0" stop-color="#061013"/>
+      <stop offset="0.5" stop-color="#102124"/>
+      <stop offset="1" stop-color="#111a14"/>
     </linearGradient>
-    <linearGradient id="lime" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#b8e86a"/>
-      <stop offset="1" stop-color="#91c83e"/>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0c45a"/>
+      <stop offset="1" stop-color="#97c947"/>
     </linearGradient>
     <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#74e8ff"/>
+      <stop offset="0" stop-color="#86efff"/>
       <stop offset="1" stop-color="#13a7c7"/>
     </linearGradient>
-    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
-      <feGaussianBlur stdDeviation="8" result="blur"/>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="9" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    <marker id="arrowGold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#c9d956"/>
+    </marker>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#70e7fb"/>
+    </marker>
   </defs>
 
-  <rect width="1440" height="760" rx="0" fill="url(#bg)"/>
-  <g opacity="0.16" stroke="#ffffff">
-    <path d="M84 122H1356M84 244H1356M84 366H1356M84 488H1356M84 610H1356"/>
-    <path d="M188 84V676M388 84V676M588 84V676M852 84V676M1052 84V676M1252 84V676"/>
+  <rect width="1440" height="760" fill="url(#bg)"/>
+  <g opacity="0.1" stroke="#ffffff">
+    <path d="M0 126H1440M0 252H1440M0 378H1440M0 504H1440M0 630H1440"/>
+    <path d="M120 0V760M360 0V760M600 0V760M840 0V760M1080 0V760M1320 0V760"/>
   </g>
+  <path d="M0 0H720V760H0Z" fill="#d6a32e" opacity="0.035"/>
+  <path d="M720 0H1440V760H720Z" fill="#13a7c7" opacity="0.035"/>
 
   <g font-family="Arial, Helvetica, sans-serif">
-    <text x="720" y="72" text-anchor="middle" font-size="28" font-weight="900" fill="#d4eeef">THE UNIT DEBATE FREEZES HERE</text>
+    <text x="720" y="62" text-anchor="middle" font-size="18" font-weight="900" letter-spacing="4" fill="#9db3b3">THE GREAT UNIT ARGUMENT</text>
+    <text x="720" y="104" text-anchor="middle" font-size="35" font-weight="900" fill="#ffffff">Everyone brought a ruler. Nobody needed one.</text>
 
-    <g transform="translate(112 150)">
-      <rect x="0" y="0" width="378" height="430" rx="22" fill="#0b1516" stroke="#91c83e" stroke-width="3" stroke-opacity="0.7"/>
-      <text x="189" y="58" text-anchor="middle" font-size="32" font-weight="900" fill="#91c83e">IMPERIAL</text>
-      <text x="189" y="94" text-anchor="middle" font-size="20" font-weight="800" fill="#dbe9da">miles, gallons, inches, °F</text>
+    <g transform="translate(72 142)">
+      <path d="M0 42L32 0H440L472 42V452L438 486H34L0 452Z" fill="#0a1517" stroke="#d9b248" stroke-width="3"/>
+      <path d="M0 42H472" stroke="#d9b248" stroke-width="3"/>
+      <text x="236" y="31" text-anchor="middle" font-size="20" font-weight="900" letter-spacing="3" fill="#f0c45a">IMPERIAL CAMP</text>
+      <text x="236" y="83" text-anchor="middle" font-size="22" font-weight="900" fill="#ffffff">Inches. Miles. Gallons.</text>
+      <text x="236" y="111" text-anchor="middle" font-size="20" font-weight="900" fill="#f3d98e">Fahrenheit.</text>
 
-      <g transform="translate(58 130)">
-        <rect x="0" y="0" width="72" height="250" rx="36" fill="#132321" stroke="#ffffff" stroke-opacity="0.28" stroke-width="3"/>
-        <rect x="24" y="34" width="24" height="168" rx="12" fill="url(#lime)"/>
-        <circle cx="36" cy="212" r="42" fill="url(#lime)" filter="url(#glow)"/>
-        <g stroke="#ffffff" stroke-width="3" stroke-opacity="0.55">
-          <path d="M82 42H120"/>
-          <path d="M82 82H108"/>
-          <path d="M82 122H120"/>
-          <path d="M82 162H108"/>
-          <path d="M82 202H120"/>
-        </g>
+      <g transform="translate(35 132)">
+        <rect width="112" height="112" rx="8" fill="#ffffff" fill-opacity="0.055" stroke="#ffffff" stroke-opacity="0.15"/>
+        <path d="M23 72H89M23 40H89M34 29V51M49 29V45M64 29V51M79 29V45" fill="none" stroke="#f0c45a" stroke-width="5" stroke-linecap="round"/>
+        <text x="56" y="98" text-anchor="middle" font-size="17" font-weight="900" fill="#f3d98e">INCH</text>
+      </g>
+      <g transform="translate(180 132)">
+        <rect width="112" height="112" rx="8" fill="#ffffff" fill-opacity="0.055" stroke="#ffffff" stroke-opacity="0.15"/>
+        <path d="M32 84V35C32 25 40 18 50 18H62C72 18 80 25 80 35V84Z" fill="none" stroke="#b8d656" stroke-width="5"/>
+        <path d="M43 46H69M43 60H69" stroke="#b8d656" stroke-width="4"/>
+        <text x="56" y="103" text-anchor="middle" font-size="17" font-weight="900" fill="#d9e895">GAL</text>
+      </g>
+      <g transform="translate(325 132)">
+        <rect width="112" height="112" rx="8" fill="#ffffff" fill-opacity="0.055" stroke="#ffffff" stroke-opacity="0.15"/>
+        <path d="M56 18V77M56 77L36 91M56 77L76 91" fill="none" stroke="#f0c45a" stroke-width="5" stroke-linecap="round"/>
+        <path d="M37 25H75L83 52H29Z" fill="none" stroke="#f0c45a" stroke-width="5"/>
+        <text x="56" y="48" text-anchor="middle" font-size="18" font-weight="900" fill="#f3d98e">MI</text>
       </g>
 
-      <g transform="translate(210 168)" fill="#ffffff">
-        <path d="M36 0h40v102H36z" opacity="0.12"/>
-        <path d="M36 0h40v102H36z" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3"/>
-        <path d="M36 18h25M36 38h18M36 58h25M36 78h18" stroke="#ffffff" stroke-width="3"/>
-        <text x="56" y="158" text-anchor="middle" font-size="58" font-weight="900" fill="#ffffff">°F</text>
-      </g>
-
-      <path d="M286 324l48 32-48 32" fill="none" stroke="#91c83e" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="188" y="392" text-anchor="middle" font-size="18" font-weight="900" fill="#b8e86a">"72 sounds normal."</text>
+      <rect x="35" y="282" width="402" height="104" rx="8" fill="#d6a32e" fill-opacity="0.09" stroke="#d6a32e" stroke-opacity="0.4"/>
+      <text x="236" y="324" text-anchor="middle" font-size="18" font-weight="900" fill="#f3d98e">Fahrenheit enters the debate with</text>
+      <text x="236" y="363" text-anchor="middle" font-size="30" font-weight="900" fill="#ffffff">32&#176;F, 72&#176;F, 100&#176;F</text>
+      <text x="236" y="435" text-anchor="middle" font-size="17" font-weight="900" fill="#cdd8d5">"It makes sense once you stop asking why."</text>
     </g>
 
-    <g transform="translate(950 150)">
-      <rect x="0" y="0" width="378" height="430" rx="22" fill="#0b1516" stroke="#74e8ff" stroke-width="3" stroke-opacity="0.72"/>
-      <text x="189" y="58" text-anchor="middle" font-size="32" font-weight="900" fill="#74e8ff">METRIC</text>
-      <text x="189" y="94" text-anchor="middle" font-size="20" font-weight="800" fill="#d4eeef">meters, liters, grams, °C</text>
+    <g transform="translate(896 142)">
+      <path d="M0 42L32 0H440L472 42V452L438 486H34L0 452Z" fill="#081517" stroke="#63dff3" stroke-width="3"/>
+      <path d="M0 42H472" stroke="#63dff3" stroke-width="3"/>
+      <text x="236" y="31" text-anchor="middle" font-size="20" font-weight="900" letter-spacing="3" fill="#82ebfb">METRIC CAMP</text>
+      <text x="236" y="83" text-anchor="middle" font-size="21" font-weight="900" fill="#ffffff">Centimeters. Kilometers.</text>
+      <text x="236" y="111" text-anchor="middle" font-size="20" font-weight="900" fill="#9aefff">Liters. Celsius.</text>
 
-      <g transform="translate(248 130)">
-        <rect x="0" y="0" width="72" height="250" rx="36" fill="#132321" stroke="#ffffff" stroke-opacity="0.28" stroke-width="3"/>
-        <rect x="24" y="34" width="24" height="168" rx="12" fill="url(#cyan)"/>
-        <circle cx="36" cy="212" r="42" fill="url(#cyan)" filter="url(#glow)"/>
-        <g stroke="#ffffff" stroke-width="3" stroke-opacity="0.55">
-          <path d="M-48 42H-10"/>
-          <path d="M-36 82H-10"/>
-          <path d="M-48 122H-10"/>
-          <path d="M-36 162H-10"/>
-          <path d="M-48 202H-10"/>
-        </g>
+      <g transform="translate(35 132)">
+        <rect width="112" height="112" rx="8" fill="#ffffff" fill-opacity="0.055" stroke="#ffffff" stroke-opacity="0.15"/>
+        <path d="M23 72H89M23 40H89M34 29V51M49 29V45M64 29V51M79 29V45" fill="none" stroke="#75e8fa" stroke-width="5" stroke-linecap="round"/>
+        <text x="56" y="98" text-anchor="middle" font-size="17" font-weight="900" fill="#9aefff">CM</text>
+      </g>
+      <g transform="translate(180 132)">
+        <rect width="112" height="112" rx="8" fill="#ffffff" fill-opacity="0.055" stroke="#ffffff" stroke-opacity="0.15"/>
+        <path d="M46 20H66V41L83 79C87 88 80 96 70 96H42C32 96 25 88 29 79L46 41Z" fill="none" stroke="#75e8fa" stroke-width="5"/>
+        <path d="M35 74H77" stroke="#75e8fa" stroke-width="4"/>
+        <text x="56" y="90" text-anchor="middle" font-size="16" font-weight="900" fill="#9aefff">L</text>
+      </g>
+      <g transform="translate(325 132)">
+        <rect width="112" height="112" rx="8" fill="#ffffff" fill-opacity="0.055" stroke="#ffffff" stroke-opacity="0.15"/>
+        <path d="M36 88H76L70 42H42Z" fill="none" stroke="#75e8fa" stroke-width="5"/>
+        <path d="M47 42C47 31 65 31 65 42" fill="none" stroke="#75e8fa" stroke-width="5"/>
+        <text x="56" y="72" text-anchor="middle" font-size="17" font-weight="900" fill="#9aefff">KG</text>
       </g>
 
-      <g transform="translate(82 168)" fill="#ffffff">
-        <rect x="0" y="0" width="104" height="34" rx="6" fill="#ffffff" opacity="0.12" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3"/>
-        <path d="M14 0v20M34 0v14M54 0v20M74 0v14M94 0v20" stroke="#ffffff" stroke-width="3"/>
-        <text x="52" y="158" text-anchor="middle" font-size="58" font-weight="900" fill="#ffffff">°C</text>
-      </g>
-
-      <path d="M92 324l-48 32 48 32" fill="none" stroke="#74e8ff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="188" y="392" text-anchor="middle" font-size="18" font-weight="900" fill="#74e8ff">"Use the sane scale."</text>
+      <rect x="35" y="282" width="402" height="104" rx="8" fill="#13a7c7" fill-opacity="0.09" stroke="#13a7c7" stroke-opacity="0.4"/>
+      <text x="236" y="324" text-anchor="middle" font-size="18" font-weight="900" fill="#9aefff">Celsius arrives with the tidy numbers</text>
+      <text x="236" y="363" text-anchor="middle" font-size="30" font-weight="900" fill="#ffffff">0&#176;C, 20&#176;C, 100&#176;C</text>
+      <text x="236" y="435" text-anchor="middle" font-size="17" font-weight="900" fill="#cdd8d5">"Water did most of the paperwork."</text>
     </g>
 
-    <g transform="translate(498 176)">
-      <path d="M70 112l76 66l-54 36l62 50" fill="none" stroke="#ffffff" stroke-opacity="0.32" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M374 112l-76 66l54 36l-62 50" fill="none" stroke="#ffffff" stroke-opacity="0.32" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="222" y="86" text-anchor="middle" font-size="21" font-weight="900" fill="#d4eeef">conversion chart abandoned</text>
-      <rect x="58" y="152" width="328" height="238" rx="34" fill="#071011" stroke="#ffffff" stroke-opacity="0.24" stroke-width="3"/>
-      <text x="222" y="234" text-anchor="middle" font-size="34" font-weight="900" fill="#d4eeef">TRUCE POINT</text>
-      <text x="222" y="314" text-anchor="middle" font-size="96" font-weight="900" fill="#ffffff" filter="url(#glow)">−40°</text>
-      <text x="222" y="356" text-anchor="middle" font-size="28" font-weight="900" fill="#91c83e">°F</text>
-      <text x="222" y="356" dx="52" text-anchor="middle" font-size="28" font-weight="900" fill="#74e8ff">= °C</text>
+    <path d="M508 358C566 344 609 343 647 354" fill="none" stroke="#c9d956" stroke-width="8" stroke-linecap="round" marker-end="url(#arrowGold)"/>
+    <path d="M932 358C874 344 831 343 793 354" fill="none" stroke="#70e7fb" stroke-width="8" stroke-linecap="round" marker-end="url(#arrowCyan)"/>
+
+    <g transform="translate(720 356)">
+      <path d="M0 -154L108 -108L154 0L108 108L0 154L-108 108L-154 0L-108 -108Z" fill="#071113" stroke="#ffffff" stroke-opacity="0.5" stroke-width="4"/>
+      <path d="M0 -135L94 -94L135 0L94 94L0 135L-94 94L-135 0L-94 -94Z" fill="#102b2e" stroke="#74e8ff" stroke-width="3"/>
+      <path d="M0 -112V112M-112 0H112M-78 -78L78 78M78 -78L-78 78" stroke="#ffffff" stroke-opacity="0.14" stroke-width="4"/>
+      <text x="0" y="-52" text-anchor="middle" font-size="18" font-weight="900" letter-spacing="3" fill="#b8cac8">COLD AGREEMENT</text>
+      <text x="0" y="30" text-anchor="middle" font-size="92" font-weight="900" fill="#ffffff" filter="url(#glow)">&#8722;40&#176;</text>
+      <text x="0" y="77" text-anchor="middle" font-size="32" font-weight="900" fill="#ffffff">
+        <tspan fill="#74e8ff">&#176;C</tspan>
+        <tspan fill="#ffffff"> = </tspan>
+        <tspan fill="#a8d65c">&#176;F</tspan>
+      </text>
     </g>
 
-    <g transform="translate(468 618)">
-      <rect x="0" y="0" width="504" height="70" rx="18" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.16"/>
-      <text x="252" y="44" text-anchor="middle" font-size="24" font-weight="900" fill="#ffffff">At −40°, everybody gets to be right.</text>
+    <g transform="translate(382 666)">
+      <rect width="676" height="58" rx="8" fill="#ffffff" fill-opacity="0.075" stroke="#ffffff" stroke-opacity="0.18"/>
+      <text x="338" y="38" text-anchor="middle" font-size="22" font-weight="900" fill="#ffffff">At &#8722;40&#176;, both sides accidentally win.</text>
     </g>
   </g>
 </svg>

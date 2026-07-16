@@ -29,7 +29,7 @@ export const insightArticles = [
     summary: "The rare point where Celsius and Fahrenheit meet, and why that matters in cold ethanol extraction.",
     description:
       "Learn why −40 °C equals −40 °F, why the Celsius and Fahrenheit scales meet at that exact point, and why −40 is a memorable target in ethanol chilling.",
-    image: "/images/generated/insights-minus-40-meeting.svg",
+    image: "/images/generated/minus-40-cold-handshake-hero.png",
     heroClass: "minus-40-hero",
     href: "/minus-40-celsius-fahrenheit",
     intro:

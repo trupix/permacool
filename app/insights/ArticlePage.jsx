@@ -539,17 +539,38 @@ export function ProcessOwnershipArticlePage({ article }) {
 
 export function Minus40ArticlePage({ article }) {
   return (
-    <main className="site-shell insight-article-page">
+    <main className="site-shell insight-article-page minus-40-page">
       <InsightsHeader />
       <ArticleHero article={article} />
 
       <section className="section insight-article-body minus-40-article">
+        <section
+          className="minus-40-equality-stage"
+          aria-label="Negative forty degrees Celsius equals negative forty degrees Fahrenheit"
+        >
+          <div className="minus-40-equality-scale minus-40-equality-celsius">
+            <span>Celsius</span>
+            <strong>−40°C</strong>
+          </div>
+          <div className="minus-40-equality-sign" aria-hidden="true">
+            <span>Same temperature</span>
+            <strong>=</strong>
+          </div>
+          <div className="minus-40-equality-scale minus-40-equality-fahrenheit">
+            <span>Fahrenheit</span>
+            <strong>−40°F</strong>
+          </div>
+        </section>
+
         <article className="minus-40-hook">
           <figure className="minus-40-battle-figure">
-            <img
-              src="/images/generated/minus-40-unit-truce.svg"
-              alt="Funny illustration of imperial and metric temperature scales ending their debate at minus forty degrees"
-            />
+            <picture>
+              <source media="(max-width: 680px)" srcSet="/images/generated/minus-40-unit-truce-mobile.svg" />
+              <img
+                src="/images/generated/minus-40-unit-truce.svg"
+                alt="Funny illustration of imperial and metric temperature scales ending their debate at minus forty degrees"
+              />
+            </picture>
           </figure>
           <div>
             <p className="eyebrow">The unit-system ceasefire</p>
@@ -567,6 +588,9 @@ export function Minus40ArticlePage({ article }) {
         </article>
 
         <article className="minus-40-lede">
+          <div className="minus-40-lede-number" aria-hidden="true">
+            −40°
+          </div>
           <div>
             <p className="eyebrow">The rare overlap</p>
             <h2>At −40, Celsius and Fahrenheit finally agree.</h2>
@@ -585,18 +609,24 @@ export function Minus40ArticlePage({ article }) {
           </div>
         </article>
 
-        <figure className="minus-40-figure">
-          <img
-            src="/images/generated/minus-40-temperature-curves.svg"
-            alt="Celsius and Fahrenheit conversion lines crossing at minus forty"
-          />
+        <figure className="minus-40-figure minus-40-curve-figure">
+          <picture>
+            <source media="(max-width: 680px)" srcSet="/images/generated/minus-40-temperature-curves-mobile.svg" />
+            <img
+              src="/images/generated/minus-40-temperature-curves.svg"
+              alt="Celsius and Fahrenheit conversion lines crossing at minus forty"
+            />
+          </picture>
         </figure>
 
-        <figure className="minus-40-figure">
-          <img
-            src="/images/generated/minus-40-why-diagram.svg"
-            alt="Diagram explaining why Celsius and Fahrenheit meet at minus forty through scale size, offset, and convergence"
-          />
+        <figure className="minus-40-figure minus-40-why-figure">
+          <picture>
+            <source media="(max-width: 680px)" srcSet="/images/generated/minus-40-why-diagram-mobile.svg" />
+            <img
+              src="/images/generated/minus-40-why-diagram.svg"
+              alt="Diagram explaining why Celsius and Fahrenheit meet at minus forty through scale size, offset, and convergence"
+            />
+          </picture>
         </figure>
 
         <div className="minus-40-fact-grid">
@@ -652,8 +682,11 @@ export function Minus40ArticlePage({ article }) {
         </section>
 
         <div className="minus-40-takeaways">
-          {minus40Takeaways.map((item) => (
+          {minus40Takeaways.map((item, index) => (
             <article key={item}>
+              <span className="minus-40-takeaway-number" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               <CheckCircle2 size={22} aria-hidden="true" />
               <p>{item}</p>
             </article>
