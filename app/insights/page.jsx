@@ -1,111 +1,120 @@
 import Image from "next/image";
 import { permanentRedirect } from "next/navigation";
-import { ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
-import {
-  indexTopics,
-  insightArticles,
-  insightHeroImage,
-  insightIndexStats
-} from "./insights-data";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { insightArticles, insightHeroImage, learningCenterSections } from "./insights-data";
+import LearningCenterLibrary from "./LearningCenterLibrary";
 import { InsightsHeader } from "./InsightsShell";
 
 export const metadata = {
-  title: "Perma Cool Learning Center",
+  title: "Extraction Learning Center | Perma Cool",
   description:
-    "Perma Cool learning center covering direct refrigerant vs LN2, extraction workflow, maintenance planning, and cooling system design.",
+    "Plain-language extraction cooling guides covering temperature science, ethanol workflow, LN2 economics, maintenance, and system planning.",
   alternates: { canonical: "https://perma.cool/learning-center" }
 };
 
+const wordCountExcludedKeys = new Set(["slug", "image", "previewImage", "href", "heroClass"]);
+
+function collectArticleText(value, key = "") {
+  if (wordCountExcludedKeys.has(key) || value == null || typeof value === "function") return "";
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) return value.map((item) => collectArticleText(item)).join(" ");
+  if (typeof value === "object") {
+    return Object.entries(value)
+      .map(([childKey, childValue]) => collectArticleText(childValue, childKey))
+      .join(" ");
+  }
+  return "";
+}
+
+function estimateReadTime(article) {
+  const wordCount = collectArticleText(article).trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(3, Math.ceil(wordCount / 210));
+}
+
 export function LearningCenterPage() {
+  const visibleArticles = insightArticles.filter((article) => !article.hidden);
+  const sectionLabels = Object.fromEntries(learningCenterSections.map((section) => [section.id, section.label]));
+  const libraryArticles = visibleArticles.map((article) => ({
+    slug: article.slug,
+    category: article.category,
+    title: article.title,
+    shortTitle: article.shortTitle,
+    summary: article.summary,
+    image: article.previewImage || article.image,
+    href: article.href,
+    format: article.format || "Guide",
+    librarySection: article.librarySection || "process-throughput",
+    sectionLabel: sectionLabels[article.librarySection] || "Extraction Guidance",
+    tags: article.tags || [article.category],
+    featuredRank: article.featuredRank || 99,
+    readTime: estimateReadTime(article),
+    searchText: collectArticleText(article)
+  }));
+
   return (
-    <main className="site-shell insights-page">
+    <main className="site-shell insights-page learning-center-page">
       <InsightsHeader />
-      <section className="insights-hero">
+
+      <section className="insights-hero learning-center-hero">
         <Image src={insightHeroImage} alt="" fill priority className="insights-hero-image" sizes="100vw" />
         <div className="insights-hero-overlay" />
         <div className="insights-hero-content">
-          <p className="eyebrow">Knowledge Hub</p>
-          <h1>The Science of Extraction - If you can’t explain it simply, you don’t understand it well enough.</h1>
+          <p className="eyebrow">Perma Cool Knowledge Hub</p>
+          <h1>Extraction Learning Center</h1>
+          <p>
+            Temperature, workflow, equipment economics, and maintenance explained clearly for the people building and
+            operating extraction systems.
+          </p>
+          <div className="hero-actions">
+            <a className="button primary" href="#article-library">
+              Browse all articles
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+            <a className="button secondary" href="/minus-40-celsius-fahrenheit">
+              Start with the −40° lesson
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          </div>
+          <div className="learning-hero-facts" aria-label="Learning Center overview">
+            <span>
+              <strong>{libraryArticles.length}</strong>
+              labeled guides
+            </span>
+            <span>
+              <strong>{learningCenterSections.length}</strong>
+              topic areas
+            </span>
+            <span>
+              <strong>Plain</strong>
+              language first
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section className="learning-principle-banner" aria-labelledby="learning-principle-heading">
+        <div className="learning-principle-inner">
+          <h2 id="learning-principle-heading">
+            The Science of Extraction -{" "}
+            <span>&quot;If you can’t explain it simply, you don’t understand it well enough.&quot;</span>
+          </h2>
           <p>
             Journey into the art, science and business of extraction through our knowledge hub. Learn the why, not just
             the how and take your extraction process to the next level.
           </p>
-          <div className="hero-actions">
-            <a className="button primary" href="/direct-refrigerant-vs-ln2">
-              Start with LN2 comparison
-              <ArrowRight size={18} aria-hidden="true" />
-            </a>
-            <a className="button secondary" href="/contact-us">
-              Ask for a recommendation
-              <ArrowRight size={18} aria-hidden="true" />
-            </a>
-          </div>
         </div>
       </section>
 
-      <section className="insights-topic-panel">
-        <div className="insights-topic-card">
-          <div>
-            <span className="micro-label">Cooling Topics</span>
-            <h2>Practical guidance for extraction cooling decisions.</h2>
-          </div>
-          <ul>
-            {indexTopics.map((topic) => (
-              <li key={topic}>
-                <CheckCircle2 size={18} aria-hidden="true" />
-                <span>{topic}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      <LearningCenterLibrary articles={libraryArticles} sections={learningCenterSections} />
 
-      <section className="insights-stat-strip">
-        {insightIndexStats.map(([value, label]) => (
-          <article key={label}>
-            <strong>{value}</strong>
-            <span>{label}</span>
-          </article>
-        ))}
-      </section>
-
-      <section className="section insights-index-section">
-        <div className="section-heading narrow">
-          <p className="eyebrow">Article Library</p>
-          <h2>Technical guidance for better cooling and extraction decisions.</h2>
-          <p>
-            Explore cooling methods, operating workflows, maintenance planning, and system-design considerations for
-            commercial extraction facilities.
-          </p>
-        </div>
-
-        <div className="insight-card-grid">
-          {insightArticles.filter((article) => !article.hidden).map((article) => (
-            <article className="insight-card" key={article.slug}>
-              <a className="insight-card-media" href={article.href} aria-label={article.title}>
-                <Image src={article.previewImage || article.image} alt="" width={720} height={420} />
-              </a>
-              <div className="insight-card-copy">
-                <p className="pill">{article.category}</p>
-                <h3>{article.shortTitle}</h3>
-                <p>{article.summary}</p>
-                <a className="inline-link" href={article.href}>
-                  Read article →
-                </a>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="insights-bottom-cta">
+      <section className="insights-bottom-cta learning-bottom-cta">
         <BookOpen size={34} aria-hidden="true" />
         <div>
-          <p className="eyebrow">System Recommendation</p>
-          <h2>Need guidance for your facility?</h2>
+          <p className="eyebrow">Turn Reading Into A Plan</p>
+          <h2>Have a cooling question specific to your facility?</h2>
           <p>
-            Share your throughput, temperature target, current cooling method, and facility constraints. Perma Cool can
-            help identify the most appropriate next step.
+            Share your throughput, temperature target, current cooling method, and facility constraints. We will help
+            connect the technical guidance to the next practical step.
           </p>
         </div>
         <a className="button primary" href="/contact-us">
@@ -113,7 +122,6 @@ export function LearningCenterPage() {
           <ArrowRight size={18} aria-hidden="true" />
         </a>
       </section>
-
     </main>
   );
 }

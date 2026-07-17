@@ -24,6 +24,10 @@ export const insightArticles = [
   {
     slug: "minus-40-celsius-fahrenheit",
     category: "Temperature Science",
+    format: "Explainer",
+    librarySection: "temperature-science",
+    tags: ["−40°", "Celsius", "Fahrenheit"],
+    featuredRank: 1,
     title: "−40°: The Coldest Handshake in Science",
     shortTitle: "Why −40 °C Equals −40 °F",
     summary: "The rare point where Celsius and Fahrenheit meet, and why that matters in cold ethanol extraction.",
@@ -51,6 +55,10 @@ export const insightArticles = [
   {
     slug: "owning-an-extraction-lab-means-owning-the-process",
     category: "Process Ownership",
+    format: "Strategy Guide",
+    librarySection: "process-throughput",
+    tags: ["Process Control", "SOPs", "Scale"],
+    featuredRank: 4,
     title: "Owning an Extraction Lab Means Owning the Process",
     shortTitle: "Owning the Process",
     summary: "Why extraction lab success comes from disciplined process ownership, not equipment alone.",
@@ -77,6 +85,10 @@ export const insightArticles = [
     slug: "more-output-per-gallon",
     hidden: true,
     category: "Workflow Efficiency",
+    format: "Workflow Guide",
+    librarySection: "process-throughput",
+    tags: ["Ethanol Reuse", "Throughput", "Recovery"],
+    featuredRank: 8,
     title: "More Output Per Gallon in Cold Ethanol Extraction",
     shortTitle: "More Output Per Gallon",
     summary: "See how straining, re-chilling, and repeating the extraction cycle can improve ethanol utilization.",
@@ -101,6 +113,10 @@ export const insightArticles = [
   {
     slug: "how-to-reduce-ln2-dependence",
     category: "LN2 Transition",
+    format: "Transition Guide",
+    librarySection: "planning-economics",
+    tags: ["LN2", "Operating Cost", "Scale"],
+    featuredRank: 5,
     title: "How to Reduce LN2 Dependence in Extraction Facilities",
     shortTitle: "How to Reduce LN2 Dependence",
     summary: "Steps to shift from consumable-heavy cooling to scalable operations.",
@@ -141,6 +157,10 @@ export const insightArticles = [
   {
     slug: "workflow",
     category: "Cold Ethanol Workflow",
+    format: "Workflow Guide",
+    librarySection: "process-throughput",
+    tags: ["Cold Ethanol", "Throughput", "Reuse"],
+    featuredRank: 2,
     title: "Cold Ethanol Workflow: Extract, Strain, Re-Chill, Repeat",
     shortTitle: "Cold Ethanol Workflow",
     summary:
@@ -251,6 +271,10 @@ export const insightArticles = [
   {
     slug: "industrial-process-chiller-maintenance",
     category: "Uptime",
+    format: "Maintenance Guide",
+    librarySection: "operations-uptime",
+    tags: ["Maintenance", "Uptime", "Service"],
+    featuredRank: 7,
     title: "Industrial Process Chiller Maintenance for Extraction",
     shortTitle: "Industrial Chiller Maintenance",
     summary: "Practical upkeep guidance to protect uptime and process consistency.",
@@ -290,6 +314,10 @@ export const insightArticles = [
   {
     slug: "extraction-cooling-system-design-checklist",
     category: "Pre-Quote Planning",
+    format: "Checklist",
+    librarySection: "planning-economics",
+    tags: ["System Design", "Utilities", "Planning"],
+    featuredRank: 6,
     title: "Extraction Cooling System Design Checklist",
     shortTitle: "Cooling System Design Checklist",
     summary: "Define temp, throughput, controls, and utility constraints before buying.",
@@ -340,6 +368,10 @@ export const insightArticles = [
   {
     slug: "direct-refrigerant-vs-ln2",
     category: "Cooling Economics",
+    format: "Comparison",
+    librarySection: "planning-economics",
+    tags: ["Direct Refrigerant", "LN2", "Economics"],
+    featuredRank: 3,
     title: "Direct Refrigerant Ethanol Chillers vs. LN2",
     shortTitle: "Direct Refrigerant vs LN2",
     summary: "Compare cost profile, control, and scale readiness.",
@@ -390,10 +422,27 @@ export const insightArticles = [
 
 export const articlesBySlug = Object.fromEntries(insightArticles.map((article) => [article.slug, article]));
 
-export const insightIndexStats = [
-  ["7", "primary knowledge pages"],
-  ["3", "buyer objections covered"],
-  ["1", "clear path to a recommendation"]
+export const learningCenterSections = [
+  {
+    id: "temperature-science",
+    label: "Temperature Science",
+    description: "The numbers and physics behind deep-cold extraction."
+  },
+  {
+    id: "process-throughput",
+    label: "Process & Throughput",
+    description: "Workflows, operating discipline, and solvent efficiency."
+  },
+  {
+    id: "planning-economics",
+    label: "Planning & Economics",
+    description: "Compare approaches, costs, utilities, and system fit."
+  },
+  {
+    id: "operations-uptime",
+    label: "Operations & Uptime",
+    description: "Maintenance practices that protect dependable production."
+  }
 ];
 
 export const insightHeroImage = "/images/generated/insights-hero.png";
@@ -403,17 +452,6 @@ export const navItems = [
   ["Butane Recovery", "/butane-recovery-system"],
   ["Learning Center", "/learning-center"],
   ["Contact", "/contact-us"]
-];
-
-export const indexTopics = [
-  "−40 Celsius and Fahrenheit temperature science",
-  "Process ownership as the core extraction lab discipline",
-  "Extract, strain, re-chill, repeat ethanol efficiency",
-  "LN2 dependence and operating cost",
-  "Cold ethanol workflow and output-per-gallon reuse",
-  "Industrial maintenance and uptime planning",
-  "Cooling system design and pre-quote discovery",
-  "Direct refrigerant vs consumable-heavy chilling"
 ];
 
 export { ClipboardCheck, Wrench };
