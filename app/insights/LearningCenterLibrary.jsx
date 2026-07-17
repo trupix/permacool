@@ -7,8 +7,10 @@ import {
   BookOpen,
   CheckSquare2,
   Clock3,
+  ExternalLink,
   Grid3X3,
   List,
+  Newspaper,
   Search,
   Snowflake,
   Wrench,
@@ -130,7 +132,88 @@ function ArticleCard({ article }) {
   );
 }
 
-export default function LearningCenterLibrary({ articles, sections }) {
+function ExternalResourceSpotlight({ resources }) {
+  if (!resources?.length) return null;
+
+  return (
+    <section className="learning-external" aria-labelledby="external-learning-heading">
+      <div className="learning-external-inner">
+        <div className="learning-section-heading learning-external-heading">
+          <div>
+            <p className="eyebrow">Perma Cool In The Field</p>
+            <h2 id="external-learning-heading">An independent look at how the controls evolved.</h2>
+          </div>
+          <p>
+            Published outside the Perma Cool Learning Center, these resources offer another perspective on the systems,
+            decisions, and people behind the equipment.
+          </p>
+        </div>
+
+        <div className="learning-external-list">
+          {resources.map((resource) => (
+            <article className="learning-external-resource" key={resource.id}>
+              <a
+                className="learning-external-media"
+                href={resource.articleUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Read ${resource.title} on ${resource.publisher} (opens in a new tab)`}
+              >
+                <Image
+                  src={resource.image}
+                  alt="Perma Cool industrial controls enclosure"
+                  fill
+                  sizes="(max-width: 760px) 100vw, 42vw"
+                />
+                <span>
+                  <Newspaper size={16} aria-hidden="true" />
+                  {resource.type}
+                </span>
+              </a>
+
+              <div className="learning-external-copy">
+                <div className="learning-external-meta">
+                  <strong>Published by {resource.publisher}</strong>
+                  <span>{resource.publishedLabel}</span>
+                  <span>{resource.documentLabel}</span>
+                </div>
+                <h3>{resource.title}</h3>
+                <p>{resource.summary}</p>
+                <div className="learning-tag-row" aria-label="Case study topics">
+                  {resource.topics.map((topic) => (
+                    <span key={topic}>{topic}</span>
+                  ))}
+                </div>
+                <div className="learning-external-actions">
+                  <a
+                    className="button primary"
+                    href={resource.articleUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Read on {resource.publisher}
+                    <ExternalLink size={17} aria-hidden="true" />
+                  </a>
+                  <a
+                    className="learning-document-link"
+                    href={resource.documentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Open the complete case study
+                    <ExternalLink size={16} aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function LearningCenterLibrary({ articles, externalResources, sections }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState("all");
   const [activeFormat, setActiveFormat] = useState("all");
@@ -181,6 +264,8 @@ export default function LearningCenterLibrary({ articles, sections }) {
   return (
     <>
       <FeaturedArticle article={featuredArticle} />
+
+      <ExternalResourceSpotlight resources={externalResources} />
 
       <section className="learning-topic-index" aria-labelledby="learning-topics-heading">
         <div className="learning-section-heading">

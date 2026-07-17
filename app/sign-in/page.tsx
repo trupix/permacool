@@ -3,6 +3,15 @@ import { sendMagicLink, signOut } from './actions';
 import { getAuthStatus } from '@/lib/auth';
 import { isSupabaseAuthEnabled } from '@/lib/env';
 
+export const metadata = {
+  title: 'Sign In | Perma Cool',
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true
+  }
+};
+
 function statusMessage(status?: string) {
   switch (status) {
     case 'check-email':

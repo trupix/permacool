@@ -1,15 +1,45 @@
 import Image from "next/image";
 import { permanentRedirect } from "next/navigation";
 import { ArrowRight, BookOpen } from "lucide-react";
-import { insightArticles, insightHeroImage, learningCenterSections } from "./insights-data";
+import {
+  externalLearningResources,
+  insightArticles,
+  insightHeroImage,
+  learningCenterSections
+} from "./insights-data";
 import LearningCenterLibrary from "./LearningCenterLibrary";
 import { InsightsHeader } from "./InsightsShell";
+import StructuredData from "../components/StructuredData";
+import { PUBLIC_ROBOTS, absoluteUrl, buildLearningCenterStructuredData } from "../../lib/site";
+
+const learningCenterDescription =
+  "Plain-language extraction cooling guides covering temperature science, ethanol workflow, LN2 economics, maintenance, and system planning.";
 
 export const metadata = {
   title: "Extraction Learning Center | Perma Cool",
-  description:
-    "Plain-language extraction cooling guides covering temperature science, ethanol workflow, LN2 economics, maintenance, and system planning.",
-  alternates: { canonical: "https://perma.cool/learning-center" }
+  description: learningCenterDescription,
+  alternates: {
+    canonical: "https://perma.cool/learning-center",
+    types: {
+      "application/rss+xml": "https://perma.cool/learning-center/feed.xml"
+    }
+  },
+  robots: PUBLIC_ROBOTS,
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://perma.cool/learning-center",
+    siteName: "Perma Cool",
+    title: "Extraction Learning Center | Perma Cool",
+    description: learningCenterDescription,
+    images: [{ url: absoluteUrl(insightHeroImage), alt: "Perma Cool Extraction Learning Center" }]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Extraction Learning Center | Perma Cool",
+    description: learningCenterDescription,
+    images: [absoluteUrl(insightHeroImage)]
+  }
 };
 
 const wordCountExcludedKeys = new Set(["slug", "image", "previewImage", "href", "heroClass"]);
@@ -53,6 +83,7 @@ export function LearningCenterPage() {
 
   return (
     <main className="site-shell insights-page learning-center-page">
+      <StructuredData data={buildLearningCenterStructuredData(visibleArticles)} />
       <InsightsHeader />
 
       <section className="insights-hero learning-center-hero">
@@ -105,7 +136,11 @@ export function LearningCenterPage() {
         </div>
       </section>
 
-      <LearningCenterLibrary articles={libraryArticles} sections={learningCenterSections} />
+      <LearningCenterLibrary
+        articles={libraryArticles}
+        externalResources={externalLearningResources}
+        sections={learningCenterSections}
+      />
 
       <section className="insights-bottom-cta learning-bottom-cta">
         <BookOpen size={34} aria-hidden="true" />

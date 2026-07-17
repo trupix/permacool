@@ -2,7 +2,12 @@ export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'FreshBooks Connection Result | Perma Cool',
-  description: 'FreshBooks OAuth connection status.'
+  description: 'FreshBooks OAuth connection status.',
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true
+  }
 }
 
 export default async function FreshbooksSuccessPage({ searchParams }) {

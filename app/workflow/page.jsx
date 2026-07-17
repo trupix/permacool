@@ -1,12 +1,10 @@
 import { WorkflowArticlePage } from "../insights/ArticlePage";
 import { articlesBySlug } from "../insights/insights-data";
+import { buildArticleMetadata } from "../../lib/site";
 
 const article = articlesBySlug.workflow;
 
-export const metadata = {
-  title: `${article.title} | Perma Cool Insights`,
-  description: article.description
-};
+export const metadata = buildArticleMetadata(article);
 
 export default function Page() {
   return <WorkflowArticlePage article={article} />;

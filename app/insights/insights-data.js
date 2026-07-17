@@ -28,6 +28,8 @@ export const insightArticles = [
     librarySection: "temperature-science",
     tags: ["−40°", "Celsius", "Fahrenheit"],
     featuredRank: 1,
+    publishedAt: "2026-05-18T01:01:01-07:00",
+    updatedAt: "2026-07-17T13:57:18-07:00",
     title: "−40°: The Coldest Handshake in Science",
     shortTitle: "Why −40 °C Equals −40 °F",
     summary: "The rare point where Celsius and Fahrenheit meet, and why that matters in cold ethanol extraction.",
@@ -59,6 +61,8 @@ export const insightArticles = [
     librarySection: "process-throughput",
     tags: ["Process Control", "SOPs", "Scale"],
     featuredRank: 4,
+    publishedAt: "2026-05-05T11:23:55-07:00",
+    updatedAt: "2026-07-17T13:57:18-07:00",
     title: "Owning an Extraction Lab Means Owning the Process",
     shortTitle: "Owning the Process",
     summary: "Why extraction lab success comes from disciplined process ownership, not equipment alone.",
@@ -117,6 +121,8 @@ export const insightArticles = [
     librarySection: "planning-economics",
     tags: ["LN2", "Operating Cost", "Scale"],
     featuredRank: 5,
+    publishedAt: "2026-04-28T16:45:46-07:00",
+    updatedAt: "2026-07-17T13:57:18-07:00",
     title: "How to Reduce LN2 Dependence in Extraction Facilities",
     shortTitle: "How to Reduce LN2 Dependence",
     summary: "Steps to shift from consumable-heavy cooling to scalable operations.",
@@ -161,6 +167,8 @@ export const insightArticles = [
     librarySection: "process-throughput",
     tags: ["Cold Ethanol", "Throughput", "Reuse"],
     featuredRank: 2,
+    publishedAt: "2026-03-26T14:16:34-04:00",
+    updatedAt: "2026-07-17T13:57:18-07:00",
     title: "Cold Ethanol Workflow: Extract, Strain, Re-Chill, Repeat",
     shortTitle: "Cold Ethanol Workflow",
     summary:
@@ -275,6 +283,8 @@ export const insightArticles = [
     librarySection: "operations-uptime",
     tags: ["Maintenance", "Uptime", "Service"],
     featuredRank: 7,
+    publishedAt: "2026-04-28T16:45:46-07:00",
+    updatedAt: "2026-07-17T13:57:18-07:00",
     title: "Industrial Process Chiller Maintenance for Extraction",
     shortTitle: "Industrial Chiller Maintenance",
     summary: "Practical upkeep guidance to protect uptime and process consistency.",
@@ -318,6 +328,8 @@ export const insightArticles = [
     librarySection: "planning-economics",
     tags: ["System Design", "Utilities", "Planning"],
     featuredRank: 6,
+    publishedAt: "2026-04-28T16:45:46-07:00",
+    updatedAt: "2026-07-17T13:57:18-07:00",
     title: "Extraction Cooling System Design Checklist",
     shortTitle: "Cooling System Design Checklist",
     summary: "Define temp, throughput, controls, and utility constraints before buying.",
@@ -372,6 +384,8 @@ export const insightArticles = [
     librarySection: "planning-economics",
     tags: ["Direct Refrigerant", "LN2", "Economics"],
     featuredRank: 3,
+    publishedAt: "2026-04-28T16:45:46-07:00",
+    updatedAt: "2026-07-17T13:57:18-07:00",
     title: "Direct Refrigerant Ethanol Chillers vs. LN2",
     shortTitle: "Direct Refrigerant vs LN2",
     summary: "Compare cost profile, control, and scale readiness.",
@@ -442,6 +456,23 @@ export const learningCenterSections = [
     id: "operations-uptime",
     label: "Operations & Uptime",
     description: "Maintenance practices that protect dependable production."
+  }
+];
+
+export const externalLearningResources = [
+  {
+    id: "opto22-controls-case-study",
+    publisher: "Opto 22",
+    type: "Independent case study",
+    title: "How an OEM took back their control systems",
+    summary:
+      "Opto 22 documents how PermaCool moved beyond outsourced controls and built a compact, scalable platform with remote diagnostics and faster in-house support.",
+    image: "/images/product/blast-60-plc-control-system.png",
+    articleUrl: "https://blog.opto22.com/optoblog/case-study-how-an-oem-took-back-their-control-systems",
+    documentUrl: "https://documents.opto22.com/2445_Case_Study_PermaCool.pdf",
+    publishedLabel: "December 3, 2025",
+    documentLabel: "8-page case study",
+    topics: ["Plant extraction", "Industrial automation", "Remote diagnostics"]
   }
 ];
 

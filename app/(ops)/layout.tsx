@@ -4,6 +4,14 @@ import { requireUser } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true
+  }
+};
+
 export default async function ProtectedLayout({ children }: { children: ReactNode }) {
   const user = await requireUser();
 

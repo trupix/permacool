@@ -1,9 +1,14 @@
 import "./globals.css";
 import SiteFooter from "./components/SiteFooter";
+import StructuredData from "./components/StructuredData";
+import { PUBLIC_ROBOTS, buildSiteStructuredData } from "../lib/site";
 
 export const metadata = {
   metadataBase: new URL("https://perma.cool"),
   applicationName: "Perma Cool",
+  creator: "Perma Cool",
+  publisher: "Perma Cool Systems Inc.",
+  robots: PUBLIC_ROBOTS,
   title: "BLAST™ 60/45 Ethanol Chiller | Perma Cool",
   description:
     "Chill 60 gallons of ethanol from room temperature to −40 °C in 45 minutes with the Perma Cool BLAST 60/45 ethanol chiller.",
@@ -44,6 +49,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <StructuredData data={buildSiteStructuredData()} />
         {children}
         <SiteFooter />
       </body>

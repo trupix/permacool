@@ -1,27 +1,53 @@
 import Image from "next/image";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import ResponsiveHeader from "../components/ResponsiveHeader";
+import StructuredData from "../components/StructuredData";
+import { buildArticleStructuredData } from "../../lib/site";
 import { navItems } from "./insights-data";
+
+function formatArticleDate(value) {
+  if (!value) return null;
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  }).format(new Date(value));
+}
 
 export function InsightsHeader() {
   return <ResponsiveHeader navItems={navItems} />;
 }
 
 export function ArticleHero({ article }) {
+  const updatedLabel = formatArticleDate(article.updatedAt);
+
   return (
-    <section className={`insight-article-hero ${article.heroClass || ""}`}>
-      <Image src={article.image} alt="" fill priority className="insight-article-hero-image" sizes="100vw" />
-      <div className="insight-article-hero-overlay" />
-      <div className="insight-article-hero-content">
-        <a className="insight-back-link" href="/learning-center">
-          ← Back to Learning Center
-        </a>
-        <p className="eyebrow">{article.category}</p>
-        <h1>{article.title}</h1>
-        <p>{article.intro}</p>
-        {article.goalTicket ? <LearningGoalTicket text={article.goalTicket} /> : null}
-      </div>
-    </section>
+    <>
+      <StructuredData data={buildArticleStructuredData(article)} />
+      <section className={`insight-article-hero ${article.heroClass || ""}`}>
+        <Image src={article.image} alt="" fill priority className="insight-article-hero-image" sizes="100vw" />
+        <div className="insight-article-hero-overlay" />
+        <div className="insight-article-hero-content">
+          <a className="insight-back-link" href="/learning-center">
+            ← Back to Learning Center
+          </a>
+          <p className="eyebrow">{article.category}</p>
+          <h1>{article.title}</h1>
+          <p>{article.intro}</p>
+          <div className="insight-article-trustline">
+            <span>Published by Perma Cool</span>
+            {updatedLabel ? (
+              <>
+                <span aria-hidden="true">/</span>
+                <time dateTime={article.updatedAt}>Updated {updatedLabel}</time>
+              </>
+            ) : null}
+          </div>
+          {article.goalTicket ? <LearningGoalTicket text={article.goalTicket} /> : null}
+        </div>
+      </section>
+    </>
   );
 }
 
