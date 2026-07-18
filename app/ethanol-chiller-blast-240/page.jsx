@@ -17,14 +17,33 @@ import {
   Zap
 } from "lucide-react";
 import LearningCenterSection from "../components/LearningCenterSection";
+import StructuredData from "../components/StructuredData";
 import { InsightsHeader } from "../insights/InsightsShell";
+import { buildProductStructuredData, buildPublicPageMetadata } from "../../lib/site";
 
-export const metadata = {
+const blast240Description =
+  "Perma Cool BLAST 240/45 ethanol chiller flash-chills 240 gallons to −40 °C in 45 minutes with 6.0 GPM of flash chilling, direct refrigerant architecture, and PLC/HMI visibility.";
+
+export const metadata = buildPublicPageMetadata({
+  path: "/ethanol-chiller-blast-240",
   title: "BLAST™ 240/45 Ethanol Chiller | 240 Gallons to −40 °C in 45 Minutes | Perma Cool",
-  description:
-    "Perma Cool BLAST 240/45 ethanol chiller flash-chills 240 gallons to −40 °C in 45 minutes with 6.0 GPM of flash chilling, direct refrigerant architecture, and PLC/HMI visibility.",
-  alternates: { canonical: "https://perma.cool/ethanol-chiller-blast-240" }
-};
+  description: blast240Description,
+  image: "/images/generated/blast240-hero-crystal-bear.png"
+});
+
+const blast240StructuredData = buildProductStructuredData({
+  path: "/ethanol-chiller-blast-240",
+  name: "BLAST 240/45 Ethanol Chiller",
+  model: "BLAST 240/45",
+  description: blast240Description,
+  image: "/images/generated/blast240-hero-crystal-bear.png",
+  properties: [
+    ["Ethanol capacity", "240 gallons"],
+    ["Pull-down target", "Room temperature to −40 °C in 45 minutes"],
+    ["Flash chilling rate", "6.0 gallons per minute"],
+    ["Control system", "PLC and HMI visibility"]
+  ]
+});
 
 const heroStats = [
   {
@@ -155,6 +174,7 @@ const fitPoints = [
 export default function Blast240Page() {
   return (
     <main className="site-shell">
+      <StructuredData data={blast240StructuredData} />
       <InsightsHeader />
       <Hero />
       <section className="stat-rail blast240-stat-rail" aria-label="BLAST 240/45 quick specifications">

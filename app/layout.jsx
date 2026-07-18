@@ -1,10 +1,10 @@
 import "./globals.css";
 import SiteFooter from "./components/SiteFooter";
 import StructuredData from "./components/StructuredData";
-import { PUBLIC_ROBOTS, buildSiteStructuredData } from "../lib/site";
+import { PUBLIC_ROBOTS, SITE_URL, buildSiteStructuredData } from "../lib/site";
 
 export const metadata = {
-  metadataBase: new URL("https://perma.cool"),
+  metadataBase: new URL(SITE_URL),
   applicationName: "Perma Cool",
   creator: "Perma Cool",
   publisher: "Perma Cool Systems Inc.",
@@ -22,7 +22,7 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://perma.cool",
+    url: SITE_URL,
     siteName: "Perma Cool",
     title: "Perma Cool Industrial Extraction Cooling Systems",
     description:

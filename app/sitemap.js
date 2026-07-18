@@ -1,7 +1,7 @@
 import { insightArticles } from "./insights/insights-data";
 import { SITE_URL, absoluteUrl, articleUrl } from "../lib/site";
 
-const siteUpdatedAt = "2026-07-17T13:57:18-07:00";
+const siteUpdatedAt = "2026-07-17T14:45:20-07:00";
 
 const publicPages = [
   { path: "/", changeFrequency: "monthly", priority: 1 },

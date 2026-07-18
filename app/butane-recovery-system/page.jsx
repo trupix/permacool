@@ -10,14 +10,27 @@ import {
   Wrench
 } from "lucide-react";
 import LearningCenterSection from "../components/LearningCenterSection";
+import StructuredData from "../components/StructuredData";
 import { InsightsHeader } from "../insights/InsightsShell";
+import { buildPublicPageMetadata, buildServiceStructuredData } from "../../lib/site";
 
-export const metadata = {
+const butaneRecoveryDescription =
+  "Perma Cool butane recovery systems for commercial BHO extraction labs, with process-zone planning, cooling integration, PLC/HMI visibility, and production support.";
+
+export const metadata = buildPublicPageMetadata({
+  path: "/butane-recovery-system",
   title: "Butane Recovery Systems for BHO Extraction | Perma Cool",
-  description:
-    "Perma Cool butane recovery systems for commercial BHO extraction labs, with process-zone planning, cooling integration, PLC/HMI visibility, and production support.",
-  alternates: { canonical: "https://perma.cool/butane-recovery-system" }
-};
+  description: butaneRecoveryDescription,
+  image: "/images/generated/bho-blast15-bear-card.png"
+});
+
+const butaneRecoveryStructuredData = buildServiceStructuredData({
+  path: "/butane-recovery-system",
+  name: "Perma Cool Butane Recovery Systems",
+  serviceType: "Commercial butane recovery system design and integration",
+  description: butaneRecoveryDescription,
+  image: "/images/generated/bho-blast15-bear-card.png"
+});
 
 const heroStats = [
   {
@@ -117,6 +130,7 @@ const faqs = [
 export default function ButaneRecoveryPage() {
   return (
     <main className="site-shell butane-page">
+      <StructuredData data={butaneRecoveryStructuredData} />
       <InsightsHeader />
 
       <section className="hero butane-product-hero">

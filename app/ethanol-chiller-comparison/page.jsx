@@ -11,13 +11,15 @@ import {
 } from "lucide-react";
 import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsHeader } from "../insights/InsightsShell";
+import { buildPublicPageMetadata } from "../../lib/site";
 
-export const metadata = {
+export const metadata = buildPublicPageMetadata({
+  path: "/ethanol-chiller-comparison",
   title: "Compare BLAST™ Ethanol Chillers | 60/45 vs 150/45 vs 240/45 | Perma Cool",
   description:
     "Compare Perma Cool BLAST 60/45, BLAST 150/45, and BLAST 240/45 ethanol chillers by capacity, pull-down target, workflow fit, controls, and production scale.",
-  alternates: { canonical: "https://perma.cool/ethanol-chiller-comparison" }
-};
+  image: "/images/generated/ethanol-systems-hero.png"
+});
 
 const models = [
   {

@@ -15,14 +15,33 @@ import {
   Zap
 } from "lucide-react";
 import LearningCenterSection from "../components/LearningCenterSection";
+import StructuredData from "../components/StructuredData";
 import { InsightsHeader } from "../insights/InsightsShell";
+import { buildProductStructuredData, buildPublicPageMetadata } from "../../lib/site";
 
-export const metadata = {
-  alternates: { canonical: "https://perma.cool/ethanol-chiller-blast-150" },
+const blast150Description =
+  "Perma Cool BLAST 150/45 standard 150-gallon ethanol pre-chiller chills to −40 °C in 45 minutes with 3.33 GPM chilling, direct refrigerant architecture, and PLC/HMI visibility.";
+
+export const metadata = buildPublicPageMetadata({
+  path: "/ethanol-chiller-blast-150",
   title: "BLAST™ 150/45 Ethanol Chiller | 150 Gallons to −40 °C in 45 Minutes | Perma Cool",
-  description:
-    "Perma Cool BLAST 150/45 standard 150-gallon ethanol pre-chiller chills to −40 °C in 45 minutes with 3.33 GPM chilling, direct refrigerant architecture, and PLC/HMI visibility."
-};
+  description: blast150Description,
+  image: "/images/generated/blast150-hero-crystal-bear.png"
+});
+
+const blast150StructuredData = buildProductStructuredData({
+  path: "/ethanol-chiller-blast-150",
+  name: "BLAST 150/45 Ethanol Chiller",
+  model: "BLAST 150/45",
+  description: blast150Description,
+  image: "/images/generated/blast150-hero-crystal-bear.png",
+  properties: [
+    ["Ethanol capacity", "150 gallons"],
+    ["Pull-down target", "Room temperature to −40 °C in 45 minutes"],
+    ["Flash chilling rate", "3.33 gallons per minute"],
+    ["Control system", "PLC and HMI visibility"]
+  ]
+});
 
 const heroStats = [
   {
@@ -175,6 +194,7 @@ const architecturePoints = [
 export default function Blast150Page() {
   return (
     <main className="site-shell">
+      <StructuredData data={blast150StructuredData} />
       <InsightsHeader />
       <Hero />
       <section className="stat-rail blast150-stat-rail" aria-label="BLAST 150/45 quick specifications">
@@ -444,7 +464,7 @@ function RelatedCta() {
           Call Engineering
           <Phone size={18} aria-hidden="true" />
         </a>
-        <a className="button secondary light" href="/more-output-per-gallon">
+        <a className="button secondary light" href="/workflow">
           Read workflow article
           <CheckCircle2 size={18} aria-hidden="true" />
         </a>

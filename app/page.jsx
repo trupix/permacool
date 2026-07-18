@@ -12,13 +12,15 @@ import {
 } from "lucide-react";
 import LearningCenterSection from "./components/LearningCenterSection";
 import { InsightsHeader } from "./insights/InsightsShell";
+import { buildPublicPageMetadata } from "../lib/site";
 
-export const metadata = {
+export const metadata = buildPublicPageMetadata({
+  path: "/",
   title: "Perma Cool Ethanol Chillers & Butane Recovery Systems | Industrial Extraction Cooling",
   description:
     "Perma Cool builds industrial ethanol chilling systems and butane recovery solutions for extraction labs.",
-  alternates: { canonical: "https://perma.cool/" }
-};
+  image: "/images/brand/permacool-social-card.jpg"
+});
 
 const ethanolOverview = {
   title: "Ethanol Chilling Systems",

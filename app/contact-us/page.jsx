@@ -1,12 +1,14 @@
 import { ArrowRight, CheckCircle2, ClipboardList, Mail, Phone } from "lucide-react";
 import { InsightsHeader } from "../insights/InsightsShell";
+import { buildPublicPageMetadata } from "../../lib/site";
 
-export const metadata = {
-  alternates: { canonical: "https://perma.cool/contact-us" },
+export const metadata = buildPublicPageMetadata({
+  path: "/contact-us",
   title: "Request a Quote | Perma Cool Extraction Cooling Systems",
   description:
-    "Contact Perma Cool for ethanol chiller and butane recovery system pricing, lead times, and process-fit recommendations."
-};
+    "Contact Perma Cool for ethanol chiller and butane recovery system pricing, lead times, and process-fit recommendations.",
+  image: "/images/brand/permacool-social-card.jpg"
+});
 
 export default async function Page({ searchParams }) {
   const params = await searchParams;

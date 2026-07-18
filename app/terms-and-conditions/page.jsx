@@ -1,11 +1,14 @@
-export const metadata = {
-  title: 'Terms & Conditions | Perma Cool',
-  description: 'Terms and Conditions for use of the Perma Cool website and inquiry services.'
-}
+import { buildPublicPageMetadata } from "../../lib/site";
+
+export const metadata = buildPublicPageMetadata({
+  path: "/terms-and-conditions",
+  title: "Terms & Conditions | Perma Cool",
+  description: "Terms and Conditions for use of the Perma Cool website and inquiry services."
+});
 
 export default function TermsPage() {
   return (
-    <section className="container section">
+    <main className="container section">
       <p className="eyebrow">Legal</p>
       <h1>Terms &amp; Conditions</h1>
       <p><strong>Last updated:</strong> March 2026</p>
@@ -57,6 +60,6 @@ export default function TermsPage() {
           <a href="tel:+17472081001"> 747.208.1001</a>.
         </p>
       </div>
-    </section>
-  )
+    </main>
+  );
 }

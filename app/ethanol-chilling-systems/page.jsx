@@ -15,14 +15,27 @@ import {
   Zap
 } from "lucide-react";
 import LearningCenterSection from "../components/LearningCenterSection";
+import StructuredData from "../components/StructuredData";
 import { InsightsHeader } from "../insights/InsightsShell";
+import { buildPublicPageMetadata, buildServiceStructuredData } from "../../lib/site";
 
-export const metadata = {
+const ethanolSystemsDescription =
+  "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, −40 °C operation, reduced LN2 dependence, and commercial extraction throughput.";
+
+export const metadata = buildPublicPageMetadata({
+  path: "/ethanol-chilling-systems",
   title: "Ethanol Chillers for Extraction Facilities | Perma Cool BLAST™ Systems",
-  description:
-    "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, −40 °C operation, reduced LN2 dependence, and commercial extraction throughput.",
-  alternates: { canonical: "https://perma.cool/ethanol-chilling-systems" }
-};
+  description: ethanolSystemsDescription,
+  image: "/images/generated/ethanol-systems-hero.png"
+});
+
+const ethanolSystemsStructuredData = buildServiceStructuredData({
+  path: "/ethanol-chilling-systems",
+  name: "Perma Cool BLAST Ethanol Chilling Systems",
+  serviceType: "Industrial direct refrigerant ethanol chilling systems",
+  description: ethanolSystemsDescription,
+  image: "/images/generated/ethanol-systems-hero.png"
+});
 
 const seriesLinks = [
   ["BLAST 60/45", "/ethanol-chiller-blast-60"],
@@ -224,6 +237,7 @@ const quoteConfidence = [
 export default function EthanolChillingSystemsPage() {
   return (
     <main className="site-shell ethanol-systems-page">
+      <StructuredData data={ethanolSystemsStructuredData} />
       <InsightsHeader />
       <section className="ecs-hero">
         <Image
@@ -468,7 +482,7 @@ export default function EthanolChillingSystemsPage() {
             Call Engineering
             <Phone size={18} aria-hidden="true" />
           </a>
-          <a className="button secondary light" href="/cooling-system-design-checklist">
+          <a className="button secondary light" href="/extraction-cooling-system-design-checklist">
             Review design checklist
             <Zap size={18} aria-hidden="true" />
           </a>

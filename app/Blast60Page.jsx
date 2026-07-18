@@ -410,7 +410,7 @@ function RelatedCta() {
           Compare cooling methods
           <ArrowRight size={18} aria-hidden="true" />
         </a>
-        <a className="button secondary light" href="/industrial-chiller-maintenance">
+        <a className="button secondary light" href="/industrial-process-chiller-maintenance">
           Maintenance guide
           <Wrench size={18} aria-hidden="true" />
         </a>

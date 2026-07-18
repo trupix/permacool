@@ -1,11 +1,14 @@
-export const metadata = {
-  title: 'Privacy Policy | Perma Cool',
-  description: 'Privacy Policy for Perma Cool website visitors and inquiry submissions.'
-}
+import { buildPublicPageMetadata } from "../../lib/site";
+
+export const metadata = buildPublicPageMetadata({
+  path: "/privacy-policy",
+  title: "Privacy Policy | Perma Cool",
+  description: "Privacy Policy for Perma Cool website visitors and inquiry submissions."
+});
 
 export default function PrivacyPolicyPage() {
   return (
-    <section className="container section">
+    <main className="container section">
       <p className="eyebrow">Legal</p>
       <h1>Privacy Policy</h1>
       <p><strong>Last updated:</strong> March 2026</p>
@@ -59,6 +62,6 @@ export default function PrivacyPolicyPage() {
           <a href="tel:+17472081001"> 747.208.1001</a>.
         </p>
       </div>
-    </section>
-  )
+    </main>
+  );
 }

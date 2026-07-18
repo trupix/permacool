@@ -10,7 +10,7 @@ import {
 import LearningCenterLibrary from "./LearningCenterLibrary";
 import { InsightsHeader } from "./InsightsShell";
 import StructuredData from "../components/StructuredData";
-import { PUBLIC_ROBOTS, absoluteUrl, buildLearningCenterStructuredData } from "../../lib/site";
+import { PUBLIC_ROBOTS, SITE_URL, absoluteUrl, buildLearningCenterStructuredData } from "../../lib/site";
 
 const learningCenterDescription =
   "Plain-language extraction cooling guides covering temperature science, ethanol workflow, LN2 economics, maintenance, and system planning.";
@@ -19,16 +19,16 @@ export const metadata = {
   title: "Extraction Learning Center | Perma Cool",
   description: learningCenterDescription,
   alternates: {
-    canonical: "https://perma.cool/learning-center",
+    canonical: `${SITE_URL}/learning-center`,
     types: {
-      "application/rss+xml": "https://perma.cool/learning-center/feed.xml"
+      "application/rss+xml": `${SITE_URL}/learning-center/feed.xml`
     }
   },
   robots: PUBLIC_ROBOTS,
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://perma.cool/learning-center",
+    url: `${SITE_URL}/learning-center`,
     siteName: "Perma Cool",
     title: "Extraction Learning Center | Perma Cool",
     description: learningCenterDescription,
