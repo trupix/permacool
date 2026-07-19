@@ -4,8 +4,8 @@ import { StatusBadge } from '@/components/status-badge';
 import { getDevicesBySite } from '@/server/repositories/devices';
 import { getSite, getSiteAlerts } from '@/server/repositories/sites';
 
-export default async function SiteDetailPage({ params }: { params: Promise<{ siteId: string }> }) {
-  const { siteId } = await params;
+export default async function SiteDetailPage({ params }: { params: Promise<{ siteid: string }> }) {
+  const { siteid: siteId } = await params;
   const site = await getSite(siteId);
 
   if (!site) notFound();
