@@ -14,7 +14,7 @@ export async function GET(
     return NextResponse.json(
       {
         error:
-          'Site telemetry API is disabled in production pending verification of the deployed site membership mapping.'
+          'Site telemetry API is disabled by the deployment environment.'
       },
       {
         status: 503,
