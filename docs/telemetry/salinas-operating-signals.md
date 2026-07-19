@@ -33,6 +33,7 @@ Every recorded event snapshots high pressure, low pressure, process-fluid temper
 
 - `TelemetryPoint` stores the latest value for each signal.
 - `EquipmentEvent` stores the permanent transition/event history in PostgreSQL.
+- The application creates that table idempotently on first use; the tracked Prisma migration remains available for direct database deployment.
 - `Alert` stores active, acknowledged, and resolved high-pressure alarms.
 - The site is current when at least one operating pressure, temperature, amperage, run, or enable signal for a unit has arrived within five minutes. An unchanged discrete value does not make the unit stale while its other operating signals continue updating.
 - `/sites/site-salinas/events` shows the latest 100 records per page. `/api/sites/site-salinas/events?download=csv` exports up to the latest 10,000 records.

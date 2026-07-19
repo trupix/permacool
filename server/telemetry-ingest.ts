@@ -2,6 +2,7 @@ import { db } from '@/lib/db';
 import { hasDatabaseUrl } from '@/lib/env';
 import type { TelemetryIngestPayload } from '@/types/domain';
 import { evaluateEquipmentTransitions } from '@/server/equipment-events';
+import { ensureEquipmentEventStorage } from '@/server/equipment-event-storage';
 
 function telemetryLabel(key: string) {
   return key
@@ -102,6 +103,7 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
   let eventsPersisted = true;
   if (transitions.events.length) {
     try {
+      if (!(await ensureEquipmentEventStorage())) throw new Error('Equipment event storage is unavailable.');
       await db.equipmentEvent.createMany({
         data: transitions.events.map((event) => ({
           dedupeKey: event.dedupeKey,
