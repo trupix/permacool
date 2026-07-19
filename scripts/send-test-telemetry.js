@@ -14,12 +14,16 @@ const payload = {
   deviceId,
   capturedAt: now.toISOString(),
   points: [
-    { key: 'chamber_temp', value: Number((-42 + wobble * 3).toFixed(1)), unit: '°F' },
-    { key: 'setpoint_temp', value: -40, unit: '°F' },
-    { key: 'compressor_status', value: 1, unit: 'bool' },
-    { key: 'pressure_high_side', value: Number((215 + wobble * 8).toFixed(1)), unit: 'psi' },
-    { key: 'pressure_low_side', value: Number((38 + wobble * 2).toFixed(1)), unit: 'psi' },
-    { key: 'alarm_active', value: 0, unit: 'bool' }
+    { key: 'ch1_temperature_c', value: Number((-42 + wobble * 3).toFixed(1)), unit: 'F' },
+    { key: 'ch1_setpoint_c', value: -40, unit: 'F' },
+    { key: 'ch1_chiller_run', value: 1, unit: 'bool' },
+    { key: 'ch1_system_on', value: 1, unit: 'bool' },
+    { key: 'ch1_high_pressure', value: Number((215 + wobble * 8).toFixed(1)), unit: 'psi' },
+    { key: 'ch1_low_pressure', value: Number((38 + wobble * 2).toFixed(1)), unit: 'psi' },
+    { key: 'ch1_compressor_amps', value: Number((51 + wobble * 2).toFixed(1)), unit: 'A' },
+    { key: 'ch1_compressor_runtime_min', value: 12_045, unit: 'min' },
+    { key: 'ch1_high_pressure_stop', value: 0, unit: 'bool' },
+    { key: 'high_pressure_stop', value: 0, unit: 'bool' }
   ]
 };
 

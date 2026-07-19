@@ -13,8 +13,11 @@ import {
   Database,
   Droplets,
   Gauge,
+  Clock3,
+  Power,
   RefreshCw,
   Settings2,
+  ShieldAlert,
   Sun,
   Thermometer,
   Wind,
@@ -121,10 +124,14 @@ type AssetSignals = {
   highPressure: NumericSignal | null;
   lowPressure: NumericSignal | null;
   compressorAmps: NumericSignal | null;
+  compressorRuntimeMinutes: NumericSignal | null;
+  setpoint: NumericSignal | null;
   inletAir: NumericSignal | null;
   suctionSaturation: NumericSignal | null;
   realPowerKw: NumericSignal | null;
   running: BooleanSignal | null;
+  systemOn: BooleanSignal | null;
+  highPressureStop: BooleanSignal | null;
   ambiguousAliasCount: number;
 };
 
@@ -237,8 +244,25 @@ function signalsForChannel(
     `${prefix}_sst_f`
   ]);
   const realPowerKw = resolveTelemetryPoint(scopedPoints, [`${prefix}_compressor_kw`, `${prefix}_real_power_kw`, `${prefix}_total_kw`]);
-  const running = resolveTelemetryPoint(scopedPoints, [`${prefix}_chiller_run`, `${prefix}_compressor_run`, `${prefix}_system_on`]);
-  const matches = [temperature, highPressure, lowPressure, compressorAmps, inletAir, suctionSaturation, realPowerKw, running];
+  const compressorRuntimeMinutes = resolveTelemetryPoint(scopedPoints, [`${prefix}_compressor_runtime_min`]);
+  const setpoint = resolveTelemetryPoint(scopedPoints, [`${prefix}_setpoint_c`, `${prefix}_setpoint`]);
+  const running = resolveTelemetryPoint(scopedPoints, [`${prefix}_chiller_run`, `${prefix}_compressor_run`]);
+  const systemOn = resolveTelemetryPoint(scopedPoints, [`${prefix}_system_on`]);
+  const highPressureStop = resolveTelemetryPoint(scopedPoints, [`${prefix}_high_pressure_stop`]);
+  const matches = [
+    temperature,
+    highPressure,
+    lowPressure,
+    compressorAmps,
+    compressorRuntimeMinutes,
+    setpoint,
+    inletAir,
+    suctionSaturation,
+    realPowerKw,
+    running,
+    systemOn,
+    highPressureStop
+  ];
 
   return {
     // The deployed keys end in `_c`, but the user verified that their raw readings are Fahrenheit.
@@ -246,10 +270,14 @@ function signalsForChannel(
     highPressure: pointNumber(highPressure.point, referenceTimestamp),
     lowPressure: pointNumber(lowPressure.point, referenceTimestamp),
     compressorAmps: pointNumber(compressorAmps.point, referenceTimestamp),
+    compressorRuntimeMinutes: pointNumber(compressorRuntimeMinutes.point, referenceTimestamp),
+    setpoint: pointNumber(setpoint.point, referenceTimestamp),
     inletAir: pointNumber(inletAir.point, referenceTimestamp),
     suctionSaturation: pointNumber(suctionSaturation.point, referenceTimestamp),
     realPowerKw: pointNumber(realPowerKw.point, referenceTimestamp),
     running: pointBoolean(running.point, referenceTimestamp),
+    systemOn: pointBoolean(systemOn.point, referenceTimestamp),
+    highPressureStop: pointBoolean(highPressureStop.point, referenceTimestamp),
     ambiguousAliasCount: matches.filter((match) => match.ambiguous).length
   };
 }
@@ -394,6 +422,23 @@ function formatTimestamp(value: string | null): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return 'Not available';
   return date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+function formatRuntimeMinutes(value: number | null): string {
+  if (value === null) return 'Not available';
+  const minutes = Math.max(0, Math.round(value));
+  return `${Math.floor(minutes / 60).toLocaleString()}h ${minutes % 60}m`;
+}
+
+function unitHasCurrentTelemetry(signals: AssetSignals): boolean {
+  return [
+    signals.temperature,
+    signals.highPressure,
+    signals.lowPressure,
+    signals.compressorAmps,
+    signals.running,
+    signals.systemOn
+  ].some((signal) => signal?.isFresh === true);
 }
 
 function signalDetail(signal: NumericSignal | null, normalDetail: string, feedUnavailable = false): string {
@@ -726,9 +771,11 @@ export function SalinasEquipmentDashboard({
     });
   }, [catalog, draft, system.condensers, telemetry.fetchedAt, telemetry.points, variantById, weather.data]);
 
-  const hasFreshRunStates =
+  const hasCurrentRunStates =
     telemetry.status === 'ready' &&
-    analyses.every((analysis) => analysis.signals.running?.isFresh === true);
+    analyses.every(
+      (analysis) => Boolean(analysis.signals.running) && unitHasCurrentTelemetry(analysis.signals)
+    );
 
   const exactParallelEvaluation = useMemo(() => {
     if (
@@ -745,7 +792,7 @@ export function SalinasEquipmentDashboard({
     }
     const requests = analyses.map((analysis) => ({
       unitId: analysis.asset.assetId,
-      active: hasFreshRunStates ? Boolean(analysis.signals.running?.value) : true,
+      active: hasCurrentRunStates ? Boolean(analysis.signals.running?.value) : true,
       catalogVariantId: analysis.configuration.variant,
       installedFrequencyHz: analysis.configuration.frequencyHz as 50 | 60,
       parallelGroupId: analysis.asset.parallelGroupId ?? undefined,
@@ -759,13 +806,17 @@ export function SalinasEquipmentDashboard({
       }
     }));
     return evaluateRussellParallelCapacity(catalog, requests);
-  }, [analyses, catalog, draft.arrangement, hasFreshRunStates]);
+  }, [analyses, catalog, draft.arrangement, hasCurrentRunStates]);
 
   const systemCapacityRange = useMemo<CapacityRange | null>(() => {
     if (draft.arrangement === 'single') {
       const first = analyses[0];
       if (!first) return null;
-      if (telemetry.status === 'ready' && first.signals.running?.isFresh) {
+      if (
+        telemetry.status === 'ready' &&
+        first.signals.running &&
+        unitHasCurrentTelemetry(first.signals)
+      ) {
         return first.signals.running.value
           ? first.capacityRange
           : { minimumBtuPerHour: 0, maximumBtuPerHour: 0 };
@@ -779,10 +830,11 @@ export function SalinasEquipmentDashboard({
       : { minimumBtuPerHour: combined, maximumBtuPerHour: combined };
   }, [analyses, draft.arrangement, exactParallelEvaluation, telemetry.status]);
   const usesFreshRunStateForCapacity =
-    (draft.arrangement === 'multiple_parallel_same_system' && hasFreshRunStates) ||
+    (draft.arrangement === 'multiple_parallel_same_system' && hasCurrentRunStates) ||
     (draft.arrangement === 'single' &&
       telemetry.status === 'ready' &&
-      analyses[0]?.signals.running?.isFresh === true);
+      Boolean(analyses[0]?.signals.running) &&
+      unitHasCurrentTelemetry(analyses[0].signals));
 
   const readinessRows = useMemo(() => {
     const allFresh = (selector: (signals: AssetSignals) => NumericSignal | null) =>
@@ -804,11 +856,16 @@ export function SalinasEquipmentDashboard({
       analysis.signals.highPressure,
       analysis.signals.lowPressure,
       analysis.signals.compressorAmps,
-      analysis.signals.running
+      analysis.signals.compressorRuntimeMinutes,
+      analysis.signals.setpoint,
+      analysis.signals.running,
+      analysis.signals.systemOn,
+      analysis.signals.highPressureStop
     ].filter((signal): signal is NumericSignal | BooleanSignal => Boolean(signal))
   );
   const telemetryRelevantCount = mappedRelevantSignals.filter((signal) => signal.isFresh).length;
   const staleTelemetryRelevantCount = mappedRelevantSignals.length - telemetryRelevantCount;
+  const currentUnitCount = analyses.filter((analysis) => unitHasCurrentTelemetry(analysis.signals)).length;
   const ambiguousAliasCount = analyses.reduce(
     (total, analysis) => total + analysis.signals.ambiguousAliasCount,
     0
@@ -863,7 +920,7 @@ export function SalinasEquipmentDashboard({
         <div className="salinas-dashboard__connection-card">
           <div className="salinas-dashboard__connection-heading">
             <span
-              className={`salinas-dashboard__pulse ${telemetry.status === 'error' ? 'is-error' : telemetryRelevantCount ? 'is-live' : ''}`}
+              className={`salinas-dashboard__pulse ${telemetry.status === 'error' ? 'is-error' : currentUnitCount ? 'is-live' : ''}`}
             />
             <div>
               <strong>
@@ -871,7 +928,7 @@ export function SalinasEquipmentDashboard({
                   ? 'Telemetry feed unavailable'
                   : ambiguousAliasCount
                     ? 'Device mapping required'
-                    : telemetryRelevantCount
+                    : currentUnitCount
                       ? 'PLC signals current'
                       : staleTelemetryRelevantCount
                         ? 'PLC signals stale'
@@ -884,8 +941,8 @@ export function SalinasEquipmentDashboard({
                     ? telemetry.error
                   : ambiguousAliasCount
                     ? `${ambiguousAliasCount} aliases appear on more than one device`
-                  : telemetryRelevantCount
-                    ? `${telemetryRelevantCount} fresh mapped operating values`
+                  : currentUnitCount
+                    ? `${currentUnitCount} of ${analyses.length} units reporting current pressure, temperature, amps, or state`
                     : staleTelemetryRelevantCount
                       ? `${staleTelemetryRelevantCount} mapped values are older than five minutes`
                     : 'Waiting for mapped CH1 / CH2 values'}
@@ -909,6 +966,50 @@ export function SalinasEquipmentDashboard({
           <span>Newest signal: {formatTimestamp(newestMappedSignalTimestamp)}</span>
           <span>Feed check: {formatTimestamp(telemetry.fetchedAt)}</span>
         </div>
+      </section>
+
+      <section className="salinas-dashboard__system-status-bar" aria-label="Condenser operating status">
+        {analyses.map((analysis, index) => {
+          const signals = analysis.signals;
+          const isCurrent = unitHasCurrentTelemetry(signals);
+          const running = signals.running && isCurrent ? signals.running.value : null;
+          const systemOn = signals.systemOn && isCurrent ? signals.systemOn.value : null;
+          const highPressureStop = signals.highPressureStop?.value === true &&
+            (signals.highPressureStop.isFresh || isCurrent);
+
+          return (
+            <article
+              key={analysis.asset.assetId}
+              className={`salinas-dashboard__system-status${highPressureStop ? ' has-alarm' : ''}`}
+            >
+              <span className="salinas-dashboard__status-icon" aria-hidden="true">
+                {highPressureStop ? <ShieldAlert size={19} /> : <Power size={19} />}
+              </span>
+              <div className="salinas-dashboard__status-copy">
+                <span>0{index + 1} · {analysis.asset.displayName}</span>
+                <strong>
+                  {highPressureStop
+                    ? 'High pressure stop'
+                    : running === true
+                      ? 'Condenser on'
+                      : running === false
+                        ? 'Condenser off'
+                        : 'Run state pending'}
+                </strong>
+              </div>
+              <div className="salinas-dashboard__status-meta">
+                <span className={`salinas-dashboard__status-pill ${running === true ? 'is-on' : running === false ? 'is-off' : ''}`}>
+                  {running === true ? 'ON' : running === false ? 'OFF' : '--'}
+                </span>
+                <small>
+                  System {systemOn === true ? 'enabled' : systemOn === false ? 'disabled' : 'state pending'} ·{' '}
+                  {isCurrent ? 'telemetry current' : 'waiting for current signal'}
+                </small>
+                <small><Clock3 size={12} /> Runtime {formatRuntimeMinutes(signals.compressorRuntimeMinutes?.value ?? null)}</small>
+              </div>
+            </article>
+          );
+        })}
       </section>
 
       <section className="salinas-dashboard__section">
@@ -1180,13 +1281,18 @@ export function SalinasEquipmentDashboard({
               })
               .filter((value): value is number => value !== null);
             const ampsMaximum = ampsReference.length ? Math.max(80, Math.max(...ampsReference) * 1.25) : 80;
-            const status = signals.running?.isFresh ? signals.running.value : null;
-            const runStateText = signals.running && !signals.running.isFresh
-              ? 'Run state stale'
+            const unitIsCurrent = unitHasCurrentTelemetry(signals);
+            const status = signals.running && unitIsCurrent ? signals.running.value : null;
+            const highPressureStop = signals.highPressureStop?.value === true &&
+              (signals.highPressureStop.isFresh || unitIsCurrent);
+            const runStateText = highPressureStop
+              ? 'High pressure stop'
               : status === true
                 ? 'Running'
                 : status === false
                   ? 'Stopped'
+                  : signals.running
+                    ? 'Last state retained'
                   : signals.ambiguousAliasCount
                     ? 'Device mapping pending'
                     : 'Run state pending';
@@ -1200,7 +1306,7 @@ export function SalinasEquipmentDashboard({
                     <h3>{asset.displayName}</h3>
                     <span>{asset.nominalHorsepower} HP air-cooled condensing unit</span>
                   </div>
-                  <span className={`salinas-dashboard__run-state ${status === true ? 'is-running' : status === false ? 'is-stopped' : ''}`}>
+                  <span className={`salinas-dashboard__run-state ${highPressureStop ? 'is-alarm' : status === true ? 'is-running' : status === false ? 'is-stopped' : ''}`}>
                     {runStateText}
                   </span>
                 </header>
@@ -1222,6 +1328,16 @@ export function SalinasEquipmentDashboard({
                     <span>Suction-table input</span>
                     <strong>{oneDecimalFormatter.format(analysis.suctionTemperatureF)} F</strong>
                     <small>{analysis.suctionSource.replaceAll('_', ' ')}</small>
+                  </div>
+                  <div>
+                    <span>Total compressor runtime</span>
+                    <strong>{formatRuntimeMinutes(signals.compressorRuntimeMinutes?.value ?? null)}</strong>
+                    <small>PLC accumulated minutes</small>
+                  </div>
+                  <div>
+                    <span>Temperature setpoint</span>
+                    <strong>{formatValue(signals.setpoint?.value ?? null, ` ${signals.setpoint?.point.unit || 'F'}`, 1)}</strong>
+                    <small>{signals.systemOn?.value === false ? 'System disabled' : 'Normal cycle target'}</small>
                   </div>
                   <div className="salinas-dashboard__capacity-result">
                     <span>Catalog capacity estimate</span>
@@ -1256,7 +1372,7 @@ export function SalinasEquipmentDashboard({
           <b>{formatTonsRange(systemCapacityRange)}</b>
           <small>
             {exactParallelEvaluation
-              ? hasFreshRunStates
+              ? hasCurrentRunStates
                 ? exactParallelEvaluation.message
                 : exactParallelEvaluation.status === 'ok'
                   ? 'Configured scenario assumes all condensers are active; live run states are not available.'

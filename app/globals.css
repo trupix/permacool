@@ -8600,3 +8600,311 @@ h4 {
     gap: 0.35rem;
   }
 }
+
+/* Equipment state, alarms, and permanent event history */
+.section-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-card-action {
+  flex: 0 0 auto;
+}
+
+.ops-text-link,
+.ops-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  color: #557536;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.ops-text-link:hover {
+  color: #34541d;
+}
+
+.ops-action-button {
+  min-height: 40px;
+  padding: 0 0.85rem;
+  border: 1px solid rgba(84, 128, 43, 0.18);
+  border-radius: 11px;
+  background: var(--ops-lime-soft);
+}
+
+.ops-action-button:hover {
+  background: #e4f4ba;
+}
+
+.salinas-dashboard__system-status-bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.salinas-dashboard__system-status {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(17, 44, 34, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 252, 0.9);
+  box-shadow: 0 12px 34px rgba(28, 49, 40, 0.06);
+}
+
+.salinas-dashboard__system-status.has-alarm {
+  border-color: rgba(174, 72, 57, 0.24);
+  background: linear-gradient(135deg, #fff8f5, #fae6e1);
+}
+
+.salinas-dashboard__status-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 12px;
+  background: #edf8d6;
+  color: #5e7f38;
+}
+
+.has-alarm .salinas-dashboard__status-icon {
+  background: #f7d8d1;
+  color: #a94838;
+}
+
+.salinas-dashboard__status-copy,
+.salinas-dashboard__status-copy span,
+.salinas-dashboard__status-copy strong,
+.salinas-dashboard__status-meta,
+.salinas-dashboard__status-meta small {
+  display: block;
+  min-width: 0;
+}
+
+.salinas-dashboard__status-copy span {
+  overflow: hidden;
+  color: #74837c;
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.salinas-dashboard__status-copy strong {
+  margin-top: 0.13rem;
+  color: var(--sd-ink);
+  font-size: 0.9rem;
+}
+
+.salinas-dashboard__status-meta {
+  text-align: right;
+}
+
+.salinas-dashboard__status-meta small {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  margin-top: 0.2rem;
+  color: #74837c;
+  font-size: 0.61rem;
+}
+
+.salinas-dashboard__status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  padding: 0.28rem 0.45rem;
+  border-radius: 999px;
+  background: #eef1ed;
+  color: #65776e;
+  font-size: 0.64rem;
+  font-weight: 900;
+}
+
+.salinas-dashboard__status-pill.is-on {
+  background: #e7f5df;
+  color: #4c813f;
+}
+
+.salinas-dashboard__status-pill.is-off {
+  background: #eef1ed;
+  color: #65776e;
+}
+
+.salinas-dashboard__run-state.is-alarm {
+  border-color: rgba(174, 72, 57, 0.18);
+  background: #fae6e1;
+  color: #a94838;
+}
+
+.equipment-event-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.equipment-event-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.72rem;
+  padding: 0.82rem;
+  border: 1px solid rgba(17, 44, 34, 0.075);
+  border-radius: 13px;
+  background: #f7f9f5;
+}
+
+.equipment-event-row--high-pressure-stop {
+  border-color: rgba(174, 72, 57, 0.16);
+  background: #fff7f4;
+}
+
+.equipment-event-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  background: #e8f2f3;
+  color: #397081;
+}
+
+.equipment-event-row--system-on .equipment-event-icon {
+  background: #e7f5df;
+  color: #4c813f;
+}
+
+.equipment-event-row--system-off .equipment-event-icon {
+  background: #eef1ed;
+  color: #65776e;
+}
+
+.equipment-event-row--high-pressure-stop .equipment-event-icon {
+  background: #fae6e1;
+  color: #a94838;
+}
+
+.equipment-event-copy,
+.equipment-event-title {
+  min-width: 0;
+}
+
+.equipment-event-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.equipment-event-title strong {
+  color: var(--ops-ink);
+  font-size: 0.78rem;
+}
+
+.equipment-event-title > span,
+.event-page-count {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.42rem;
+  border-radius: 999px;
+  background: #edf8d6;
+  color: #5e7f38;
+  font-size: 0.6rem;
+  font-weight: 900;
+}
+
+.equipment-event-copy > p {
+  margin: 0.15rem 0 0;
+  color: #718179;
+  font-size: 0.66rem;
+}
+
+.equipment-event-snapshot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.8rem;
+  margin-top: 0.52rem;
+}
+
+.equipment-event-snapshot span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  color: #5e7067;
+  font-size: 0.63rem;
+  font-weight: 750;
+}
+
+.site-events-heading .ops-text-link {
+  margin-bottom: 1rem;
+}
+
+.site-events-title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ops-notice {
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(182, 133, 39, 0.18);
+  border-radius: 12px;
+  background: #fff5df;
+  color: #806325;
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.event-history-scroll {
+  max-height: 68vh;
+  overflow-y: auto;
+}
+
+.event-pagination {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid rgba(17, 44, 34, 0.075);
+}
+
+.event-pagination a {
+  color: #557536;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+@media (max-width: 760px) {
+  .salinas-dashboard__system-status-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .salinas-dashboard__system-status {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .salinas-dashboard__status-meta {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+
+  .salinas-dashboard__status-meta small {
+    justify-content: flex-start;
+  }
+
+  .site-events-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .section-card-heading {
+    align-items: flex-start;
+  }
+}

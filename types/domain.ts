@@ -51,6 +51,25 @@ export interface Alert {
   startedAt: string;
 }
 
+export interface EquipmentEvent {
+  id: string;
+  siteId: string;
+  deviceId: string;
+  deviceName?: string;
+  channel: 'CH1' | 'CH2' | 'SYSTEM' | string;
+  eventType: string;
+  message: string;
+  occurredAt: string;
+  highPressure: number | null;
+  lowPressure: number | null;
+  processTemperature: number | null;
+  temperatureUnit: string | null;
+  compressorAmps: number | null;
+  runtimeMinutes: number | null;
+  setpoint: number | null;
+  setpointUnit: string | null;
+}
+
 export interface AuditLogEntry {
   id: string;
   actorName: string;
