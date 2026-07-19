@@ -6593,6 +6593,42 @@ h4 {
   font-size: 0.76rem;
 }
 
+.salinas-dashboard__refresh-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 36px;
+  margin-left: auto;
+  padding: 0.48rem 0.68rem;
+  border: 1px solid rgba(94, 215, 239, 0.26);
+  border-radius: 10px;
+  background: rgba(94, 215, 239, 0.09);
+  color: #c9f4fb;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.salinas-dashboard__refresh-button:hover:not(:disabled) {
+  border-color: rgba(94, 215, 239, 0.55);
+  background: rgba(94, 215, 239, 0.16);
+  color: #ffffff;
+}
+
+.salinas-dashboard__refresh-button:focus-visible {
+  outline: 2px solid rgba(155, 234, 248, 0.8);
+  outline-offset: 2px;
+}
+
+.salinas-dashboard__refresh-button:disabled {
+  cursor: wait;
+  opacity: 0.64;
+}
+
 .salinas-dashboard__pulse {
   flex: 0 0 auto;
   width: 10px;
