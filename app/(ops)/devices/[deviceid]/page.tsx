@@ -5,6 +5,32 @@ import { requireUser } from '@/lib/auth';
 import { getDevice, getDeviceTelemetry } from '@/server/repositories/devices';
 import { getSite } from '@/server/repositories/sites';
 
+function formatControllerDateTime(value: string, timeZone: string) {
+  const timestamp = new Date(value);
+
+  if (!Number.isFinite(timestamp.getTime())) {
+    return { time: 'Not available', date: 'Not available' };
+  }
+
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).formatToParts(timestamp);
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((candidate) => candidate.type === type)?.value ?? '--';
+
+  return {
+    time: `${part('hour')}:${part('minute')}:${part('second')}`,
+    date: `${part('day')}-${part('month')}-${part('year')}`
+  };
+}
+
 export default async function DeviceDetailPage({ params }: { params: Promise<{ deviceid: string }> }) {
   const { deviceid: deviceId } = await params;
   const user = await requireUser();
@@ -18,6 +44,7 @@ export default async function DeviceDetailPage({ params }: { params: Promise<{ d
   ]);
 
   if (!site || !user.organizationIds.includes(site.organizationId)) notFound();
+  const lastSeen = formatControllerDateTime(device.lastSeenAt, site.timezone);
 
   return (
     <main className="page-stack">
@@ -31,9 +58,11 @@ export default async function DeviceDetailPage({ params }: { params: Promise<{ d
 
       <SectionCard title="Health status" eyebrow="Controller">
         <div className="list-row">
-          <div>
+          <div className="controller-last-seen">
             <strong>Last seen</strong>
-            <p>{device.lastSeenAt}</p>
+            <p><span>Time:</span> {lastSeen.time}</p>
+            <p><span>Date:</span> {lastSeen.date}</p>
+            <small>{site.timezone}</small>
           </div>
           <StatusBadge tone={device.status} />
         </div>

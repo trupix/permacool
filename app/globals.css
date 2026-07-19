@@ -5014,6 +5014,25 @@ h4 {
   white-space: nowrap;
 }
 
+.controller-last-seen {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.controller-last-seen p {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.controller-last-seen p span {
+  color: #dceaf0;
+  font-weight: 750;
+}
+
+.controller-last-seen small {
+  color: #718b9a;
+}
+
 @media (max-width: 900px) {
   .app-shell {
     grid-template-columns: 1fr;
