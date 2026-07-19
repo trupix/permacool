@@ -27,6 +27,7 @@ import {
   type RussellUnitCapacityEvaluation,
   type SuctionTemperatureSource
 } from '@/lib/equipment/performance';
+import { resolveTelemetryPoint } from '@/lib/equipment/telemetry';
 import type {
   CatalogElectricalRating,
   CondenserArrangementSelection,
@@ -164,10 +165,6 @@ const oneDecimalFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 1
 });
 
-function normalizeTelemetryKey(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]/g, '');
-}
-
 function signalIsFresh(point: TelemetryPoint, referenceTimestamp: string | null): boolean {
   const capturedAt = Date.parse(point.latestTimestamp);
   const referenceTime = referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
@@ -210,14 +207,6 @@ function pointBoolean(point: TelemetryPoint | undefined, referenceTimestamp: str
   return null;
 }
 
-function findPoint(points: TelemetryPoint[], aliases: string[]): { point?: TelemetryPoint; ambiguous: boolean } {
-  const normalizedAliases = new Set(aliases.map(normalizeTelemetryKey));
-  const matches = points.filter((point) => normalizedAliases.has(normalizeTelemetryKey(point.key)));
-  return matches.length === 1
-    ? { point: matches[0], ambiguous: false }
-    : { point: undefined, ambiguous: matches.length > 1 };
-}
-
 function signalsForChannel(
   points: TelemetryPoint[],
   channel: string,
@@ -228,27 +217,27 @@ function signalsForChannel(
   const scopedPoints = telemetryDeviceId
     ? points.filter((point) => point.deviceId === telemetryDeviceId)
     : points;
-  const temperature = findPoint(scopedPoints, [`${prefix}_temperature_f`, `${prefix}_temperature_c`, `${prefix}_temperature`]);
-  const highPressure = findPoint(scopedPoints, [`${prefix}_high_pressure`, `${prefix}_high_pressure_psi`, `${prefix}_highside_pressure`]);
-  const lowPressure = findPoint(scopedPoints, [`${prefix}_low_pressure`, `${prefix}_low_pressure_psi`, `${prefix}_lowside_pressure`]);
-  const compressorAmps = findPoint(scopedPoints, [
+  const temperature = resolveTelemetryPoint(scopedPoints, [`${prefix}_temperature_f`, `${prefix}_temperature_c`, `${prefix}_temperature`]);
+  const highPressure = resolveTelemetryPoint(scopedPoints, [`${prefix}_high_pressure`, `${prefix}_high_pressure_psi`, `${prefix}_highside_pressure`]);
+  const lowPressure = resolveTelemetryPoint(scopedPoints, [`${prefix}_low_pressure`, `${prefix}_low_pressure_psi`, `${prefix}_lowside_pressure`]);
+  const compressorAmps = resolveTelemetryPoint(scopedPoints, [
     `${prefix}compressoramps`,
     `${prefix}_compressor_amps`,
     `${prefix}_compressoramps`,
     `${prefix}_amps`
   ]);
-  const inletAir = findPoint(scopedPoints, [
+  const inletAir = resolveTelemetryPoint(scopedPoints, [
     `${prefix}_condenser_inlet_air_f`,
     `${prefix}_condenser_inlet_temp_f`,
     `${prefix}_inlet_air_temp_f`
   ]);
-  const suctionSaturation = findPoint(scopedPoints, [
+  const suctionSaturation = resolveTelemetryPoint(scopedPoints, [
     `${prefix}_suction_saturation_temp_f`,
     `${prefix}_saturated_suction_temp_f`,
     `${prefix}_sst_f`
   ]);
-  const realPowerKw = findPoint(scopedPoints, [`${prefix}_compressor_kw`, `${prefix}_real_power_kw`, `${prefix}_total_kw`]);
-  const running = findPoint(scopedPoints, [`${prefix}_chiller_run`, `${prefix}_compressor_run`, `${prefix}_system_on`]);
+  const realPowerKw = resolveTelemetryPoint(scopedPoints, [`${prefix}_compressor_kw`, `${prefix}_real_power_kw`, `${prefix}_total_kw`]);
+  const running = resolveTelemetryPoint(scopedPoints, [`${prefix}_chiller_run`, `${prefix}_compressor_run`, `${prefix}_system_on`]);
   const matches = [temperature, highPressure, lowPressure, compressorAmps, inletAir, suctionSaturation, realPowerKw, running];
 
   return {

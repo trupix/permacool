@@ -5,6 +5,9 @@ const path = require('node:path');
 const equipmentPerformance = require(
   path.join(__dirname, '..', 'lib', 'equipment', 'performance.ts'),
 );
+const { resolveTelemetryPoint } = require(
+  path.join(__dirname, '..', 'lib', 'equipment', 'telemetry.ts'),
+);
 
 const catalog = JSON.parse(
   readFileSync(
@@ -22,6 +25,26 @@ const catalog = JSON.parse(
 const DISCUS = 'russell-next-gen-ii-22hp-low-temp-discus-r404a';
 const BITZER = 'russell-next-gen-ii-22hp-low-temp-bitzer-r404a';
 const CAPTURED_AT = '2026-07-15T08:00:00.000Z';
+
+const sameDeviceAliases = resolveTelemetryPoint(
+  [
+    { deviceId: 'epic-01', key: 'ch1_compressor_amps', latestTimestamp: '2026-07-19T10:00:00.000Z' },
+    { deviceId: 'epic-01', key: 'CH1compressoramps', latestTimestamp: '2026-07-19T10:01:00.000Z' },
+  ],
+  ['ch1compressoramps'],
+);
+assert.equal(sameDeviceAliases.ambiguous, false);
+assert.equal(sameDeviceAliases.point.key, 'CH1compressoramps');
+
+const crossDeviceAliases = resolveTelemetryPoint(
+  [
+    { deviceId: 'epic-01', key: 'CH1compressoramps', latestTimestamp: '2026-07-19T10:01:00.000Z' },
+    { deviceId: 'epic-02', key: 'ch1_compressor_amps', latestTimestamp: '2026-07-19T10:02:00.000Z' },
+  ],
+  ['ch1compressoramps'],
+);
+assert.equal(crossDeviceAliases.ambiguous, true);
+assert.equal(crossDeviceAliases.point, undefined);
 
 function operatingPoint(
   ambientTemperatureF: number,
@@ -50,7 +73,7 @@ function request(overrides = {}) {
   };
 }
 
-let assertions = 0;
+let assertions = 4;
 function check(condition: unknown, message?: string) {
   assertions += 1;
   assert.ok(condition, message);
