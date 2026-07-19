@@ -6422,6 +6422,627 @@ h4 {
   }
 }
 
+/* Editable logic and definition workspace */
+.logic-page {
+  --logic-blue: #397081;
+  --logic-blue-soft: #e7f2f4;
+}
+
+.logic-page__heading {
+  position: relative;
+}
+
+.logic-page__heading::after {
+  position: absolute;
+  right: 0;
+  bottom: 0.8rem;
+  width: min(24vw, 260px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(104, 138, 66, 0.24));
+  content: "";
+}
+
+.logic-page__overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1.4rem;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid rgba(15, 42, 32, 0.15);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 78% -25%, rgba(200, 240, 106, 0.2), transparent 15rem),
+    var(--ops-deep);
+  color: #fff;
+  box-shadow: 0 22px 50px rgba(16, 39, 31, 0.16);
+}
+
+.logic-page__overview-copy {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.logic-page__overview-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid rgba(218, 249, 144, 0.19);
+  border-radius: 14px;
+  background: rgba(200, 240, 106, 0.11);
+  color: #d9f69b;
+}
+
+.app-shell .logic-page__overview .eyebrow {
+  color: #b8d77a;
+}
+
+.app-shell .logic-page__overview h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.18rem;
+  letter-spacing: -0.025em;
+}
+
+.logic-page__overview-copy p:last-child {
+  max-width: 650px;
+  margin: 0.28rem 0 0;
+  color: rgba(237, 246, 241, 0.62);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.logic-page__stats {
+  display: flex;
+  align-items: stretch;
+  gap: 0.4rem;
+}
+
+.logic-page__stats > div {
+  min-width: 76px;
+  padding: 0.55rem 0.7rem;
+  border-left: 1px solid rgba(237, 246, 241, 0.12);
+}
+
+.logic-page__stats strong,
+.logic-page__stats span {
+  display: block;
+}
+
+.logic-page__stats strong {
+  color: #fff;
+  font-size: 1.05rem;
+}
+
+.logic-page__stats span {
+  margin-top: 0.1rem;
+  color: rgba(237, 246, 241, 0.52);
+  font-size: 0.59rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.logic-button,
+.logic-icon-button,
+.logic-edit-button,
+.logic-category-filter button {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.logic-button {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  padding: 0 0.85rem;
+  border-radius: 11px;
+  font-size: 0.71rem;
+  font-weight: 850;
+}
+
+.logic-button:disabled,
+.logic-edit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.logic-button--add {
+  border: 1px solid rgba(217, 246, 155, 0.22);
+  background: #c8f06a;
+  color: #193520;
+  box-shadow: 0 10px 24px rgba(7, 24, 17, 0.16);
+}
+
+.logic-button--add:hover:not(:disabled) {
+  background: #d7f68f;
+}
+
+.logic-button--primary {
+  background: var(--ops-deep);
+  color: #fff;
+}
+
+.logic-button--secondary {
+  border: 1px solid var(--ops-line);
+  background: #fff;
+  color: #52665d;
+}
+
+.logic-specification-note,
+.logic-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.78rem 0.95rem;
+  border-radius: 13px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.logic-specification-note {
+  border: 1px solid rgba(57, 112, 129, 0.14);
+  background: var(--logic-blue-soft);
+  color: #456b76;
+}
+
+.logic-specification-note svg,
+.logic-notice svg {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+}
+
+.logic-specification-note p {
+  margin: 0;
+}
+
+.logic-notice.is-success {
+  border: 1px solid rgba(70, 128, 66, 0.14);
+  background: #e7f5df;
+  color: #4c813f;
+}
+
+.logic-notice.is-error {
+  border: 1px solid rgba(174, 72, 57, 0.14);
+  background: #fae6e1;
+  color: #a94838;
+}
+
+.logic-editor {
+  overflow: hidden;
+  border: 1px solid rgba(74, 117, 45, 0.22);
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(25, 47, 38, 0.12);
+}
+
+.logic-editor__heading,
+.logic-editor__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+}
+
+.logic-editor__heading {
+  border-bottom: 1px solid rgba(17, 44, 34, 0.075);
+  background: linear-gradient(135deg, #fbfdf8, #f2f7e9);
+}
+
+.logic-editor__heading h2 {
+  margin: 0;
+  color: var(--ops-ink);
+  font-size: 1.05rem;
+}
+
+.logic-icon-button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--ops-line);
+  border-radius: 10px;
+  background: #fff;
+  color: #66776f;
+}
+
+.logic-editor__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  padding: 1.1rem 1.15rem;
+}
+
+.logic-editor__grid label,
+.logic-editor__grid label > span {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.logic-editor__grid label > span {
+  display: block;
+  color: #53675e;
+  font-size: 0.67rem;
+  font-weight: 850;
+}
+
+.logic-editor__grid label small {
+  color: #8a9690;
+  font-size: 0.58rem;
+  font-weight: 700;
+}
+
+.logic-editor__grid input,
+.logic-editor__grid select,
+.logic-editor__grid textarea {
+  width: 100%;
+  border: 1px solid var(--ops-line);
+  border-radius: 10px;
+  background: #fbfcfa;
+  color: var(--ops-ink);
+  font: inherit;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  outline: none;
+}
+
+.logic-editor__grid input,
+.logic-editor__grid select {
+  min-height: 42px;
+  padding: 0 0.72rem;
+}
+
+.logic-editor__grid textarea {
+  min-height: 86px;
+  padding: 0.65rem 0.72rem;
+  resize: vertical;
+}
+
+.logic-editor__grid input:focus,
+.logic-editor__grid select:focus,
+.logic-editor__grid textarea:focus {
+  border-color: rgba(89, 128, 52, 0.48);
+  box-shadow: 0 0 0 3px rgba(200, 240, 106, 0.17);
+}
+
+.logic-editor__wide {
+  grid-column: 1 / -1;
+}
+
+.logic-editor__actions {
+  border-top: 1px solid rgba(17, 44, 34, 0.075);
+  background: #fbfcfa;
+}
+
+.logic-editor__actions p {
+  display: flex;
+  align-items: center;
+  gap: 0.38rem;
+  margin: 0;
+  color: #75847c;
+  font-size: 0.65rem;
+}
+
+.logic-editor__actions > div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.logic-catalog__toolbar {
+  padding: 0.9rem;
+  border-bottom: 1px solid rgba(17, 44, 34, 0.075);
+}
+
+.logic-search {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--ops-line);
+  border-radius: 11px;
+  background: #fbfcfa;
+  color: #77877f;
+}
+
+.logic-search input {
+  width: 100%;
+  min-height: 42px;
+  border: 0;
+  background: transparent;
+  color: var(--ops-ink);
+  font: inherit;
+  font-size: 0.76rem;
+  outline: none;
+}
+
+.logic-category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+  margin-top: 0.65rem;
+}
+
+.logic-category-filter button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  min-height: 32px;
+  padding: 0 0.65rem;
+  border: 1px solid rgba(17, 44, 34, 0.08);
+  border-radius: 9px;
+  background: #f5f7f3;
+  color: #66776f;
+  font-size: 0.64rem;
+  font-weight: 800;
+}
+
+.logic-category-filter button span {
+  display: grid;
+  min-width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(17, 44, 34, 0.07);
+  font-size: 0.57rem;
+}
+
+.logic-category-filter button.is-active {
+  border-color: rgba(74, 117, 45, 0.2);
+  background: var(--ops-lime-soft);
+  color: #4d6e2b;
+}
+
+.logic-definition-list {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.85rem;
+}
+
+.logic-definition-card {
+  overflow: hidden;
+  border: 1px solid rgba(17, 44, 34, 0.085);
+  border-radius: 14px;
+  background: rgba(250, 251, 248, 0.82);
+}
+
+.logic-definition-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.78rem 0.85rem 0.65rem;
+}
+
+.logic-category-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 9px;
+  background: #edf5dc;
+  color: #5f7e3a;
+}
+
+.logic-category-icon.is-event {
+  background: #fff0e2;
+  color: #a1672d;
+}
+
+.logic-category-icon.is-storage {
+  background: #e7f2f4;
+  color: #397081;
+}
+
+.logic-category-icon.is-display {
+  background: #f0ebf7;
+  color: #72598c;
+}
+
+.logic-category-icon.is-operation {
+  background: #e8f1ec;
+  color: #426c57;
+}
+
+.logic-definition-card__title > span {
+  display: block;
+  color: #7d8b84;
+  font-size: 0.57rem;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.logic-definition-card__title h3 {
+  margin: 0.08rem 0 0;
+  color: var(--ops-ink);
+  font-size: 0.88rem;
+  letter-spacing: -0.015em;
+}
+
+.logic-status {
+  padding: 0.28rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.58rem;
+  font-weight: 850;
+}
+
+.logic-status.is-deployed {
+  background: #e7f5df;
+  color: #4c813f;
+}
+
+.logic-status.is-draft {
+  background: #fff2d8;
+  color: #936817;
+}
+
+.logic-status.is-retired {
+  background: #ecefed;
+  color: #6d7a74;
+}
+
+.logic-edit-button {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0 0.55rem;
+  border: 1px solid var(--ops-line);
+  border-radius: 9px;
+  background: #fff;
+  color: #5d7067;
+  font-size: 0.63rem;
+  font-weight: 850;
+}
+
+.logic-edit-button:hover:not(:disabled) {
+  border-color: rgba(74, 117, 45, 0.24);
+  background: #f3f8e9;
+  color: #4d6e2b;
+}
+
+.logic-signal-key {
+  display: block;
+  width: fit-content;
+  max-width: calc(100% - 1.7rem);
+  overflow: hidden;
+  margin: 0 0.85rem 0.72rem;
+  padding: 0.32rem 0.5rem;
+  border: 1px solid rgba(57, 112, 129, 0.1);
+  border-radius: 7px;
+  background: #edf4f5;
+  color: #356676;
+  font-size: 0.64rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logic-definition-card__body {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 0.7rem;
+  padding: 0 0.85rem 0.75rem;
+}
+
+.logic-definition-card__body > div {
+  padding: 0.68rem 0.72rem;
+  border: 1px solid rgba(17, 44, 34, 0.06);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.logic-definition-card__body span {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #798881;
+  font-size: 0.57rem;
+  font-weight: 850;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+}
+
+.logic-definition-card__body p {
+  margin: 0;
+  color: #4e6258;
+  font-size: 0.7rem;
+  line-height: 1.52;
+}
+
+.logic-definition-card > footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.52rem 0.85rem;
+  border-top: 1px solid rgba(17, 44, 34, 0.06);
+  color: #87928d;
+  font-size: 0.59rem;
+}
+
+.logic-definition-card > footer span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.logic-empty-state {
+  display: grid;
+  min-height: 190px;
+  place-items: center;
+  align-content: center;
+  color: #87938d;
+  text-align: center;
+}
+
+.logic-empty-state strong {
+  margin-top: 0.55rem;
+  color: var(--ops-ink);
+  font-size: 0.8rem;
+}
+
+.logic-empty-state p {
+  margin: 0.2rem 0 0;
+  font-size: 0.68rem;
+}
+
+@media (max-width: 1000px) {
+  .logic-page__overview {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .logic-page__stats {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .logic-page__heading::after {
+    display: none;
+  }
+
+  .logic-page__overview {
+    grid-template-columns: 1fr;
+  }
+
+  .logic-button--add {
+    width: 100%;
+  }
+
+  .logic-editor__grid,
+  .logic-definition-card__body {
+    grid-template-columns: 1fr;
+  }
+
+  .logic-editor__wide {
+    grid-column: auto;
+  }
+
+  .logic-editor__actions,
+  .logic-definition-card > footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .logic-editor__actions > div,
+  .logic-editor__actions .logic-button {
+    width: 100%;
+  }
+
+  .logic-definition-card > header {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .logic-edit-button {
+    grid-column: 2 / -1;
+    justify-self: start;
+  }
+}
+
 @media (max-width: 420px) {
   .learning-center-hero .insights-hero-content h1 {
     font-size: 2.85rem;
