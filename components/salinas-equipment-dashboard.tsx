@@ -521,6 +521,7 @@ export function SalinasEquipmentDashboard({
     fetchedAt: null,
     error: null
   });
+  const [telemetryRefreshVersion, setTelemetryRefreshVersion] = useState(0);
   const [weather, setWeather] = useState<WeatherState>({ status: 'loading', data: null, error: null });
   const storageKey = `permacool:equipment-draft:${siteId}`;
 
@@ -586,7 +587,7 @@ export function SalinasEquipmentDashboard({
       mounted = false;
       window.clearInterval(timer);
     };
-  }, [siteId]);
+  }, [siteId, telemetryRefreshVersion]);
 
   useEffect(() => {
     let mounted = true;
@@ -834,6 +835,12 @@ export function SalinasEquipmentDashboard({
     }));
   }
 
+  function refreshTelemetry() {
+    if (telemetry.status === 'loading') return;
+    setTelemetry((current) => ({ ...current, status: 'loading', error: null }));
+    setTelemetryRefreshVersion((current) => current + 1);
+  }
+
   return (
     <div className="salinas-dashboard">
       <section className="salinas-dashboard__hero">
@@ -884,6 +891,19 @@ export function SalinasEquipmentDashboard({
                     : 'Waiting for mapped CH1 / CH2 values'}
               </p>
             </div>
+            <button
+              type="button"
+              className="salinas-dashboard__refresh-button"
+              onClick={refreshTelemetry}
+              disabled={telemetry.status === 'loading'}
+              aria-label="Refresh PLC telemetry now"
+            >
+              <RefreshCw
+                size={15}
+                className={telemetry.status === 'loading' ? 'salinas-dashboard__spin' : undefined}
+              />
+              {telemetry.status === 'loading' ? 'Refreshing' : 'Refresh'}
+            </button>
           </div>
           <small>Refreshes every 15 seconds</small>
           <span>Newest signal: {formatTimestamp(newestMappedSignalTimestamp)}</span>
