@@ -1,26 +1,42 @@
 import { notFound } from 'next/navigation';
+import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
+import { requireUser } from '@/lib/auth';
+import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
 import { getDevicesBySite } from '@/server/repositories/devices';
 import { getSite, getSiteAlerts } from '@/server/repositories/sites';
 
 export default async function SiteDetailPage({ params }: { params: Promise<{ siteid: string }> }) {
   const { siteid: siteId } = await params;
+  const user = await requireUser();
   const site = await getSite(siteId);
 
   if (!site) notFound();
+  if (!user.organizationIds.includes(site.organizationId)) notFound();
 
   const [siteDevices, siteAlerts] = await Promise.all([getDevicesBySite(site.id), getSiteAlerts(site.id)]);
+  const equipmentRecord = getSiteEquipmentRecord(site.id);
+  const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
+  const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
 
   return (
     <main className="page-stack">
-      <header>
+      <header className="site-detail-heading">
         <p className="eyebrow">Site detail</p>
         <h1>{site.name}</h1>
         <p className="page-copy">
           {site.region} · {site.timezone}
         </p>
       </header>
+
+      {equipmentRecord && equipmentCatalog ? (
+        <SalinasEquipmentDashboard
+          siteId={site.id}
+          equipmentRecord={equipmentRecord}
+          catalog={equipmentCatalog}
+        />
+      ) : null}
 
       <SectionCard title="Gateway status" eyebrow="Connectivity">
         <div className="list-row">

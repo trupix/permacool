@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "siteId": "site-salinas",
+  "recordStatus": "verified_configuration_with_nameplate_fields_pending",
+  "verifiedFrom": "User-provided operating configuration",
+  "verifiedOn": "2026-07-15",
+  "processSystems": [
+    {
+      "systemId": "salinas-ethanol-system-01",
+      "displayName": "Ethanol Chilling System 1",
+      "processSolvent": {
+        "selection": "ethanol",
+        "displayName": "Ethanol",
+        "concentrationPercent": null
+      },
+      "condenserArrangement": {
+        "selection": "multiple_parallel_same_system",
+        "displayName": "Two condensers in parallel on the same system",
+        "condenserCount": 2,
+        "sharedRefrigerationCircuit": true,
+        "parallelGroupId": "salinas-parallel-group-01"
+      },
+      "refrigerationCircuits": [
+        {
+          "circuitId": "salinas-r404a-circuit-01",
+          "displayName": "Shared R404A Circuit",
+          "refrigerant": "R404A",
+          "refrigerantChargeLb": null,
+          "assignment": "shared_by_parallel_condensing_units"
+        }
+      ],
+      "condensers": [
+        {
+          "assetId": "salinas-condenser-ch1",
+          "dashboardChannel": "CH1",
+          "telemetryDeviceId": null,
+          "displayName": "CH1 Condenser",
+          "equipmentType": "air_cooled_condensing_unit",
+          "manufacturer": "Russell",
+          "productFamily": "Next-Gen II",
+          "nominalHorsepower": 22,
+          "refrigerationCircuitId": "salinas-r404a-circuit-01",
+          "refrigerant": "R404A",
+          "parallelGroupId": "salinas-parallel-group-01",
+          "catalogRecordId": "russell-next-gen-ii-22hp-r404a",
+          "catalogVariantId": null,
+          "catalogVariantCandidates": [
+            "russell-next-gen-ii-22hp-low-temp-discus-r404a",
+            "russell-next-gen-ii-22hp-low-temp-bitzer-r404a"
+          ],
+          "exactModelNumber": null,
+          "serialNumber": null,
+          "installedElectrical": {
+            "voltage": null,
+            "phase": null,
+            "frequencyHz": null,
+            "nameplateRlaA": null,
+            "nameplateLraA": null,
+            "verificationStatus": "requires_nameplate"
+          },
+          "compressor": {
+            "manufacturer": null,
+            "technology": null,
+            "model": null,
+            "serialNumber": null,
+            "verificationStatus": "requires_nameplate"
+          }
+        },
+        {
+          "assetId": "salinas-condenser-ch2",
+          "dashboardChannel": "CH2",
+          "telemetryDeviceId": null,
+          "displayName": "CH2 Condenser",
+          "equipmentType": "air_cooled_condensing_unit",
+          "manufacturer": "Russell",
+          "productFamily": "Next-Gen II",
+          "nominalHorsepower": 22,
+          "refrigerationCircuitId": "salinas-r404a-circuit-01",
+          "refrigerant": "R404A",
+          "parallelGroupId": "salinas-parallel-group-01",
+          "catalogRecordId": "russell-next-gen-ii-22hp-r404a",
+          "catalogVariantId": null,
+          "catalogVariantCandidates": [
+            "russell-next-gen-ii-22hp-low-temp-discus-r404a",
+            "russell-next-gen-ii-22hp-low-temp-bitzer-r404a"
+          ],
+          "exactModelNumber": null,
+          "serialNumber": null,
+          "installedElectrical": {
+            "voltage": null,
+            "phase": null,
+            "frequencyHz": null,
+            "nameplateRlaA": null,
+            "nameplateLraA": null,
+            "verificationStatus": "requires_nameplate"
+          },
+          "compressor": {
+            "manufacturer": null,
+            "technology": null,
+            "model": null,
+            "serialNumber": null,
+            "verificationStatus": "requires_nameplate"
+          }
+        }
+      ]
+    }
+  ],
+  "selectionOptions": {
+    "condenserArrangement": [
+      {
+        "value": "single",
+        "label": "Single condenser"
+      },
+      {
+        "value": "multiple_separate_systems",
+        "label": "Multiple - separate systems"
+      },
+      {
+        "value": "multiple_parallel_same_system",
+        "label": "Multiple - parallel on the same system"
+      },
+      {
+        "value": "multiple_high_side_subcooling",
+        "label": "Multiple - one subcools the other's high side"
+      }
+    ],
+    "processSolvent": [
+      {
+        "value": "ethanol",
+        "label": "Ethanol"
+      },
+      {
+        "value": "butane",
+        "label": "Butane"
+      },
+      {
+        "value": "other",
+        "label": "Other"
+      }
+    ]
+  },
+  "validationRules": [
+    "A single arrangement must contain exactly one condenser.",
+    "Separate systems must not share a refrigeration circuit.",
+    "Parallel condensers must share a circuit, parallel-group identifier, and refrigerant.",
+    "High-side subcooling must identify primary and subcooler roles and preserve circuit-level refrigerant data for each stage."
+  ],
+  "calculationPolicy": {
+    "manufacturerCapacityCalculationEnabled": false,
+    "enableOnlyAfter": [
+      "The exact catalog variant is confirmed from each installed unit nameplate.",
+      "The installed frequency is confirmed.",
+      "The dashboard input used for the manual's suction-temperature axis is thermodynamically defined and validated."
+    ],
+    "ambientInputPriority": [
+      "condenser_entering_air_sensor",
+      "local_weather_with_lower_quality_flag"
+    ],
+    "capacityInterpolation": "bilinear_inside_published_envelope_only",
+    "capacityExtrapolation": "disabled",
+    "parallelAggregation": "Sum the estimated capacity of active units only when evaluated at comparable operating conditions.",
+    "electricalPower": "Do not infer real kW from compressor amps alone; use a three-phase power meter or a manufacturer power map."
+  }
+}
