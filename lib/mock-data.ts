@@ -3,6 +3,7 @@ import type {
   AppUser,
   AuditLogEntry,
   Device,
+  EquipmentEvent,
   Organization,
   Site,
   TelemetryPoint
@@ -176,6 +177,45 @@ export const alerts: Alert[] = [
   }
 ];
 
+export const equipmentEvents: EquipmentEvent[] = [
+  {
+    id: 'event-salinas-1',
+    siteId: 'site-salinas',
+    deviceId: 'epic-mvp-01',
+    deviceName: 'groov EPIC MVP Edge Agent',
+    channel: 'CH1',
+    eventType: 'system_on',
+    message: 'CH1 system turned on',
+    occurredAt: '2026-04-28T15:20:00Z',
+    highPressure: 174.2,
+    lowPressure: 31.8,
+    processTemperature: -31.4,
+    temperatureUnit: 'F',
+    compressorAmps: 48.6,
+    runtimeMinutes: 18420,
+    setpoint: -40,
+    setpointUnit: 'F'
+  },
+  {
+    id: 'event-salinas-2',
+    siteId: 'site-salinas',
+    deviceId: 'epic-mvp-01',
+    deviceName: 'groov EPIC MVP Edge Agent',
+    channel: 'CH2',
+    eventType: 'reached_temperature',
+    message: 'Reached Temperature (-40 F) - CH2',
+    occurredAt: '2026-04-28T14:55:00Z',
+    highPressure: 162.9,
+    lowPressure: 28.1,
+    processTemperature: -40.3,
+    temperatureUnit: 'F',
+    compressorAmps: 0,
+    runtimeMinutes: 17984,
+    setpoint: -40,
+    setpointUnit: 'F'
+  }
+];
+
 export const auditLog: AuditLogEntry[] = [
   {
     id: 'audit-1',
@@ -222,4 +262,8 @@ export function getTelemetryForDevice(deviceId: string) {
 
 export function getAlertsForSite(siteId: string) {
   return alerts.filter((alert) => alert.siteId === siteId);
+}
+
+export function getEquipmentEventsForSite(siteId: string) {
+  return equipmentEvents.filter((event) => event.siteId === siteId);
 }

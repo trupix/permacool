@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
     ok: true,
     accepted: true,
     persisted: result.persisted,
-    pointCount: result.pointCount
+    pointCount: result.pointCount,
+    eventCount: 'eventCount' in result ? result.eventCount : 0,
+    eventsPersisted: 'eventsPersisted' in result ? result.eventsPersisted : false
   });
 }

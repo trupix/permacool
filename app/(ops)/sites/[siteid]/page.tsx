@@ -1,11 +1,14 @@
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { EquipmentEventList } from '@/components/equipment-event-list';
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
 import { requireUser } from '@/lib/auth';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
 import { getDevicesBySite } from '@/server/repositories/devices';
+import { getSiteEquipmentEvents } from '@/server/repositories/equipment-events';
 import { getSite, getSiteAlerts } from '@/server/repositories/sites';
 
 export default async function SiteDetailPage({ params }: { params: Promise<{ siteid: string }> }) {
@@ -16,7 +19,11 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
   if (!site) notFound();
   if (!user.organizationIds.includes(site.organizationId)) notFound();
 
-  const [siteDevices, siteAlerts] = await Promise.all([getDevicesBySite(site.id), getSiteAlerts(site.id)]);
+  const [siteDevices, siteAlerts, siteEvents] = await Promise.all([
+    getDevicesBySite(site.id),
+    getSiteAlerts(site.id),
+    getSiteEquipmentEvents(site.id, { limit: 5 })
+  ]);
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
@@ -38,6 +45,18 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
           catalog={equipmentCatalog}
         />
       ) : null}
+
+      <SectionCard
+        title="Recent events"
+        eyebrow="Operating history"
+        action={
+          <Link href={`/sites/${site.id}/events`} className="ops-text-link">
+            Open event history <ArrowRight size={14} />
+          </Link>
+        }
+      >
+        <EquipmentEventList events={siteEvents.events} timezone={site.timezone} />
+      </SectionCard>
 
       <SectionCard title="Gateway status" eyebrow="Connectivity">
         <div className="list-row">
