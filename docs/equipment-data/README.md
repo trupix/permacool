@@ -81,10 +81,10 @@ Use additive production tables under a site/system/equipment domain. Do not stor
 
 ### Site telemetry API production gate
 
-`GET /api/sites/[siteid]/telemetry` works automatically outside production. In production it fails closed with HTTP `503` unless this server-only environment variable is set explicitly:
+`GET /api/sites/[siteid]/telemetry` requires an authenticated user whose organization includes the requested site. It is enabled by default and can be disabled immediately with this server-only deployment kill switch:
 
 ```dotenv
-SITE_TELEMETRY_API_ENABLED=true
+SITE_TELEMETRY_API_ENABLED=false
 ```
 
-Jose should enable this flag in the deployed environment only after verifying that the production Supabase/database records map every site to the correct organization and that authenticated user membership is populated correctly. This protects sensitive field-unit telemetry from being returned through an unverified production identity-to-site mapping. The flag gates only this site telemetry endpoint; it does not change the application's global authentication or onboarding behavior.
+The route returns `401` without a session, `403` when the signed-in user's organization does not own the site, and private no-store responses for authorized requests. The kill switch gates only this site telemetry endpoint; it does not change the application's global authentication or onboarding behavior.

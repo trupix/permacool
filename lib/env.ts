@@ -13,10 +13,7 @@ export function hasDatabaseUrl() {
 }
 
 export function isSiteTelemetryApiEnabled() {
-  return (
-    process.env.NODE_ENV !== 'production' ||
-    process.env.SITE_TELEMETRY_API_ENABLED === 'true'
-  );
+  return process.env.SITE_TELEMETRY_API_ENABLED !== 'false';
 }
 
 export function isSupabaseConfigured() {
