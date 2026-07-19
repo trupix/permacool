@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
@@ -52,11 +53,11 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
         <SectionCard title="Devices" eyebrow="Controllers">
           <div className="table-like">
             {siteDevices.map((device) => (
-              <div key={device.id} className="table-row">
+              <Link key={device.id} href={`/devices/${device.id}`} className="table-row link-row">
                 <span>{device.name}</span>
                 <span>{device.protocol}</span>
                 <StatusBadge tone={device.status} />
-              </div>
+              </Link>
             ))}
           </div>
         </SectionCard>
