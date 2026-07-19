@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "catalogRecordId": "russell-next-gen-ii-22hp-r404a",
+  "manufacturer": "Russell",
+  "productFamily": "Next-Gen II",
+  "equipmentType": "air_cooled_condensing_unit",
+  "nominalHorsepower": 22,
+  "applicationRange": "low_temperature",
+  "refrigerant": "R404A",
+  "source": {
+    "documentTitle": "Next-Gen II 3 to 22 HP Air Cooled Condensing Units",
+    "publicationNumber": "RU-NG2-0617A",
+    "replacesPublication": "RU-NG2-0217B",
+    "publicationDate": "2017-06",
+    "fileName": "RU-NG2-0617A_web2-22hp.pdf",
+    "sha256": "99398bd943ee8f0030597f2d0b14fc57d42906d7b3b2cafc7b7a48bbfe44d61b",
+    "sourcePages": {
+      "featuresAndNomenclature": [2, 4],
+      "discusCapacity": 20,
+      "bitzerCapacity": 28,
+      "discusElectrical": [32, 33],
+      "bitzerElectrical": [35, 36],
+      "fixedSpecifications": [37, 38]
+    }
+  },
+  "commonFeatures": [
+    {
+      "feature": "Integral ambient-air liquid subcooling circuit",
+      "detail": "Russell states an average 3 to 5 F of subcooling.",
+      "sourcePage": 2
+    },
+    {
+      "feature": "High-ambient enhanced copper-tube and aluminum-fin condenser",
+      "sourcePage": 4
+    },
+    {
+      "feature": "Two heavy-duty three-phase condenser fan motors on the 22 HP FD3 models",
+      "sourcePages": [3, 38]
+    },
+    {
+      "feature": "Vertical receiver with isolation valves and pressure relief valve",
+      "sourcePage": 4
+    },
+    {
+      "feature": "UL and cUL listed for indoor and outdoor use",
+      "sourcePage": 3
+    }
+  ],
+  "capacityRatingBasis": {
+    "capacityUnit": "BTU/h",
+    "frequencyHz": 60,
+    "ambientTemperaturesF": [90, 95, 100, 110],
+    "suctionTemperaturesF": [0, -5, -15, -20, -25, -30, -35, -40],
+    "compressorSuperheatF": 20,
+    "capacityMultiplierFor50Hz": 0.83,
+    "approximateCapacityMultiplierAt65FReturnGas": {
+      "minimum": 1.1,
+      "maximum": 1.15
+    },
+    "notes": [
+      "The table headings use suction temperature; calculations should explicitly define whether the live value represents saturated suction temperature.",
+      "Capacity is condition-dependent and must not be represented as one fixed 22 HP capacity.",
+      "Missing or out-of-envelope conditions must not be extrapolated without an engineering rule and a visible estimate label."
+    ]
+  },
+  "powerRatingAvailability": {
+    "inputPowerCurveStatus": "not_published_in_source",
+    "inputPowerUnit": "kW",
+    "inputPowerValues": null,
+    "copStatus": "not_published_in_source",
+    "eerStatus": "not_published_in_source",
+    "awefStatus": "not_published_for_low_temperature_models_in_this_revision",
+    "sourcePageForAwefLimitation": 39,
+    "preferredFutureSource": "Metered three-phase real power or compressor-manufacturer performance data at the operating point."
+  },
+  "modelVariants": [
+    {
+      "catalogVariantId": "russell-next-gen-ii-22hp-low-temp-discus-r404a",
+      "baseModelPattern": "R*DS22L4S**",
+      "modelNumberStatus": "Base pattern only; model style, voltage, and vintage characters require the installed nameplate.",
+      "compressor": {
+        "manufacturer": "Copeland",
+        "technology": "Discus",
+        "model": "4DJNF76KE",
+        "count": 1,
+        "staging": "single_binary",
+        "lowTemperatureCoolingProvision": "Demand Cooling"
+      },
+      "fixedSpecifications": {
+        "nominalHorsepower": 22,
+        "suctionConnectionIn": "2-1/8",
+        "liquidConnectionIn": "7/8",
+        "receiverPumpDownCapacityLbAt80Percent": {
+          "standardReceiverR404A": 44.7,
+          "oversizedReceiverR404A": 68.3
+        },
+        "cabinetSize": "FD3",
+        "condenserFanQuantity": 2,
+        "dimensionsIn": {
+          "depth": 49,
+          "width": "68-5/16",
+          "height": "43-7/8"
+        },
+        "approximateShipWeightLb": 1420,
+        "sourcePages": [37, 38]
+      },
+      "electricalRatings": [
+        {
+          "supplyOptions": [
+            {
+              "voltage": "208-230",
+              "phase": 3,
+              "frequencyHz": 60
+            },
+            {
+              "voltage": "200-220",
+              "phase": 3,
+              "frequencyHz": 50
+            }
+          ],
+          "compressorRlaA": 57.7,
+          "compressorLraA": 374,
+          "totalCondenserFanFlaA": 7.5,
+          "airDefrostMcaA": null,
+          "airDefrostMopdA": null,
+          "electricDefrostMcaA": 121,
+          "electricDefrostMopdA": 150,
+          "representativeDefrostAmpsA": 96,
+          "representativeEvaporatorFanAmpsA": 25,
+          "sourcePage": 32
+        },
+        {
+          "supplyOptions": [
+            {
+              "voltage": "460",
+              "phase": 3,
+              "frequencyHz": 60
+            },
+            {
+              "voltage": "380",
+              "phase": 3,
+              "frequencyHz": 50
+            }
+          ],
+          "compressorRlaA": 28.8,
+          "compressorLraA": 187,
+          "totalCondenserFanFlaA": 3.7,
+          "airDefrostMcaA": null,
+          "airDefrostMopdA": null,
+          "electricDefrostMcaA": 61,
+          "electricDefrostMopdA": 70,
+          "representativeDefrostAmpsA": 48,
+          "representativeEvaporatorFanAmpsA": 10,
+          "sourcePage": 32
+        },
+        {
+          "supplyOptions": [
+            {
+              "voltage": "575",
+              "phase": 3,
+              "frequencyHz": 60
+            }
+          ],
+          "compressorRlaA": 26.1,
+          "compressorLraA": 135,
+          "totalCondenserFanFlaA": 3.7,
+          "airDefrostMcaA": null,
+          "airDefrostMopdA": null,
+          "electricDefrostMcaA": 45.3,
+          "electricDefrostMopdA": 70,
+          "representativeDefrostAmpsA": 35,
+          "representativeEvaporatorFanAmpsA": 8,
+          "sourcePage": 33
+        }
+      ],
+      "capacityTable": {
+        "suctionTemperaturesF": [0, -5, -15, -20, -25, -30, -35, -40],
+        "interpolationPolicy": "bilinear_inside_published_envelope_only",
+        "extrapolationPolicy": "forbidden_without_explicit_engineering_rule",
+        "rows": [
+          {
+            "ambientTemperatureF": 90,
+            "capacityBtuPerHour": [129720, 117150, 94130, 83500, 73310, 63490, 53910, 44470]
+          },
+          {
+            "ambientTemperatureF": 95,
+            "capacityBtuPerHour": [123410, 111290, 89110, 78840, 68990, 59460, 50160, 40990]
+          },
+          {
+            "ambientTemperatureF": 100,
+            "capacityBtuPerHour": [117160, 105540, 84160, 74230, 64680, 55430, 46390, 37450]
+          },
+          {
+            "ambientTemperatureF": 110,
+            "capacityBtuPerHour": [104870, 94150, 74340, 65050, 56130, 47390, 38820, 30330]
+          }
+        ],
+        "sourcePage": 20
+      }
+    },
+    {
+      "catalogVariantId": "russell-next-gen-ii-22hp-low-temp-bitzer-r404a",
+      "baseModelPattern": "R*BS22L4S**",
+      "modelNumberStatus": "Base pattern only; model style, voltage, and vintage characters require the installed nameplate.",
+      "compressor": {
+        "manufacturer": "Bitzer",
+        "technology": "Semi-hermetic reciprocating",
+        "model": "4GE-23",
+        "count": 1,
+        "staging": "single_binary",
+        "lowTemperatureCoolingProvision": "Liquid injection"
+      },
+      "fixedSpecifications": {
+        "nominalHorsepower": 22,
+        "suctionConnectionIn": "2-1/8",
+        "liquidConnectionIn": "7/8",
+        "receiverPumpDownCapacityLbAt80Percent": {
+          "standardReceiverR404A": 44.7,
+          "oversizedReceiverR404A": 68.3
+        },
+        "cabinetSize": "FD3",
+        "condenserFanQuantity": 2,
+        "dimensionsIn": {
+          "depth": 49,
+          "width": "68-5/16",
+          "height": "43-7/8"
+        },
+        "approximateShipWeightLb": 1420,
+        "sourcePages": [37, 38]
+      },
+      "electricalRatings": [
+        {
+          "supplyOptions": [
+            {
+              "voltage": "208-230",
+              "phase": 3,
+              "frequencyHz": 60
+            },
+            {
+              "voltage": "200-220",
+              "phase": 3,
+              "frequencyHz": 50
+            }
+          ],
+          "compressorRlaA": 57.7,
+          "compressorLraA": 352,
+          "totalCondenserFanFlaA": 7.5,
+          "airDefrostMcaA": null,
+          "airDefrostMopdA": null,
+          "electricDefrostMcaA": 121,
+          "electricDefrostMopdA": 150,
+          "representativeDefrostAmpsA": 96,
+          "representativeEvaporatorFanAmpsA": 25,
+          "sourcePage": 35
+        },
+        {
+          "supplyOptions": [
+            {
+              "voltage": "460",
+              "phase": 3,
+              "frequencyHz": 60
+            },
+            {
+              "voltage": "380",
+              "phase": 3,
+              "frequencyHz": 50
+            }
+          ],
+          "compressorRlaA": 28.8,
+          "compressorLraA": 176,
+          "totalCondenserFanFlaA": 3.7,
+          "airDefrostMcaA": null,
+          "airDefrostMopdA": null,
+          "electricDefrostMcaA": 61,
+          "electricDefrostMopdA": 70,
+          "representativeDefrostAmpsA": 48,
+          "representativeEvaporatorFanAmpsA": 10,
+          "sourcePage": 35
+        },
+        {
+          "supplyOptions": [
+            {
+              "voltage": "575",
+              "phase": 3,
+              "frequencyHz": 60
+            }
+          ],
+          "compressorRlaA": 23.1,
+          "compressorLraA": 140,
+          "totalCondenserFanFlaA": 3.7,
+          "airDefrostMcaA": null,
+          "airDefrostMopdA": null,
+          "electricDefrostMcaA": 51,
+          "electricDefrostMopdA": 60,
+          "representativeDefrostAmpsA": 40,
+          "representativeEvaporatorFanAmpsA": 8,
+          "sourcePage": 36
+        }
+      ],
+      "capacityTable": {
+        "suctionTemperaturesF": [0, -5, -15, -20, -25, -30, -35, -40],
+        "interpolationPolicy": "bilinear_inside_published_envelope_only",
+        "extrapolationPolicy": "forbidden_without_explicit_engineering_rule",
+        "rows": [
+          {
+            "ambientTemperatureF": 90,
+            "capacityBtuPerHour": [132420, 118370, 93020, 81690, 71200, 61560, 52690, 44510]
+          },
+          {
+            "ambientTemperatureF": 95,
+            "capacityBtuPerHour": [125330, 111950, 87710, 76890, 66890, 57710, 49270, 41550]
+          },
+          {
+            "ambientTemperatureF": 100,
+            "capacityBtuPerHour": [118330, 105540, 82430, 72110, 62620, 53900, 45910, 38610]
+          },
+          {
+            "ambientTemperatureF": 110,
+            "capacityBtuPerHour": [104370, 92810, 71940, 62670, 54170, 46400, 39320, 32880]
+          }
+        ],
+        "sourcePage": 28
+      }
+    }
+  ],
+  "calculationWarnings": [
+    "This catalog contains two distinct 22 HP model candidates. Do not select one for an installed asset without a nameplate or other authoritative model record.",
+    "The manual publishes RLA, LRA, condenser-fan FLA, MCA, MOPD, and representative defrost loads; it does not publish compressor input kW, COP, or EER for these models.",
+    "Horsepower is a nominal compressor classification and must not be converted directly into live electrical power.",
+    "Catalog capacity is not the same as heat rejected at the condenser and is not a substitute for measured process load.",
+    "For two parallel units, combined catalog capacity is a derived estimate and requires both units to be operating at comparable conditions."
+  ]
+}

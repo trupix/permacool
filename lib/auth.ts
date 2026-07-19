@@ -65,10 +65,20 @@ export async function getCurrentUser(): Promise<AppUser | undefined> {
         include: { memberships: true }
       });
 
-  if (!user.memberships.some((membership) => membership.organizationId === defaultOrganization.id)) {
-    await db.userOrganization.create({
-      data: { userId: user.id, organizationId: defaultOrganization.id }
+  const organizationIds = user.memberships.map((membership) => membership.organizationId);
+
+  if (!organizationIds.includes(defaultOrganization.id)) {
+    await db.userOrganization.upsert({
+      where: {
+        userId_organizationId: {
+          userId: user.id,
+          organizationId: defaultOrganization.id
+        }
+      },
+      update: {},
+      create: { userId: user.id, organizationId: defaultOrganization.id }
     });
+    organizationIds.push(defaultOrganization.id);
   }
 
   return {
@@ -76,7 +86,7 @@ export async function getCurrentUser(): Promise<AppUser | undefined> {
     name: user.name,
     email: user.email,
     role: user.role,
-    organizationIds: user.memberships.map((membership) => membership.organizationId)
+    organizationIds
   };
 }
 

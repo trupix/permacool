@@ -5,6 +5,10 @@ import { validateTelemetryPayload } from '@/server/telemetry-contract';
 import type { TelemetryIngestPayload } from '@/types/domain';
 
 export async function POST(request: NextRequest) {
+  if (!env.telemetryIngestToken) {
+    return NextResponse.json({ ok: false, error: 'Telemetry ingest is not configured.' }, { status: 503 });
+  }
+
   const token = request.headers.get('x-telemetry-token');
 
   if (!token || token !== env.telemetryIngestToken) {
