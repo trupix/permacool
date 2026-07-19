@@ -70,6 +70,24 @@ export interface EquipmentEvent {
   setpointUnit: string | null;
 }
 
+export type LogicDefinitionCategory = 'signal' | 'operation' | 'event' | 'storage' | 'display';
+export type LogicImplementationStatus = 'deployed' | 'draft' | 'retired';
+
+export interface LogicDefinition {
+  id: string;
+  slug: string;
+  category: LogicDefinitionCategory;
+  title: string;
+  signalKey: string | null;
+  definition: string;
+  behavior: string;
+  implementationStatus: LogicImplementationStatus;
+  sortOrder: number;
+  updatedBy: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AuditLogEntry {
   id: string;
   actorName: string;

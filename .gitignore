@@ -12,3 +12,4 @@ USER.md
 .next/
 node_modules/
 .vercel/
+*.tsbuildinfo

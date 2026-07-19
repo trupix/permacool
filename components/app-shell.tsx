@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   Snowflake,
   Users,
-  Wifi
+  Wifi,
+  Workflow
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { AppUser } from '@/types/domain';
@@ -24,6 +25,7 @@ const navItems: Array<{ href: string; label: string; icon: LucideIcon; matches?:
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
   { href: '/sites', label: 'Sites', icon: MapPinned, matches: ['/sites', '/devices'] },
   { href: '/ingest-test', label: 'Telemetry', icon: RadioTower },
+  { href: '/logic', label: 'Logic', icon: Workflow },
   { href: '/alerts', label: 'Alerts', icon: Bell },
   { href: '/admin/users', label: 'Team', icon: Users },
   { href: '/audit-log', label: 'Audit log', icon: ScrollText }
