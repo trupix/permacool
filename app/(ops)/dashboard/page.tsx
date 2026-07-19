@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { MetricCard } from '@/components/metric-card';
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
@@ -16,9 +17,9 @@ export default async function DashboardPage() {
   return (
     <main className="page-stack">
       <header>
-        <p className="eyebrow">MVP dashboard</p>
+        <p className="eyebrow">Operations workspace</p>
         <h1>Fleet overview</h1>
-        <p className="page-copy">Read-only monitoring first: status, telemetry visibility, alerts, and auditability.</p>
+        <p className="page-copy">A live view of sites, controllers, telemetry health, and the work that needs attention.</p>
       </header>
 
       <section className="metric-grid">
@@ -32,13 +33,13 @@ export default async function DashboardPage() {
         <SectionCard title="Site health" eyebrow="Locations">
           <div className="list-stack">
             {sites.map((site) => (
-              <div key={site.id} className="list-row">
+              <Link key={site.id} href={`/sites/${site.id}`} className="list-row link-row">
                 <div>
                   <strong>{site.name}</strong>
                   <p>{site.region}</p>
                 </div>
                 <StatusBadge tone={site.gatewayStatus} />
-              </div>
+              </Link>
             ))}
           </div>
         </SectionCard>
@@ -61,12 +62,12 @@ export default async function DashboardPage() {
       <SectionCard title="Device snapshot" eyebrow="Controllers">
         <div className="table-like">
           {devices.map((device) => (
-            <div key={device.id} className="table-row">
+            <Link key={device.id} href={`/devices/${device.id}`} className="table-row link-row">
               <span>{device.name}</span>
               <span>{device.protocol}</span>
               <span>{device.firmwareVersion}</span>
               <StatusBadge tone={device.status} />
-            </div>
+            </Link>
           ))}
         </div>
       </SectionCard>
