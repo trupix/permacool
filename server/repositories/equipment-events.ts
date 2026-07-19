@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 import { db } from '@/lib/db';
 import { getEquipmentEventsForSite } from '@/lib/mock-data';
 import type { EquipmentEvent } from '@/types/domain';
+import { ensureEquipmentEventStorage } from '@/server/equipment-event-storage';
 import { shouldUseDatabase } from './shared';
 
 export type EquipmentEventPage = {
@@ -31,6 +32,8 @@ export async function getSiteEquipmentEvents(
   }
 
   try {
+    const storageReady = await ensureEquipmentEventStorage();
+    if (!storageReady) return { events: [], total: 0, persistenceReady: false };
     const [rows, total] = await Promise.all([
       db.equipmentEvent.findMany({
         where: { siteId },

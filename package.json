@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/apply-database-migrations.js && prisma generate && next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "telemetry:test": "node scripts/send-test-telemetry.js",
     "equipment:events:test": "node scripts/test-equipment-events.ts",
