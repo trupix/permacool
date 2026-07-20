@@ -22,7 +22,7 @@ import type { LucideIcon } from 'lucide-react';
 import type { AppUser } from '@/types/domain';
 
 const navItems: Array<{ href: string; label: string; icon: LucideIcon; matches?: string[] }> = [
-  { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'SOUL Matrix', icon: LayoutDashboard },
   { href: '/sites', label: 'Sites', icon: MapPinned, matches: ['/sites', '/devices'] },
   { href: '/ingest-test', label: 'Telemetry', icon: RadioTower },
   { href: '/logic', label: 'Logic', icon: Workflow },
@@ -46,13 +46,13 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <Link href="/dashboard" className="sidebar-brand" aria-label="PermaCool operations home">
+        <Link href="/dashboard" className="sidebar-brand" aria-label="Agenticly Control home">
           <span className="sidebar-brand-mark" aria-hidden="true">
             <Snowflake size={19} strokeWidth={2.4} />
           </span>
           <span>
-            <strong>PermaCool</strong>
-            <small>Field operations</small>
+            <strong>Agenticly</strong>
+            <small>Control</small>
           </span>
         </Link>
 

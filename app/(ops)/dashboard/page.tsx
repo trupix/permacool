@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MetricCard } from '@/components/metric-card';
 import { SectionCard } from '@/components/section-card';
@@ -6,6 +7,11 @@ import { getAlerts } from '@/server/repositories/alerts';
 import { getDevices } from '@/server/repositories/devices';
 import { getOverviewMetrics } from '@/server/repositories/overview';
 import { getSites } from '@/server/repositories/sites';
+
+export const metadata: Metadata = {
+  title: 'SOUL Matrix',
+  description: 'Signals, Operations, Unity & Logic — the living state of every connected system.'
+};
 
 export default async function DashboardPage() {
   const [alerts, devices, sites, dashboardSummary] = await Promise.all([
@@ -17,9 +23,11 @@ export default async function DashboardPage() {
   return (
     <main className="page-stack">
       <header>
-        <p className="eyebrow">Operations workspace</p>
-        <h1>Fleet overview</h1>
-        <p className="page-copy">A live view of sites, controllers, telemetry health, and the work that needs attention.</p>
+        <p className="eyebrow">Agenticly Control</p>
+        <h1>SOUL Matrix</h1>
+        <p className="page-copy">
+          Signals, Operations, Unity &amp; Logic — the living state of every connected system.
+        </p>
       </header>
 
       <section className="metric-grid">
