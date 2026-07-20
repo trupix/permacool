@@ -3,7 +3,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Activity,
   BookOpen,
   CheckCircle2,
   CircleAlert,
@@ -528,6 +527,42 @@ function DataStatus({ available, children }: { available: boolean; children: Rea
   );
 }
 
+function TelemetryRefreshCountdown({ dueAt }: { dueAt: number | null }) {
+  const [remainingMs, setRemainingMs] = useState(TELEMETRY_REFRESH_MS);
+
+  useEffect(() => {
+    function updateRemaining() {
+      setRemainingMs(dueAt === null ? TELEMETRY_REFRESH_MS : Math.max(0, dueAt - Date.now()));
+    }
+
+    updateRemaining();
+    const timer = window.setInterval(updateRemaining, 100);
+    return () => window.clearInterval(timer);
+  }, [dueAt]);
+
+  const secondsRemaining = Math.max(0, Math.ceil(remainingMs / 1000));
+  const progress = Math.max(0, Math.min(1, remainingMs / TELEMETRY_REFRESH_MS));
+  const ringStyle = {
+    '--telemetry-countdown-progress': `${progress * 360}deg`
+  } as CSSProperties;
+
+  return (
+    <span
+      className="salinas-dashboard__refresh-label salinas-dashboard__countdown"
+      role="timer"
+      aria-label={`Telemetry refreshes in ${secondsRemaining} seconds`}
+    >
+      <span className="salinas-dashboard__countdown-ring" style={ringStyle} aria-hidden="true">
+        <b>{secondsRemaining}</b>
+      </span>
+      <span className="salinas-dashboard__countdown-copy">
+        <strong>Next telemetry refresh</strong>
+        <small>in {secondsRemaining} second{secondsRemaining === 1 ? '' : 's'}</small>
+      </span>
+    </span>
+  );
+}
+
 export function SalinasEquipmentDashboard({
   siteId,
   equipmentRecord,
@@ -569,6 +604,7 @@ export function SalinasEquipmentDashboard({
     error: null
   });
   const [telemetryRefreshVersion, setTelemetryRefreshVersion] = useState(0);
+  const [telemetryRefreshDueAt, setTelemetryRefreshDueAt] = useState<number | null>(null);
   const [weather, setWeather] = useState<WeatherState>({ status: 'loading', data: null, error: null });
   const storageKey = `permacool:equipment-draft:${siteId}`;
 
@@ -599,6 +635,7 @@ export function SalinasEquipmentDashboard({
     let mounted = true;
 
     async function loadTelemetry() {
+      if (mounted) setTelemetryRefreshDueAt(Date.now() + TELEMETRY_REFRESH_MS);
       try {
         const response = await fetch(`/api/sites/${siteId}/telemetry`, { cache: 'no-store' });
         const payload = (await response.json()) as {
@@ -1266,7 +1303,7 @@ export function SalinasEquipmentDashboard({
             <p className="eyebrow">Live operating units</p>
             <h2>CH1 and CH2 condenser performance</h2>
           </div>
-          <span className="salinas-dashboard__refresh-label"><Activity size={15} /> 15-second telemetry</span>
+          <TelemetryRefreshCountdown dueAt={telemetryRefreshDueAt} />
         </div>
 
         <div className="salinas-dashboard__condenser-grid">
