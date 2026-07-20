@@ -102,7 +102,7 @@ export function ProvisioningWorkspace({
       const payload = await response.json() as { site?: { name: string }; error?: string };
       if (!response.ok || !payload.site) throw new Error(payload.error || 'The site could not be created.');
       setSiteForm({ name: '', addressLine1: '', city: '', state: 'CA', postalCode: '', country: 'US', region: 'California, US', timezone: 'America/Los_Angeles' });
-      setNotice({ tone: 'success', text: `${payload.site.name} was added to Agenticly Control.` });
+      setNotice({ tone: 'success', text: `${payload.site.name} was added to Agenticly.Cool.` });
       router.refresh();
     } catch (error) {
       setNotice({ tone: 'error', text: error instanceof Error ? error.message : 'The site could not be created.' });

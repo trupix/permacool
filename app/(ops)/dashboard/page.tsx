@@ -23,7 +23,7 @@ export default async function DashboardPage() {
   return (
     <main className="page-stack">
       <header>
-        <p className="eyebrow">Agenticly Control</p>
+        <p className="eyebrow">Agenticly.Cool</p>
         <h1>SOUL Matrix</h1>
         <p className="page-copy">
           Signals, Operations, Unity &amp; Logic — the living state of every connected system.

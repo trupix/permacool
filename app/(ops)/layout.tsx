@@ -7,8 +7,8 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Agenticly Control',
-    template: '%s | Agenticly Control'
+    default: 'Agenticly.Cool',
+    template: '%s | Agenticly.Cool'
   },
   description: 'Connected intelligence for industrial cooling operations.',
   robots: {

@@ -48,12 +48,12 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <Link href="/dashboard" className="sidebar-brand" aria-label="Agenticly Control home">
+        <Link href="/dashboard" className="sidebar-brand" aria-label="Agenticly.Cool home">
           <span className="sidebar-brand-mark" aria-hidden="true">
             <Snowflake size={19} strokeWidth={2.4} />
           </span>
           <span>
-            <strong>Agenticly</strong>
+            <strong>Agenticly.Cool</strong>
             <small>Control</small>
           </span>
         </Link>
