@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { Download, ArrowLeft } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { EquipmentEventList } from '@/components/equipment-event-list';
+import { SiteSectionNav } from '@/components/site-section-nav';
 import { requireUser } from '@/lib/auth';
 import { getSiteEquipmentEvents } from '@/server/repositories/equipment-events';
 import { getSite } from '@/server/repositories/sites';
@@ -28,8 +29,9 @@ export default async function SiteEventsPage({
 
   return (
     <main className="page-stack">
+      <SiteSectionNav siteId={site.id} siteName={site.name} active="events" />
+
       <header className="site-events-heading">
-        <Link href={`/sites/${site.id}`} className="ops-text-link"><ArrowLeft size={15} /> Back to site</Link>
         <p className="eyebrow">Permanent operating record</p>
         <div className="site-events-title-row">
           <div>

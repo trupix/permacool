@@ -531,11 +531,13 @@ function DataStatus({ available, children }: { available: boolean; children: Rea
 export function SalinasEquipmentDashboard({
   siteId,
   equipmentRecord,
-  catalog
+  catalog,
+  view = 'overview'
 }: {
   siteId: string;
   equipmentRecord: SiteEquipmentRecord;
   catalog: CondenserCatalogRecord;
+  view?: 'overview' | 'specs';
 }) {
   const system = equipmentRecord.processSystems[0];
   const defaultDraft: ConfigurationDraft = {
@@ -900,6 +902,8 @@ export function SalinasEquipmentDashboard({
 
   return (
     <div className="salinas-dashboard">
+      {view === 'overview' ? (
+        <>
       <section className="salinas-dashboard__hero">
         <div className="salinas-dashboard__hero-copy">
           <div className="salinas-dashboard__kicker">
@@ -1011,7 +1015,10 @@ export function SalinasEquipmentDashboard({
           );
         })}
       </section>
+        </>
+      ) : null}
 
+      {view === 'specs' ? (
       <section className="salinas-dashboard__section">
         <div className="salinas-dashboard__section-heading">
           <div>
@@ -1151,8 +1158,10 @@ export function SalinasEquipmentDashboard({
           stored in this browser until Jose&apos;s production database/schema is available.
         </p>
       </section>
+      ) : null}
 
-      <section className="salinas-dashboard__context-grid">
+      <section className="salinas-dashboard__context-grid is-single">
+        {view === 'overview' ? (
         <article className="salinas-dashboard__panel salinas-dashboard__weather-panel">
           <div className="salinas-dashboard__panel-heading">
             <span className="salinas-dashboard__panel-icon"><CloudSun size={22} /></span>
@@ -1182,7 +1191,9 @@ export function SalinasEquipmentDashboard({
             </div>
           )}
         </article>
+        ) : null}
 
+        {view === 'specs' ? (
         <article className="salinas-dashboard__panel salinas-dashboard__analysis-panel">
           <div className="salinas-dashboard__panel-heading">
             <span className="salinas-dashboard__panel-icon"><Settings2 size={22} /></span>
@@ -1244,8 +1255,11 @@ export function SalinasEquipmentDashboard({
             </p>
           </div>
         </article>
+        ) : null}
       </section>
 
+      {view === 'overview' ? (
+        <>
       <section className="salinas-dashboard__section">
         <div className="salinas-dashboard__section-heading">
           <div>
@@ -1388,8 +1402,11 @@ export function SalinasEquipmentDashboard({
           <div><span>Power calculation</span><strong>Awaiting measured 3-phase kW</strong></div>
         </div>
       </section>
+        </>
+      ) : null}
 
-      <section className="salinas-dashboard__context-grid">
+      <section className="salinas-dashboard__context-grid is-single">
+        {view === 'overview' ? (
         <article className="salinas-dashboard__panel">
           <div className="salinas-dashboard__panel-heading">
             <span className="salinas-dashboard__panel-icon"><Database size={22} /></span>
@@ -1404,7 +1421,9 @@ export function SalinasEquipmentDashboard({
             ))}
           </div>
         </article>
+        ) : null}
 
+        {view === 'specs' ? (
         <article className="salinas-dashboard__panel">
           <div className="salinas-dashboard__panel-heading">
             <span className="salinas-dashboard__panel-icon"><Zap size={22} /></span>
@@ -1456,8 +1475,11 @@ export function SalinasEquipmentDashboard({
             Amperage ratings are not real power. kW, COP and EER stay unavailable until a power meter or a validated manufacturer power map is added.
           </p>
         </article>
+        ) : null}
       </section>
 
+      {view === 'specs' ? (
+        <>
       <section className="salinas-dashboard__section">
         <div className="salinas-dashboard__section-heading">
           <div>
@@ -1518,6 +1540,8 @@ export function SalinasEquipmentDashboard({
         <div><span>Dimensions</span><strong>49 x 68-5/16 x 43-7/8 in</strong></div>
         <div><span>Approx. ship weight</span><strong>1,420 lb each</strong></div>
       </section>
+        </>
+      ) : null}
     </div>
   );
 }
