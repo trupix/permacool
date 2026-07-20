@@ -1,0 +1,40 @@
+import type { Metadata } from 'next';
+import { ProvisioningWorkspace } from '@/components/provisioning-workspace';
+import { requireUser } from '@/lib/auth';
+import { getOpenVpnProvisioningStatus } from '@/server/openvpn-access-server';
+import { getProvisioningSnapshot } from '@/server/repositories/provisioning';
+
+export const metadata: Metadata = {
+  title: 'Site & PLC Provisioning',
+  description: 'Add operating sites, register PLCs, and issue unique OpenVPN profiles for field controllers.'
+};
+
+export const dynamic = 'force-dynamic';
+
+export default async function ProvisioningPage() {
+  const user = await requireUser();
+  const [snapshot, vpn] = await Promise.all([
+    getProvisioningSnapshot(user),
+    Promise.resolve(getOpenVpnProvisioningStatus())
+  ]);
+
+  return (
+    <main className="page-stack provisioning-page">
+      <header>
+        <p className="eyebrow">Infrastructure workspace</p>
+        <h1>Site &amp; PLC provisioning</h1>
+        <p className="page-copy">
+          Register field locations, add controllers, and issue a separate VPN identity for every unattended PLC.
+        </p>
+      </header>
+
+      <ProvisioningWorkspace
+        initialSites={snapshot.sites}
+        storageReady={snapshot.storageReady}
+        vpnConfigured={vpn.configured}
+        vpnHost={vpn.host}
+        currentRole={user.role}
+      />
+    </main>
+  );
+}

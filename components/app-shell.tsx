@@ -12,6 +12,7 @@ import {
   RadioTower,
   ScrollText,
   Search,
+  ServerCog,
   ShieldCheck,
   Snowflake,
   Users,
@@ -24,6 +25,7 @@ import type { AppUser } from '@/types/domain';
 const navItems: Array<{ href: string; label: string; icon: LucideIcon; matches?: string[] }> = [
   { href: '/dashboard', label: 'SOUL Matrix', icon: LayoutDashboard },
   { href: '/sites', label: 'Sites', icon: MapPinned, matches: ['/sites', '/devices'] },
+  { href: '/provisioning', label: 'Provisioning', icon: ServerCog },
   { href: '/ingest-test', label: 'Telemetry', icon: RadioTower },
   { href: '/logic', label: 'Logic', icon: Workflow },
   { href: '/alerts', label: 'Alerts', icon: Bell },
@@ -46,12 +48,12 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <Link href="/dashboard" className="sidebar-brand" aria-label="Agenticly Control home">
+        <Link href="/dashboard" className="sidebar-brand" aria-label="Agenticly.Cool home">
           <span className="sidebar-brand-mark" aria-hidden="true">
             <Snowflake size={19} strokeWidth={2.4} />
           </span>
           <span>
-            <strong>Agenticly</strong>
+            <strong>Agenticly.Cool</strong>
             <small>Control</small>
           </span>
         </Link>
