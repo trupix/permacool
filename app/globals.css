@@ -7792,6 +7792,65 @@ h4 {
   color: #a4eaf6;
 }
 
+.salinas-dashboard__countdown {
+  gap: 0.58rem;
+  min-width: 172px;
+  padding: 0.34rem 0.72rem 0.34rem 0.36rem;
+  border-radius: 14px;
+  letter-spacing: 0;
+}
+
+.salinas-dashboard__countdown-ring {
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--sd-cyan) var(--telemetry-countdown-progress),
+    rgba(94, 215, 239, 0.14) 0deg
+  );
+  transition: background 100ms linear;
+}
+
+.salinas-dashboard__countdown-ring::after {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--sd-panel-strong);
+  content: '';
+}
+
+.salinas-dashboard__countdown-ring b {
+  position: relative;
+  z-index: 1;
+  color: var(--sd-cyan);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.salinas-dashboard__countdown-copy,
+.salinas-dashboard__countdown-copy strong,
+.salinas-dashboard__countdown-copy small {
+  display: block;
+}
+
+.salinas-dashboard__countdown-copy strong {
+  color: inherit;
+  font-size: 0.66rem;
+  line-height: 1.2;
+}
+
+.salinas-dashboard__countdown-copy small {
+  margin-top: 0.12rem;
+  color: var(--sd-muted);
+  font-size: 0.61rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 .salinas-dashboard__configuration-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
