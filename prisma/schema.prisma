@@ -78,6 +78,7 @@ model Site {
   devices         Device[]
   alerts          Alert[]
   equipmentEvents EquipmentEvent[]
+  provisioningDetails SiteProvisioningDetails?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 }
@@ -96,8 +97,36 @@ model Device {
   telemetryPoints TelemetryPoint[]
   alerts          Alert[]
   equipmentEvents EquipmentEvent[]
+  vpnEnrollment    VpnEnrollment?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+}
+
+model SiteProvisioningDetails {
+  siteId       String   @id
+  addressLine1 String?
+  city         String?
+  state        String?
+  postalCode   String?
+  country      String   @default("US")
+  site         Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model VpnEnrollment {
+  id                  String   @id @default(cuid())
+  deviceId            String   @unique
+  identity            String   @unique
+  tunnelIp             String?  @unique
+  localIpAddress       String?
+  profileStatus        String   @default("not_generated")
+  vpnServerHost        String?
+  lastProfileIssuedAt DateTime?
+  lastProfileRevokedAt DateTime?
+  device               Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model TelemetryPoint {

@@ -2,6 +2,7 @@ export type DeviceStatus = 'online' | 'offline' | 'degraded';
 export type AlertSeverity = 'critical' | 'warning' | 'info';
 export type AlertStatus = 'open' | 'acknowledged' | 'resolved';
 export type UserRole = 'owner' | 'operator' | 'viewer';
+export type VpnProfileStatus = 'not_generated' | 'issued' | 'revoked' | 'error' | 'external';
 
 export interface Organization {
   id: string;
@@ -18,6 +19,11 @@ export interface Site {
   timezone: string;
   gatewayStatus: DeviceStatus;
   deviceIds: string[];
+  addressLine1?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postalCode?: string | null;
+  country?: string | null;
 }
 
 export interface Device {
@@ -29,6 +35,12 @@ export interface Device {
   status: DeviceStatus;
   lastSeenAt: string;
   firmwareVersion: string;
+  serialNumber?: string | null;
+  vpnIdentity?: string | null;
+  vpnTunnelIp?: string | null;
+  localIpAddress?: string | null;
+  vpnProfileStatus?: VpnProfileStatus;
+  vpnProfileIssuedAt?: string | null;
 }
 
 export interface TelemetryPoint {
