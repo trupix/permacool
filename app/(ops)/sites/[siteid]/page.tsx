@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { EquipmentEventList } from '@/components/equipment-event-list';
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
+import { SiteSectionNav } from '@/components/site-section-nav';
 import { StatusBadge } from '@/components/status-badge';
 import { requireUser } from '@/lib/auth';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
@@ -30,6 +31,8 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
 
   return (
     <main className="page-stack">
+      <SiteSectionNav siteId={site.id} siteName={site.name} active="overview" />
+
       <header className="site-detail-heading">
         <p className="eyebrow">Site detail</p>
         <h1>{site.name}</h1>

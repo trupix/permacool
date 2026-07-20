@@ -7929,6 +7929,10 @@ h4 {
   gap: 1.25rem;
 }
 
+.salinas-dashboard__context-grid.is-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .salinas-dashboard__panel-heading {
   justify-content: flex-start;
   margin-bottom: 1.05rem;
@@ -9203,6 +9207,50 @@ h4 {
   padding-bottom: 0.2rem;
 }
 
+.site-section-nav {
+  position: sticky;
+  top: calc(70px + 0.65rem);
+  z-index: 14;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  gap: 0.3rem;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.35rem;
+  overflow-x: auto;
+  border: 1px solid rgba(17, 44, 34, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 252, 0.9);
+  box-shadow: 0 12px 30px rgba(17, 44, 34, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.site-section-nav a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.42rem;
+  min-height: 38px;
+  padding: 0 0.78rem;
+  border-radius: 10px;
+  color: #65766e;
+  font-size: 0.7rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.site-section-nav a:hover {
+  background: #eef2eb;
+  color: var(--ops-ink);
+}
+
+.site-section-nav a.is-active {
+  background: var(--ops-deep);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(17, 44, 34, 0.13);
+}
+
 /* Salinas telemetry workspace inherits the operations system while keeping data legible. */
 .salinas-dashboard {
   --sd-ink: #10211b;
@@ -9644,6 +9692,12 @@ h4 {
 @media (max-width: 660px) {
   .app-topbar {
     min-height: 58px;
+  }
+
+  .site-section-nav {
+    top: calc(58px + 0.5rem);
+    justify-self: stretch;
+    width: 100%;
   }
 
   .ops-search-hint {
