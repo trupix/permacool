@@ -61,20 +61,48 @@ type TelemetryState = {
 
 type WeatherData = {
   locationLabel: string;
-  temperatureF: number | null;
-  humidityPercent: number | null;
-  rainChancePercent: number | null;
-  precipitationAmountIn: number | null;
-  skyCoverPercent: number | null;
-  sunlightEstimatePercent: number | null;
-  sunlightMethod: string;
-  isDaytime: boolean;
-  windSpeed: string | null;
-  windDirection: string | null;
-  condition: string | null;
-  source: string;
-  sourceUrl: string;
-  sourceUpdatedAt: string | null;
+  observation: {
+    stationId: string;
+    stationName: string;
+    temperatureF: number | null;
+    humidityPercent: number | null;
+    dewpointF: number | null;
+    windSpeedMph: number | null;
+    windGustMph: number | null;
+    windDirectionDegrees: number | null;
+    windDirectionCardinal: string | null;
+    pressureInHg: number | null;
+    precipitationLastHourIn: number | null;
+    precipitationLast3HoursIn: number | null;
+    condition: string | null;
+    observedAt: string;
+    ageMinutes: number | null;
+    isCurrent: boolean;
+    source: string;
+    sourceUrl: string;
+  };
+  forecast: {
+    temperatureF: number | null;
+    humidityPercent: number | null;
+    rainChancePercent: number | null;
+    precipitationAmountIn: number | null;
+    skyCoverPercent: number | null;
+    sunlightEstimatePercent: number | null;
+    sunlightMethod: string;
+    isDaytime: boolean;
+    windSpeed: string | null;
+    windDirection: string | null;
+    condition: string | null;
+    periodStartAt: string | null;
+    source: string;
+    sourceUrl: string;
+    sourceUpdatedAt: string | null;
+  } | null;
+  ambientFallback: {
+    temperatureF: number | null;
+    source: 'nws_observation';
+    observedAt: string;
+  };
   fetchedAt: string;
 };
 
@@ -161,7 +189,7 @@ type AssetAnalysis = {
 };
 
 const TELEMETRY_REFRESH_MS = 15_000;
-const WEATHER_REFRESH_MS = 15 * 60_000;
+const WEATHER_REFRESH_MS = 5 * 60_000;
 const SIGNAL_STALE_MS = 5 * 60_000;
 const SIGNAL_FUTURE_TOLERANCE_MS = 60_000;
 const BTU_PER_TON_HOUR = 12_000;
@@ -235,7 +263,10 @@ function signalsForChannel(
   const inletAir = resolveTelemetryPoint(scopedPoints, [
     `${prefix}_condenser_inlet_air_f`,
     `${prefix}_condenser_inlet_temp_f`,
-    `${prefix}_inlet_air_temp_f`
+    `${prefix}_inlet_air_temp_f`,
+    `${prefix}_inlet_air_temperature_f`,
+    `${prefix}_condenser_entering_air_f`,
+    `${prefix}_entering_air_temp_f`
   ]);
   const suctionSaturation = resolveTelemetryPoint(scopedPoints, [
     `${prefix}_suction_saturation_temp_f`,
@@ -421,6 +452,16 @@ function formatTimestamp(value: string | null): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return 'Not available';
   return date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+function formatObservationAge(minutes: number | null): string {
+  if (minutes === null) return 'Age unavailable';
+  if (minutes < 1) return 'Less than a minute old';
+  if (minutes === 1) return '1 minute old';
+  if (minutes < 60) return `${minutes} minutes old`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours}h${remainingMinutes ? ` ${remainingMinutes}m` : ''} old`;
 }
 
 function formatRuntimeMinutes(value: number | null): string {
@@ -722,7 +763,8 @@ export function SalinasEquipmentDashboard({
       );
       const freshInletAir = signals.inletAir?.isFresh ? signals.inletAir : null;
       const freshSuctionSaturation = signals.suctionSaturation?.isFresh ? signals.suctionSaturation : null;
-      const automaticAmbient = freshInletAir?.value ?? finiteOrNull(weather.data?.temperatureF);
+      const observedAmbient = finiteOrNull(weather.data?.ambientFallback.temperatureF);
+      const automaticAmbient = freshInletAir?.value ?? observedAmbient;
       const ambientTemperatureF =
         draft.ambientMode === 'automatic' && automaticAmbient !== null
           ? automaticAmbient
@@ -732,7 +774,7 @@ export function SalinasEquipmentDashboard({
           ? 'manual_entry'
           : freshInletAir
             ? 'condenser_entering_air_sensor'
-            : weather.data?.temperatureF !== null && weather.data?.temperatureF !== undefined
+            : observedAmbient !== null
               ? 'local_weather'
               : 'manual_entry';
       const suctionTemperatureF = freshSuctionSaturation?.value ?? draft.manualSuctionF;
@@ -750,7 +792,7 @@ export function SalinasEquipmentDashboard({
       const contributingTimestamps = [
         freshInletAir?.point.latestTimestamp,
         freshSuctionSaturation?.point.latestTimestamp,
-        !freshInletAir && ambientSource === 'local_weather' ? weather.data?.fetchedAt : undefined
+        !freshInletAir && ambientSource === 'local_weather' ? weather.data?.observation.observedAt : undefined
       ].filter((value): value is string => Boolean(value));
       const parsedTimestamps = contributingTimestamps
         .map((value) => Date.parse(value))
@@ -1197,37 +1239,89 @@ export function SalinasEquipmentDashboard({
       </section>
       ) : null}
 
-      <section className="salinas-dashboard__context-grid is-single">
+      <section className={`salinas-dashboard__context-grid${view === 'specs' ? ' is-single' : ''}`}>
         {view === 'overview' ? (
-        <article className="salinas-dashboard__panel salinas-dashboard__weather-panel">
-          <div className="salinas-dashboard__panel-heading">
-            <span className="salinas-dashboard__panel-icon"><CloudSun size={22} /></span>
-            <div>
-              <p className="eyebrow">Operating context</p>
-              <h3>Local weather</h3>
-            </div>
-            {weather.status === 'loading' ? <RefreshCw className="salinas-dashboard__spin" size={18} /> : null}
-          </div>
-          {weather.data ? (
-            <>
-              <div className="salinas-dashboard__weather-grid">
-                <MetricTile icon={<Thermometer size={18} />} label="Ambient" value={formatValue(weather.data.temperatureF, ' F')} detail={weather.data.locationLabel} />
-                <MetricTile icon={<Droplets size={18} />} label="Humidity" value={formatValue(weather.data.humidityPercent, '%')} detail="Relative humidity" />
-                <MetricTile icon={<Sun size={18} />} label="Sunlight" value={formatValue(weather.data.sunlightEstimatePercent, '%')} detail="Daylight / cloud estimate" />
-                <MetricTile icon={<CloudRain size={18} />} label="Rain chance" value={formatValue(weather.data.rainChancePercent, '%')} detail={weather.data.condition ?? 'Current forecast'} />
-                <MetricTile icon={<Wind size={18} />} label="Wind" value={weather.data.windSpeed ?? '--'} detail={weather.data.windDirection ?? 'Direction unavailable'} />
+        <>
+          <article className="salinas-dashboard__panel salinas-dashboard__weather-panel">
+            <div className="salinas-dashboard__panel-heading">
+              <span className="salinas-dashboard__panel-icon"><Thermometer size={22} /></span>
+              <div>
+                <p className="eyebrow">Latest station reading</p>
+                <h3>Observed weather</h3>
               </div>
-              <p className="salinas-dashboard__source-note">
-                {weather.data.source}. Sunlight is contextual—not measured W/m2. Updated {formatTimestamp(weather.data.sourceUpdatedAt ?? weather.data.fetchedAt)}.
-              </p>
-            </>
-          ) : (
-            <div className="salinas-dashboard__empty-panel">
-              <CircleAlert size={22} />
-              <div><strong>Weather context unavailable</strong><p>{weather.error ?? 'Waiting for the NWS feed.'}</p></div>
+              {weather.status === 'loading' ? <RefreshCw className="salinas-dashboard__spin" size={18} /> : null}
             </div>
-          )}
-        </article>
+            {weather.data ? (
+              <>
+                <div className="salinas-dashboard__weather-grid">
+                  <MetricTile icon={<Thermometer size={18} />} label="Observed temp" value={formatValue(weather.data.observation.temperatureF, ' F')} detail={weather.data.locationLabel} />
+                  <MetricTile icon={<Droplets size={18} />} label="Humidity" value={formatValue(weather.data.observation.humidityPercent, '%')} detail="Observed relative humidity" />
+                  <MetricTile icon={<Thermometer size={18} />} label="Dew point" value={formatValue(weather.data.observation.dewpointF, ' F')} detail="Observed moisture point" />
+                  <MetricTile
+                    icon={<Wind size={18} />}
+                    label="Wind"
+                    value={formatValue(weather.data.observation.windSpeedMph, ' mph', 1)}
+                    detail={`${weather.data.observation.windDirectionCardinal ?? 'Direction unavailable'}${weather.data.observation.windGustMph === null ? '' : ` / gust ${formatValue(weather.data.observation.windGustMph, ' mph', 1)}`}`}
+                  />
+                  <MetricTile
+                    icon={<CloudRain size={18} />}
+                    label={weather.data.observation.precipitationLastHourIn !== null ? 'Rain / 1 hour' : 'Rain / 3 hours'}
+                    value={formatValue(weather.data.observation.precipitationLastHourIn ?? weather.data.observation.precipitationLast3HoursIn, ' in', 2)}
+                    detail={weather.data.observation.precipitationLastHourIn === null && weather.data.observation.precipitationLast3HoursIn === null ? 'Station did not report accumulation' : 'Observed accumulation'}
+                  />
+                  <MetricTile icon={<Gauge size={18} />} label="Barometer" value={formatValue(weather.data.observation.pressureInHg, ' inHg', 2)} detail="Observed station pressure" />
+                </div>
+                <div className={`salinas-dashboard__weather-priority ${weather.data.observation.isCurrent ? 'is-current' : 'is-stale'}`}>
+                  <span><Cpu size={18} /></span>
+                  <div>
+                    <strong>Condenser ambient input priority</strong>
+                    <p>Fresh PLC inlet-air sensor first, then this NWS observation, then the manual value.</p>
+                  </div>
+                  <b>{weather.data.observation.isCurrent ? 'Fallback ready' : 'Observation stale'}</b>
+                </div>
+                <p className="salinas-dashboard__source-note">
+                  Station {weather.data.observation.stationId} · {weather.data.observation.stationName}. Observed {formatTimestamp(weather.data.observation.observedAt)} ({formatObservationAge(weather.data.observation.ageMinutes)}). Dashboard checked {formatTimestamp(weather.data.fetchedAt)}.
+                </p>
+              </>
+            ) : (
+              <div className="salinas-dashboard__empty-panel">
+                <CircleAlert size={22} />
+                <div><strong>Observed weather unavailable</strong><p>{weather.error ?? 'Waiting for the NWS station feed.'}</p></div>
+              </div>
+            )}
+          </article>
+
+          <article className="salinas-dashboard__panel salinas-dashboard__weather-panel">
+            <div className="salinas-dashboard__panel-heading">
+              <span className="salinas-dashboard__panel-icon"><CloudSun size={22} /></span>
+              <div>
+                <p className="eyebrow">Planning context</p>
+                <h3>Hourly forecast</h3>
+              </div>
+              {weather.status === 'loading' ? <RefreshCw className="salinas-dashboard__spin" size={18} /> : null}
+            </div>
+            {weather.data?.forecast ? (
+              <>
+                <div className="salinas-dashboard__weather-grid">
+                  <MetricTile icon={<Thermometer size={18} />} label="Forecast temp" value={formatValue(weather.data.forecast.temperatureF, ' F')} detail={weather.data.forecast.condition ?? 'Current forecast period'} />
+                  <MetricTile icon={<CloudRain size={18} />} label="Rain chance" value={formatValue(weather.data.forecast.rainChancePercent, '%')} detail="Probability, not observed rain" />
+                  <MetricTile icon={<CloudSun size={18} />} label="Sky cover" value={formatValue(weather.data.forecast.skyCoverPercent, '%')} detail="Forecast cloud cover" />
+                  <MetricTile icon={<Sun size={18} />} label="Sunlight estimate" value={formatValue(weather.data.forecast.sunlightEstimatePercent, '%')} detail="Daylight / cloud estimate" />
+                  <MetricTile icon={<Droplets size={18} />} label="Forecast humidity" value={formatValue(weather.data.forecast.humidityPercent, '%')} detail="Current forecast period" />
+                  <MetricTile icon={<Wind size={18} />} label="Forecast wind" value={weather.data.forecast.windSpeed ?? '--'} detail={weather.data.forecast.windDirection ?? 'Direction unavailable'} />
+                </div>
+                <p className="salinas-dashboard__source-note">
+                  NWS hourly forecast issued {formatTimestamp(weather.data.forecast.sourceUpdatedAt)}. Forecast values do not drive the condenser capacity model. Sunlight is estimated, not measured in W/m².
+                </p>
+              </>
+            ) : (
+              <div className="salinas-dashboard__empty-panel">
+                <CircleAlert size={22} />
+                <div><strong>Forecast unavailable</strong><p>{weather.error ?? 'The latest station observation remains available while the NWS forecast feed recovers.'}</p></div>
+              </div>
+            )}
+          </article>
+        </>
         ) : null}
 
         {view === 'specs' ? (
@@ -1243,7 +1337,7 @@ export function SalinasEquipmentDashboard({
             <label>
               <span>Entering-air source</span>
               <select value={draft.ambientMode} onChange={(event) => updateDraft('ambientMode', event.target.value as AmbientMode)}>
-                <option value="automatic">Sensor, then weather</option>
+                <option value="automatic">PLC inlet-air, then observed weather</option>
                 <option value="manual">Manual value</option>
               </select>
             </label>

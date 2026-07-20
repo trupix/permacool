@@ -7982,6 +7982,10 @@ h4 {
   font-size: 0.78rem;
 }
 
+.salinas-dashboard__source-note {
+  line-height: 1.55;
+}
+
 .salinas-dashboard__context-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -8081,6 +8085,60 @@ h4 {
   font-size: 0.68rem;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.salinas-dashboard__weather-priority {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid rgba(94, 215, 239, 0.14);
+  border-radius: 14px;
+  background: rgba(94, 215, 239, 0.045);
+}
+
+.salinas-dashboard__weather-priority > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(94, 215, 239, 0.1);
+  color: var(--sd-cyan);
+}
+
+.salinas-dashboard__weather-priority strong,
+.salinas-dashboard__weather-priority p {
+  display: block;
+  margin: 0;
+}
+
+.salinas-dashboard__weather-priority strong {
+  color: #edf8fa;
+  font-size: 0.76rem;
+}
+
+.salinas-dashboard__weather-priority p {
+  margin-top: 0.15rem;
+  color: #849da8;
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.salinas-dashboard__weather-priority > b {
+  padding: 0.3rem 0.48rem;
+  border-radius: 999px;
+  color: #c8f06a;
+  background: rgba(168, 220, 95, 0.1);
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
+.salinas-dashboard__weather-priority.is-stale > b {
+  color: #ffc785;
+  background: rgba(255, 171, 76, 0.1);
 }
 
 .salinas-dashboard__input-grid {
@@ -8711,6 +8769,15 @@ h4 {
 
   .salinas-dashboard__metric-tile:last-child:nth-child(odd) {
     grid-column: auto;
+  }
+
+  .salinas-dashboard__weather-priority {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .salinas-dashboard__weather-priority > b {
+    grid-column: 1 / -1;
+    justify-self: start;
   }
 
   .salinas-dashboard__readiness-list > div {
