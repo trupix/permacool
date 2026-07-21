@@ -154,6 +154,17 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     updatedBy: 'System catalog'
   },
   {
+    slug: 'operation-facility-live-refresh',
+    category: 'operation',
+    title: 'Facility live refresh',
+    signalKey: null,
+    definition: 'Each facility has one Live control that refreshes the complete site telemetry snapshot every two seconds.',
+    behavior: 'Live mode applies to every controller and condenser at the facility, prevents overlapping dashboard requests, and automatically returns to the normal 15-second interval after one hour. Dashboard-check time identifies the website request; newest-PLC-sample time identifies the latest data actually received from the controller.',
+    implementationStatus: 'deployed',
+    sortOrder: 125,
+    updatedBy: 'System catalog'
+  },
+  {
     slug: 'event-high-pressure-open',
     category: 'event',
     title: 'Open high-pressure alarm',

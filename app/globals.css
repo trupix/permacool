@@ -7851,8 +7851,7 @@ h4 {
   line-height: 1.2;
 }
 
-.salinas-dashboard__live-refresh-controls,
-.salinas-dashboard__live-buttons {
+.salinas-dashboard__live-refresh-controls {
   display: flex;
   align-items: center;
 }
@@ -7860,10 +7859,6 @@ h4 {
 .salinas-dashboard__live-refresh-controls {
   justify-content: flex-end;
   gap: 0.65rem;
-}
-
-.salinas-dashboard__live-buttons {
-  gap: 0.4rem;
 }
 
 .salinas-dashboard__live-button {
@@ -8850,7 +8845,6 @@ h4 {
     flex-direction: column;
   }
 
-  .salinas-dashboard__live-buttons,
   .salinas-dashboard__live-button,
   .salinas-dashboard__countdown {
     flex: 1 1 0;

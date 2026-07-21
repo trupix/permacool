@@ -451,11 +451,17 @@ function formatNumericRange(values: number[]): string {
   return minimum === maximum ? `${minimum}` : `${minimum}-${maximum}`;
 }
 
-function formatTimestamp(value: string | null): string {
+function formatTimestamp(value: string | null, includeSeconds = false): string {
   if (!value) return 'Not available';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return 'Not available';
-  return date.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  return date.toLocaleString([], {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    ...(includeSeconds ? { second: '2-digit' as const } : {})
+  });
 }
 
 function formatObservationAge(minutes: number | null): string {
@@ -658,10 +664,10 @@ export function SalinasEquipmentDashboard({
   });
   const [telemetryRefreshVersion, setTelemetryRefreshVersion] = useState(0);
   const [telemetryRefreshDueAt, setTelemetryRefreshDueAt] = useState<number | null>(null);
-  const [liveUntilByAssetId, setLiveUntilByAssetId] = useState<Record<string, number>>({});
+  const [facilityLiveUntil, setFacilityLiveUntil] = useState(0);
   const [weather, setWeather] = useState<WeatherState>({ status: 'loading', data: null, error: null });
   const storageKey = `permacool:equipment-draft:${siteId}`;
-  const liveTelemetryActive = Object.values(liveUntilByAssetId).some((expiresAt) => expiresAt > Date.now());
+  const liveTelemetryActive = facilityLiveUntil > Date.now();
   const telemetryRefreshIntervalMs = liveTelemetryActive
     ? LIVE_TELEMETRY_REFRESH_MS
     : DEFAULT_TELEMETRY_REFRESH_MS;
@@ -691,8 +697,11 @@ export function SalinasEquipmentDashboard({
 
   useEffect(() => {
     let mounted = true;
+    let requestInFlight = false;
 
     async function loadTelemetry() {
+      if (requestInFlight) return;
+      requestInFlight = true;
       if (mounted) setTelemetryRefreshDueAt(Date.now() + telemetryRefreshIntervalMs);
       try {
         const response = await fetch(`/api/sites/${siteId}/telemetry`, { cache: 'no-store' });
@@ -720,6 +729,8 @@ export function SalinasEquipmentDashboard({
           fetchedAt: new Date().toISOString(),
           error: error instanceof Error ? error.message : 'Telemetry unavailable.'
         }));
+      } finally {
+        requestInFlight = false;
       }
     }
 
@@ -732,18 +743,14 @@ export function SalinasEquipmentDashboard({
   }, [siteId, telemetryRefreshIntervalMs, telemetryRefreshVersion]);
 
   useEffect(() => {
-    const expirations = Object.values(liveUntilByAssetId).filter((expiresAt) => expiresAt > Date.now());
-    if (!expirations.length) return;
+    if (!liveTelemetryActive) return;
 
     const timer = window.setTimeout(() => {
-      const now = Date.now();
-      setLiveUntilByAssetId((current) =>
-        Object.fromEntries(Object.entries(current).filter(([, expiresAt]) => expiresAt > now))
-      );
-    }, Math.max(0, Math.min(...expirations) - Date.now()) + 50);
+      setFacilityLiveUntil(0);
+    }, Math.max(0, facilityLiveUntil - Date.now()) + 50);
 
     return () => window.clearTimeout(timer);
-  }, [liveUntilByAssetId]);
+  }, [facilityLiveUntil, liveTelemetryActive]);
 
   useEffect(() => {
     let mounted = true;
@@ -1010,16 +1017,10 @@ export function SalinasEquipmentDashboard({
     setTelemetryRefreshVersion((current) => current + 1);
   }
 
-  function toggleLiveTelemetry(assetId: string) {
-    setLiveUntilByAssetId((current) => {
-      if ((current[assetId] ?? 0) > Date.now()) {
-        const next = { ...current };
-        delete next[assetId];
-        return next;
-      }
-
-      return { ...current, [assetId]: Date.now() + LIVE_TELEMETRY_MAX_MS };
-    });
+  function toggleFacilityLiveTelemetry() {
+    setFacilityLiveUntil((current) =>
+      current > Date.now() ? 0 : Date.now() + LIVE_TELEMETRY_MAX_MS
+    );
   }
 
   return (
@@ -1092,8 +1093,8 @@ export function SalinasEquipmentDashboard({
             Refreshes every {telemetryRefreshIntervalMs / 1000} seconds
             {liveTelemetryActive ? ' while Live is on' : ''}
           </small>
-          <span>Newest signal: {formatTimestamp(newestMappedSignalTimestamp)}</span>
-          <span>Feed check: {formatTimestamp(telemetry.fetchedAt)}</span>
+          <span>Newest PLC sample: {formatTimestamp(newestMappedSignalTimestamp, true)}</span>
+          <span>Dashboard check: {formatTimestamp(telemetry.fetchedAt, true)}</span>
         </div>
       </section>
 
@@ -1444,26 +1445,22 @@ export function SalinasEquipmentDashboard({
             <h2>CH1 and CH2 condenser performance</h2>
           </div>
           <div className="salinas-dashboard__live-refresh-controls">
-            <div className="salinas-dashboard__live-buttons" aria-label="Per-condenser live telemetry controls">
-              {analyses.map((analysis, index) => {
-                const active = (liveUntilByAssetId[analysis.asset.assetId] ?? 0) > Date.now();
-                return (
-                  <button
-                    key={analysis.asset.assetId}
-                    type="button"
-                    className={`salinas-dashboard__live-button${active ? ' is-live' : ''}`}
-                    onClick={() => toggleLiveTelemetry(analysis.asset.assetId)}
-                    aria-pressed={active}
-                    aria-label={`${active ? 'Turn off' : 'Turn on'} live telemetry for CH${index + 1}`}
-                    title={active ? 'Live telemetry is on and will turn off automatically within one hour.' : `Turn on 2-second telemetry for CH${index + 1}.`}
-                  >
-                    <small>CH{index + 1}</small>
-                    <Mic size={14} aria-hidden="true" />
-                    <span>Live</span>
-                  </button>
-                );
-              })}
-            </div>
+            <button
+              type="button"
+              className={`salinas-dashboard__live-button${liveTelemetryActive ? ' is-live' : ''}`}
+              onClick={toggleFacilityLiveTelemetry}
+              aria-pressed={liveTelemetryActive}
+              aria-label={`${liveTelemetryActive ? 'Turn off' : 'Turn on'} live telemetry for the facility`}
+              title={
+                liveTelemetryActive
+                  ? 'Facility live telemetry is on and will turn off automatically within one hour.'
+                  : 'Refresh all facility telemetry every 2 seconds.'
+              }
+            >
+              <small>Facility</small>
+              <Mic size={14} aria-hidden="true" />
+              <span>Live</span>
+            </button>
             <TelemetryRefreshCountdown
               dueAt={telemetryRefreshDueAt}
               intervalMs={telemetryRefreshIntervalMs}
