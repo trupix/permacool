@@ -15,14 +15,22 @@ export const users: AppUser[] = [
     name: 'Jose Perez',
     email: 'jose@perma.cool',
     role: 'owner',
-    organizationIds: ['org-permacool']
+    platformRole: 'staff_admin',
+    status: 'approved',
+    organizationIds: ['org-permacool'],
+    allDeviceOrganizationIds: ['org-permacool'],
+    deviceIds: []
   },
   {
     id: 'user-ops-1',
     name: 'Maya Chen',
     email: 'maya@perma.cool',
     role: 'operator',
-    organizationIds: ['org-permacool']
+    platformRole: 'staff_support',
+    status: 'approved',
+    organizationIds: ['org-permacool'],
+    allDeviceOrganizationIds: ['org-permacool'],
+    deviceIds: []
   }
 ];
 

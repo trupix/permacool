@@ -2,7 +2,11 @@ require('dotenv').config({ path: '.env.local', quiet: true });
 
 const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
 const endpoint = `${appUrl}/api/ingest/telemetry`;
-const token = process.env.TELEMETRY_INGEST_TOKEN || 'change-me';
+const token = process.env.TELEMETRY_INGEST_TOKEN;
+
+if (!token) {
+  throw new Error('TELEMETRY_INGEST_TOKEN is required.');
+}
 const siteId = process.env.TEST_SITE_ID || 'site-salinas';
 const deviceId = process.env.TEST_DEVICE_ID || 'epic-mvp-01';
 const now = new Date();

@@ -1,0 +1,516 @@
+[
+  {
+    "id": "permacool-telemetry-tab",
+    "type": "tab",
+    "label": "PermaCool Telemetry",
+    "disabled": false,
+    "info": "Read-only CH1/CH2 telemetry for the Salinas groov EPIC. The interval is disabled until a one-shot endpoint test succeeds."
+  },
+  {
+    "id": "permacool-pac-device",
+    "type": "pac-device",
+    "z": "",
+    "address": "localhost",
+    "protocol": "https",
+    "name": "Local groov EPIC (read-only)"
+  },
+  {
+    "id": "permacool-flow-notes",
+    "type": "comment",
+    "z": "permacool-telemetry-tab",
+    "name": "Setup notes",
+    "info": "SAFETY: This flow contains only pac-read nodes; do not add pac-write nodes. Configure the Local groov EPIC device with the read-only perma.cool API key. Set TELEMETRY_INGEST_TOKEN as a Node-RED environment variable. Deploy with the interval disabled, trigger once manually, verify HTTP 2xx, then enable the 15-second interval.",
+    "x": 250,
+    "y": 60,
+    "wires": []
+  },
+  {
+    "id": "permacool-interval",
+    "type": "inject",
+    "z": "permacool-telemetry-tab",
+    "d": true,
+    "name": "Send every 15 seconds (enable after test)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "15",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 230,
+    "y": 130,
+    "wires": [
+      [
+        "permacool-read-01"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-01",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH1_Temperature",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_temperature_c",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Temperature",
+    "x": 220,
+    "y": 210,
+    "wires": [
+      [
+        "permacool-read-02"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-02",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH1_TemperatureSetpointC_pstv",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_setpoint_c",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Setpoint",
+    "x": 470,
+    "y": 210,
+    "wires": [
+      [
+        "permacool-read-03"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-03",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH1_HighPressure",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_high_pressure",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 High Pressure",
+    "x": 720,
+    "y": 210,
+    "wires": [
+      [
+        "permacool-read-04"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-04",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH1_LowPressure",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_low_pressure",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Low Pressure",
+    "x": 970,
+    "y": 210,
+    "wires": [
+      [
+        "permacool-read-05"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-05",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int32-variable",
+    "tagName": "CH1_ChillerRun",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_chiller_run",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Chiller Run",
+    "x": 220,
+    "y": 280,
+    "wires": [
+      [
+        "permacool-read-06"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-06",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int32-variable",
+    "tagName": "CH1_SystemOn",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_system_on",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 System On",
+    "x": 470,
+    "y": 280,
+    "wires": [
+      [
+        "permacool-read-07"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-07",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int32-variable",
+    "tagName": "CH1_HighPressureStop",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_high_pressure_stop",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 High Pressure Stop",
+    "x": 720,
+    "y": 280,
+    "wires": [
+      [
+        "permacool-read-08"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-08",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int64-variable",
+    "tagName": "CH1_CompressorTotalRunTimeMin",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_compressor_runtime_min",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Runtime Minutes",
+    "x": 970,
+    "y": 280,
+    "wires": [
+      [
+        "permacool-read-09"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-09",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH2_Temperature",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch2_temperature_c",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH2 Temperature",
+    "x": 220,
+    "y": 350,
+    "wires": [
+      [
+        "permacool-read-10"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-10",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH2_TemperatureSetpointC_pstv",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch2_setpoint_c",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH2 Setpoint",
+    "x": 470,
+    "y": 350,
+    "wires": [
+      [
+        "permacool-read-11"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-11",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH2_HighPressure",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch2_high_pressure",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH2 High Pressure",
+    "x": 720,
+    "y": 350,
+    "wires": [
+      [
+        "permacool-read-12"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-12",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH2_LowPressure",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch2_low_pressure",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH2 Low Pressure",
+    "x": 970,
+    "y": 350,
+    "wires": [
+      [
+        "permacool-read-13"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-13",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int32-variable",
+    "tagName": "CH2_ChillerRun",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch2_chiller_run",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH2 Chiller Run",
+    "x": 220,
+    "y": 420,
+    "wires": [
+      [
+        "permacool-read-14"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-14",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int32-variable",
+    "tagName": "CH2_SystemOn",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch2_system_on",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH2 System On",
+    "x": 470,
+    "y": 420,
+    "wires": [
+      [
+        "permacool-read-15"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-15",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int32-variable",
+    "tagName": "CH2_HighPressureStop",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch2_high_pressure_stop",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH2 High Pressure Stop",
+    "x": 720,
+    "y": 420,
+    "wires": [
+      [
+        "permacool-read-16"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-16",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int64-variable",
+    "tagName": "CH2_CompressorTotalRunTimeMin",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch2_compressor_runtime_min",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH2 Runtime Minutes",
+    "x": 970,
+    "y": 420,
+    "wires": [
+      [
+        "permacool-build-request"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-build-request",
+    "type": "function",
+    "z": "permacool-telemetry-tab",
+    "name": "Validate and build telemetry request",
+    "func": "const token = env.get('TELEMETRY_INGEST_TOKEN');\nif (!token) {\n    node.error('TELEMETRY_INGEST_TOKEN is required', msg);\n    return null;\n}\n\nconst values = msg.permacoolValues || {};\nconst definitions = [\n    ['ch1_temperature_c', '°C'],\n    ['ch1_setpoint_c', '°C'],\n    ['ch1_high_pressure', 'psi'],\n    ['ch1_low_pressure', 'psi'],\n    ['ch1_chiller_run', 'bool'],\n    ['ch1_system_on', 'bool'],\n    ['ch1_high_pressure_stop', 'bool'],\n    ['ch1_compressor_runtime_min', 'min'],\n    ['ch2_temperature_c', '°C'],\n    ['ch2_setpoint_c', '°C'],\n    ['ch2_high_pressure', 'psi'],\n    ['ch2_low_pressure', 'psi'],\n    ['ch2_chiller_run', 'bool'],\n    ['ch2_system_on', 'bool'],\n    ['ch2_high_pressure_stop', 'bool'],\n    ['ch2_compressor_runtime_min', 'min']\n];\n\nconst points = definitions\n    .map(([key, unit]) => ({ key, value: Number(values[key]), unit }))\n    .filter((point) => Number.isFinite(point.value));\n\nif (points.length !== definitions.length) {\n    node.error(`Expected ${definitions.length} numeric PAC values but received ${points.length}; telemetry was not sent`, msg);\n    return null;\n}\n\nmsg.method = 'POST';\nmsg.url = 'https://www.perma.cool/api/ingest/telemetry';\nmsg.headers = {\n    'content-type': 'application/json',\n    'x-telemetry-token': token\n};\nmsg.payload = {\n    gatewayId: env.get('PERMACOOL_GATEWAY_ID') || 'groov-epic-01',\n    siteId: env.get('PERMACOOL_SITE_ID') || 'site-salinas',\n    deviceId: env.get('PERMACOOL_DEVICE_ID') || 'epic-mvp-01',\n    capturedAt: new Date().toISOString(),\n    points\n};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1210,
+    "y": 420,
+    "wires": [
+      [
+        "permacool-http-request"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-http-request",
+    "type": "http request",
+    "z": "permacool-telemetry-tab",
+    "name": "POST to PermaCool",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 1470,
+    "y": 420,
+    "wires": [
+      [
+        "permacool-response-switch"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-response-switch",
+    "type": "switch",
+    "z": "permacool-telemetry-tab",
+    "name": "HTTP 2xx?",
+    "property": "statusCode",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "btwn",
+        "v": "200",
+        "vt": "num",
+        "v2": "299",
+        "v2t": "num"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 2,
+    "x": 1690,
+    "y": 420,
+    "wires": [
+      [
+        "permacool-success-debug"
+      ],
+      [
+        "permacool-error-debug"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-success-debug",
+    "type": "debug",
+    "z": "permacool-telemetry-tab",
+    "name": "PermaCool accepted",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1910,
+    "y": 390,
+    "wires": []
+  },
+  {
+    "id": "permacool-error-debug",
+    "type": "debug",
+    "z": "permacool-telemetry-tab",
+    "name": "PermaCool error",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1900,
+    "y": 460,
+    "wires": []
+  }
+]

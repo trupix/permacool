@@ -7,8 +7,10 @@ import {
   buildSavedPayload,
   fetchIdentity
 } from '../_shared'
+import { isFreshbooksAdmin } from '../_auth'
 
 export async function POST(req) {
+  if (!(await isFreshbooksAdmin())) return NextResponse.json({ error: 'forbidden' }, { status: 403 })
   try {
     assertFreshbooksEnv()
   } catch {

@@ -6,25 +6,28 @@ import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashbo
 import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { StatusBadge } from '@/components/status-badge';
+import { SiteTelemetryPanel } from '@/components/site-telemetry-panel';
 import { requireUser } from '@/lib/auth';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
-import { getDevicesBySite } from '@/server/repositories/devices';
+import { getDeviceTelemetry, getDevicesBySite } from '@/server/repositories/devices';
 import { getSiteEquipmentEvents } from '@/server/repositories/equipment-events';
 import { getSite, getSiteAlerts } from '@/server/repositories/sites';
 
 export default async function SiteDetailPage({ params }: { params: Promise<{ siteid: string }> }) {
   const { siteid: siteId } = await params;
   const user = await requireUser();
-  const site = await getSite(siteId);
+  const site = await getSite(user, siteId);
 
   if (!site) notFound();
-  if (!user.organizationIds.includes(site.organizationId)) notFound();
 
   const [siteDevices, siteAlerts, siteEvents] = await Promise.all([
-    getDevicesBySite(site.id),
-    getSiteAlerts(site.id),
+    getDevicesBySite(user, site.id),
+    getSiteAlerts(user, site.id),
     getSiteEquipmentEvents(site.id, { limit: 5 })
   ]);
+  const telemetryByDevice = await Promise.all(
+    siteDevices.map(async (device) => ({ device, points: await getDeviceTelemetry(user, device.id) }))
+  );
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
@@ -102,6 +105,13 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
           </div>
         </SectionCard>
       </div>
+
+      <SiteTelemetryPanel
+        siteId={site.id}
+        initialPoints={telemetryByDevice.flatMap(({ device, points }) =>
+          points.map((point) => ({ ...point, deviceName: device.name }))
+        )}
+      />
     </main>
   );
 }

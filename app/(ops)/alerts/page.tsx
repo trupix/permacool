@@ -1,9 +1,11 @@
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
 import { getAlerts } from '@/server/repositories/alerts';
+import { requireUser } from '@/lib/auth';
 
 export default async function AlertsPage() {
-  const alerts = await getAlerts();
+  const user = await requireUser();
+  const alerts = await getAlerts(user);
   return (
     <main className="page-stack">
       <header>

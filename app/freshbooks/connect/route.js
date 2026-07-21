@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import { AUTH_URL, CLIENT_ID, REDIRECT_URI, assertFreshbooksEnv, randomToken } from '../_shared'
+import { isFreshbooksAdmin } from '../_auth'
 
 export async function GET(req) {
+  if (!(await isFreshbooksAdmin())) return new NextResponse('Forbidden', { status: 403 })
   try {
     assertFreshbooksEnv()
   } catch {

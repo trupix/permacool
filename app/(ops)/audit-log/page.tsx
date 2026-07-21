@@ -1,8 +1,10 @@
 import { SectionCard } from '@/components/section-card';
 import { getAuditLogEntries } from '@/server/repositories/audit-log';
+import { requireStaff } from '@/lib/auth';
 
 export default async function AuditLogPage() {
-  const auditLog = await getAuditLogEntries();
+  const staff = await requireStaff();
+  const auditLog = await getAuditLogEntries(staff);
   return (
     <main className="page-stack">
       <header>

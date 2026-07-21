@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
-import { env, hasDatabaseUrl, isSupabaseAuthEnabled } from '@/lib/env';
+import { env, isSupabaseAuthEnabled, hasDatabaseUrl } from '@/lib/env';
 import { currentUser } from '@/lib/mock-data';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { AppUser } from '@/types/domain';
@@ -25,68 +25,34 @@ export async function getCurrentUser(): Promise<AppUser | undefined> {
     email ||
     'PermaCool user';
 
-  if (!hasDatabaseUrl()) {
-    return {
-      ...currentUser,
-      id: supabaseUser.id,
-      name,
-      email: email || currentUser.email
-    };
-  }
+  if (!hasDatabaseUrl() || !email) return undefined;
 
-  const defaultOrganization = await db.organization.upsert({
-    where: { id: env.defaultOrganizationId },
-    update: {},
-    create: {
-      id: env.defaultOrganizationId,
-      name: 'PermaCool Operations',
-      status: 'active'
-    }
+  const existingUser = await db.user.findUnique({
+    where: { email },
+    include: { memberships: true, deviceAccess: true }
   });
 
-  const existingUser = email ? await db.user.findUnique({ where: { email }, include: { memberships: true } }) : null;
+  if (!existingUser || existingUser.status !== 'approved') return undefined;
+  if (existingUser.platformRole === 'customer' && existingUser.memberships.length === 0) return undefined;
 
-  const user = existingUser
-    ? await db.user.update({
-        where: { id: existingUser.id },
-        data: { name },
-        include: { memberships: true }
-      })
-    : await db.user.create({
-        data: {
-          id: supabaseUser.id,
-          email,
-          name,
-          role: 'viewer',
-          memberships: {
-            create: { organizationId: defaultOrganization.id }
-          }
-        },
-        include: { memberships: true }
-      });
-
-  const organizationIds = user.memberships.map((membership) => membership.organizationId);
-
-  if (!organizationIds.includes(defaultOrganization.id)) {
-    await db.userOrganization.upsert({
-      where: {
-        userId_organizationId: {
-          userId: user.id,
-          organizationId: defaultOrganization.id
-        }
-      },
-      update: {},
-      create: { userId: user.id, organizationId: defaultOrganization.id }
-    });
-    organizationIds.push(defaultOrganization.id);
-  }
+  const user = await db.user.update({
+    where: { id: existingUser.id },
+    data: { name },
+    include: { memberships: true, deviceAccess: true }
+  });
 
   return {
     id: user.id,
     name: user.name,
     email: user.email,
     role: user.role,
-    organizationIds
+    platformRole: user.platformRole,
+    status: user.status,
+    organizationIds: user.memberships.map((membership) => membership.organizationId),
+    allDeviceOrganizationIds: user.memberships
+      .filter((membership) => membership.allDevices)
+      .map((membership) => membership.organizationId),
+    deviceIds: user.deviceAccess.map((assignment) => assignment.deviceId)
   };
 }
 
@@ -95,6 +61,20 @@ export async function requireUser() {
 
   if (!user) {
     redirect('/sign-in');
+  }
+
+  return user;
+}
+
+export function isStaff(user: AppUser) {
+  return user.platformRole === 'staff_admin' || user.platformRole === 'staff_support';
+}
+
+export async function requireStaff(roles: Array<AppUser['platformRole']> = ['staff_admin', 'staff_support']) {
+  const user = await requireUser();
+
+  if (!roles.includes(user.platformRole)) {
+    redirect('/dashboard');
   }
 
   return user;

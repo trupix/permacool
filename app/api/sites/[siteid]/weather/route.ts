@@ -163,14 +163,10 @@ export async function GET(
     return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
   }
 
-  const site = await getSite(siteid);
+  const site = await getSite(user, siteid);
 
   if (!site) {
     return NextResponse.json({ error: 'Site not found.' }, { status: 404 });
-  }
-
-  if (!user.organizationIds.includes(site.organizationId)) {
-    return NextResponse.json({ error: 'Site access denied.' }, { status: 403 });
   }
 
   if (site.id !== 'site-salinas') {

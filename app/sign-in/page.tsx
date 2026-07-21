@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { sendMagicLink, signOut } from './actions';
+import { requestAccess, sendMagicLink, signOut } from './actions';
 import { getAuthStatus } from '@/lib/auth';
 import { isSupabaseAuthEnabled } from '@/lib/env';
 
@@ -15,7 +15,7 @@ export const metadata = {
 function statusMessage(status?: string) {
   switch (status) {
     case 'check-email':
-      return 'Magic link sent. Check the inbox for the sign-in link.';
+      return 'If this email is approved, a sign-in link will arrive shortly. New customers can request access below.';
     case 'missing-email':
       return 'Enter an email address to request a magic link.';
     case 'auth-error':
@@ -26,6 +26,10 @@ function statusMessage(status?: string) {
       return 'Signed out.';
     case 'mock-fallback':
       return 'Supabase auth is not configured, so the app is using local fallback mode.';
+    case 'request-received':
+      return 'Your access request was received. PermaCool will verify your company and equipment assignment before enabling sign-in.';
+    case 'missing-registration':
+      return 'Name, company, and work email are required to request access.';
     default:
       return undefined;
   }
@@ -49,16 +53,32 @@ export default async function SignInPage({ searchParams }: { searchParams: Promi
         {message ? <p className="auth-callout">{message}</p> : null}
 
         {isSupabaseAuthEnabled() ? (
-          <form action={sendMagicLink} className="auth-form">
-            <input type="hidden" name="next" value={next} />
-            <label>
-              Email
-              <input name="email" type="email" placeholder="operator@perma.cool" required />
-            </label>
-            <button className="button-primary" type="submit">
-              Send magic link
-            </button>
-          </form>
+          <div className="content-grid">
+            <section>
+              <h2>Sign in</h2>
+              <form action={sendMagicLink} className="auth-form">
+                <input type="hidden" name="next" value={next} />
+                <label>
+                  Email
+                  <input name="email" type="email" placeholder="operator@company.com" required />
+                </label>
+                <button className="button-primary" type="submit">Send magic link</button>
+              </form>
+            </section>
+            <section>
+              <h2>Request customer access</h2>
+              <form action={requestAccess} className="auth-form">
+                <label>Name<input name="name" required /></label>
+                <label>Work email<input name="email" type="email" required /></label>
+                <label>Company<input name="companyName" required /></label>
+                <label>
+                  Site or machine information
+                  <input name="accessNote" placeholder="Location, model, or serial number" />
+                </label>
+                <button className="button-secondary" type="submit">Request access</button>
+              </form>
+            </section>
+          </div>
         ) : (
           <div className="auth-callout">
             <strong>Fallback mode active</strong>

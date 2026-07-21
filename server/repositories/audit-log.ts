@@ -2,8 +2,10 @@ import { db } from '@/lib/db';
 import { auditLog } from '@/lib/mock-data';
 import type { AuditLogEntry } from '@/types/domain';
 import { shouldUseDatabase } from './shared';
+import { isStaffScope, type AccessScope } from '@/lib/access';
 
-export async function getAuditLogEntries(): Promise<AuditLogEntry[]> {
+export async function getAuditLogEntries(scope: AccessScope): Promise<AuditLogEntry[]> {
+  if (!isStaffScope(scope)) throw new Error('Forbidden');
   if (!shouldUseDatabase()) return auditLog;
 
   const rows = await db.auditLog.findMany({

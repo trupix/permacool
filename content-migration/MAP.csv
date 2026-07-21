@@ -1,0 +1,12 @@
+old_url,current_new_url,action,status,notes
+https://perma.cool/contact-us/,https://perma.cool/contact-us,keep+enhance,migrated,Core commercial page present in rebuild
+https://perma.cool/ethanol-chilling-systems/,https://perma.cool/ethanol-chilling-systems,keep+enhance,migrated,Core commercial page present in rebuild
+https://perma.cool/walk-in-freezers/,https://perma.cool/,redirect_301,implemented_html_redirect,Freezers discontinued per owner instruction
+https://perma.cool/butane-recovery-systems/,https://perma.cool/butane-recovery-system,redirect_or_alias,pending,Legacy plural slug should redirect to singular canonical
+https://perma.cool/terms-and-conditions/,https://perma.cool/terms-and-conditions,mirror_or_host_local,pending,Currently linked externally in footer
+https://perma.cool/privacy-policy/,https://perma.cool/privacy-policy,mirror_or_host_local,pending,Currently linked externally in footer
+https://perma.cool/become-a-permacool-wholesaler/,TBD,new_page_or_retire,pending,Legacy partner channel page not yet rebuilt
+https://perma.cool/ethanol-chiller-blast-150/,https://perma.cool/ethanol-chiller-blast-150,keep+enhance,migrated,Product page present in rebuild
+https://perma.cool/ethanol-chillers-direct-refrigerant-chilling-systems/,https://perma.cool/ethanol-chillers-direct-refrigerant-chilling-systems,keep_alias,migrated,Legacy page alias created
+https://perma.cool/blast-60-25/,TBD,new_page_or_redirect,pending,Legacy product page not rebuilt yet
+https://perma.cool/dewax-cutsheet/,TBD,new_page_or_asset,pending,Legacy cutsheet page not rebuilt yet

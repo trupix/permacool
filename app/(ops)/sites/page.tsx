@@ -3,9 +3,11 @@ import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
 import { getOrganizations } from '@/server/repositories/organizations';
 import { getSites } from '@/server/repositories/sites';
+import { requireUser } from '@/lib/auth';
 
 export default async function SitesPage() {
-  const [organizations, sites] = await Promise.all([getOrganizations(), getSites()]);
+  const user = await requireUser();
+  const [organizations, sites] = await Promise.all([getOrganizations(user), getSites(user)]);
   return (
     <main className="page-stack">
       <header>

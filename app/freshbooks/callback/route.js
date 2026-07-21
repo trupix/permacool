@@ -10,8 +10,10 @@ import {
   randomToken,
   toB64
 } from '../_shared'
+import { isFreshbooksAdmin } from '../_auth'
 
 export async function GET(req) {
+  if (!(await isFreshbooksAdmin())) return new NextResponse('Forbidden', { status: 403 })
   const url = new URL(req.url)
   const code = url.searchParams.get('code')
   const state = url.searchParams.get('state')
@@ -71,7 +73,7 @@ export async function GET(req) {
   const viewKey = randomToken(18)
   const payload = toB64(saved)
 
-  const successUrl = new URL(`/freshbooks/success?token=1&identity=${identityOk}&view=${viewKey}&data=${encodeURIComponent(payload)}`, url.origin)
+  const successUrl = new URL(`/freshbooks/success?token=1&identity=${identityOk}&view=${viewKey}`, url.origin)
   const res = NextResponse.redirect(successUrl)
 
   res.cookies.set('fb_oauth_state', '', { path: '/', maxAge: 0 })

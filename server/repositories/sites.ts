@@ -2,11 +2,21 @@ import { db } from '@/lib/db';
 import { getAlertsForSite, getDevicesForSite, getSiteById, sites } from '@/lib/mock-data';
 import type { Alert, Site } from '@/types/domain';
 import { shouldUseDatabase } from './shared';
+import { alertWhere, deviceWhere, isStaffScope, siteWhere, type AccessScope } from '@/lib/access';
 
-export async function getSites(): Promise<Site[]> {
-  if (!shouldUseDatabase()) return sites;
+function filterMockSites(scope: AccessScope) {
+  if (isStaffScope(scope)) return sites;
+  return sites.filter((site) =>
+    scope.allDeviceOrganizationIds.includes(site.organizationId) ||
+    getDevicesForSite(site.id).some((device) => scope.deviceIds.includes(device.id))
+  );
+}
+
+export async function getSites(scope: AccessScope): Promise<Site[]> {
+  if (!shouldUseDatabase()) return filterMockSites(scope);
 
   const rows = await db.site.findMany({
+    where: siteWhere(scope),
     include: { devices: { select: { id: true } } },
     orderBy: { name: 'asc' }
   });
@@ -22,11 +32,11 @@ export async function getSites(): Promise<Site[]> {
   }));
 }
 
-export async function getSite(siteId: string): Promise<Site | undefined> {
-  if (!shouldUseDatabase()) return getSiteById(siteId);
+export async function getSite(scope: AccessScope, siteId: string): Promise<Site | undefined> {
+  if (!shouldUseDatabase()) return filterMockSites(scope).find((site) => site.id === siteId);
 
-  const row = await db.site.findUnique({
-    where: { id: siteId },
+  const row = await db.site.findFirst({
+    where: { AND: [{ id: siteId }, siteWhere(scope)] },
     include: { devices: { select: { id: true } } }
   });
 
@@ -43,11 +53,18 @@ export async function getSite(siteId: string): Promise<Site | undefined> {
   };
 }
 
-export async function getSiteAlerts(siteId: string): Promise<Alert[]> {
-  if (!shouldUseDatabase()) return getAlertsForSite(siteId);
+export async function getSiteAlerts(scope: AccessScope, siteId: string): Promise<Alert[]> {
+  if (!shouldUseDatabase()) {
+    const allowedDeviceIds = isStaffScope(scope)
+      ? undefined
+      : new Set(getDevicesForSite(siteId).filter((device) => scope.allDeviceOrganizationIds.includes(
+          sites.find((site) => site.id === siteId)?.organizationId ?? ''
+        ) || scope.deviceIds.includes(device.id)).map((device) => device.id));
+    return getAlertsForSite(siteId).filter((alert) => !allowedDeviceIds || allowedDeviceIds.has(alert.deviceId));
+  }
 
   const rows = await db.alert.findMany({
-    where: { siteId },
+    where: { AND: [{ siteId }, alertWhere(scope)] },
     orderBy: { startedAt: 'desc' }
   });
 
@@ -62,13 +79,17 @@ export async function getSiteAlerts(siteId: string): Promise<Alert[]> {
   }));
 }
 
-export async function getSiteIds(): Promise<string[]> {
-  if (!shouldUseDatabase()) return sites.map((site) => site.id);
-  const rows = await db.site.findMany({ select: { id: true } });
+export async function getSiteIds(scope: AccessScope): Promise<string[]> {
+  if (!shouldUseDatabase()) return filterMockSites(scope).map((site) => site.id);
+  const rows = await db.site.findMany({ where: siteWhere(scope), select: { id: true } });
   return rows.map((row) => row.id);
 }
 
-export async function getSiteDeviceCount(siteId: string): Promise<number> {
-  if (!shouldUseDatabase()) return getDevicesForSite(siteId).length;
-  return db.device.count({ where: { siteId } });
+export async function getSiteDeviceCount(scope: AccessScope, siteId: string): Promise<number> {
+  if (!shouldUseDatabase()) {
+    const organizationId = sites.find((site) => site.id === siteId)?.organizationId ?? '';
+    return getDevicesForSite(siteId).filter((device) => isStaffScope(scope) ||
+      scope.allDeviceOrganizationIds.includes(organizationId) || scope.deviceIds.includes(device.id)).length;
+  }
+  return db.device.count({ where: { AND: [{ siteId }, deviceWhere(scope)] } });
 }

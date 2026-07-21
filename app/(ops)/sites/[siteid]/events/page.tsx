@@ -17,8 +17,8 @@ export default async function SiteEventsPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const [{ siteid: siteId }, query, user] = await Promise.all([params, searchParams, requireUser()]);
-  const site = await getSite(siteId);
-  if (!site || !user.organizationIds.includes(site.organizationId)) notFound();
+  const site = await getSite(user, siteId);
+  if (!site) notFound();
 
   const pageNumber = Math.max(Number.parseInt(query.page ?? '1', 10) || 1, 1);
   const eventPage = await getSiteEquipmentEvents(site.id, {

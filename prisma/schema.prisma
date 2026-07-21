@@ -36,12 +36,54 @@ enum UserRole {
   viewer
 }
 
+enum PlatformRole {
+  customer
+  staff_support
+  staff_admin
+}
+
+enum UserStatus {
+  pending
+  approved
+  rejected
+  suspended
+}
+
+enum MembershipRole {
+  customer_admin
+  operator
+  viewer
+}
+
+enum SupportTicketStatus {
+  open
+  in_progress
+  waiting_on_customer
+  resolved
+  closed
+}
+
+enum DocumentCategory {
+  manual
+  cutsheet
+  wiring
+  service
+  other
+}
+
 model User {
   id              String             @id @default(cuid())
   email           String             @unique
   name            String
   role            UserRole
+  platformRole    PlatformRole       @default(customer)
+  status          UserStatus         @default(approved)
+  companyName     String?
+  accessNote      String?
+  approvedAt      DateTime?
+  approvedById    String?
   memberships     UserOrganization[]
+  deviceAccess    UserDeviceAccess[]
   auditLogEntries AuditLog[]         @relation("AuditActor")
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
@@ -58,48 +100,52 @@ model Organization {
 }
 
 model UserOrganization {
-  id             String       @id @default(cuid())
+  id             String         @id @default(cuid())
   userId         String
   organizationId String
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role           MembershipRole @default(viewer)
+  allDevices     Boolean        @default(true)
 
   @@unique([userId, organizationId])
 }
 
 model Site {
-  id              String           @id @default(cuid())
-  organizationId  String
-  name            String
-  region          String
-  timezone        String
-  gatewayStatus   DeviceStatus     @default(online)
-  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  devices         Device[]
-  alerts          Alert[]
-  equipmentEvents EquipmentEvent[]
+  id                  String                   @id @default(cuid())
+  organizationId      String
+  name                String
+  region              String
+  timezone            String
+  gatewayStatus       DeviceStatus             @default(online)
+  organization        Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  devices             Device[]
+  alerts              Alert[]
+  equipmentEvents     EquipmentEvent[]
   provisioningDetails SiteProvisioningDetails?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
 }
 
 model Device {
-  id              String           @id @default(cuid())
-  siteId          String
-  name            String
-  plcModel        String
-  protocol        String
-  serialNumber    String?
-  status          DeviceStatus     @default(online)
-  firmwareVersion String?
-  lastSeenAt      DateTime?
-  site            Site             @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  telemetryPoints TelemetryPoint[]
-  alerts          Alert[]
-  equipmentEvents EquipmentEvent[]
+  id               String             @id @default(cuid())
+  siteId           String
+  name             String
+  plcModel         String
+  protocol         String
+  serialNumber     String?
+  status           DeviceStatus       @default(online)
+  firmwareVersion  String?
+  lastSeenAt       DateTime?
+  site             Site               @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  telemetryPoints  TelemetryPoint[]
+  telemetrySamples TelemetrySample[]
+  userAccess       UserDeviceAccess[]
+  alerts           Alert[]
+  equipmentEvents  EquipmentEvent[]
   vpnEnrollment    VpnEnrollment?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 }
 
 model SiteProvisioningDetails {
@@ -115,18 +161,18 @@ model SiteProvisioningDetails {
 }
 
 model VpnEnrollment {
-  id                  String   @id @default(cuid())
-  deviceId            String   @unique
-  identity            String   @unique
-  tunnelIp             String?  @unique
+  id                   String    @id @default(cuid())
+  deviceId             String    @unique
+  identity             String    @unique
+  tunnelIp             String?   @unique
   localIpAddress       String?
-  profileStatus        String   @default("not_generated")
+  profileStatus        String    @default("not_generated")
   vpnServerHost        String?
-  lastProfileIssuedAt DateTime?
+  lastProfileIssuedAt  DateTime?
   lastProfileRevokedAt DateTime?
-  device               Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  device               Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 }
 
 model TelemetryPoint {
@@ -142,6 +188,31 @@ model TelemetryPoint {
   updatedAt       DateTime @updatedAt
 
   @@unique([deviceId, key])
+}
+
+model UserDeviceAccess {
+  id       String @id @default(cuid())
+  userId   String
+  deviceId String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device   Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceId])
+  @@index([deviceId])
+}
+
+model TelemetrySample {
+  id         String   @id @default(cuid())
+  deviceId   String
+  key        String
+  value      Float
+  unit       String
+  capturedAt DateTime
+  receivedAt DateTime @default(now())
+  device     Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId, capturedAt(sort: Desc)])
+  @@index([deviceId, key, capturedAt(sort: Desc)])
 }
 
 model Alert {
@@ -210,4 +281,53 @@ model AuditLog {
   metadata    Json?
   actor       User     @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
+}
+
+model SupportTicket {
+  id             String              @id @default(cuid())
+  organizationId String
+  siteId         String?
+  deviceId       String?
+  createdById    String
+  subject        String
+  description    String
+  status         SupportTicketStatus @default(open)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([deviceId])
+}
+
+model PortalDocument {
+  id             String           @id @default(cuid())
+  title          String
+  category       DocumentCategory
+  url            String
+  organizationId String?
+  siteId         String?
+  deviceId       String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([organizationId])
+  @@index([deviceId])
+}
+
+model InvoiceReference {
+  id                  String    @id @default(cuid())
+  organizationId      String
+  freshbooksInvoiceId String    @unique
+  invoiceNumber       String
+  status              String
+  amount              Float
+  currency            String    @default("USD")
+  issuedAt            DateTime
+  dueAt               DateTime?
+  hostedUrl           String?
+  lastSyncedAt        DateTime  @default(now())
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([organizationId, issuedAt(sort: Desc)])
 }

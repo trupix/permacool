@@ -5,6 +5,7 @@ import { StatusBadge } from '@/components/status-badge';
 import { env } from '@/lib/env';
 import { getDevices } from '@/server/repositories/devices';
 import type { TelemetryIngestPayload } from '@/types/domain';
+import { requireStaff } from '@/lib/auth';
 
 function endpointUrl() {
   return `${env.appUrl.replace(/\/$/, '')}/api/ingest/telemetry`;
@@ -37,8 +38,9 @@ function buildPayload(deviceId: string, siteId: string): TelemetryIngestPayload 
 async function sendTestTelemetry(formData: FormData) {
   'use server';
 
+  const user = await requireStaff(['staff_admin']);
   const deviceId = String(formData.get('deviceId') ?? '');
-  const devices = await getDevices();
+  const devices = await getDevices(user);
   const device = devices.find((candidate) => candidate.id === deviceId) ?? devices[0];
 
   if (!device) {
@@ -70,7 +72,8 @@ export default async function IngestTestPage({
 }: {
   searchParams: Promise<{ status?: string; message?: string; deviceId?: string }>;
 }) {
-  const [devices, params] = await Promise.all([getDevices(), searchParams]);
+  const user = await requireStaff();
+  const [devices, params] = await Promise.all([getDevices(user), searchParams]);
   const selectedDeviceId = params.deviceId ?? devices[0]?.id;
   const selectedDevice = devices.find((device) => device.id === selectedDeviceId) ?? devices[0];
 

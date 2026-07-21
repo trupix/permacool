@@ -3,6 +3,9 @@ export type AlertSeverity = 'critical' | 'warning' | 'info';
 export type AlertStatus = 'open' | 'acknowledged' | 'resolved';
 export type UserRole = 'owner' | 'operator' | 'viewer';
 export type VpnProfileStatus = 'not_generated' | 'issued' | 'revoked' | 'error' | 'external';
+export type PlatformRole = 'customer' | 'staff_support' | 'staff_admin';
+export type UserStatus = 'pending' | 'approved' | 'rejected' | 'suspended';
+export type MembershipRole = 'customer_admin' | 'operator' | 'viewer';
 
 export interface Organization {
   id: string;
@@ -114,7 +117,13 @@ export interface AppUser {
   name: string;
   email: string;
   role: UserRole;
+  platformRole: PlatformRole;
+  status: UserStatus;
   organizationIds: string[];
+  allDeviceOrganizationIds: string[];
+  deviceIds: string[];
+  companyName?: string;
+  accessNote?: string;
 }
 
 export interface TelemetryIngestPayload {

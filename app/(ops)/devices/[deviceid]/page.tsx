@@ -35,16 +35,16 @@ function formatControllerDateTime(value: string, timeZone: string) {
 export default async function DeviceDetailPage({ params }: { params: Promise<{ deviceid: string }> }) {
   const { deviceid: deviceId } = await params;
   const user = await requireUser();
-  const device = await getDevice(deviceId);
+  const device = await getDevice(user, deviceId);
 
   if (!device) notFound();
 
   const [site, telemetry] = await Promise.all([
-    getSite(device.siteId),
-    getDeviceTelemetry(device.id)
+    getSite(user, device.siteId),
+    getDeviceTelemetry(user, device.id)
   ]);
 
-  if (!site || !user.organizationIds.includes(site.organizationId)) notFound();
+  if (!site) notFound();
   const lastSeen = formatControllerDateTime(device.lastSeenAt, site.timezone);
 
   return (
