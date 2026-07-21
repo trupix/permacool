@@ -7,6 +7,7 @@
     "start": "next start",
     "telemetry:test": "node scripts/send-test-telemetry.js",
     "equipment:events:test": "node scripts/test-equipment-events.ts",
+    "equipment:catalog:test": "node scripts/test-equipment-catalog.ts",
     "logic:catalog:test": "node scripts/test-logic-catalog.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",

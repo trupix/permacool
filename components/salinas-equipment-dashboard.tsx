@@ -13,6 +13,7 @@ import {
   Droplets,
   Gauge,
   Clock3,
+  Mic,
   Power,
   RefreshCw,
   Settings2,
@@ -30,6 +31,7 @@ import {
   type SuctionTemperatureSource
 } from '@/lib/equipment/performance';
 import { resolveTelemetryPoint } from '@/lib/equipment/telemetry';
+import { displayTelemetryUnit } from '@/lib/telemetry-units';
 import type {
   CatalogElectricalRating,
   CondenserArrangementSelection,
@@ -188,7 +190,9 @@ type AssetAnalysis = {
   operatingPointCapturedAt?: string;
 };
 
-const TELEMETRY_REFRESH_MS = 15_000;
+const DEFAULT_TELEMETRY_REFRESH_MS = 15_000;
+const LIVE_TELEMETRY_REFRESH_MS = 2_000;
+const LIVE_TELEMETRY_MAX_MS = 60 * 60_000;
 const WEATHER_REFRESH_MS = 5 * 60_000;
 const SIGNAL_STALE_MS = 5 * 60_000;
 const SIGNAL_FUTURE_TOLERANCE_MS = 60_000;
@@ -502,7 +506,7 @@ function capacityStatusText(evaluations: CandidateEvaluation[]): string {
   }
 
   const status = evaluations[0]?.evaluation.status;
-  if (status === 'outside_published_envelope') return 'Conditions outside the published 90-110 F envelope';
+  if (status === 'outside_published_envelope') return 'Conditions outside the published 90-110 °F envelope';
   if (status === 'unvalidated_suction_axis') return 'Suction-temperature input is not validated';
   if (status === 'unsupported_frequency') return 'Frequency is not supported by this table';
   return 'A valid model and operating point are required';
@@ -568,28 +572,36 @@ function DataStatus({ available, children }: { available: boolean; children: Rea
   );
 }
 
-function TelemetryRefreshCountdown({ dueAt }: { dueAt: number | null }) {
-  const [remainingMs, setRemainingMs] = useState(TELEMETRY_REFRESH_MS);
+function TelemetryRefreshCountdown({
+  dueAt,
+  intervalMs,
+  live
+}: {
+  dueAt: number | null;
+  intervalMs: number;
+  live: boolean;
+}) {
+  const [remainingMs, setRemainingMs] = useState(intervalMs);
 
   useEffect(() => {
     function updateRemaining() {
-      setRemainingMs(dueAt === null ? TELEMETRY_REFRESH_MS : Math.max(0, dueAt - Date.now()));
+      setRemainingMs(dueAt === null ? intervalMs : Math.max(0, dueAt - Date.now()));
     }
 
     updateRemaining();
     const timer = window.setInterval(updateRemaining, 100);
     return () => window.clearInterval(timer);
-  }, [dueAt]);
+  }, [dueAt, intervalMs]);
 
   const secondsRemaining = Math.max(0, Math.ceil(remainingMs / 1000));
-  const progress = Math.max(0, Math.min(1, remainingMs / TELEMETRY_REFRESH_MS));
+  const progress = Math.max(0, Math.min(1, remainingMs / intervalMs));
   const ringStyle = {
     '--telemetry-countdown-progress': `${progress * 360}deg`
   } as CSSProperties;
 
   return (
     <span
-      className="salinas-dashboard__refresh-label salinas-dashboard__countdown"
+      className={`salinas-dashboard__refresh-label salinas-dashboard__countdown${live ? ' is-live' : ''}`}
       role="timer"
       aria-label={`Telemetry refreshes in ${secondsRemaining} seconds`}
     >
@@ -597,7 +609,7 @@ function TelemetryRefreshCountdown({ dueAt }: { dueAt: number | null }) {
         <b>{secondsRemaining}</b>
       </span>
       <span className="salinas-dashboard__countdown-copy">
-        <strong>Next telemetry refresh</strong>
+        <strong>{live ? 'Live telemetry refresh' : 'Next telemetry refresh'}</strong>
         <small>in {secondsRemaining} second{secondsRemaining === 1 ? '' : 's'}</small>
       </span>
     </span>
@@ -646,8 +658,13 @@ export function SalinasEquipmentDashboard({
   });
   const [telemetryRefreshVersion, setTelemetryRefreshVersion] = useState(0);
   const [telemetryRefreshDueAt, setTelemetryRefreshDueAt] = useState<number | null>(null);
+  const [liveUntilByAssetId, setLiveUntilByAssetId] = useState<Record<string, number>>({});
   const [weather, setWeather] = useState<WeatherState>({ status: 'loading', data: null, error: null });
   const storageKey = `permacool:equipment-draft:${siteId}`;
+  const liveTelemetryActive = Object.values(liveUntilByAssetId).some((expiresAt) => expiresAt > Date.now());
+  const telemetryRefreshIntervalMs = liveTelemetryActive
+    ? LIVE_TELEMETRY_REFRESH_MS
+    : DEFAULT_TELEMETRY_REFRESH_MS;
 
   useEffect(() => {
     try {
@@ -676,7 +693,7 @@ export function SalinasEquipmentDashboard({
     let mounted = true;
 
     async function loadTelemetry() {
-      if (mounted) setTelemetryRefreshDueAt(Date.now() + TELEMETRY_REFRESH_MS);
+      if (mounted) setTelemetryRefreshDueAt(Date.now() + telemetryRefreshIntervalMs);
       try {
         const response = await fetch(`/api/sites/${siteId}/telemetry`, { cache: 'no-store' });
         const payload = (await response.json()) as {
@@ -707,12 +724,26 @@ export function SalinasEquipmentDashboard({
     }
 
     void loadTelemetry();
-    const timer = window.setInterval(loadTelemetry, TELEMETRY_REFRESH_MS);
+    const timer = window.setInterval(loadTelemetry, telemetryRefreshIntervalMs);
     return () => {
       mounted = false;
       window.clearInterval(timer);
     };
-  }, [siteId, telemetryRefreshVersion]);
+  }, [siteId, telemetryRefreshIntervalMs, telemetryRefreshVersion]);
+
+  useEffect(() => {
+    const expirations = Object.values(liveUntilByAssetId).filter((expiresAt) => expiresAt > Date.now());
+    if (!expirations.length) return;
+
+    const timer = window.setTimeout(() => {
+      const now = Date.now();
+      setLiveUntilByAssetId((current) =>
+        Object.fromEntries(Object.entries(current).filter(([, expiresAt]) => expiresAt > now))
+      );
+    }, Math.max(0, Math.min(...expirations) - Date.now()) + 50);
+
+    return () => window.clearTimeout(timer);
+  }, [liveUntilByAssetId]);
 
   useEffect(() => {
     let mounted = true;
@@ -979,6 +1010,18 @@ export function SalinasEquipmentDashboard({
     setTelemetryRefreshVersion((current) => current + 1);
   }
 
+  function toggleLiveTelemetry(assetId: string) {
+    setLiveUntilByAssetId((current) => {
+      if ((current[assetId] ?? 0) > Date.now()) {
+        const next = { ...current };
+        delete next[assetId];
+        return next;
+      }
+
+      return { ...current, [assetId]: Date.now() + LIVE_TELEMETRY_MAX_MS };
+    });
+  }
+
   return (
     <div className="salinas-dashboard">
       {view === 'overview' ? (
@@ -1045,7 +1088,10 @@ export function SalinasEquipmentDashboard({
               {telemetry.status === 'loading' ? 'Refreshing' : 'Refresh'}
             </button>
           </div>
-          <small>Refreshes every 15 seconds</small>
+          <small>
+            Refreshes every {telemetryRefreshIntervalMs / 1000} seconds
+            {liveTelemetryActive ? ' while Live is on' : ''}
+          </small>
           <span>Newest signal: {formatTimestamp(newestMappedSignalTimestamp)}</span>
           <span>Feed check: {formatTimestamp(telemetry.fetchedAt)}</span>
         </div>
@@ -1254,9 +1300,9 @@ export function SalinasEquipmentDashboard({
             {weather.data ? (
               <>
                 <div className="salinas-dashboard__weather-grid">
-                  <MetricTile icon={<Thermometer size={18} />} label="Observed temp" value={formatValue(weather.data.observation.temperatureF, ' F')} detail={weather.data.locationLabel} />
+                  <MetricTile icon={<Thermometer size={18} />} label="Observed temp" value={formatValue(weather.data.observation.temperatureF, ' °F')} detail={weather.data.locationLabel} />
                   <MetricTile icon={<Droplets size={18} />} label="Humidity" value={formatValue(weather.data.observation.humidityPercent, '%')} detail="Observed relative humidity" />
-                  <MetricTile icon={<Thermometer size={18} />} label="Dew point" value={formatValue(weather.data.observation.dewpointF, ' F')} detail="Observed moisture point" />
+                  <MetricTile icon={<Thermometer size={18} />} label="Dew point" value={formatValue(weather.data.observation.dewpointF, ' °F')} detail="Observed moisture point" />
                   <MetricTile
                     icon={<Wind size={18} />}
                     label="Wind"
@@ -1303,7 +1349,7 @@ export function SalinasEquipmentDashboard({
             {weather.data?.forecast ? (
               <>
                 <div className="salinas-dashboard__weather-grid">
-                  <MetricTile icon={<Thermometer size={18} />} label="Forecast temp" value={formatValue(weather.data.forecast.temperatureF, ' F')} detail={weather.data.forecast.condition ?? 'Current forecast period'} />
+                  <MetricTile icon={<Thermometer size={18} />} label="Forecast temp" value={formatValue(weather.data.forecast.temperatureF, ' °F')} detail={weather.data.forecast.condition ?? 'Current forecast period'} />
                   <MetricTile icon={<CloudRain size={18} />} label="Rain chance" value={formatValue(weather.data.forecast.rainChancePercent, '%')} detail="Probability, not observed rain" />
                   <MetricTile icon={<CloudSun size={18} />} label="Sky cover" value={formatValue(weather.data.forecast.skyCoverPercent, '%')} detail="Forecast cloud cover" />
                   <MetricTile icon={<Sun size={18} />} label="Sunlight estimate" value={formatValue(weather.data.forecast.sunlightEstimatePercent, '%')} detail="Daylight / cloud estimate" />
@@ -1352,7 +1398,7 @@ export function SalinasEquipmentDashboard({
                   value={draft.manualAmbientF}
                   onChange={(event) => updateDraft('manualAmbientF', Number(event.target.value))}
                 />
-                <b>F</b>
+                <b>°F</b>
               </div>
             </label>
             <label>
@@ -1366,7 +1412,7 @@ export function SalinasEquipmentDashboard({
                   value={draft.manualSuctionF}
                   onChange={(event) => updateDraft('manualSuctionF', Number(event.target.value))}
                 />
-                <b>F</b>
+                <b>°F</b>
               </div>
             </label>
           </div>
@@ -1397,7 +1443,33 @@ export function SalinasEquipmentDashboard({
             <p className="eyebrow">Live operating units</p>
             <h2>CH1 and CH2 condenser performance</h2>
           </div>
-          <TelemetryRefreshCountdown dueAt={telemetryRefreshDueAt} />
+          <div className="salinas-dashboard__live-refresh-controls">
+            <div className="salinas-dashboard__live-buttons" aria-label="Per-condenser live telemetry controls">
+              {analyses.map((analysis, index) => {
+                const active = (liveUntilByAssetId[analysis.asset.assetId] ?? 0) > Date.now();
+                return (
+                  <button
+                    key={analysis.asset.assetId}
+                    type="button"
+                    className={`salinas-dashboard__live-button${active ? ' is-live' : ''}`}
+                    onClick={() => toggleLiveTelemetry(analysis.asset.assetId)}
+                    aria-pressed={active}
+                    aria-label={`${active ? 'Turn off' : 'Turn on'} live telemetry for CH${index + 1}`}
+                    title={active ? 'Live telemetry is on and will turn off automatically within one hour.' : `Turn on 2-second telemetry for CH${index + 1}.`}
+                  >
+                    <small>CH{index + 1}</small>
+                    <Mic size={14} aria-hidden="true" />
+                    <span>Live</span>
+                  </button>
+                );
+              })}
+            </div>
+            <TelemetryRefreshCountdown
+              dueAt={telemetryRefreshDueAt}
+              intervalMs={telemetryRefreshIntervalMs}
+              live={liveTelemetryActive}
+            />
+          </div>
         </div>
 
         <div className="salinas-dashboard__condenser-grid">
@@ -1457,7 +1529,7 @@ export function SalinasEquipmentDashboard({
                 </header>
 
                 <div className="salinas-dashboard__gauge-grid">
-                  <RangeGauge label="Chiller temperature" value={signals.temperature?.value ?? null} unit="F" minimum={-50} maximum={100} detail={signalDetail(signals.temperature, 'Verified display range', telemetry.status === 'error')} accent="cyan" />
+                  <RangeGauge label="Chiller temperature" value={signals.temperature?.value ?? null} unit="°F" minimum={-50} maximum={100} detail={signalDetail(signals.temperature, 'Verified display range', telemetry.status === 'error')} accent="cyan" />
                   <RangeGauge label="High pressure" value={signals.highPressure?.value ?? null} unit="PSI" minimum={0} maximum={500} detail={signalDetail(signals.highPressure, 'High-side range', telemetry.status === 'error')} accent="gold" />
                   <RangeGauge label="Low pressure" value={signals.lowPressure?.value ?? null} unit="PSI" minimum={-14.7} maximum={300} detail={signalDetail(signals.lowPressure, 'Low-side range', telemetry.status === 'error')} accent="violet" />
                   <RangeGauge label="Compressor current" value={signals.compressorAmps?.value ?? null} unit="A" minimum={0} maximum={ampsMaximum} detail={signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Select frequency + voltage for RLA', telemetry.status === 'error')} accent="lime" />
@@ -1466,12 +1538,12 @@ export function SalinasEquipmentDashboard({
                 <div className="salinas-dashboard__unit-analysis">
                   <div>
                     <span>Entering-air input</span>
-                    <strong>{oneDecimalFormatter.format(analysis.ambientTemperatureF)} F</strong>
+                    <strong>{oneDecimalFormatter.format(analysis.ambientTemperatureF)} °F</strong>
                     <small>{analysis.ambientSource.replaceAll('_', ' ')}</small>
                   </div>
                   <div>
                     <span>Suction-table input</span>
-                    <strong>{oneDecimalFormatter.format(analysis.suctionTemperatureF)} F</strong>
+                    <strong>{oneDecimalFormatter.format(analysis.suctionTemperatureF)} °F</strong>
                     <small>{analysis.suctionSource.replaceAll('_', ' ')}</small>
                   </div>
                   <div>
@@ -1481,7 +1553,7 @@ export function SalinasEquipmentDashboard({
                   </div>
                   <div>
                     <span>Temperature setpoint</span>
-                    <strong>{formatValue(signals.setpoint?.value ?? null, ` ${signals.setpoint?.point.unit || 'F'}`, 1)}</strong>
+                    <strong>{formatValue(signals.setpoint?.value ?? null, ` ${displayTelemetryUnit(signals.setpoint?.point.unit, { temperature: true }) || '°F'}`, 1)}</strong>
                     <small>{signals.systemOn?.value === false ? 'System disabled' : 'Normal cycle target'}</small>
                   </div>
                   <div className="salinas-dashboard__capacity-result">
@@ -1593,7 +1665,11 @@ export function SalinasEquipmentDashboard({
                     <span>
                       RLA {formatNumericRange(ratings.map((rating) => rating.compressorRlaA))} A - LRA{' '}
                       {formatNumericRange(ratings.map((rating) => rating.compressorLraA))} A - fan FLA{' '}
-                      {formatNumericRange(ratings.map((rating) => rating.totalCondenserFanFlaA))} A
+                      {formatNumericRange(
+                        ratings.flatMap((rating) =>
+                          rating.totalCondenserFanFlaA === null ? [] : [rating.totalCondenserFanFlaA]
+                        )
+                      )} A
                     </span>
                   ) : (
                     <span>Confirm this unit frequency and voltage to load RLA, LRA and fan FLA.</span>
@@ -1620,7 +1696,7 @@ export function SalinasEquipmentDashboard({
           <span className="salinas-dashboard__manual-badge"><BookOpen size={15} /> RU-NG2-0617A</span>
         </div>
         <p className="salinas-dashboard__table-intro">
-          All 64 published rating points are retained below. Values are BTU/h at 60 Hz with 20 F compressor
+          All 64 published rating points are retained below. Values are BTU/h at 60 Hz with 20 °F compressor
           superheat. The evaluator interpolates only inside this envelope and never silently extrapolates.
         </p>
 
@@ -1642,13 +1718,13 @@ export function SalinasEquipmentDashboard({
                   <thead>
                     <tr>
                       <th>Ambient / suction</th>
-                      {variant.capacityTable.suctionTemperaturesF.map((temperature) => <th key={temperature}>{temperature} F</th>)}
+                      {variant.capacityTable.suctionTemperaturesF.map((temperature) => <th key={temperature}>{temperature} °F</th>)}
                     </tr>
                   </thead>
                   <tbody>
                     {variant.capacityTable.rows.map((row) => (
                       <tr key={row.ambientTemperatureF}>
-                        <th>{row.ambientTemperatureF} F</th>
+                        <th>{row.ambientTemperatureF} °F</th>
                         {row.capacityBtuPerHour.map((capacity, index) => (
                           <td key={`${row.ambientTemperatureF}-${variant.capacityTable.suctionTemperaturesF[index]}`}>
                             {capacity === null ? '--' : numberFormatter.format(capacity)}

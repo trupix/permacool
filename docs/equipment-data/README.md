@@ -75,6 +75,27 @@ Important calculation rules:
 - Dashboard signals older than five minutes remain identifiable as last-known readings but are excluded from run state, readiness, weather override, and capacity calculations.
 - Each condenser can store a `telemetryDeviceId`. Until Jose supplies that production mapping, unique CH-key matching is allowed; duplicate aliases across devices are treated as ambiguous and never resolved by taking the first match.
 
+## Turbo Air TS060XR404A3A option
+
+`turbo-air-ts060xr404a3a-r404a.json` adds the exact Turbo Air `TS060XR404A3A` model to the condenser catalog. The supplied manufacturer sheet is revision `Ver.20201203` and its SHA-256 digest is retained in the record.
+
+| Field | Verified value |
+| --- | --- |
+| Refrigerant | R404A |
+| Compressor | Copeland scroll `ZF18K4E-TF5` |
+| Supply | 208-230 V, 3 phase, 60 Hz |
+| Compressor RLA / LRA | 21.8 A / 156 A |
+| MCA / MOPD | 29.7 A / 50 A |
+| Condenser airflow | One fan, 3,809 CFM |
+| Receiver at 90% | 31 lb |
+| Connections | 1-1/8 in suction, 1/2 in liquid |
+| Dimensions | 42.4 D x 30.25 W x 29.75 H in |
+| Net weight / sound | 353 lb / 79 dBA |
+| R404A AWEF | 3.2 |
+| R404A capacity map | 32 points; 90-110 F ambient and 0 to -40 F suction temperature |
+
+The sheet does not publish nominal horsepower, fan-motor FLA, compressor input kW, COP, EER, superheat, return-gas temperature, subcooling, or a 50 Hz multiplier. Those values remain `null` rather than being inferred from the model number. The catalog schema permits source-specific page names and nullable, unreported nameplate fields so this record does not misuse Russell-specific defrost or receiver-pump-down fields.
+
 ## Production integration
 
 Use additive production tables under a site/system/equipment domain. Do not store this information in `Device` or `TelemetryPoint`; those represent PLC identity and live readings. Before adding tables, inspect the actual deployed Supabase schema and use reviewed additive migrations only.

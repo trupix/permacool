@@ -7851,6 +7851,95 @@ h4 {
   line-height: 1.2;
 }
 
+.salinas-dashboard__live-refresh-controls,
+.salinas-dashboard__live-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.salinas-dashboard__live-refresh-controls {
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.salinas-dashboard__live-buttons {
+  gap: 0.4rem;
+}
+
+.salinas-dashboard__live-button {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0.42rem 0.62rem;
+  border: 1px solid rgba(160, 202, 220, 0.2);
+  border-radius: 13px;
+  background: rgba(8, 24, 35, 0.74);
+  color: #9bb2bc;
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease, box-shadow 150ms ease;
+}
+
+.salinas-dashboard__live-button small {
+  padding-right: 0.36rem;
+  border-right: 1px solid rgba(160, 202, 220, 0.18);
+  color: #718d99;
+  font-size: 0.57rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.salinas-dashboard__live-button span {
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.salinas-dashboard__live-button:hover {
+  border-color: rgba(94, 215, 239, 0.42);
+  background: rgba(94, 215, 239, 0.09);
+  color: #c2eff7;
+}
+
+.salinas-dashboard__live-button:focus-visible {
+  outline: 2px solid rgba(155, 234, 248, 0.85);
+  outline-offset: 2px;
+}
+
+.salinas-dashboard__live-button.is-live {
+  border-color: rgba(244, 197, 104, 0.68);
+  background: rgba(244, 197, 104, 0.12);
+  color: #f4c568;
+  box-shadow: 0 0 18px rgba(244, 197, 104, 0.15);
+}
+
+.salinas-dashboard__live-button.is-live small {
+  border-color: rgba(244, 197, 104, 0.24);
+  color: #dbba6d;
+}
+
+.salinas-dashboard__live-button.is-live svg {
+  fill: currentColor;
+  filter: drop-shadow(0 0 5px rgba(244, 197, 104, 0.7));
+}
+
+.salinas-dashboard__countdown.is-live {
+  border-color: rgba(244, 197, 104, 0.38);
+  background: rgba(244, 197, 104, 0.075);
+  color: #f0ca76;
+}
+
+.salinas-dashboard__countdown.is-live .salinas-dashboard__countdown-ring {
+  background: conic-gradient(
+    #f4c568 var(--telemetry-countdown-progress),
+    rgba(244, 197, 104, 0.13) 0deg
+  );
+}
+
+.salinas-dashboard__countdown.is-live .salinas-dashboard__countdown-ring b {
+  color: #f4c568;
+}
+
 .salinas-dashboard__configuration-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -8753,6 +8842,23 @@ h4 {
   .salinas-dashboard__section-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .salinas-dashboard__live-refresh-controls {
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .salinas-dashboard__live-buttons,
+  .salinas-dashboard__live-button,
+  .salinas-dashboard__countdown {
+    flex: 1 1 0;
+  }
+
+  .salinas-dashboard__live-button,
+  .salinas-dashboard__countdown {
+    justify-content: center;
   }
 
   .salinas-dashboard__condenser-card > header {
