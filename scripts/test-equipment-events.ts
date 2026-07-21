@@ -40,7 +40,9 @@ const reached = evaluateEquipmentTransitions({
 
 assert.equal(reached.events.length, 1);
 assert.equal(reached.events[0].eventType, 'reached_temperature');
-assert.equal(reached.events[0].message, 'Reached Temperature (-40 F) - CH1');
+assert.equal(reached.events[0].message, 'Reached Temperature (-40 °F) - CH1');
+assert.equal(reached.events[0].temperatureUnit, '°F');
+assert.equal(reached.events[0].setpointUnit, '°F');
 assert.equal(reached.events[0].highPressure, 166);
 assert.equal(reached.events[0].lowPressure, 27);
 assert.equal(reached.events[0].processTemperature, -40.2);

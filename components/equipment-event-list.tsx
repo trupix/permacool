@@ -1,4 +1,5 @@
 import { CircleAlert, Clock3, Gauge, Power, Thermometer, Zap } from 'lucide-react';
+import { displayTelemetryText, displayTelemetryUnit } from '@/lib/telemetry-units';
 import type { EquipmentEvent } from '@/types/domain';
 
 function formatEventTime(value: string, timezone: string) {
@@ -54,14 +55,14 @@ export function EquipmentEventList({
           <div className="equipment-event-icon" aria-hidden="true"><EventIcon type={event.eventType} /></div>
           <div className="equipment-event-copy">
             <div className="equipment-event-title">
-              <strong>{event.message}</strong>
+              <strong>{displayTelemetryText(event.message)}</strong>
               <span>{event.channel}</span>
             </div>
             <p>{formatEventTime(event.occurredAt, timezone)} · {event.deviceName ?? event.deviceId}</p>
             <div className="equipment-event-snapshot">
               <span><Gauge size={13} /> High {formatValue(event.highPressure, 'PSI')}</span>
               <span><Gauge size={13} /> Low {formatValue(event.lowPressure, 'PSI')}</span>
-              <span><Thermometer size={13} /> Fluid {formatValue(event.processTemperature, event.temperatureUnit ?? '')}</span>
+              <span><Thermometer size={13} /> Fluid {formatValue(event.processTemperature, displayTelemetryUnit(event.temperatureUnit, { temperature: true }))}</span>
               <span><Zap size={13} /> Current {formatValue(event.compressorAmps, 'A')}</span>
               <span><Clock3 size={13} /> Runtime {formatRuntime(event.runtimeMinutes)}</span>
             </div>

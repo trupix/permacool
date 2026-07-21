@@ -12,7 +12,11 @@ export const PROCESS_SOLVENTS = ['ethanol', 'butane', 'other'] as const;
 export type ProcessSolventSelection = (typeof PROCESS_SOLVENTS)[number];
 export type EquipmentVerificationStatus = 'requires_nameplate' | 'verified';
 export type CondenserRole = 'primary' | 'subcooler';
-export type CatalogApplicationRange = 'medium_temperature' | 'extended_range_medium' | 'low_temperature';
+export type CatalogApplicationRange =
+  | 'medium_temperature'
+  | 'extended_range_medium'
+  | 'low_temperature'
+  | 'extra_low_temperature';
 
 export interface SelectionOption<TValue extends string> {
   value: TValue;
@@ -114,19 +118,12 @@ export interface SiteEquipmentRecord {
   calculationPolicy: EquipmentCalculationPolicy;
 }
 
-export interface CatalogSourcePages {
-  featuresAndNomenclature: number[];
-  discusCapacity: number;
-  bitzerCapacity: number;
-  discusElectrical: number[];
-  bitzerElectrical: number[];
-  fixedSpecifications: number[];
-}
+export type CatalogSourcePages = Record<string, number | number[]>;
 
 export interface CatalogSource {
   documentTitle: string;
   publicationNumber: string;
-  replacesPublication: string;
+  replacesPublication?: string | null;
   publicationDate: string;
   fileName: string;
   sha256: string;
@@ -146,12 +143,12 @@ export interface CapacityRatingBasis {
   frequencyHz: number;
   ambientTemperaturesF: number[];
   suctionTemperaturesF: number[];
-  compressorSuperheatF: number;
-  capacityMultiplierFor50Hz: number;
+  compressorSuperheatF: number | null;
+  capacityMultiplierFor50Hz: number | null;
   approximateCapacityMultiplierAt65FReturnGas: {
     minimum: number;
     maximum: number;
-  };
+  } | null;
   notes: string[];
 }
 
@@ -162,6 +159,7 @@ export interface PowerRatingAvailability {
   copStatus: string;
   eerStatus: string;
   awefStatus: string;
+  awefValue?: number | null;
   sourcePageForAwefLimitation: number;
   preferredFutureSource: string;
 }
@@ -176,21 +174,25 @@ export interface CatalogCompressor {
 }
 
 export interface CatalogFixedSpecifications {
-  nominalHorsepower: number;
+  nominalHorsepower: number | null;
   suctionConnectionIn: string;
   liquidConnectionIn: string;
   receiverPumpDownCapacityLbAt80Percent: {
     standardReceiverR404A: number;
     oversizedReceiverR404A: number;
-  };
-  cabinetSize: string;
+  } | null;
+  receiverCapacityLbAt90Percent?: number | null;
+  cabinetSize: string | null;
   condenserFanQuantity: number;
+  fanAirflowCfm?: number | null;
   dimensionsIn: {
     depth: number | string;
     width: number | string;
     height: number | string;
   };
-  approximateShipWeightLb: number;
+  approximateShipWeightLb: number | null;
+  netWeightLb?: number | null;
+  soundDba?: number | null;
   sourcePages: number[];
 }
 
@@ -204,13 +206,15 @@ export interface CatalogElectricalRating {
   supplyOptions: ElectricalSupplyOption[];
   compressorRlaA: number;
   compressorLraA: number;
-  totalCondenserFanFlaA: number;
+  totalCondenserFanFlaA: number | null;
+  minimumCircuitAmpacityA?: number | null;
+  maximumOvercurrentProtectionA?: number | null;
   airDefrostMcaA: number | null;
   airDefrostMopdA: number | null;
-  electricDefrostMcaA: number;
-  electricDefrostMopdA: number;
-  representativeDefrostAmpsA: number;
-  representativeEvaporatorFanAmpsA: number;
+  electricDefrostMcaA: number | null;
+  electricDefrostMopdA: number | null;
+  representativeDefrostAmpsA: number | null;
+  representativeEvaporatorFanAmpsA: number | null;
   sourcePage: number;
 }
 
@@ -243,7 +247,7 @@ export interface CondenserCatalogRecord {
   manufacturer: string;
   productFamily: string;
   equipmentType: 'air_cooled_condensing_unit';
-  nominalHorsepower: number;
+  nominalHorsepower: number | null;
   applicationRange: CatalogApplicationRange;
   refrigerant: string;
   source: CatalogSource;
@@ -262,4 +266,16 @@ export interface EquipmentDataBundle {
 export interface CatalogVariantMatch {
   catalog: CondenserCatalogRecord;
   variant: CondenserCatalogVariant;
+}
+
+export interface CondenserCatalogOption {
+  catalogRecordId: string;
+  catalogVariantId: string;
+  label: string;
+  manufacturer: string;
+  productFamily: string;
+  model: string;
+  refrigerant: string;
+  nominalHorsepower: number | null;
+  applicationRange: CatalogApplicationRange;
 }

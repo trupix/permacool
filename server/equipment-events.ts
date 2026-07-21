@@ -84,6 +84,11 @@ function formatReading(value: number, unit: string | null) {
   return `${rounded}${unit ? ` ${unit}` : ''}`;
 }
 
+function normalizeTemperatureUnit(unit: string | null | undefined): string | null {
+  const normalized = unit?.trim().replaceAll('Â°C', '°F').replaceAll('Â°F', '°F') ?? '';
+  return normalized.toUpperCase() === 'F' ? '°F' : normalized || null;
+}
+
 function snapshotForChannel(
   current: Map<string, EquipmentSignalValue>,
   prefix: 'ch1' | 'ch2'
@@ -95,14 +100,14 @@ function snapshotForChannel(
     highPressure: numericValue(current.get(normalizeKey(`${prefix}_high_pressure`))),
     lowPressure: numericValue(current.get(normalizeKey(`${prefix}_low_pressure`))),
     processTemperature: numericValue(temperature),
-    temperatureUnit: temperature?.unit || null,
+    temperatureUnit: normalizeTemperatureUnit(temperature?.unit),
     compressorAmps: numericValue(
       current.get(normalizeKey(`${prefix}_compressor_amps`)) ??
         current.get(normalizeKey(`${prefix}compressoramps`))
     ),
     runtimeMinutes: numericValue(current.get(normalizeKey(`${prefix}_compressor_runtime_min`))),
     setpoint: numericValue(setpoint),
-    setpointUnit: setpoint?.unit || temperature?.unit || null,
+    setpointUnit: normalizeTemperatureUnit(setpoint?.unit || temperature?.unit),
     chillerRun: booleanValue(current.get(normalizeKey(`${prefix}_chiller_run`))),
     systemOn: booleanValue(current.get(normalizeKey(`${prefix}_system_on`)))
   };

@@ -1,4 +1,5 @@
 import rawCatalogRecord from '../../docs/equipment-data/russell-next-gen-ii-22hp-r404a.json';
+import rawTurboAirCatalogRecord from '../../docs/equipment-data/turbo-air-ts060xr404a3a-r404a.json';
 import rawSiteRecord from '../../docs/equipment-data/site-salinas-equipment.json';
 
 import {
@@ -9,6 +10,7 @@ import {
   type CondenserArrangementSelection,
   type CondenserAsset,
   type CondenserCatalogRecord,
+  type CondenserCatalogOption,
   type CondenserCatalogVariant,
   type EquipmentDataBundle,
   type ProcessSolventSelection,
@@ -112,6 +114,15 @@ function expectNullableNumber(value: unknown, path: string): number | null {
   }
 
   return expectNumber(value, path);
+}
+
+function expectNullablePositiveNumber(value: unknown, path: string): number | null {
+  const number = expectNullableNumber(value, path);
+  if (number !== null && number <= 0) {
+    fail(path, 'must be greater than zero when provided');
+  }
+
+  return number;
 }
 
 function expectStringArray(value: unknown, path: string, allowEmpty = false): string[] {
@@ -432,27 +443,26 @@ export function validateSiteEquipmentRecord(value: unknown): asserts value is Si
 
 function validateCatalogSource(value: unknown, path: string): void {
   const record = expectRecord(value, path);
-  for (const key of [
-    'documentTitle',
-    'publicationNumber',
-    'replacesPublication',
-    'publicationDate',
-    'fileName'
-  ] as const) {
+  for (const key of ['documentTitle', 'publicationNumber', 'publicationDate', 'fileName'] as const) {
     expectString(record[key], `${path}.${key}`);
   }
+  expectOptionalNullableString(record.replacesPublication, `${path}.replacesPublication`);
   const sha256 = expectString(record.sha256, `${path}.sha256`);
   if (!/^[a-f0-9]{64}$/i.test(sha256)) {
     fail(`${path}.sha256`, 'expected a 64-character SHA-256 digest');
   }
 
   const pages = expectRecord(record.sourcePages, `${path}.sourcePages`);
-  expectPageArray(pages.featuresAndNomenclature, `${path}.sourcePages.featuresAndNomenclature`);
-  expectPage(pages.discusCapacity, `${path}.sourcePages.discusCapacity`);
-  expectPage(pages.bitzerCapacity, `${path}.sourcePages.bitzerCapacity`);
-  expectPageArray(pages.discusElectrical, `${path}.sourcePages.discusElectrical`);
-  expectPageArray(pages.bitzerElectrical, `${path}.sourcePages.bitzerElectrical`);
-  expectPageArray(pages.fixedSpecifications, `${path}.sourcePages.fixedSpecifications`);
+  if (Object.keys(pages).length === 0) {
+    fail(`${path}.sourcePages`, 'must contain at least one named page reference');
+  }
+  Object.entries(pages).forEach(([key, page]) => {
+    if (Array.isArray(page)) {
+      expectPageArray(page, `${path}.sourcePages.${key}`);
+    } else {
+      expectPage(page, `${path}.sourcePages.${key}`);
+    }
+  });
 }
 
 function validateCatalogFeatures(value: unknown, path: string): void {
@@ -484,22 +494,24 @@ function validateCapacityRatingBasis(value: unknown, path: string): void {
   const suction = expectNumberArray(record.suctionTemperaturesF, `${path}.suctionTemperaturesF`);
   ensureUniqueNumbers(ambient, `${path}.ambientTemperaturesF`);
   ensureUniqueNumbers(suction, `${path}.suctionTemperaturesF`);
-  expectNumber(record.compressorSuperheatF, `${path}.compressorSuperheatF`);
-  expectPositiveNumber(record.capacityMultiplierFor50Hz, `${path}.capacityMultiplierFor50Hz`);
-  const multiplier = expectRecord(
-    record.approximateCapacityMultiplierAt65FReturnGas,
-    `${path}.approximateCapacityMultiplierAt65FReturnGas`
-  );
-  const minimum = expectPositiveNumber(
-    multiplier.minimum,
-    `${path}.approximateCapacityMultiplierAt65FReturnGas.minimum`
-  );
-  const maximum = expectPositiveNumber(
-    multiplier.maximum,
-    `${path}.approximateCapacityMultiplierAt65FReturnGas.maximum`
-  );
-  if (minimum > maximum) {
-    fail(`${path}.approximateCapacityMultiplierAt65FReturnGas`, 'minimum must not exceed maximum');
+  expectNullableNumber(record.compressorSuperheatF, `${path}.compressorSuperheatF`);
+  expectNullablePositiveNumber(record.capacityMultiplierFor50Hz, `${path}.capacityMultiplierFor50Hz`);
+  if (record.approximateCapacityMultiplierAt65FReturnGas !== null) {
+    const multiplier = expectRecord(
+      record.approximateCapacityMultiplierAt65FReturnGas,
+      `${path}.approximateCapacityMultiplierAt65FReturnGas`
+    );
+    const minimum = expectPositiveNumber(
+      multiplier.minimum,
+      `${path}.approximateCapacityMultiplierAt65FReturnGas.minimum`
+    );
+    const maximum = expectPositiveNumber(
+      multiplier.maximum,
+      `${path}.approximateCapacityMultiplierAt65FReturnGas.maximum`
+    );
+    if (minimum > maximum) {
+      fail(`${path}.approximateCapacityMultiplierAt65FReturnGas`, 'minimum must not exceed maximum');
+    }
   }
   expectStringArray(record.notes, `${path}.notes`);
 }
@@ -518,6 +530,9 @@ function validatePowerRatingAvailability(value: unknown, path: string): void {
   expectOneOf(record.inputPowerUnit, ['kW'] as const, `${path}.inputPowerUnit`);
   if (record.inputPowerValues !== null) {
     expectNumberArray(record.inputPowerValues, `${path}.inputPowerValues`, true);
+  }
+  if (record.awefValue !== undefined) {
+    expectNullablePositiveNumber(record.awefValue, `${path}.awefValue`);
   }
   expectPage(record.sourcePageForAwefLimitation, `${path}.sourcePageForAwefLimitation`);
 }
@@ -538,23 +553,31 @@ function validateCatalogCompressor(value: unknown, path: string): void {
 
 function validateFixedSpecifications(value: unknown, path: string): void {
   const record = expectRecord(value, path);
-  expectPositiveNumber(record.nominalHorsepower, `${path}.nominalHorsepower`);
+  expectNullablePositiveNumber(record.nominalHorsepower, `${path}.nominalHorsepower`);
   expectString(record.suctionConnectionIn, `${path}.suctionConnectionIn`);
   expectString(record.liquidConnectionIn, `${path}.liquidConnectionIn`);
-  const pumpDown = expectRecord(
-    record.receiverPumpDownCapacityLbAt80Percent,
-    `${path}.receiverPumpDownCapacityLbAt80Percent`
-  );
-  expectPositiveNumber(
-    pumpDown.standardReceiverR404A,
-    `${path}.receiverPumpDownCapacityLbAt80Percent.standardReceiverR404A`
-  );
-  expectPositiveNumber(
-    pumpDown.oversizedReceiverR404A,
-    `${path}.receiverPumpDownCapacityLbAt80Percent.oversizedReceiverR404A`
-  );
-  expectString(record.cabinetSize, `${path}.cabinetSize`);
+  if (record.receiverPumpDownCapacityLbAt80Percent !== null) {
+    const pumpDown = expectRecord(
+      record.receiverPumpDownCapacityLbAt80Percent,
+      `${path}.receiverPumpDownCapacityLbAt80Percent`
+    );
+    expectPositiveNumber(
+      pumpDown.standardReceiverR404A,
+      `${path}.receiverPumpDownCapacityLbAt80Percent.standardReceiverR404A`
+    );
+    expectPositiveNumber(
+      pumpDown.oversizedReceiverR404A,
+      `${path}.receiverPumpDownCapacityLbAt80Percent.oversizedReceiverR404A`
+    );
+  }
+  if (record.receiverCapacityLbAt90Percent !== undefined) {
+    expectNullablePositiveNumber(record.receiverCapacityLbAt90Percent, `${path}.receiverCapacityLbAt90Percent`);
+  }
+  expectNullableString(record.cabinetSize, `${path}.cabinetSize`);
   expectPositiveInteger(record.condenserFanQuantity, `${path}.condenserFanQuantity`);
+  if (record.fanAirflowCfm !== undefined) {
+    expectNullablePositiveNumber(record.fanAirflowCfm, `${path}.fanAirflowCfm`);
+  }
   const dimensions = expectRecord(record.dimensionsIn, `${path}.dimensionsIn`);
   for (const key of ['depth', 'width', 'height'] as const) {
     const dimension = dimensions[key];
@@ -564,7 +587,12 @@ function validateFixedSpecifications(value: unknown, path: string): void {
       expectString(dimension, `${path}.dimensionsIn.${key}`);
     }
   }
-  expectPositiveNumber(record.approximateShipWeightLb, `${path}.approximateShipWeightLb`);
+  expectNullablePositiveNumber(record.approximateShipWeightLb, `${path}.approximateShipWeightLb`);
+  for (const key of ['netWeightLb', 'soundDba'] as const) {
+    if (record[key] !== undefined) {
+      expectNullablePositiveNumber(record[key], `${path}.${key}`);
+    }
+  }
   expectPageArray(record.sourcePages, `${path}.sourcePages`);
 }
 
@@ -584,21 +612,22 @@ function validateElectricalRatings(value: unknown, path: string): void {
       supplyKeys.push(`${voltage}/${phase}/${frequency}`);
     });
 
+    for (const key of ['compressorRlaA', 'compressorLraA'] as const) {
+      expectPositiveNumber(record[key], `${ratingPath}.${key}`);
+    }
     for (const key of [
-      'compressorRlaA',
-      'compressorLraA',
       'totalCondenserFanFlaA',
+      'minimumCircuitAmpacityA',
+      'maximumOvercurrentProtectionA',
+      'airDefrostMcaA',
+      'airDefrostMopdA',
       'electricDefrostMcaA',
       'electricDefrostMopdA',
       'representativeDefrostAmpsA',
       'representativeEvaporatorFanAmpsA'
     ] as const) {
-      expectPositiveNumber(record[key], `${ratingPath}.${key}`);
-    }
-    for (const key of ['airDefrostMcaA', 'airDefrostMopdA'] as const) {
-      const number = expectNullableNumber(record[key], `${ratingPath}.${key}`);
-      if (number !== null && number <= 0) {
-        fail(`${ratingPath}.${key}`, 'must be greater than zero when provided');
+      if (record[key] !== undefined) {
+        expectNullablePositiveNumber(record[key], `${ratingPath}.${key}`);
       }
     }
     expectPage(record.sourcePage, `${ratingPath}.sourcePage`);
@@ -645,7 +674,7 @@ function sameNumberSet(left: readonly number[], right: readonly number[]): boole
 function validateCatalogVariant(
   value: unknown,
   path: string,
-  rootHorsepower: number,
+  rootHorsepower: number | null,
   ratingAmbientTemperatures: readonly number[],
   ratingSuctionTemperatures: readonly number[]
 ): void {
@@ -677,10 +706,10 @@ export function validateCondenserCatalogRecord(value: unknown): asserts value is
     expectString(record[key], `equipmentCatalog.${key}`);
   }
   expectOneOf(record.equipmentType, ['air_cooled_condensing_unit'] as const, 'equipmentCatalog.equipmentType');
-  const horsepower = expectPositiveNumber(record.nominalHorsepower, 'equipmentCatalog.nominalHorsepower');
+  const horsepower = expectNullablePositiveNumber(record.nominalHorsepower, 'equipmentCatalog.nominalHorsepower');
   expectOneOf(
     record.applicationRange,
-    ['medium_temperature', 'extended_range_medium', 'low_temperature'] as const,
+    ['medium_temperature', 'extended_range_medium', 'low_temperature', 'extra_low_temperature'] as const,
     'equipmentCatalog.applicationRange'
   );
   validateCatalogSource(record.source, 'equipmentCatalog.source');
@@ -725,7 +754,7 @@ function validateCrossRecordReferences(bundle: EquipmentDataBundle): void {
         if (catalog.equipmentType !== asset.equipmentType) {
           fail(`${path}.equipmentType`, 'does not match its catalog record');
         }
-        if (catalog.nominalHorsepower !== asset.nominalHorsepower) {
+        if (catalog.nominalHorsepower !== null && catalog.nominalHorsepower !== asset.nominalHorsepower) {
           fail(`${path}.nominalHorsepower`, 'does not match its catalog record');
         }
         if (catalog.refrigerant !== asset.refrigerant) {
@@ -749,12 +778,14 @@ function validateCrossRecordReferences(bundle: EquipmentDataBundle): void {
 export function loadEquipmentData(): EquipmentDataBundle {
   const siteRecord: unknown = rawSiteRecord;
   const catalogRecord: unknown = rawCatalogRecord;
+  const turboAirCatalogRecord: unknown = rawTurboAirCatalogRecord;
   validateSiteEquipmentRecord(siteRecord);
   validateCondenserCatalogRecord(catalogRecord);
+  validateCondenserCatalogRecord(turboAirCatalogRecord);
 
   const bundle: EquipmentDataBundle = {
     sites: [siteRecord],
-    catalogs: [catalogRecord]
+    catalogs: [catalogRecord, turboAirCatalogRecord]
   };
   validateCrossRecordReferences(bundle);
   return bundle;
@@ -763,6 +794,20 @@ export function loadEquipmentData(): EquipmentDataBundle {
 export const equipmentData = loadEquipmentData();
 export const siteEquipmentRecords = equipmentData.sites;
 export const equipmentCatalogRecords = equipmentData.catalogs;
+export const condenserCatalogOptions: readonly CondenserCatalogOption[] = equipmentCatalogRecords.flatMap(
+  (catalog) =>
+    catalog.modelVariants.map((variant) => ({
+      catalogRecordId: catalog.catalogRecordId,
+      catalogVariantId: variant.catalogVariantId,
+      label: `${catalog.manufacturer} ${variant.baseModelPattern} - ${catalog.refrigerant}`,
+      manufacturer: catalog.manufacturer,
+      productFamily: catalog.productFamily,
+      model: variant.baseModelPattern,
+      refrigerant: catalog.refrigerant,
+      nominalHorsepower: catalog.nominalHorsepower,
+      applicationRange: catalog.applicationRange
+    }))
+);
 
 const sitesById = new Map(siteEquipmentRecords.map((site) => [site.siteId, site]));
 const catalogsById = new Map(equipmentCatalogRecords.map((catalog) => [catalog.catalogRecordId, catalog]));

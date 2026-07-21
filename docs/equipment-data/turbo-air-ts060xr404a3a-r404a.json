@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "catalogRecordId": "turbo-air-ts060xr404a3a-r404a",
+  "manufacturer": "Turbo Air",
+  "productFamily": "TS Extra-Low-Temperature Scroll",
+  "equipmentType": "air_cooled_condensing_unit",
+  "nominalHorsepower": null,
+  "applicationRange": "extra_low_temperature",
+  "refrigerant": "R404A",
+  "source": {
+    "documentTitle": "Turbo Air Condensing Unit - Model TS060XR404A3A",
+    "publicationNumber": "Ver.20201203",
+    "replacesPublication": null,
+    "publicationDate": "2020-12-03",
+    "fileName": "TS060XR404A3A.pdf",
+    "sha256": "c18ec0d7f8919fd5ec28c16133ce4f76de0948e38d33580517a7c0462d915cb2",
+    "sourcePages": {
+      "featuresAndConstruction": 1,
+      "r404aCapacity": 2,
+      "electricalAndFixedSpecifications": 2,
+      "planView": 2
+    }
+  },
+  "commonFeatures": [
+    {
+      "feature": "Blue anti-corrosion condenser fin",
+      "detail": "Manufacturer states the coating increases coil life.",
+      "sourcePage": 1
+    },
+    {
+      "feature": "Seamless inner-groove copper tubing",
+      "detail": "Designed to improve heat exchange by reducing fin-to-tube spacing.",
+      "sourcePage": 1
+    },
+    {
+      "feature": "Externally accessible control box and service valves",
+      "sourcePage": 1
+    },
+    {
+      "feature": "Head-pressure control",
+      "detail": "Stabilizes liquid-line operation and limits flash-gas formation under low ambient conditions.",
+      "sourcePage": 1
+    },
+    {
+      "feature": "Prepainted galvanized cabinet on a heavy-duty steel base",
+      "sourcePage": 1
+    },
+    {
+      "feature": "UL, cUL and ISO 9001 approvals stated by manufacturer",
+      "sourcePage": 1
+    }
+  ],
+  "capacityRatingBasis": {
+    "capacityUnit": "BTU/h",
+    "frequencyHz": 60,
+    "ambientTemperaturesF": [90, 95, 100, 110],
+    "suctionTemperaturesF": [0, -10, -15, -20, -25, -30, -35, -40],
+    "compressorSuperheatF": null,
+    "capacityMultiplierFor50Hz": null,
+    "approximateCapacityMultiplierAt65FReturnGas": null,
+    "notes": [
+      "The R404A table contains 32 published capacity points.",
+      "The supplied model sheet does not state compressor superheat, return-gas temperature, subcooling, or a 50 Hz conversion factor.",
+      "The temperature columns are stored as saturated suction temperature because Turbo Air's catalog identifies the same performance-table axis as suction temperature/SST.",
+      "Do not extrapolate beyond 90-110 F ambient or 0 to -40 F suction temperature."
+    ]
+  },
+  "powerRatingAvailability": {
+    "inputPowerCurveStatus": "not_published_in_supplied_model_sheet",
+    "inputPowerUnit": "kW",
+    "inputPowerValues": null,
+    "copStatus": "not_published_in_supplied_model_sheet",
+    "eerStatus": "not_published_in_supplied_model_sheet",
+    "awefStatus": "published_for_r404a",
+    "awefValue": 3.2,
+    "sourcePageForAwefLimitation": 2,
+    "preferredFutureSource": "Installed three-phase power meter or a manufacturer input-power map for TS060XR404A3A"
+  },
+  "modelVariants": [
+    {
+      "catalogVariantId": "turbo-air-ts060xr404a3a",
+      "baseModelPattern": "TS060XR404A3A",
+      "modelNumberStatus": "exact_model_verified_from_supplied_manufacturer_sheet",
+      "compressor": {
+        "manufacturer": "Copeland",
+        "technology": "Scroll",
+        "model": "ZF18K4E-TF5",
+        "count": 1,
+        "staging": "One fixed-capacity compressor",
+        "lowTemperatureCoolingProvision": "Head-pressure control is documented; any compressor liquid-injection configuration must be verified from the installed unit."
+      },
+      "fixedSpecifications": {
+        "nominalHorsepower": null,
+        "suctionConnectionIn": "1-1/8",
+        "liquidConnectionIn": "1/2",
+        "receiverPumpDownCapacityLbAt80Percent": null,
+        "receiverCapacityLbAt90Percent": 31,
+        "cabinetSize": null,
+        "condenserFanQuantity": 1,
+        "fanAirflowCfm": 3809,
+        "dimensionsIn": {
+          "depth": 42.4,
+          "width": 30.25,
+          "height": 29.75
+        },
+        "approximateShipWeightLb": null,
+        "netWeightLb": 353,
+        "soundDba": 79,
+        "sourcePages": [2]
+      },
+      "electricalRatings": [
+        {
+          "supplyOptions": [
+            {
+              "voltage": "208-230",
+              "phase": 3,
+              "frequencyHz": 60
+            }
+          ],
+          "compressorRlaA": 21.8,
+          "compressorLraA": 156,
+          "totalCondenserFanFlaA": null,
+          "minimumCircuitAmpacityA": 29.7,
+          "maximumOvercurrentProtectionA": 50,
+          "airDefrostMcaA": null,
+          "airDefrostMopdA": null,
+          "electricDefrostMcaA": null,
+          "electricDefrostMopdA": null,
+          "representativeDefrostAmpsA": null,
+          "representativeEvaporatorFanAmpsA": null,
+          "sourcePage": 2
+        }
+      ],
+      "capacityTable": {
+        "suctionTemperaturesF": [0, -10, -15, -20, -25, -30, -35, -40],
+        "interpolationPolicy": "Linear interpolation is allowed only between adjacent published ambient and suction-temperature points after confirming the live suction input represents SST.",
+        "extrapolationPolicy": "Never extrapolate beyond the published table envelope.",
+        "rows": [
+          {
+            "ambientTemperatureF": 90,
+            "capacityBtuPerHour": [33130, 27270, 24700, 22260, 20120, 17780, 15827, 13867]
+          },
+          {
+            "ambientTemperatureF": 95,
+            "capacityBtuPerHour": [31680, 26120, 23700, 21380, 19220, 17140, 15280, 13400]
+          },
+          {
+            "ambientTemperatureF": 100,
+            "capacityBtuPerHour": [29847, 24720, 22700, 20480, 18420, 16490, 14680, 12860]
+          },
+          {
+            "ambientTemperatureF": 110,
+            "capacityBtuPerHour": [27340, 22800, 20780, 18807, 16980, 15120, 13480, 11967]
+          }
+        ],
+        "sourcePage": 2
+      }
+    }
+  ],
+  "calculationWarnings": [
+    "The supplied sheet does not publish nominal horsepower; leave horsepower unassigned until the unit nameplate or an explicit manufacturer source confirms it.",
+    "RLA and LRA are electrical ratings, not live current readings and not a substitute for measured real power.",
+    "MCA and MOPD are circuit-sizing references, not operating amperage targets.",
+    "The 31 lb value is explicitly a receiver-at-90-percent value and must not be relabeled as an 80-percent pump-down capacity or installed system charge.",
+    "AWEF 3.2 is a manufacturer rating; do not treat it as live efficiency.",
+    "Capacity interpolation requires verified ambient/entering-air temperature and saturated suction temperature."
+  ]
+}

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
 import { requireUser } from '@/lib/auth';
+import { displayTelemetryUnit, isTemperatureTelemetryKey } from '@/lib/telemetry-units';
 import { getDevice, getDeviceTelemetry } from '@/server/repositories/devices';
 import { getSite } from '@/server/repositories/sites';
 
@@ -77,7 +78,8 @@ export default async function DeviceDetailPage({ params }: { params: Promise<{ d
                 <p>{point.key}</p>
               </div>
               <span>
-                {point.latestValue} {point.unit}
+                {point.latestValue}{' '}
+                {displayTelemetryUnit(point.unit, { temperature: isTemperatureTelemetryKey(point.key) })}
               </span>
               <span>{point.latestTimestamp}</span>
             </div>
