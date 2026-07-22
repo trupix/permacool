@@ -16,6 +16,209 @@
   --max: 1180px;
 }
 
+/* Customer portal sign-in — isolated from operations panel styles */
+.marketing-shell:has(.sign-in-panel) {
+  display: grid;
+  min-height: 100svh;
+  max-width: none;
+  margin: 0;
+  padding: clamp(2rem, 7vw, 6rem) 1.25rem;
+  place-items: center;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(200, 240, 106, 0.2), transparent 28rem),
+    radial-gradient(circle at 100% 100%, rgba(71, 140, 111, 0.12), transparent 34rem),
+    #f4f6f1;
+}
+
+.sign-in-panel.panel {
+  width: min(100%, 980px);
+  max-width: 980px;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  overflow: visible;
+  border: 1px solid rgba(17, 44, 34, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 255, 252, 0.96);
+  color: #10211b;
+  box-shadow: 0 28px 80px rgba(28, 49, 40, 0.12);
+}
+
+.sign-in-panel .eyebrow {
+  margin: 0 0 0.75rem;
+  color: #547a35;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+}
+
+.sign-in-panel h1 {
+  max-width: 700px;
+  margin: 0;
+  color: #10211b;
+  font-size: clamp(2.35rem, 6vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.sign-in-panel.panel .lede {
+  max-width: 720px;
+  margin: 1.15rem 0 0;
+  color: #5f7069;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.sign-in-panel .auth-callout {
+  margin: 1.5rem 0 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(101, 142, 56, 0.18);
+  border-radius: 12px;
+  background: #edf8cf;
+  color: #38531f;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.sign-in-options {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(1.25rem, 4vw, 3rem);
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(17, 44, 34, 0.1);
+}
+
+.sign-in-option {
+  min-width: 0;
+}
+
+.sign-in-option--request {
+  padding-left: clamp(1.25rem, 3vw, 2.5rem);
+  border-left: 1px solid rgba(17, 44, 34, 0.1);
+}
+
+.sign-in-option h2 {
+  margin: 0;
+  color: #10211b;
+  font-size: clamp(1.55rem, 3vw, 2.25rem);
+  letter-spacing: -0.035em;
+}
+
+.sign-in-option > p {
+  min-height: 3.2em;
+  margin: 0.55rem 0 0;
+  color: #6b7a74;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.sign-in-panel .auth-form {
+  gap: 0.9rem;
+  margin-top: 1.25rem;
+}
+
+.sign-in-panel .auth-form label {
+  gap: 0.42rem;
+  color: #40534b;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.sign-in-panel .auth-form input,
+.sign-in-panel .auth-form select {
+  min-height: 48px;
+  border: 1px solid #b7c3bd;
+  border-radius: 11px;
+  background: #fff;
+  color: #10211b;
+  padding: 0.75rem 0.85rem;
+  box-shadow: 0 1px 0 rgba(17, 44, 34, 0.03);
+}
+
+.sign-in-panel .auth-form input::placeholder {
+  color: #8a9791;
+  opacity: 1;
+}
+
+.sign-in-panel .auth-form input:focus,
+.sign-in-panel .auth-form select:focus {
+  border-color: #547a35;
+  outline: 3px solid rgba(200, 240, 106, 0.38);
+  outline-offset: 1px;
+}
+
+.sign-in-panel .button-primary,
+.sign-in-panel .button-secondary {
+  min-height: 48px;
+  margin-top: 0.2rem;
+  border: 1px solid #10271f;
+  border-radius: 11px;
+  background: #10271f;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.sign-in-panel .button-secondary {
+  border-color: #a6c64f;
+  background: #c8f06a;
+  color: #10211b;
+}
+
+.sign-in-panel .button-primary:hover,
+.sign-in-panel .button-secondary:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.97);
+}
+
+.sign-in-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.sign-in-text-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #60716a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .marketing-shell:has(.sign-in-panel) {
+    align-items: start;
+    padding: 1rem;
+  }
+
+  .sign-in-panel.panel {
+    padding: 1.4rem;
+    border-radius: 18px;
+  }
+
+  .sign-in-panel h1 {
+    font-size: clamp(2.2rem, 12vw, 3.5rem);
+  }
+
+  .sign-in-options {
+    grid-template-columns: 1fr;
+  }
+
+  .sign-in-option--request {
+    padding: 1.5rem 0 0;
+    border-top: 1px solid rgba(17, 44, 34, 0.1);
+    border-left: 0;
+  }
+
+  .sign-in-option > p {
+    min-height: 0;
+  }
+}
+
 /* Site and PLC provisioning */
 .provisioning-page {
   --provisioning-blue: #397081;
