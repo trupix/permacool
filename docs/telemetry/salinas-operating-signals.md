@@ -14,11 +14,27 @@ The groov EPIC / Node-RED telemetry payload sends these points to `POST /api/ing
 | `chN_system_on` | System enable state (`0` disabled, `1` enabled) | `bool` |
 | `chN_temperature_c` | Process-fluid temperature | actual PLC engineering unit |
 | `chN_compressor_amps` | Current compressor transducer reading | `A` |
+| `controller_heartbeat` | EPIC connection heartbeat | `bool` |
 
 `N` is `1` or `2`. The payload's `unit` value is authoritative. The existing Salinas `_c` points are displayed as Fahrenheit because that is the verified field convention; Node-RED must continue sending `F` unless the PLC value is actually converted to Celsius.
 
+## Delivery cadence
+
+| Group | Signals | PLC / Node-RED delivery |
+| --- | --- | --- |
+| Fast readings | CH1 and CH2 high pressure, low pressure, process-fluid temperature, and compressor amps | Continuous source updates; the dashboard checks every 2 seconds while Live is on |
+| Immediate events | CH1 and CH2 chiller run, system enable, and high-pressure stop; aggregate high-pressure stop | Publish immediately whenever the value changes |
+| Slow information | CH1 and CH2 compressor runtime and setpoint | Runtime every minute; setpoint whenever it changes |
+| Controller heartbeat | `controller_heartbeat` | Every 15 seconds |
+
+The 2-second Live check reads the newest value already received by the site. It does not force the EPIC or Node-RED to sample or publish faster.
+
+Every immediate-event POST should include the changed state plus that channel's current high pressure, low pressure, process-fluid temperature, and compressor amps. This makes the permanent event snapshot represent the operating conditions at the transition instead of relying only on the prior stored reading.
+
 ## Transition logic
 
+- `chN_chiller_run` changing `0 → 1` records a compressor-started event.
+- `chN_chiller_run` changing `1 → 0` records a compressor-stopped event unless the transition is already explained by reached temperature or a high-pressure stop.
 - `chN_system_on` changing `0 → 1` records a system-on event.
 - `chN_system_on` changing `1 → 0` records a system-off event.
 - `chN_chiller_run` changing `1 → 0`, while the system remains enabled, no high-pressure stop is active, and process temperature is at or below setpoint, records `Reached Temperature (setpoint) - CHN`.

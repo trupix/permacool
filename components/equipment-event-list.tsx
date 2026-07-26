@@ -30,6 +30,7 @@ function formatRuntime(minutes: number | null) {
 function EventIcon({ type }: { type: string }) {
   if (type === 'high_pressure_stop') return <CircleAlert size={17} />;
   if (type === 'reached_temperature') return <Thermometer size={17} />;
+  if (type === 'compressor_started' || type === 'compressor_stopped') return <Zap size={17} />;
   if (type === 'system_on' || type === 'system_off') return <Power size={17} />;
   return <Clock3 size={17} />;
 }

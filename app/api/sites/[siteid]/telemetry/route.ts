@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { hasDatabaseUrl, isSiteTelemetryApiEnabled } from '@/lib/env';
+import { isFastTelemetryKey } from '@/lib/telemetry-groups';
 import { getDeviceTelemetry, getDevicesBySite } from '@/server/repositories/devices';
 import { getSite } from '@/server/repositories/sites';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ siteid: string }> }
 ) {
   if (!isSiteTelemetryApiEnabled()) {
@@ -56,11 +57,16 @@ export async function GET(
       deviceName: device.name
     }))
   );
+  const scope = new URL(request.url).searchParams.get('scope') === 'fast' ? 'fast' : 'all';
+  const responsePoints = scope === 'fast'
+    ? points.filter((point) => isFastTelemetryKey(point.key))
+    : points;
 
   return NextResponse.json(
     {
-      points,
+      points: responsePoints,
       source: hasDatabaseUrl() ? 'database' : 'mock-fallback',
+      scope,
       fetchedAt: new Date().toISOString()
     },
     {

@@ -7935,6 +7935,333 @@ h4 {
   color: #f4c568;
 }
 
+.salinas-dashboard__overview-telemetry-status {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.85rem;
+  padding: 0.62rem 0.72rem;
+  border: 1px solid rgba(160, 202, 220, 0.14);
+  border-radius: 14px;
+  background: rgba(4, 18, 27, 0.31);
+}
+
+.salinas-dashboard__overview-telemetry-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(94, 215, 239, 0.08);
+  color: var(--sd-cyan);
+}
+
+.salinas-dashboard__overview-telemetry-status.is-live .salinas-dashboard__overview-telemetry-icon {
+  background: rgba(244, 197, 104, 0.1);
+  color: var(--sd-gold);
+}
+
+.salinas-dashboard__overview-telemetry-status > div strong,
+.salinas-dashboard__overview-telemetry-status > div small {
+  display: block;
+}
+
+.salinas-dashboard__overview-telemetry-status > div strong {
+  color: var(--sd-ink);
+  font-size: 0.74rem;
+}
+
+.salinas-dashboard__overview-telemetry-status > div small {
+  margin-top: 0.1rem;
+  color: var(--sd-muted);
+  font-size: 0.6rem;
+}
+
+.salinas-dashboard__overview-heartbeat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.36rem;
+  padding: 0.3rem 0.48rem;
+  border: 1px solid rgba(160, 202, 220, 0.15);
+  border-radius: 999px;
+  color: var(--sd-muted);
+  font-size: 0.6rem;
+  font-weight: 850;
+}
+
+.salinas-dashboard__overview-heartbeat.is-current {
+  border-color: rgba(168, 220, 95, 0.23);
+  background: rgba(168, 220, 95, 0.08);
+  color: var(--sd-lime);
+}
+
+.salinas-dashboard__telemetry-cadence {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.1rem;
+}
+
+.salinas-dashboard__cadence-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  min-width: 0;
+  padding: 0.95rem;
+  border: 1px solid rgba(160, 202, 220, 0.16);
+  border-radius: 18px;
+  background: rgba(4, 18, 27, 0.36);
+}
+
+.salinas-dashboard__cadence-card.is-fast {
+  background:
+    radial-gradient(circle at 0 0, rgba(244, 197, 104, 0.1), transparent 11rem),
+    rgba(4, 18, 27, 0.4);
+}
+
+.salinas-dashboard__telemetry-cadence.is-live .salinas-dashboard__cadence-card.is-fast {
+  border-color: rgba(244, 197, 104, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(244, 197, 104, 0.045), 0 14px 30px rgba(0, 0, 0, 0.11);
+}
+
+.salinas-dashboard__cadence-interval {
+  display: grid;
+  align-content: center;
+  width: 58px;
+  min-height: 70px;
+  padding: 0.45rem;
+  border: 1px solid rgba(94, 215, 239, 0.2);
+  border-radius: 15px;
+  background: rgba(94, 215, 239, 0.07);
+  color: var(--sd-cyan);
+  text-align: center;
+}
+
+.salinas-dashboard__cadence-card.is-fast .salinas-dashboard__cadence-interval {
+  border-color: rgba(244, 197, 104, 0.25);
+  background: rgba(244, 197, 104, 0.08);
+  color: var(--sd-gold);
+}
+
+.salinas-dashboard__cadence-card.is-event .salinas-dashboard__cadence-interval {
+  border-color: rgba(168, 220, 95, 0.23);
+  background: rgba(168, 220, 95, 0.08);
+  color: var(--sd-lime);
+}
+
+.salinas-dashboard__cadence-card.is-slow .salinas-dashboard__cadence-interval {
+  border-color: rgba(179, 156, 255, 0.23);
+  background: rgba(179, 156, 255, 0.08);
+  color: var(--sd-violet);
+}
+
+.salinas-dashboard__cadence-interval strong,
+.salinas-dashboard__cadence-interval span {
+  display: block;
+}
+
+.salinas-dashboard__cadence-interval strong {
+  font-size: 1.55rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.salinas-dashboard__cadence-card.is-event .salinas-dashboard__cadence-interval strong {
+  font-size: 1.05rem;
+  letter-spacing: -0.03em;
+}
+
+.salinas-dashboard__cadence-interval span {
+  margin-top: 0.2rem;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.salinas-dashboard__cadence-copy {
+  min-width: 0;
+}
+
+.salinas-dashboard__cadence-copy header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.salinas-dashboard__cadence-copy header small,
+.salinas-dashboard__cadence-copy header strong {
+  display: block;
+}
+
+.salinas-dashboard__cadence-copy header small {
+  color: var(--sd-muted);
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.salinas-dashboard__cadence-copy header strong {
+  margin-top: 0.16rem;
+  color: var(--sd-ink);
+  font-size: 0.83rem;
+}
+
+.salinas-dashboard__cadence-copy > p {
+  margin: 0.48rem 0 0.62rem;
+  color: var(--sd-muted);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.salinas-dashboard__cadence-state {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.42rem;
+  border: 1px solid rgba(160, 202, 220, 0.17);
+  border-radius: 999px;
+  color: var(--sd-muted);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.salinas-dashboard__cadence-state.is-ready {
+  border-color: rgba(168, 220, 95, 0.24);
+  background: rgba(168, 220, 95, 0.08);
+  color: var(--sd-lime);
+}
+
+.salinas-dashboard__cadence-state.is-loading {
+  border-color: rgba(244, 197, 104, 0.26);
+  background: rgba(244, 197, 104, 0.08);
+  color: var(--sd-gold);
+}
+
+.salinas-dashboard__cadence-state.is-error {
+  border-color: rgba(255, 133, 133, 0.27);
+  background: rgba(255, 133, 133, 0.08);
+  color: #ff9c9c;
+}
+
+.salinas-dashboard__cadence-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+}
+
+.salinas-dashboard__cadence-signals span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.32rem 0.45rem;
+  border: 1px solid rgba(160, 202, 220, 0.12);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #a9bec8;
+  font-size: 0.61rem;
+  font-weight: 740;
+}
+
+.salinas-dashboard__cadence-signals span.is-ready {
+  border-color: rgba(168, 220, 95, 0.2);
+  color: #c8e99a;
+}
+
+.salinas-dashboard__cadence-signals span.is-pending {
+  border-color: rgba(244, 197, 104, 0.17);
+  color: #c7b37e;
+}
+
+.salinas-dashboard__cadence-checked {
+  display: block;
+  margin-top: 0.58rem;
+  overflow: hidden;
+  color: var(--sd-muted);
+  font-size: 0.58rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+}
+
+.salinas-dashboard__heartbeat {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.68rem 0.78rem;
+  border: 1px solid rgba(160, 202, 220, 0.14);
+  border-radius: 14px;
+  background: rgba(4, 18, 27, 0.31);
+}
+
+.salinas-dashboard__heartbeat-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(94, 215, 239, 0.08);
+  color: var(--sd-cyan);
+}
+
+.salinas-dashboard__heartbeat > div small,
+.salinas-dashboard__heartbeat > div strong {
+  display: block;
+}
+
+.salinas-dashboard__heartbeat > div small {
+  color: var(--sd-muted);
+  font-size: 0.56rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.salinas-dashboard__heartbeat > div strong {
+  margin-top: 0.13rem;
+  font-size: 0.76rem;
+}
+
+.salinas-dashboard__heartbeat-time {
+  padding: 0.27rem 0.44rem;
+  border: 1px solid rgba(94, 215, 239, 0.16);
+  border-radius: 999px;
+  color: var(--sd-cyan);
+  font-size: 0.58rem;
+  font-weight: 850;
+}
+
+.salinas-dashboard__heartbeat > small {
+  grid-column: 2 / -1;
+  color: var(--sd-muted);
+  font-size: 0.58rem;
+}
+
+.salinas-dashboard__heartbeat.is-current {
+  border-color: rgba(168, 220, 95, 0.23);
+}
+
+.salinas-dashboard__heartbeat.is-current .salinas-dashboard__heartbeat-icon {
+  background: rgba(168, 220, 95, 0.1);
+  color: var(--sd-lime);
+}
+
+.salinas-dashboard__cadence-note {
+  grid-column: 1 / -1;
+  margin: -0.15rem 0 0;
+  padding: 0.58rem 0.75rem;
+  border: 1px dashed rgba(160, 202, 220, 0.14);
+  border-radius: 12px;
+  color: var(--sd-muted);
+  font-size: 0.63rem;
+  line-height: 1.45;
+}
+
 .salinas-dashboard__configuration-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -8078,6 +8405,369 @@ h4 {
 
 .salinas-dashboard__context-grid.is-single {
   grid-template-columns: minmax(0, 1fr);
+}
+
+.salinas-dashboard__weather-hero {
+  position: relative;
+  isolation: isolate;
+  grid-column: 1 / -1;
+  min-height: 620px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 28px;
+  background: #10251e;
+  color: #fff;
+  box-shadow: 0 28px 70px rgba(27, 48, 40, 0.2);
+}
+
+.salinas-dashboard__weather-hero-imagery,
+.salinas-dashboard__weather-hero-shade {
+  position: absolute;
+  inset: 0;
+}
+
+.salinas-dashboard__weather-hero-imagery {
+  z-index: -3;
+  background-image: url('/images/salinas-site-aerial-esri.jpg');
+  background-position: center;
+  background-size: cover;
+  filter: saturate(0.86) contrast(1.05) brightness(0.82);
+  transform: translateY(-18%) scale(1.26);
+}
+
+.salinas-dashboard__weather-hero-shade {
+  z-index: -2;
+  background:
+    linear-gradient(180deg, rgba(5, 17, 13, 0.66) 0%, rgba(5, 17, 13, 0.08) 35%, rgba(5, 17, 13, 0.2) 48%, rgba(5, 17, 13, 0.86) 100%),
+    linear-gradient(90deg, rgba(5, 17, 13, 0.28), transparent 38%, rgba(5, 17, 13, 0.08));
+}
+
+.salinas-dashboard__weather-hero-header {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  right: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.salinas-dashboard__weather-hero-kicker,
+.salinas-dashboard__weather-hero-attribution {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0.43rem 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.19);
+  border-radius: 999px;
+  background: rgba(6, 24, 18, 0.62);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.67rem;
+  font-weight: 850;
+  letter-spacing: 0.035em;
+  backdrop-filter: blur(12px);
+}
+
+.salinas-dashboard__weather-hero-kicker {
+  color: #e3ff9c;
+  text-transform: uppercase;
+}
+
+.salinas-dashboard__weather-hero-attribution {
+  color: rgba(255, 255, 255, 0.73);
+  font-size: 0.59rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.salinas-dashboard__weather-location {
+  position: absolute;
+  z-index: 2;
+  top: 30%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  max-width: min(320px, calc(100% - 2rem));
+  padding: 0.55rem 0.68rem 0.55rem 0.52rem;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 15px;
+  background: rgba(5, 23, 17, 0.73);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(13px);
+}
+
+.salinas-dashboard__weather-location-pin {
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 12px;
+  background: #c8f06a;
+  color: #18352a;
+  box-shadow: 0 0 0 7px rgba(200, 240, 106, 0.18);
+}
+
+.salinas-dashboard__weather-location strong,
+.salinas-dashboard__weather-location small {
+  display: block;
+}
+
+.salinas-dashboard__weather-location strong {
+  font-size: 0.75rem;
+}
+
+.salinas-dashboard__weather-location small {
+  margin-top: 0.11rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.62rem;
+}
+
+.salinas-dashboard__weather-dock {
+  position: absolute;
+  z-index: 3;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.55fr);
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+  background: rgba(7, 26, 20, 0.86);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(22px) saturate(1.2);
+}
+
+.salinas-dashboard__weather-now {
+  padding: 1.15rem 1.25rem 0.95rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.salinas-dashboard__weather-now > span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #caed7d;
+  font-size: 0.61rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.salinas-dashboard__weather-now > div {
+  display: flex;
+  align-items: flex-start;
+  margin: 0.3rem 0 0.12rem;
+}
+
+.salinas-dashboard__weather-now > div strong {
+  color: #fff;
+  font-size: clamp(3.6rem, 6vw, 5.5rem);
+  font-weight: 650;
+  letter-spacing: -0.085em;
+  line-height: 0.9;
+}
+
+.salinas-dashboard__weather-now > div sup {
+  margin: 0.33rem 0 0 0.28rem;
+  color: #dff4b4;
+  font-size: 1rem;
+  font-weight: 850;
+}
+
+.salinas-dashboard__weather-now p,
+.salinas-dashboard__weather-now small {
+  margin: 0;
+}
+
+.salinas-dashboard__weather-now p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.salinas-dashboard__weather-now > small {
+  display: block;
+  margin-top: 0.2rem;
+  color: rgba(255, 255, 255, 0.57);
+  font-size: 0.61rem;
+}
+
+.salinas-dashboard__weather-observation-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  padding: 0.7rem;
+}
+
+.salinas-dashboard__weather-observation-grid > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: center;
+  column-gap: 0.4rem;
+  min-width: 0;
+  padding: 0.65rem 0.7rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.085);
+}
+
+.salinas-dashboard__weather-observation-grid > div:last-child {
+  border-right: 0;
+}
+
+.salinas-dashboard__weather-observation-grid svg {
+  grid-row: 1 / 3;
+  align-self: center;
+  color: #bfe966;
+}
+
+.salinas-dashboard__weather-observation-grid span,
+.salinas-dashboard__weather-observation-grid strong,
+.salinas-dashboard__weather-observation-grid small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.salinas-dashboard__weather-observation-grid span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.57rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.salinas-dashboard__weather-observation-grid strong {
+  color: #fff;
+  font-size: 0.84rem;
+}
+
+.salinas-dashboard__weather-observation-grid small {
+  grid-column: 2;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.56rem;
+}
+
+.salinas-dashboard__weather-forecast-strip,
+.salinas-dashboard__weather-dock-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.salinas-dashboard__weather-forecast-strip {
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.salinas-dashboard__weather-forecast-strip > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  margin-right: auto;
+}
+
+.salinas-dashboard__weather-forecast-strip > div > svg {
+  color: #caed7d;
+}
+
+.salinas-dashboard__weather-forecast-strip > div span,
+.salinas-dashboard__weather-forecast-strip > div small,
+.salinas-dashboard__weather-forecast-strip > div strong {
+  display: block;
+}
+
+.salinas-dashboard__weather-forecast-strip > div small {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.salinas-dashboard__weather-forecast-strip > div strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: 0.7rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.salinas-dashboard__weather-forecast-strip > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.34rem 0.48rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(255, 255, 255, 0.77);
+  font-size: 0.59rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.salinas-dashboard__weather-dock-footer {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.58rem;
+}
+
+.salinas-dashboard__weather-dock-footer > div {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.36rem;
+}
+
+.salinas-dashboard__weather-dock-footer > div svg {
+  color: #9de7f4;
+}
+
+.salinas-dashboard__weather-dock-footer b {
+  padding: 0.28rem 0.43rem;
+  border-radius: 999px;
+  background: rgba(255, 179, 87, 0.14);
+  color: #ffc98d;
+  font-size: 0.56rem;
+}
+
+.salinas-dashboard__weather-dock-footer b.is-current {
+  background: rgba(200, 240, 106, 0.13);
+  color: #dff7a4;
+}
+
+.salinas-dashboard__weather-dock-footer > small {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.56rem;
+}
+
+.salinas-dashboard__weather-dock.is-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1rem;
+}
+
+.salinas-dashboard__weather-dock.is-empty strong,
+.salinas-dashboard__weather-dock.is-empty p {
+  display: block;
+  margin: 0;
+}
+
+.salinas-dashboard__weather-dock.is-empty p {
+  margin-top: 0.18rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.7rem;
 }
 
 .salinas-dashboard__panel-heading {
@@ -8371,75 +9061,160 @@ h4 {
 .salinas-dashboard__gauge-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.72rem;
+  gap: 0.82rem;
   padding: 1rem;
 }
 
-.salinas-dashboard__gauge {
+.salinas-dashboard__dial {
   --gauge-accent: var(--sd-cyan);
+  position: relative;
+  isolation: isolate;
   min-width: 0;
-  padding: 0.82rem;
-  border: 1px solid rgba(255, 255, 255, 0.055);
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.025);
+  overflow: hidden;
+  padding: 0.82rem 0.82rem 0.72rem;
+  border: 1px solid color-mix(in srgb, var(--gauge-accent) 18%, rgba(255, 255, 255, 0.055));
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 58%, color-mix(in srgb, var(--gauge-accent) 9%, transparent), transparent 58%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(2, 13, 18, 0.18));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
-.salinas-dashboard__gauge--lime { --gauge-accent: var(--sd-lime); }
-.salinas-dashboard__gauge--gold { --gauge-accent: var(--sd-gold); }
-.salinas-dashboard__gauge--violet { --gauge-accent: var(--sd-violet); }
+.salinas-dashboard__dial--lime { --gauge-accent: var(--sd-lime); }
+.salinas-dashboard__dial--gold { --gauge-accent: var(--sd-gold); }
+.salinas-dashboard__dial--violet { --gauge-accent: var(--sd-violet); }
 
-.salinas-dashboard__gauge-heading,
-.salinas-dashboard__gauge-scale {
+.salinas-dashboard__dial-heading,
+.salinas-dashboard__dial-scale {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
 }
 
-.salinas-dashboard__gauge-heading span {
-  color: #9bb1bb;
+.salinas-dashboard__dial-heading span {
+  color: #b4c8d0;
   font-size: 0.69rem;
-  font-weight: 800;
+  font-weight: 850;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
 }
 
-.salinas-dashboard__gauge-heading strong {
-  color: #f1f9fb;
-  font-size: 0.92rem;
+.salinas-dashboard__dial-heading small {
+  padding: 0.2rem 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--gauge-accent) 23%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gauge-accent) 7%, transparent);
+  color: color-mix(in srgb, var(--gauge-accent) 78%, white);
+  font-size: 0.5rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
   white-space: nowrap;
 }
 
-.salinas-dashboard__gauge-track {
+.salinas-dashboard__dial-canvas {
   position: relative;
-  height: 7px;
-  margin: 0.72rem 0 0.45rem;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), color-mix(in srgb, var(--gauge-accent) 62%, transparent));
+  aspect-ratio: 1.5 / 1;
+  min-height: 142px;
+  margin: 0.15rem 0 0;
 }
 
-.salinas-dashboard__gauge-marker {
+.salinas-dashboard__dial-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.salinas-dashboard__dial-canvas canvas[hidden] {
+  display: none !important;
+}
+
+.salinas-dashboard__dial-reading {
   position: absolute;
-  left: var(--gauge-position);
-  top: 50%;
-  width: 11px;
-  height: 11px;
-  border: 2px solid #102330;
-  border-radius: 50%;
-  background: var(--gauge-accent);
-  box-shadow: 0 0 13px color-mix(in srgb, var(--gauge-accent) 70%, transparent);
-  transform: translate(-50%, -50%);
+  left: 50%;
+  bottom: 13%;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  min-width: 45%;
+  justify-content: center;
+  padding: 0.24rem 0.48rem;
+  border: 1px solid rgba(175, 216, 230, 0.11);
+  border-radius: 8px;
+  background: rgba(3, 17, 23, 0.82);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.28);
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
-.salinas-dashboard__gauge-scale > span,
-.salinas-dashboard__gauge-scale small {
+.salinas-dashboard__dial-reading--numbered {
+  bottom: -3%;
+}
+
+.salinas-dashboard__dial-reading strong {
+  color: #f3fbfd;
+  font-size: clamp(1.05rem, 2.4vw, 1.42rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-shadow: 0 0 15px color-mix(in srgb, var(--gauge-accent) 30%, transparent);
+}
+
+.salinas-dashboard__dial-reading span {
+  color: color-mix(in srgb, var(--gauge-accent) 72%, white);
+  font-size: 0.58rem;
+  font-weight: 800;
+}
+
+.salinas-dashboard__dial-scale {
+  margin-top: -0.08rem;
+}
+
+.salinas-dashboard__dial-scale--numbered {
+  visibility: hidden;
+}
+
+.salinas-dashboard__dial-scale > span,
+.salinas-dashboard__dial-scale small {
   color: #718c98;
   font-size: 0.61rem;
 }
 
-.salinas-dashboard__gauge-scale small {
+.salinas-dashboard__dial-scale > span {
+  min-width: 2.2rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.salinas-dashboard__dial-scale > span:last-child {
+  text-align: right;
+}
+
+.salinas-dashboard__dial-scale small {
   overflow: hidden;
+  color: #829ba6;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.salinas-dashboard__dial-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 8px 9px rgba(2, 13, 18, 0.38));
+}
+
+.salinas-dashboard__dial-fallback--numbered {
+  transform: translateY(-0.42rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .salinas-dashboard__dial-reading {
+    transition: none;
+  }
 }
 
 .salinas-dashboard__unit-analysis {
@@ -8793,6 +9568,7 @@ h4 {
   .salinas-dashboard__hero,
   .salinas-dashboard__context-grid,
   .salinas-dashboard__condenser-grid,
+  .salinas-dashboard__telemetry-cadence,
   .salinas-dashboard__unit-config-grid,
   .salinas-dashboard__performance-summary {
     grid-template-columns: 1fr;
@@ -8804,6 +9580,33 @@ h4 {
 
   .salinas-dashboard__gauge-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .salinas-dashboard__weather-hero {
+    min-height: 720px;
+  }
+
+  .salinas-dashboard__weather-dock {
+    grid-template-columns: 1fr;
+  }
+
+  .salinas-dashboard__weather-now {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .salinas-dashboard__weather-now > span,
+  .salinas-dashboard__weather-now p,
+  .salinas-dashboard__weather-now > small {
+    grid-column: 1;
+  }
+
+  .salinas-dashboard__weather-now > div {
+    grid-row: 1 / 4;
+    grid-column: 2;
   }
 }
 
@@ -8855,6 +9658,33 @@ h4 {
     justify-content: center;
   }
 
+  .salinas-dashboard__cadence-card {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+
+  .salinas-dashboard__cadence-interval {
+    width: 52px;
+  }
+
+  .salinas-dashboard__heartbeat {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .salinas-dashboard__heartbeat-time,
+  .salinas-dashboard__heartbeat > small {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .salinas-dashboard__overview-telemetry-status {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .salinas-dashboard__overview-heartbeat {
+    grid-column: 2;
+    justify-self: start;
+  }
+
   .salinas-dashboard__condenser-card > header {
     grid-template-columns: auto 1fr;
   }
@@ -8878,6 +9708,67 @@ h4 {
   .salinas-dashboard__weather-priority > b {
     grid-column: 1 / -1;
     justify-self: start;
+  }
+
+  .salinas-dashboard__weather-hero {
+    min-height: 990px;
+    border-radius: 19px;
+  }
+
+  .salinas-dashboard__weather-hero-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .salinas-dashboard__weather-hero-attribution {
+    max-width: 100%;
+    border-radius: 12px;
+    line-height: 1.35;
+  }
+
+  .salinas-dashboard__weather-location {
+    top: 22%;
+  }
+
+  .salinas-dashboard__weather-now {
+    grid-template-columns: 1fr;
+  }
+
+  .salinas-dashboard__weather-now > div {
+    grid-row: auto;
+    grid-column: 1;
+  }
+
+  .salinas-dashboard__weather-now p,
+  .salinas-dashboard__weather-now > small {
+    grid-column: 1;
+  }
+
+  .salinas-dashboard__weather-observation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .salinas-dashboard__weather-observation-grid > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .salinas-dashboard__weather-observation-grid > div:nth-child(-n + 2) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.085);
+  }
+
+  .salinas-dashboard__weather-forecast-strip {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .salinas-dashboard__weather-forecast-strip > div {
+    flex-basis: 100%;
+  }
+
+  .salinas-dashboard__weather-dock-footer {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .salinas-dashboard__readiness-list > div {
@@ -9578,6 +10469,138 @@ h4 {
   border-color: rgba(57, 112, 129, 0.14);
   background: #e8f2f3;
   color: #397081;
+}
+
+.salinas-dashboard__overview-telemetry-status {
+  border-color: rgba(17, 44, 34, 0.09);
+  background: #f7f9f5;
+}
+
+.salinas-dashboard__overview-telemetry-icon {
+  background: #e8f2f3;
+  color: #397081;
+}
+
+.salinas-dashboard__overview-telemetry-status.is-live .salinas-dashboard__overview-telemetry-icon {
+  background: #fff0cc;
+  color: #9a6b16;
+}
+
+.salinas-dashboard__overview-heartbeat {
+  border-color: rgba(17, 44, 34, 0.1);
+  background: #fff;
+  color: #607169;
+}
+
+.salinas-dashboard__overview-heartbeat.is-current {
+  border-color: rgba(84, 128, 43, 0.14);
+  background: #edf8d6;
+  color: #5e7f38;
+}
+
+.salinas-dashboard__cadence-card {
+  border-color: rgba(17, 44, 34, 0.09);
+  background: #f7f9f5;
+}
+
+.salinas-dashboard__cadence-card.is-fast {
+  background:
+    radial-gradient(circle at 0 0, rgba(182, 133, 39, 0.1), transparent 11rem),
+    #fffaf0;
+}
+
+.salinas-dashboard__telemetry-cadence.is-live .salinas-dashboard__cadence-card.is-fast {
+  border-color: rgba(182, 133, 39, 0.26);
+  box-shadow: inset 0 0 0 1px rgba(182, 133, 39, 0.035), 0 12px 28px rgba(28, 49, 40, 0.05);
+}
+
+.salinas-dashboard__cadence-interval {
+  border-color: rgba(57, 112, 129, 0.14);
+  background: #e8f2f3;
+}
+
+.salinas-dashboard__cadence-card.is-fast .salinas-dashboard__cadence-interval {
+  border-color: rgba(182, 133, 39, 0.18);
+  background: #fff0cc;
+}
+
+.salinas-dashboard__cadence-card.is-event .salinas-dashboard__cadence-interval {
+  border-color: rgba(84, 128, 43, 0.14);
+  background: #edf8d6;
+  color: #5e7f38;
+}
+
+.salinas-dashboard__cadence-card.is-slow .salinas-dashboard__cadence-interval {
+  border-color: rgba(120, 102, 168, 0.14);
+  background: #f0ebfa;
+  color: #7866a8;
+}
+
+.salinas-dashboard__cadence-state {
+  border-color: rgba(17, 44, 34, 0.1);
+  background: #fff;
+}
+
+.salinas-dashboard__cadence-state.is-ready {
+  border-color: rgba(84, 128, 43, 0.14);
+  background: #edf8d6;
+  color: #5e7f38;
+}
+
+.salinas-dashboard__cadence-state.is-loading {
+  border-color: rgba(182, 133, 39, 0.16);
+  background: #fff0cc;
+  color: #9a6b16;
+}
+
+.salinas-dashboard__cadence-state.is-error {
+  border-color: rgba(169, 72, 56, 0.15);
+  background: #fae6e1;
+  color: #a94838;
+}
+
+.salinas-dashboard__cadence-signals span {
+  border-color: rgba(17, 44, 34, 0.08);
+  background: #fff;
+  color: #607169;
+}
+
+.salinas-dashboard__cadence-signals span.is-ready {
+  border-color: rgba(84, 128, 43, 0.14);
+  color: #5e7f38;
+}
+
+.salinas-dashboard__cadence-signals span.is-pending {
+  border-color: rgba(182, 133, 39, 0.14);
+  color: #9a6b16;
+}
+
+.salinas-dashboard__heartbeat {
+  border-color: rgba(17, 44, 34, 0.09);
+  background: #f7f9f5;
+}
+
+.salinas-dashboard__heartbeat-icon {
+  background: #e8f2f3;
+}
+
+.salinas-dashboard__heartbeat-time {
+  border-color: rgba(57, 112, 129, 0.14);
+  background: #fff;
+}
+
+.salinas-dashboard__heartbeat.is-current {
+  border-color: rgba(84, 128, 43, 0.14);
+}
+
+.salinas-dashboard__heartbeat.is-current .salinas-dashboard__heartbeat-icon {
+  background: #edf8d6;
+  color: #5e7f38;
+}
+
+.salinas-dashboard__cadence-note {
+  border-color: rgba(17, 44, 34, 0.1);
+  background: rgba(247, 249, 245, 0.75);
 }
 
 .salinas-dashboard__unit-config-card {

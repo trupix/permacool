@@ -34,6 +34,16 @@ async function initializeLogicDefinitionStorage() {
       data: defaultLogicDefinitions,
       skipDuplicates: true
     });
+    for (const definition of defaultLogicDefinitions) {
+      const { slug, ...systemDefinition } = definition;
+      await db.logicDefinition.updateMany({
+        where: {
+          slug,
+          updatedBy: 'System catalog'
+        },
+        data: systemDefinition
+      });
+    }
     return true;
   } catch (error) {
     console.error('Logic definition storage is not ready.', error);
