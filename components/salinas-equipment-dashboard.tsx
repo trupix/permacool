@@ -13,9 +13,11 @@ import {
   Droplets,
   Gauge,
   Clock3,
+  MapPin,
   Mic,
   Power,
   RefreshCw,
+  Satellite,
   Settings2,
   ShieldAlert,
   Sun,
@@ -30,8 +32,15 @@ import {
   type RussellUnitCapacityEvaluation,
   type SuctionTemperatureSource
 } from '@/lib/equipment/performance';
-import { resolveTelemetryPoint } from '@/lib/equipment/telemetry';
+import { normalizeTelemetryKey, resolveTelemetryPoint } from '@/lib/equipment/telemetry';
+import { mergeTelemetryPoints } from '@/lib/telemetry-groups';
 import { displayTelemetryUnit } from '@/lib/telemetry-units';
+import {
+  TelemetryDial3D,
+  type TelemetryDialGoal,
+  type TelemetryDialScale,
+  type TelemetryDialZone
+} from '@/components/telemetry-dial-3d';
 import type {
   CatalogElectricalRating,
   CondenserArrangementSelection,
@@ -57,6 +66,69 @@ type TelemetryState = {
   status: 'loading' | 'ready' | 'error';
   points: TelemetryPoint[];
   source: string | null;
+  fetchedAt: string | null;
+  error: string | null;
+};
+
+const PROCESS_TEMPERATURE_GOAL: TelemetryDialGoal = {
+  value: -40,
+  color: '#b8f260',
+  label: '−40°F goal'
+};
+
+const PROCESS_TEMPERATURE_ZONES: TelemetryDialZone[] = [
+  {
+    from: -40,
+    to: -30,
+    color: '#f3fdff',
+    secondaryColor: '#17384f',
+    label: '−40–−30°F frost',
+    effect: 'frost'
+  },
+  {
+    from: -30,
+    to: -20,
+    color: '#8fd8ff',
+    label: '−30–−20°F ice'
+  },
+  {
+    from: -20,
+    to: 0,
+    color: '#f5fcff',
+    label: '−20–0°F white'
+  },
+  {
+    from: 60,
+    to: 70,
+    color: '#f4c45e',
+    label: '60–70°F caution'
+  },
+  {
+    from: 70,
+    to: 100,
+    color: '#ff665c',
+    label: '70–100°F high'
+  }
+];
+
+const PROCESS_TEMPERATURE_SCALE: TelemetryDialScale = {
+  stops: [
+    { value: -50, angleDegrees: 150 },
+    { value: -40, angleDegrees: 126 },
+    { value: -30, angleDegrees: 84 },
+    { value: -20, angleDegrees: 42 },
+    { value: 0, angleDegrees: 0 },
+    { value: 100, angleDegrees: -135 }
+  ],
+  tickValues: [
+    -50, -45, -40, -35, -30, -25, -20, -15, -10, -5,
+    0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
+  ],
+  labelValues: [-40, -30, -20, 0, 40, 70, 100]
+};
+
+type FastTelemetryState = {
+  status: 'idle' | 'loading' | 'ready' | 'error';
   fetchedAt: string | null;
   error: string | null;
 };
@@ -195,6 +267,8 @@ const LIVE_TELEMETRY_REFRESH_MS = 2_000;
 const LIVE_TELEMETRY_MAX_MS = 60 * 60_000;
 const WEATHER_REFRESH_MS = 5 * 60_000;
 const SIGNAL_STALE_MS = 5 * 60_000;
+const CONTROLLER_HEARTBEAT_MS = 15_000;
+const CONTROLLER_HEARTBEAT_STALE_MS = 45_000;
 const SIGNAL_FUTURE_TOLERANCE_MS = 60_000;
 const BTU_PER_TON_HOUR = 12_000;
 const numberFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
@@ -203,13 +277,17 @@ const oneDecimalFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 1
 });
 
-function signalIsFresh(point: TelemetryPoint, referenceTimestamp: string | null): boolean {
+function signalIsFresh(
+  point: TelemetryPoint,
+  referenceTimestamp: string | null,
+  maximumAgeMs = SIGNAL_STALE_MS
+): boolean {
   const capturedAt = Date.parse(point.latestTimestamp);
   const referenceTime = referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
 
   if (!Number.isFinite(capturedAt) || !Number.isFinite(referenceTime)) return false;
   return (
-    referenceTime - capturedAt <= SIGNAL_STALE_MS &&
+    referenceTime - capturedAt <= maximumAgeMs &&
     capturedAt - referenceTime <= SIGNAL_FUTURE_TOLERANCE_MS
   );
 }
@@ -499,7 +577,19 @@ function signalDetail(signal: NumericSignal | null, normalDetail: string, feedUn
 }
 
 function variantName(variant: CondenserCatalogVariant): string {
-  return `${variant.compressor.manufacturer} ${variant.compressor.technology}`;
+  return `${variant.compressor.manufacturer} ${variant.compressor.technology} ${variant.fixedSpecifications.nominalHorsepower} HP`;
+}
+
+function compressorModelName(variant: CondenserCatalogVariant): string {
+  return variant.compressor.manufacturer === 'Copeland' &&
+    variant.compressor.technology === 'Discus' &&
+    variant.compressor.model === '4DJNF76KE'
+    ? '4DJNF-76KE'
+    : variant.compressor.model;
+}
+
+function compressorDisplayName(variant: CondenserCatalogVariant): string {
+  return `${variantName(variant)} ${compressorModelName(variant)}`;
 }
 
 function capacityStatusText(evaluations: CandidateEvaluation[]): string {
@@ -528,44 +618,6 @@ function MetricTile({ icon, label, value, detail }: { icon: ReactNode; label: st
         <small>{detail}</small>
       </div>
     </article>
-  );
-}
-
-function RangeGauge({
-  label,
-  value,
-  unit,
-  minimum,
-  maximum,
-  detail,
-  accent = 'cyan'
-}: {
-  label: string;
-  value: number | null;
-  unit: string;
-  minimum: number;
-  maximum: number;
-  detail: string;
-  accent?: 'cyan' | 'lime' | 'gold' | 'violet';
-}) {
-  const percentage = value === null ? 0 : Math.max(0, Math.min(100, ((value - minimum) / (maximum - minimum)) * 100));
-  const style = { '--gauge-position': `${percentage}%` } as CSSProperties;
-
-  return (
-    <div className={`salinas-dashboard__gauge salinas-dashboard__gauge--${accent}`} style={style}>
-      <div className="salinas-dashboard__gauge-heading">
-        <span>{label}</span>
-        <strong>{value === null ? '--' : oneDecimalFormatter.format(value)}{value === null ? '' : ` ${unit}`}</strong>
-      </div>
-      <div className="salinas-dashboard__gauge-track" aria-hidden="true">
-        {value === null ? null : <span className="salinas-dashboard__gauge-marker" />}
-      </div>
-      <div className="salinas-dashboard__gauge-scale">
-        <span>{minimum}</span>
-        <small>{detail}</small>
-        <span>{maximum}</span>
-      </div>
-    </div>
   );
 }
 
@@ -664,13 +716,28 @@ export function SalinasEquipmentDashboard({
   });
   const [telemetryRefreshVersion, setTelemetryRefreshVersion] = useState(0);
   const [telemetryRefreshDueAt, setTelemetryRefreshDueAt] = useState<number | null>(null);
+  const [standardTelemetryFetchedAt, setStandardTelemetryFetchedAt] = useState<string | null>(null);
+  const [fastTelemetryRefreshDueAt, setFastTelemetryRefreshDueAt] = useState<number | null>(null);
+  const [fastTelemetry, setFastTelemetry] = useState<FastTelemetryState>({
+    status: 'idle',
+    fetchedAt: null,
+    error: null
+  });
   const [facilityLiveUntil, setFacilityLiveUntil] = useState(0);
+  const [dialDemoTick, setDialDemoTick] = useState(0);
   const [weather, setWeather] = useState<WeatherState>({ status: 'loading', data: null, error: null });
   const storageKey = `permacool:equipment-draft:${siteId}`;
   const liveTelemetryActive = facilityLiveUntil > Date.now();
-  const telemetryRefreshIntervalMs = liveTelemetryActive
-    ? LIVE_TELEMETRY_REFRESH_MS
-    : DEFAULT_TELEMETRY_REFRESH_MS;
+  const localDialDemoEnabled = process.env.NODE_ENV === 'development';
+
+  useEffect(() => {
+    if (!localDialDemoEnabled) return;
+    const timer = window.setInterval(
+      () => setDialDemoTick((current) => current + 1),
+      1_800
+    );
+    return () => window.clearInterval(timer);
+  }, [localDialDemoEnabled]);
 
   useEffect(() => {
     try {
@@ -702,7 +769,7 @@ export function SalinasEquipmentDashboard({
     async function loadTelemetry() {
       if (requestInFlight) return;
       requestInFlight = true;
-      if (mounted) setTelemetryRefreshDueAt(Date.now() + telemetryRefreshIntervalMs);
+      if (mounted) setTelemetryRefreshDueAt(Date.now() + DEFAULT_TELEMETRY_REFRESH_MS);
       try {
         const response = await fetch(`/api/sites/${siteId}/telemetry`, { cache: 'no-store' });
         const payload = (await response.json()) as {
@@ -714,33 +781,110 @@ export function SalinasEquipmentDashboard({
         if (!response.ok) throw new Error(typeof payload.error === 'string' ? payload.error : 'Telemetry request failed.');
         if (!Array.isArray(payload.points)) throw new Error('Telemetry response did not include a points array.');
         if (!mounted) return;
-        setTelemetry({
+        const fetchedAt = typeof payload.fetchedAt === 'string' ? payload.fetchedAt : new Date().toISOString();
+        setTelemetry((current) => ({
           status: 'ready',
-          points: payload.points as TelemetryPoint[],
+          points: mergeTelemetryPoints(current.points, payload.points as TelemetryPoint[]),
           source: typeof payload.source === 'string' ? payload.source : 'unknown',
-          fetchedAt: typeof payload.fetchedAt === 'string' ? payload.fetchedAt : new Date().toISOString(),
+          fetchedAt,
           error: null
-        });
+        }));
+        setStandardTelemetryFetchedAt(fetchedAt);
       } catch (error) {
         if (!mounted) return;
+        const fetchedAt = new Date().toISOString();
         setTelemetry((current) => ({
           ...current,
           status: 'error',
-          fetchedAt: new Date().toISOString(),
+          fetchedAt,
           error: error instanceof Error ? error.message : 'Telemetry unavailable.'
         }));
+        setStandardTelemetryFetchedAt(fetchedAt);
       } finally {
         requestInFlight = false;
       }
     }
 
     void loadTelemetry();
-    const timer = window.setInterval(loadTelemetry, telemetryRefreshIntervalMs);
+    const timer = window.setInterval(loadTelemetry, DEFAULT_TELEMETRY_REFRESH_MS);
     return () => {
       mounted = false;
       window.clearInterval(timer);
     };
-  }, [siteId, telemetryRefreshIntervalMs, telemetryRefreshVersion]);
+  }, [siteId, telemetryRefreshVersion]);
+
+  useEffect(() => {
+    if (!liveTelemetryActive) {
+      setFastTelemetryRefreshDueAt(null);
+      setFastTelemetry((current) => ({
+        ...current,
+        status: 'idle',
+        error: null
+      }));
+      return;
+    }
+
+    let mounted = true;
+    let requestInFlight = false;
+
+    async function loadFastTelemetry() {
+      if (requestInFlight) return;
+      requestInFlight = true;
+      if (mounted) {
+        setFastTelemetryRefreshDueAt(Date.now() + LIVE_TELEMETRY_REFRESH_MS);
+        setFastTelemetry((current) => ({
+          ...current,
+          status: current.fetchedAt ? 'ready' : 'loading',
+          error: null
+        }));
+      }
+
+      try {
+        const response = await fetch(`/api/sites/${siteId}/telemetry?scope=fast`, { cache: 'no-store' });
+        const payload = (await response.json()) as {
+          points?: unknown;
+          source?: unknown;
+          fetchedAt?: unknown;
+          error?: unknown;
+        };
+        if (!response.ok) throw new Error(typeof payload.error === 'string' ? payload.error : 'Fast telemetry request failed.');
+        if (!Array.isArray(payload.points)) throw new Error('Fast telemetry response did not include a points array.');
+        if (!mounted) return;
+
+        const fetchedAt = typeof payload.fetchedAt === 'string' ? payload.fetchedAt : new Date().toISOString();
+        const incomingPoints = payload.points as TelemetryPoint[];
+        setTelemetry((current) => ({
+          ...current,
+          status: 'ready',
+          points: mergeTelemetryPoints(current.points, incomingPoints),
+          source: typeof payload.source === 'string' ? payload.source : current.source,
+          fetchedAt,
+          error: null
+        }));
+        setFastTelemetry({
+          status: 'ready',
+          fetchedAt,
+          error: null
+        });
+      } catch (error) {
+        if (!mounted) return;
+        setFastTelemetry({
+          status: 'error',
+          fetchedAt: new Date().toISOString(),
+          error: error instanceof Error ? error.message : 'Fast telemetry unavailable.'
+        });
+      } finally {
+        requestInFlight = false;
+      }
+    }
+
+    void loadFastTelemetry();
+    const timer = window.setInterval(loadFastTelemetry, LIVE_TELEMETRY_REFRESH_MS);
+    return () => {
+      mounted = false;
+      window.clearInterval(timer);
+    };
+  }, [liveTelemetryActive, siteId, telemetryRefreshVersion]);
 
   useEffect(() => {
     if (!liveTelemetryActive) return;
@@ -969,6 +1113,30 @@ export function SalinasEquipmentDashboard({
   }, [analyses]);
 
   const readyCount = readinessRows.filter((row) => row.available).length;
+  const fastSignalAvailability = {
+    temperature: analyses.length > 0 && analyses.every((analysis) => analysis.signals.temperature?.isFresh === true),
+    highPressure: analyses.length > 0 && analyses.every((analysis) => analysis.signals.highPressure?.isFresh === true),
+    lowPressure: analyses.length > 0 && analyses.every((analysis) => analysis.signals.lowPressure?.isFresh === true),
+    compressorAmps: analyses.length > 0 && analyses.every((analysis) => analysis.signals.compressorAmps?.isFresh === true)
+  };
+  const immediateSignalAvailability = {
+    running: analyses.length > 0 && analyses.every((analysis) => Boolean(analysis.signals.running)),
+    systemOn: analyses.length > 0 && analyses.every((analysis) => Boolean(analysis.signals.systemOn)),
+    highPressureStop: analyses.length > 0 && analyses.every((analysis) => Boolean(analysis.signals.highPressureStop))
+  };
+  const immediateSignalsMapped = Object.values(immediateSignalAvailability).every(Boolean);
+  const slowSignalAvailability = {
+    runtime: analyses.length > 0 && analyses.every((analysis) => Boolean(analysis.signals.compressorRuntimeMinutes)),
+    setpoint: analyses.length > 0 && analyses.every((analysis) => Boolean(analysis.signals.setpoint))
+  };
+  const slowSignalsMapped = Object.values(slowSignalAvailability).every(Boolean);
+  const heartbeatKeys = new Set(['controllerheartbeat', 'epicheartbeat', 'heartbeat']);
+  const heartbeatPoint = [...telemetry.points]
+    .filter((point) => heartbeatKeys.has(normalizeTelemetryKey(point.key)))
+    .sort((left, right) => Date.parse(right.latestTimestamp) - Date.parse(left.latestTimestamp))[0];
+  const heartbeatIsCurrent = heartbeatPoint
+    ? signalIsFresh(heartbeatPoint, telemetry.fetchedAt, CONTROLLER_HEARTBEAT_STALE_MS)
+    : false;
   const mappedRelevantSignals = analyses.flatMap((analysis) =>
     [
       analysis.signals.temperature,
@@ -1090,57 +1258,16 @@ export function SalinasEquipmentDashboard({
             </button>
           </div>
           <small>
-            Refreshes every {telemetryRefreshIntervalMs / 1000} seconds
-            {liveTelemetryActive ? ' while Live is on' : ''}
+            Standard dashboard check every {DEFAULT_TELEMETRY_REFRESH_MS / 1000} seconds
+          </small>
+          <small>
+            Live operating channel: {liveTelemetryActive ? `every ${LIVE_TELEMETRY_REFRESH_MS / 1000} seconds` : 'off'}
           </small>
           <span>Newest PLC sample: {formatTimestamp(newestMappedSignalTimestamp, true)}</span>
           <span>Dashboard check: {formatTimestamp(telemetry.fetchedAt, true)}</span>
         </div>
       </section>
 
-      <section className="salinas-dashboard__system-status-bar" aria-label="Condenser operating status">
-        {analyses.map((analysis, index) => {
-          const signals = analysis.signals;
-          const isCurrent = unitHasCurrentTelemetry(signals);
-          const running = signals.running && isCurrent ? signals.running.value : null;
-          const systemOn = signals.systemOn && isCurrent ? signals.systemOn.value : null;
-          const highPressureStop = signals.highPressureStop?.value === true &&
-            (signals.highPressureStop.isFresh || isCurrent);
-
-          return (
-            <article
-              key={analysis.asset.assetId}
-              className={`salinas-dashboard__system-status${highPressureStop ? ' has-alarm' : ''}`}
-            >
-              <span className="salinas-dashboard__status-icon" aria-hidden="true">
-                {highPressureStop ? <ShieldAlert size={19} /> : <Power size={19} />}
-              </span>
-              <div className="salinas-dashboard__status-copy">
-                <span>0{index + 1} · {analysis.asset.displayName}</span>
-                <strong>
-                  {highPressureStop
-                    ? 'High pressure stop'
-                    : running === true
-                      ? 'Condenser on'
-                      : running === false
-                        ? 'Condenser off'
-                        : 'Run state pending'}
-                </strong>
-              </div>
-              <div className="salinas-dashboard__status-meta">
-                <span className={`salinas-dashboard__status-pill ${running === true ? 'is-on' : running === false ? 'is-off' : ''}`}>
-                  {running === true ? 'ON' : running === false ? 'OFF' : '--'}
-                </span>
-                <small>
-                  System {systemOn === true ? 'enabled' : systemOn === false ? 'disabled' : 'state pending'} ·{' '}
-                  {isCurrent ? 'telemetry current' : 'waiting for current signal'}
-                </small>
-                <small><Clock3 size={12} /> Runtime {formatRuntimeMinutes(signals.compressorRuntimeMinutes?.value ?? null)}</small>
-              </div>
-            </article>
-          );
-        })}
-      </section>
         </>
       ) : null}
 
@@ -1228,9 +1355,9 @@ export function SalinasEquipmentDashboard({
                       {asset.catalogVariantCandidates
                         .map((candidateId) => variantById.get(candidateId))
                         .filter((variant): variant is CondenserCatalogVariant => Boolean(variant))
-                        .map((variant) => (
+                          .map((variant) => (
                           <option key={variant.catalogVariantId} value={variant.catalogVariantId}>
-                            {variantName(variant)} - {variant.compressor.model}
+                            {compressorDisplayName(variant)}
                           </option>
                         ))}
                     </select>
@@ -1286,89 +1413,265 @@ export function SalinasEquipmentDashboard({
       </section>
       ) : null}
 
-      <section className={`salinas-dashboard__context-grid${view === 'specs' ? ' is-single' : ''}`}>
-        {view === 'overview' ? (
-        <>
-          <article className="salinas-dashboard__panel salinas-dashboard__weather-panel">
-            <div className="salinas-dashboard__panel-heading">
-              <span className="salinas-dashboard__panel-icon"><Thermometer size={22} /></span>
-              <div>
-                <p className="eyebrow">Latest station reading</p>
-                <h3>Observed weather</h3>
-              </div>
-              {weather.status === 'loading' ? <RefreshCw className="salinas-dashboard__spin" size={18} /> : null}
+      {view === 'specs' ? (
+      <section className="salinas-dashboard__section">
+        <div className="salinas-dashboard__section-heading">
+          <div>
+            <p className="eyebrow">Telemetry configuration</p>
+            <h2>Delivery schedules and connection health</h2>
+          </div>
+          <span className="salinas-dashboard__refresh-label">
+            <Cpu size={15} /> EPIC data policy
+          </span>
+        </div>
+
+        <div className={`salinas-dashboard__telemetry-cadence${liveTelemetryActive ? ' is-live' : ''}`}>
+          <article className="salinas-dashboard__cadence-card is-fast">
+            <div className="salinas-dashboard__cadence-interval" aria-hidden="true">
+              <strong>2</strong>
+              <span>sec</span>
             </div>
-            {weather.data ? (
-              <>
-                <div className="salinas-dashboard__weather-grid">
-                  <MetricTile icon={<Thermometer size={18} />} label="Observed temp" value={formatValue(weather.data.observation.temperatureF, ' °F')} detail={weather.data.locationLabel} />
-                  <MetricTile icon={<Droplets size={18} />} label="Humidity" value={formatValue(weather.data.observation.humidityPercent, '%')} detail="Observed relative humidity" />
-                  <MetricTile icon={<Thermometer size={18} />} label="Dew point" value={formatValue(weather.data.observation.dewpointF, ' °F')} detail="Observed moisture point" />
-                  <MetricTile
-                    icon={<Wind size={18} />}
-                    label="Wind"
-                    value={formatValue(weather.data.observation.windSpeedMph, ' mph', 1)}
-                    detail={`${weather.data.observation.windDirectionCardinal ?? 'Direction unavailable'}${weather.data.observation.windGustMph === null ? '' : ` / gust ${formatValue(weather.data.observation.windGustMph, ' mph', 1)}`}`}
-                  />
-                  <MetricTile
-                    icon={<CloudRain size={18} />}
-                    label={weather.data.observation.precipitationLastHourIn !== null ? 'Rain / 1 hour' : 'Rain / 3 hours'}
-                    value={formatValue(weather.data.observation.precipitationLastHourIn ?? weather.data.observation.precipitationLast3HoursIn, ' in', 2)}
-                    detail={weather.data.observation.precipitationLastHourIn === null && weather.data.observation.precipitationLast3HoursIn === null ? 'Station did not report accumulation' : 'Observed accumulation'}
-                  />
-                  <MetricTile icon={<Gauge size={18} />} label="Barometer" value={formatValue(weather.data.observation.pressureInHg, ' inHg', 2)} detail="Observed station pressure" />
+            <div className="salinas-dashboard__cadence-copy">
+              <header>
+                <div>
+                  <small>Fast operating channel</small>
+                  <strong>{liveTelemetryActive ? 'Live checks active' : 'Ready when Live is on'}</strong>
                 </div>
-                <div className={`salinas-dashboard__weather-priority ${weather.data.observation.isCurrent ? 'is-current' : 'is-stale'}`}>
-                  <span><Cpu size={18} /></span>
-                  <div>
-                    <strong>Condenser ambient input priority</strong>
-                    <p>Fresh PLC inlet-air sensor first, then this NWS observation, then the manual value.</p>
-                  </div>
-                  <b>{weather.data.observation.isCurrent ? 'Fallback ready' : 'Observation stale'}</b>
-                </div>
-                <p className="salinas-dashboard__source-note">
-                  Station {weather.data.observation.stationId} · {weather.data.observation.stationName}. Observed {formatTimestamp(weather.data.observation.observedAt)} ({formatObservationAge(weather.data.observation.ageMinutes)}). Dashboard checked {formatTimestamp(weather.data.fetchedAt)}.
-                </p>
-              </>
-            ) : (
-              <div className="salinas-dashboard__empty-panel">
-                <CircleAlert size={22} />
-                <div><strong>Observed weather unavailable</strong><p>{weather.error ?? 'Waiting for the NWS station feed.'}</p></div>
+                <span className={`salinas-dashboard__cadence-state is-${fastTelemetry.status}`}>
+                  {fastTelemetry.status === 'error'
+                    ? 'Interrupted'
+                    : liveTelemetryActive
+                      ? fastTelemetry.status === 'loading'
+                        ? 'Starting'
+                        : 'Live'
+                      : 'Off'}
+                </span>
+              </header>
+              <p>
+                Pressure, process-fluid temperature and compressor loading update here first.
+              </p>
+              <div className="salinas-dashboard__cadence-signals">
+                <span className={fastSignalAvailability.highPressure ? 'is-ready' : 'is-pending'}>
+                  <Gauge size={13} /> High pressure
+                </span>
+                <span className={fastSignalAvailability.lowPressure ? 'is-ready' : 'is-pending'}>
+                  <Gauge size={13} /> Low pressure
+                </span>
+                <span className={fastSignalAvailability.temperature ? 'is-ready' : 'is-pending'}>
+                  <Thermometer size={13} /> Process temperature
+                </span>
+                <span className={fastSignalAvailability.compressorAmps ? 'is-ready' : 'is-pending'}>
+                  <Zap size={13} /> Compressor amps
+                </span>
               </div>
-            )}
+              <small className="salinas-dashboard__cadence-checked">
+                {fastTelemetry.status === 'error'
+                  ? fastTelemetry.error
+                  : liveTelemetryActive
+                    ? `Last fast check ${formatTimestamp(fastTelemetry.fetchedAt, true)}`
+                    : 'Turn on Live from Overview to start the 2-second channel'}
+              </small>
+            </div>
           </article>
 
-          <article className="salinas-dashboard__panel salinas-dashboard__weather-panel">
-            <div className="salinas-dashboard__panel-heading">
-              <span className="salinas-dashboard__panel-icon"><CloudSun size={22} /></span>
-              <div>
-                <p className="eyebrow">Planning context</p>
-                <h3>Hourly forecast</h3>
-              </div>
-              {weather.status === 'loading' ? <RefreshCw className="salinas-dashboard__spin" size={18} /> : null}
+          <article className="salinas-dashboard__cadence-card is-event">
+            <div className="salinas-dashboard__cadence-interval" aria-hidden="true">
+              <strong>Now</strong>
+              <span>on change</span>
             </div>
-            {weather.data?.forecast ? (
-              <>
-                <div className="salinas-dashboard__weather-grid">
-                  <MetricTile icon={<Thermometer size={18} />} label="Forecast temp" value={formatValue(weather.data.forecast.temperatureF, ' °F')} detail={weather.data.forecast.condition ?? 'Current forecast period'} />
-                  <MetricTile icon={<CloudRain size={18} />} label="Rain chance" value={formatValue(weather.data.forecast.rainChancePercent, '%')} detail="Probability, not observed rain" />
-                  <MetricTile icon={<CloudSun size={18} />} label="Sky cover" value={formatValue(weather.data.forecast.skyCoverPercent, '%')} detail="Forecast cloud cover" />
-                  <MetricTile icon={<Sun size={18} />} label="Sunlight estimate" value={formatValue(weather.data.forecast.sunlightEstimatePercent, '%')} detail="Daylight / cloud estimate" />
-                  <MetricTile icon={<Droplets size={18} />} label="Forecast humidity" value={formatValue(weather.data.forecast.humidityPercent, '%')} detail="Current forecast period" />
-                  <MetricTile icon={<Wind size={18} />} label="Forecast wind" value={weather.data.forecast.windSpeed ?? '--'} detail={weather.data.forecast.windDirection ?? 'Direction unavailable'} />
+            <div className="salinas-dashboard__cadence-copy">
+              <header>
+                <div>
+                  <small>Immediate events</small>
+                  <strong>Recorded whenever state changes</strong>
                 </div>
-                <p className="salinas-dashboard__source-note">
-                  NWS hourly forecast issued {formatTimestamp(weather.data.forecast.sourceUpdatedAt)}. Forecast values do not drive the condenser capacity model. Sunlight is estimated, not measured in W/m².
-                </p>
-              </>
-            ) : (
-              <div className="salinas-dashboard__empty-panel">
-                <CircleAlert size={22} />
-                <div><strong>Forecast unavailable</strong><p>{weather.error ?? 'The latest station observation remains available while the NWS forecast feed recovers.'}</p></div>
+                <span className={`salinas-dashboard__cadence-state${immediateSignalsMapped ? ' is-ready' : ''}`}>
+                  {immediateSignalsMapped ? 'Mapped' : 'Waiting'}
+                </span>
+              </header>
+              <p>
+                Important operating transitions are saved without waiting for the next scheduled reading.
+              </p>
+              <div className="salinas-dashboard__cadence-signals">
+                <span className={immediateSignalAvailability.running ? 'is-ready' : 'is-pending'}>
+                  <Zap size={13} /> Compressor running
+                </span>
+                <span className={immediateSignalAvailability.systemOn ? 'is-ready' : 'is-pending'}>
+                  <Power size={13} /> System enabled
+                </span>
+                <span className={immediateSignalAvailability.highPressureStop ? 'is-ready' : 'is-pending'}>
+                  <ShieldAlert size={13} /> High-pressure stops
+                </span>
               </div>
-            )}
+              <small className="salinas-dashboard__cadence-checked">
+                Each event stores the pressure, temperature and amperage available at that moment
+              </small>
+            </div>
           </article>
-        </>
+
+          <article className="salinas-dashboard__cadence-card is-slow">
+            <div className="salinas-dashboard__cadence-interval" aria-hidden="true">
+              <strong>1</strong>
+              <span>min</span>
+            </div>
+            <div className="salinas-dashboard__cadence-copy">
+              <header>
+                <div>
+                  <small>Slow information</small>
+                  <strong>Low-change controller values</strong>
+                </div>
+                <span className={`salinas-dashboard__cadence-state${slowSignalsMapped ? ' is-ready' : ''}`}>
+                  {slowSignalsMapped ? 'Mapped' : 'Waiting'}
+                </span>
+              </header>
+              <p>
+                Accumulated and configured values do not need the fast operating channel.
+              </p>
+              <div className="salinas-dashboard__cadence-signals">
+                <span className={slowSignalAvailability.runtime ? 'is-ready' : 'is-pending'}>
+                  <Clock3 size={13} /> Runtime every minute
+                </span>
+                <span className={slowSignalAvailability.setpoint ? 'is-ready' : 'is-pending'}>
+                  <Settings2 size={13} /> Setpoint when changed
+                </span>
+              </div>
+              <small className="salinas-dashboard__cadence-checked">
+                Last standard check {formatTimestamp(standardTelemetryFetchedAt, true)}
+              </small>
+            </div>
+          </article>
+
+          <div className={`salinas-dashboard__heartbeat${heartbeatIsCurrent ? ' is-current' : ''}`}>
+            <span className="salinas-dashboard__heartbeat-icon" aria-hidden="true"><Cpu size={16} /></span>
+            <div>
+              <small>Controller heartbeat</small>
+              <strong>{heartbeatIsCurrent ? 'EPIC communicating' : 'Waiting for dedicated heartbeat'}</strong>
+            </div>
+            <span className="salinas-dashboard__heartbeat-time">
+              Target every {CONTROLLER_HEARTBEAT_MS / 1000} seconds
+            </span>
+            <small>
+              {heartbeatPoint
+                ? `Last heartbeat ${formatTimestamp(heartbeatPoint.latestTimestamp, true)}`
+                : 'Add controller_heartbeat to the PLC payload'}
+            </small>
+          </div>
+
+          <p className="salinas-dashboard__cadence-note">
+            Live mode checks for new critical values every 2 seconds. It displays a new value immediately when the
+            PLC publishes one, but it does not force the controller to transmit faster. Immediate events are created
+            by the incoming PLC change itself; the dashboard background check remains every 15 seconds.
+          </p>
+        </div>
+      </section>
+      ) : null}
+
+      <section className={`salinas-dashboard__context-grid${view === 'specs' ? ' is-single' : ''}`}>
+        {view === 'overview' ? (
+        <article className="salinas-dashboard__weather-hero">
+          <div
+            className="salinas-dashboard__weather-hero-imagery"
+            role="img"
+            aria-label="Aerial satellite view centered on 3558 E 8th Street in Los Angeles"
+          />
+          <div className="salinas-dashboard__weather-hero-shade" aria-hidden="true" />
+
+          <header className="salinas-dashboard__weather-hero-header">
+            <span className="salinas-dashboard__weather-hero-kicker">
+              <Satellite size={15} /> Facility weather
+            </span>
+            <span className="salinas-dashboard__weather-hero-attribution">
+              Imagery: Esri, Vantor, Earthstar Geographics, GIS User Community
+            </span>
+          </header>
+
+          <div className="salinas-dashboard__weather-location">
+            <span className="salinas-dashboard__weather-location-pin" aria-hidden="true">
+              <MapPin size={18} />
+            </span>
+            <div>
+              <strong>Salinas operating site</strong>
+              <small>3558 E 8th St · Los Angeles, CA</small>
+            </div>
+          </div>
+
+          {weather.data ? (
+            <div className="salinas-dashboard__weather-dock">
+              <div className="salinas-dashboard__weather-now">
+                <span>
+                  Latest observed conditions
+                  {weather.status === 'loading' ? <RefreshCw className="salinas-dashboard__spin" size={14} /> : null}
+                </span>
+                <div>
+                  <strong>{formatValue(weather.data.observation.temperatureF, '', 0)}</strong>
+                  <sup>°F</sup>
+                </div>
+                <p>{weather.data.observation.stationName}</p>
+                <small>
+                  Observed {formatTimestamp(weather.data.observation.observedAt)} · {formatObservationAge(weather.data.observation.ageMinutes)}
+                </small>
+              </div>
+
+              <div className="salinas-dashboard__weather-observation-grid">
+                <div>
+                  <Droplets size={15} />
+                  <span>Humidity</span>
+                  <strong>{formatValue(weather.data.observation.humidityPercent, '%')}</strong>
+                </div>
+                <div>
+                  <Thermometer size={15} />
+                  <span>Dew point</span>
+                  <strong>{formatValue(weather.data.observation.dewpointF, ' °F')}</strong>
+                </div>
+                <div>
+                  <Wind size={15} />
+                  <span>Wind</span>
+                  <strong>{formatValue(weather.data.observation.windSpeedMph, ' mph', 1)}</strong>
+                  <small>{weather.data.observation.windDirectionCardinal ?? 'Direction unavailable'}</small>
+                </div>
+                <div>
+                  <CloudRain size={15} />
+                  <span>{weather.data.observation.precipitationLastHourIn !== null ? 'Rain · 1 hour' : 'Rain · 3 hours'}</span>
+                  <strong>{formatValue(weather.data.observation.precipitationLastHourIn ?? weather.data.observation.precipitationLast3HoursIn, ' in', 2)}</strong>
+                </div>
+              </div>
+
+              {weather.data.forecast ? (
+                <div className="salinas-dashboard__weather-forecast-strip">
+                  <div>
+                    <CloudSun size={17} />
+                    <span>
+                      <small>Next-hour forecast</small>
+                      <strong>{formatValue(weather.data.forecast.temperatureF, ' °F')} · {weather.data.forecast.condition ?? 'Conditions pending'}</strong>
+                    </span>
+                  </div>
+                  <span><CloudRain size={14} /> Rain {formatValue(weather.data.forecast.rainChancePercent, '%')}</span>
+                  <span><CloudSun size={14} /> Sky {formatValue(weather.data.forecast.skyCoverPercent, '%')}</span>
+                  <span><Sun size={14} /> Sunlight {formatValue(weather.data.forecast.sunlightEstimatePercent, '%')}</span>
+                </div>
+              ) : null}
+
+              <footer className="salinas-dashboard__weather-dock-footer">
+                <div>
+                  <Cpu size={15} />
+                  <span>Condenser ambient input: PLC inlet-air first, then this NWS observation</span>
+                </div>
+                <b className={weather.data.observation.isCurrent ? 'is-current' : 'is-stale'}>
+                  {weather.data.observation.isCurrent ? 'Fallback ready' : 'Observation stale'}
+                </b>
+                <small>Station {weather.data.observation.stationId} · Dashboard checked {formatTimestamp(weather.data.fetchedAt)}</small>
+              </footer>
+            </div>
+          ) : (
+            <div className="salinas-dashboard__weather-dock is-empty">
+              <CircleAlert size={22} />
+              <div>
+                <strong>Weather feed unavailable</strong>
+                <p>{weather.error ?? 'Waiting for the latest NWS station observation.'}</p>
+              </div>
+            </div>
+          )}
+        </article>
         ) : null}
 
         {view === 'specs' ? (
@@ -1437,6 +1740,52 @@ export function SalinasEquipmentDashboard({
       </section>
 
       {view === 'overview' ? (
+      <section className="salinas-dashboard__system-status-bar" aria-label="Condenser operating status">
+        {analyses.map((analysis, index) => {
+          const signals = analysis.signals;
+          const isCurrent = unitHasCurrentTelemetry(signals);
+          const running = signals.running && isCurrent ? signals.running.value : null;
+          const systemOn = signals.systemOn && isCurrent ? signals.systemOn.value : null;
+          const highPressureStop = signals.highPressureStop?.value === true &&
+            (signals.highPressureStop.isFresh || isCurrent);
+
+          return (
+            <article
+              key={analysis.asset.assetId}
+              className={`salinas-dashboard__system-status${highPressureStop ? ' has-alarm' : ''}`}
+            >
+              <span className="salinas-dashboard__status-icon" aria-hidden="true">
+                {highPressureStop ? <ShieldAlert size={19} /> : <Power size={19} />}
+              </span>
+              <div className="salinas-dashboard__status-copy">
+                <span>0{index + 1} · {analysis.asset.displayName}</span>
+                <strong>
+                  {highPressureStop
+                    ? 'High pressure stop'
+                    : running === true
+                      ? 'Condenser on'
+                      : running === false
+                        ? 'Condenser off'
+                        : 'Run state pending'}
+                </strong>
+              </div>
+              <div className="salinas-dashboard__status-meta">
+                <span className={`salinas-dashboard__status-pill ${running === true ? 'is-on' : running === false ? 'is-off' : ''}`}>
+                  {running === true ? 'ON' : running === false ? 'OFF' : '--'}
+                </span>
+                <small>
+                  System {systemOn === true ? 'enabled' : systemOn === false ? 'disabled' : 'state pending'} ·{' '}
+                  {isCurrent ? 'telemetry current' : 'waiting for current signal'}
+                </small>
+                <small><Clock3 size={12} /> Runtime {formatRuntimeMinutes(signals.compressorRuntimeMinutes?.value ?? null)}</small>
+              </div>
+            </article>
+          );
+        })}
+      </section>
+      ) : null}
+
+      {view === 'overview' ? (
         <>
       <section className="salinas-dashboard__section">
         <div className="salinas-dashboard__section-heading">
@@ -1454,7 +1803,7 @@ export function SalinasEquipmentDashboard({
               title={
                 liveTelemetryActive
                   ? 'Facility live telemetry is on and will turn off automatically within one hour.'
-                  : 'Refresh all facility telemetry every 2 seconds.'
+                  : 'Check pressure, process temperature and compressor amps every 2 seconds.'
               }
             >
               <small>Facility</small>
@@ -1462,11 +1811,25 @@ export function SalinasEquipmentDashboard({
               <span>Live</span>
             </button>
             <TelemetryRefreshCountdown
-              dueAt={telemetryRefreshDueAt}
-              intervalMs={telemetryRefreshIntervalMs}
+              dueAt={liveTelemetryActive ? fastTelemetryRefreshDueAt : telemetryRefreshDueAt}
+              intervalMs={liveTelemetryActive ? LIVE_TELEMETRY_REFRESH_MS : DEFAULT_TELEMETRY_REFRESH_MS}
               live={liveTelemetryActive}
             />
           </div>
+        </div>
+
+        <div className={`salinas-dashboard__overview-telemetry-status${liveTelemetryActive ? ' is-live' : ''}`}>
+          <span className="salinas-dashboard__overview-telemetry-icon" aria-hidden="true">
+            <Zap size={15} />
+          </span>
+          <div>
+            <strong>{liveTelemetryActive ? 'Live readings every 2 seconds' : 'Standard readings every 15 seconds'}</strong>
+            <small>Pressure, process temperature and compressor amps</small>
+          </div>
+          <span className={`salinas-dashboard__overview-heartbeat${heartbeatIsCurrent ? ' is-current' : ''}`}>
+            <Cpu size={14} />
+            {heartbeatIsCurrent ? 'EPIC communicating' : 'Heartbeat pending'}
+          </span>
         </div>
 
         <div className="salinas-dashboard__condenser-grid">
@@ -1494,11 +1857,23 @@ export function SalinasEquipmentDashboard({
                 )?.compressorRlaA ?? null;
               })
               .filter((value): value is number => value !== null);
-            const ampsMaximum = ampsReference.length ? Math.max(80, Math.max(...ampsReference) * 1.25) : 80;
             const unitIsCurrent = unitHasCurrentTelemetry(signals);
             const status = signals.running && unitIsCurrent ? signals.running.value : null;
             const highPressureStop = signals.highPressureStop?.value === true &&
               (signals.highPressureStop.isFresh || unitIsCurrent);
+            const demoPhase = dialDemoTick * 0.65 + index * 1.2;
+            const temperatureIsDemo = localDialDemoEnabled && !signals.temperature;
+            const dischargeIsDemo = localDialDemoEnabled && !signals.highPressure;
+            const suctionIsDemo = localDialDemoEnabled && !signals.lowPressure;
+            const currentIsDemo = localDialDemoEnabled && !signals.compressorAmps;
+            const temperatureValue = signals.temperature?.value ??
+              (temperatureIsDemo ? -38 + Math.sin(demoPhase) * 4 - index * 1.2 : null);
+            const dischargeValue = signals.highPressure?.value ??
+              (dischargeIsDemo ? 218 + Math.sin(demoPhase + 0.8) * 22 + index * 8 : null);
+            const suctionValue = signals.lowPressure?.value ??
+              (suctionIsDemo ? 34 + Math.sin(demoPhase + 1.6) * 7 + index * 2 : null);
+            const currentValue = signals.compressorAmps?.value ??
+              (currentIsDemo ? 47 + Math.sin(demoPhase + 2.3) * 6 + index * 4 : null);
             const runStateText = highPressureStop
               ? 'High pressure stop'
               : status === true
@@ -1526,10 +1901,10 @@ export function SalinasEquipmentDashboard({
                 </header>
 
                 <div className="salinas-dashboard__gauge-grid">
-                  <RangeGauge label="Chiller temperature" value={signals.temperature?.value ?? null} unit="°F" minimum={-50} maximum={100} detail={signalDetail(signals.temperature, 'Verified display range', telemetry.status === 'error')} accent="cyan" />
-                  <RangeGauge label="High pressure" value={signals.highPressure?.value ?? null} unit="PSI" minimum={0} maximum={500} detail={signalDetail(signals.highPressure, 'High-side range', telemetry.status === 'error')} accent="gold" />
-                  <RangeGauge label="Low pressure" value={signals.lowPressure?.value ?? null} unit="PSI" minimum={-14.7} maximum={300} detail={signalDetail(signals.lowPressure, 'Low-side range', telemetry.status === 'error')} accent="violet" />
-                  <RangeGauge label="Compressor current" value={signals.compressorAmps?.value ?? null} unit="A" minimum={0} maximum={ampsMaximum} detail={signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Select frequency + voltage for RLA', telemetry.status === 'error')} accent="lime" />
+                  <TelemetryDial3D label="Process temperature" value={temperatureValue} unit="°F" minimum={-50} maximum={100} detail={temperatureIsDemo ? 'Local demo signal' : signalDetail(signals.temperature, 'Display range', telemetry.status === 'error')} accent="cyan" demo={temperatureIsDemo} goal={PROCESS_TEMPERATURE_GOAL} zones={PROCESS_TEMPERATURE_ZONES} scale={PROCESS_TEMPERATURE_SCALE} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Discharge pressure" value={dischargeValue} unit="PSI" minimum={0} maximum={500} detail={dischargeIsDemo ? 'Local demo signal' : signalDetail(signals.highPressure, 'Discharge range', telemetry.status === 'error')} accent="gold" demo={dischargeIsDemo} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.5} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Compressor current" value={currentValue} unit="A" minimum={0} maximum={120} detail={currentIsDemo ? 'Local demo signal' : signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Current range', telemetry.status === 'error')} accent="lime" demo={currentIsDemo} renderer="glossy-svg" />
                 </div>
 
                 <div className="salinas-dashboard__unit-analysis">
@@ -1705,7 +2080,7 @@ export function SalinasEquipmentDashboard({
             >
               <summary>
                 <div>
-                  <strong>{variantName(variant)} · {variant.compressor.model}</strong>
+                  <strong>{compressorDisplayName(variant)}</strong>
                   <span>{variant.baseModelPattern} · Manual page {variant.capacityTable.sourcePage}</span>
                 </div>
                 <span>View 32 points</span>

@@ -10,6 +10,7 @@
     "equipment:events:test": "node scripts/test-equipment-events.ts",
     "equipment:catalog:test": "node scripts/test-equipment-catalog.ts",
     "logic:catalog:test": "node scripts/test-logic-catalog.ts",
+    "telemetry:groups:test": "node scripts/test-telemetry-groups.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:seed": "node prisma/seed.js",
@@ -23,12 +24,14 @@
     "next": "^16.1.6",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "resend": "^6.12.0"
+    "resend": "^6.12.0",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@types/node": "^24.8.1",
     "@types/react": "^18.3.8",
     "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.185.0",
     "dotenv": "^17.4.2",
     "prisma": "^6.7.0",
     "typescript": "^5.9.3"

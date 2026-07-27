@@ -27,7 +27,7 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     title: 'Chiller run state',
     signalKey: 'ch1_chiller_run / ch2_chiller_run',
     definition: 'Whether each chiller or condenser is currently commanded to run. 0 is OFF and 1 is ON.',
-    behavior: 'Drives the ON/OFF state displayed for CH1 and CH2. A transition from 1 to 0 can also qualify as a normal reached-temperature cycle.',
+    behavior: 'Drives the ON/OFF state displayed for CH1 and CH2. Every observed change is recorded immediately; a transition from 1 to 0 can qualify as a normal reached-temperature cycle instead of a generic compressor-stopped event.',
     implementationStatus: 'deployed',
     sortOrder: 10,
     updatedBy: 'System catalog'
@@ -132,6 +132,17 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     updatedBy: 'System catalog'
   },
   {
+    slug: 'signal-controller-heartbeat',
+    category: 'signal',
+    title: 'Controller heartbeat',
+    signalKey: 'controller_heartbeat',
+    definition: 'Periodic EPIC communication marker used to confirm that the controller remains connected even when operating values do not change.',
+    behavior: 'Node-RED should publish this signal every 15 seconds. The dashboard considers the dedicated heartbeat current for 45 seconds to allow for normal network delay.',
+    implementationStatus: 'deployed',
+    sortOrder: 105,
+    updatedBy: 'System catalog'
+  },
+  {
     slug: 'operation-unit-state',
     category: 'operation',
     title: 'CH1 and CH2 top status',
@@ -158,10 +169,32 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     category: 'operation',
     title: 'Facility live refresh',
     signalKey: null,
-    definition: 'Each facility has one Live control that refreshes the complete site telemetry snapshot every two seconds.',
-    behavior: 'Live mode applies to every controller and condenser at the facility, prevents overlapping dashboard requests, and automatically returns to the normal 15-second interval after one hour. Dashboard-check time identifies the website request; newest-PLC-sample time identifies the latest data actually received from the controller.',
+    definition: 'Each facility has one Live control that checks the fast operating group every two seconds: CH1 and CH2 high pressure, low pressure, process-fluid temperature, and compressor amps.',
+    behavior: 'Live mode prevents overlapping dashboard requests and automatically turns off after one hour. Slower controller values remain on the standard schedule. Dashboard-check time identifies the website request; newest-PLC-sample time identifies data actually received from the controller.',
     implementationStatus: 'deployed',
     sortOrder: 125,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'operation-immediate-event-delivery',
+    category: 'operation',
+    title: 'Immediate state-change events',
+    signalKey: 'ch1_chiller_run / ch2_chiller_run / ch1_system_on / ch2_system_on / ch1_high_pressure_stop / ch2_high_pressure_stop / high_pressure_stop',
+    definition: 'Run state, system enable state, and high-pressure-stop signals are change-driven operating events.',
+    behavior: 'Node-RED should publish the changed state together with the channel’s current high pressure, low pressure, process temperature, and compressor amps. Ingestion records the transition immediately and snapshots those readings plus the latest runtime and setpoint.',
+    implementationStatus: 'deployed',
+    sortOrder: 126,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'operation-slow-telemetry-delivery',
+    category: 'operation',
+    title: 'Slow information delivery',
+    signalKey: 'ch1_compressor_runtime_min / ch2_compressor_runtime_min / ch1_setpoint_c / ch2_setpoint_c',
+    definition: 'Accumulated runtime and configured setpoints do not require the fast operating channel.',
+    behavior: 'Node-RED should publish runtime once per minute and publish a setpoint whenever it changes. The dashboard retains the latest known value between updates.',
+    implementationStatus: 'deployed',
+    sortOrder: 127,
     updatedBy: 'System catalog'
   },
   {
@@ -195,6 +228,17 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     behavior: 'Adds “Reached Temperature ({setpoint} {unit})” to Recent Events. It is a normal event and does not open an alarm.',
     implementationStatus: 'deployed',
     sortOrder: 150,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'event-compressor-state',
+    category: 'event',
+    title: 'Compressor started or stopped',
+    signalKey: null,
+    definition: 'Every observed change to chiller_run is an immediate operating event.',
+    behavior: '0 to 1 records COMPRESSOR STARTED. A 1 to 0 transition records COMPRESSOR STOPPED unless the same transition is already explained by reached temperature or a high-pressure stop. Initial observations do not manufacture a transition that was not seen.',
+    implementationStatus: 'deployed',
+    sortOrder: 155,
     updatedBy: 'System catalog'
   },
   {

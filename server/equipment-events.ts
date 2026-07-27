@@ -23,6 +23,8 @@ export type EquipmentEventDraft = EquipmentEventSnapshot & {
   deviceId: string;
   channel: 'CH1' | 'CH2' | 'SYSTEM';
   eventType:
+    | 'compressor_started'
+    | 'compressor_stopped'
     | 'system_on'
     | 'system_off'
     | 'reached_temperature'
@@ -111,6 +113,27 @@ function snapshotForChannel(
     chillerRun: booleanValue(current.get(normalizeKey(`${prefix}_chiller_run`))),
     systemOn: booleanValue(current.get(normalizeKey(`${prefix}_system_on`)))
   };
+}
+
+function snapshotForSystem(current: Map<string, EquipmentSignalValue>): EquipmentEventSnapshot {
+  const snapshots = [
+    snapshotForChannel(current, 'ch1'),
+    snapshotForChannel(current, 'ch2')
+  ];
+  const score = (snapshot: EquipmentEventSnapshot) => {
+    const availableReadingCount = [
+      snapshot.highPressure,
+      snapshot.lowPressure,
+      snapshot.processTemperature,
+      snapshot.compressorAmps,
+      snapshot.runtimeMinutes,
+      snapshot.setpoint
+    ].filter((value) => value !== null).length;
+
+    return availableReadingCount * 1_000 + (snapshot.highPressure ?? -1_000);
+  };
+
+  return [...snapshots].sort((left, right) => score(right) - score(left))[0];
 }
 
 function eventDraft(
@@ -206,7 +229,14 @@ export function evaluateEquipmentTransitions(
       snapshot.setpoint !== null &&
       snapshot.processTemperature <= snapshot.setpoint;
 
-    if (reachedSetpoint && snapshot.setpoint !== null) {
+    if (
+      incoming.has(normalizeKey(`${prefix}_chiller_run`)) &&
+      transitioned(previousRun, currentRun, true)
+    ) {
+      events.push(
+        eventDraft(input, channel, 'compressor_started', `${channel} compressor started`, snapshot)
+      );
+    } else if (reachedSetpoint && snapshot.setpoint !== null) {
       events.push(
         eventDraft(
           input,
@@ -216,32 +246,30 @@ export function evaluateEquipmentTransitions(
           snapshot
         )
       );
+    } else if (
+      incoming.has(normalizeKey(`${prefix}_chiller_run`)) &&
+      transitioned(previousRun, currentRun, false) &&
+      currentHighPressureStop !== true &&
+      aggregateHighPressureStop !== true
+    ) {
+      events.push(
+        eventDraft(input, channel, 'compressor_stopped', `${channel} compressor stopped`, snapshot)
+      );
     }
   }
 
   if (!activeChannelStopIdentified && incoming.has(aggregateStopKey)) {
     const previousAggregateStop = booleanValue(previous.get(aggregateStopKey));
     const currentAggregateStop = booleanValue(current.get(aggregateStopKey));
-    const emptySnapshot: EquipmentEventSnapshot = {
-      highPressure: null,
-      lowPressure: null,
-      processTemperature: null,
-      temperatureUnit: null,
-      compressorAmps: null,
-      runtimeMinutes: null,
-      setpoint: null,
-      setpointUnit: null,
-      chillerRun: null,
-      systemOn: null
-    };
+    const systemSnapshot = snapshotForSystem(current);
 
     if (becameActive(previousAggregateStop, currentAggregateStop)) {
       const alert = alertAction(input, 'SYSTEM', 'open');
-      events.push(eventDraft(input, 'SYSTEM', 'high_pressure_stop', alert.message, emptySnapshot));
+      events.push(eventDraft(input, 'SYSTEM', 'high_pressure_stop', alert.message, systemSnapshot));
       alertActions.push(alert);
     } else if (transitioned(previousAggregateStop, currentAggregateStop, false)) {
       events.push(
-        eventDraft(input, 'SYSTEM', 'high_pressure_cleared', 'System high-pressure stop cleared', emptySnapshot)
+        eventDraft(input, 'SYSTEM', 'high_pressure_cleared', 'System high-pressure stop cleared', systemSnapshot)
       );
       alertActions.push(alertAction(input, 'SYSTEM', 'resolve'));
     }

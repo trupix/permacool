@@ -31,7 +31,8 @@ for (const requiredSignal of [
   'ch1_temperature_c',
   'ch2_temperature_c',
   'ch1_compressor_amps',
-  'ch2_compressor_amps'
+  'ch2_compressor_amps',
+  'controller_heartbeat'
 ]) {
   assert.ok(searchableCatalog.includes(requiredSignal), `${requiredSignal} must be documented`);
 }
