@@ -25,12 +25,18 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
     getSiteAlerts(user, site.id),
     getSiteEquipmentEvents(site.id, { limit: 5 })
   ]);
-  const telemetryByDevice = await Promise.all(
-    siteDevices.map(async (device) => ({ device, points: await getDeviceTelemetry(user, device.id) }))
-  );
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
+  const hasEquipmentDashboard = Boolean(equipmentRecord && equipmentCatalog);
+  const telemetryByDevice = hasEquipmentDashboard
+    ? []
+    : await Promise.all(
+        siteDevices.map(async (device) => ({
+          device,
+          points: await getDeviceTelemetry(user, device.id)
+        }))
+      );
 
   return (
     <main className="page-stack">
@@ -106,12 +112,14 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
         </SectionCard>
       </div>
 
-      <SiteTelemetryPanel
-        siteId={site.id}
-        initialPoints={telemetryByDevice.flatMap(({ device, points }) =>
-          points.map((point) => ({ ...point, deviceName: device.name }))
-        )}
-      />
+      {!hasEquipmentDashboard ? (
+        <SiteTelemetryPanel
+          siteId={site.id}
+          initialPoints={telemetryByDevice.flatMap(({ device, points }) =>
+            points.map((point) => ({ ...point, deviceName: device.name }))
+          )}
+        />
+      ) : null}
     </main>
   );
 }
