@@ -10,11 +10,21 @@ This runbook explains how agents should manage the PermaCool OpenVPN Access Serv
 Google Cloud project: project-10fbf5ae-d9d0-4052-ba0
 VM: permacool-plc-vpn-01
 Zone: us-east4-b
+Machine type: e2-small (2 vCPU, 2 GB RAM)
 Public IP: 35.243.46.137
 OpenVPN Admin UI: https://35.243.46.137:943/admin
 OpenVPN Client UI: https://35.243.46.137:943/
 groov EPIC VPN IP: 172.28.0.10
 groov Manage: https://172.28.0.10/
+```
+
+Site assignments:
+
+```text
+Salinas                           salinas-groov-epic-01       172.28.0.10
+Cannon Falls, Minnesota          cannon-falls-groov-epic-01  172.28.0.11
+540 Cannon Industrial Blvd
+Cannon Falls, MN 55009
 ```
 
 OpenVPN client traffic normally uses UDP port `1194`, with TCP `443` included as a fallback in generated profiles.
@@ -26,6 +36,8 @@ Each person or device must have its own independently revocable identity.
 ```text
 jose-admin              Jose's auto-login VPN client
 salinas-groov-epic-01   Salinas groov EPIC; static VPN IP 172.28.0.10
+cannon-falls-groov-epic-01
+                         Cannon Falls groov EPIC; static VPN IP 172.28.0.11
 david-dev               David's user-locked developer profile
 openvpn                 OpenVPN Access Server web/CLI administrator
 ```
@@ -76,6 +88,40 @@ $gcloud = 'C:\Users\Bonny\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\gc
 ```
 
 Use the local CLI when possible. The Google Cloud browser SSH and Cloud Shell authorization handoff may open an empty popup or remain stuck on an OAuth `One moment please` page.
+
+## Google Cloud Developer Access
+
+OS Login is enabled on `permacool-plc-vpn-01`. Google Cloud IAM, rather than project metadata SSH keys, controls new SSH sessions for this VM.
+
+David's Google identity is:
+
+```text
+david@perma.cool
+```
+
+It has these project roles:
+
+```text
+roles/compute.viewer
+roles/compute.osAdminLogin
+roles/iap.tunnelResourceAccessor
+```
+
+`roles/compute.osAdminLogin` provides sudo-capable, root-equivalent access to the VPN VM. Do not grant project Owner, Editor, Compute Admin, or billing roles merely for VPN troubleshooting.
+
+The `permacool-vpn-iap-ssh` firewall rule permits IAP TCP forwarding to SSH on tagged VPN instances from Google's `35.235.240.0/20` range.
+
+David can connect with his own Google account by running:
+
+```bash
+gcloud auth login david@perma.cool
+gcloud config set project project-10fbf5ae-d9d0-4052-ba0
+gcloud compute ssh permacool-plc-vpn-01 \
+  --zone us-east4-b \
+  --tunnel-through-iap
+```
+
+He must use his own Google and VPN identities. Never share Jose's Google session, SSH keys, OpenVPN profile, or OpenVPN administrative password.
 
 ## Create a Human VPN User
 
@@ -188,11 +234,11 @@ A successful test confirms network reachability to groov Manage. It does not pro
 
 Do not expose groov Manage, Node-RED, PAC Control, SSH, or PLC services directly to the public internet. The VPN server remains the only public ingress path.
 
-## License Constraint
+## License Capacity
 
-The current OpenVPN Access Server free license permits two simultaneous VPN connections. The Salinas groov EPIC normally consumes one continuously, leaving one connection for either Jose or another developer.
+The OpenVPN Access Server subscription currently permits ten simultaneous VPN connections. The Salinas groov EPIC normally consumes one continuously, and every additional PLC or connected administrator consumes another.
 
-Creating additional profiles is allowed, but a third simultaneous connection requires additional licensed capacity. Do not disconnect or modify the groov EPIC merely to make room for another user without coordinating the operational impact.
+Ten connections can support nine continuously connected PLCs while leaving one connection for an administrator. Supporting ten continuously connected PLCs and concurrent administrator access requires increasing the subscription above ten connections. Do not disconnect or modify a groov EPIC merely to make room for another user without coordinating the operational impact.
 
 ## Secret-Safety Checklist
 
@@ -205,4 +251,4 @@ Before finishing VPN work, confirm:
 - No plaintext password appeared in files, terminal output, logs, documentation, or chat.
 - The profile hash and non-secret directives were verified.
 - Existing PLC connectivity was not interrupted.
-- The recipient was warned about the two-connection limit.
+- The recipient was told the current ten-connection limit and expected available capacity.
