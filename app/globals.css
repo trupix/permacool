@@ -8637,7 +8637,7 @@ h4 {
 
 .salinas-dashboard__weather-observation-grid span {
   color: rgba(255, 255, 255, 0.55);
-  font-size: 0.57rem;
+  font-size: 0.68rem;
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -8645,13 +8645,13 @@ h4 {
 
 .salinas-dashboard__weather-observation-grid strong {
   color: #fff;
-  font-size: 0.84rem;
+  font-size: 1rem;
 }
 
 .salinas-dashboard__weather-observation-grid small {
   grid-column: 2;
   color: rgba(255, 255, 255, 0.5);
-  font-size: 0.56rem;
+  font-size: 0.65rem;
 }
 
 .salinas-dashboard__weather-forecast-strip,
@@ -9134,7 +9134,7 @@ h4 {
 .salinas-dashboard__dial-reading {
   position: absolute;
   left: 50%;
-  bottom: 13%;
+  bottom: -3%;
   display: flex;
   align-items: baseline;
   gap: 0.25rem;
@@ -9169,7 +9169,7 @@ h4 {
 }
 
 .salinas-dashboard__dial-scale {
-  margin-top: -0.08rem;
+  margin-top: 0.35rem;
 }
 
 .salinas-dashboard__dial-scale--numbered {

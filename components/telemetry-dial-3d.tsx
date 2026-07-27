@@ -400,13 +400,14 @@ function GlossyTelemetryDial({
           return (
             <g
               key={labelValue}
-              transform={`translate(${point.x} ${point.y + 0.48})`}
+              className="salinas-dashboard__dial-goal-label"
+              transform={`translate(${point.x - 1.44} ${point.y + 0.48})`}
               filter={`url(#${id}-glow)`}
             >
               <rect
-                x="-0.73"
+                x="-0.79"
                 y="-0.22"
-                width="1.46"
+                width="1.58"
                 height="0.44"
                 rx="0.14"
                 fill="#061820"
@@ -418,7 +419,7 @@ function GlossyTelemetryDial({
                 x="0"
                 y="0.09"
                 fill={goal.color}
-                fontSize="0.27"
+                fontSize="0.23"
                 fontWeight="900"
                 textAnchor="middle"
               >

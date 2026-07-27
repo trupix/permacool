@@ -577,7 +577,19 @@ function signalDetail(signal: NumericSignal | null, normalDetail: string, feedUn
 }
 
 function variantName(variant: CondenserCatalogVariant): string {
-  return `${variant.compressor.manufacturer} ${variant.compressor.technology}`;
+  return `${variant.compressor.manufacturer} ${variant.compressor.technology} ${variant.fixedSpecifications.nominalHorsepower} HP`;
+}
+
+function compressorModelName(variant: CondenserCatalogVariant): string {
+  return variant.compressor.manufacturer === 'Copeland' &&
+    variant.compressor.technology === 'Discus' &&
+    variant.compressor.model === '4DJNF76KE'
+    ? '4DJNF-76KE'
+    : variant.compressor.model;
+}
+
+function compressorDisplayName(variant: CondenserCatalogVariant): string {
+  return `${variantName(variant)} ${compressorModelName(variant)}`;
 }
 
 function capacityStatusText(evaluations: CandidateEvaluation[]): string {
@@ -1343,9 +1355,9 @@ export function SalinasEquipmentDashboard({
                       {asset.catalogVariantCandidates
                         .map((candidateId) => variantById.get(candidateId))
                         .filter((variant): variant is CondenserCatalogVariant => Boolean(variant))
-                        .map((variant) => (
+                          .map((variant) => (
                           <option key={variant.catalogVariantId} value={variant.catalogVariantId}>
-                            {variantName(variant)} - {variant.compressor.model}
+                            {compressorDisplayName(variant)}
                           </option>
                         ))}
                     </select>
@@ -1890,9 +1902,9 @@ export function SalinasEquipmentDashboard({
 
                 <div className="salinas-dashboard__gauge-grid">
                   <TelemetryDial3D label="Process temperature" value={temperatureValue} unit="°F" minimum={-50} maximum={100} detail={temperatureIsDemo ? 'Local demo signal' : signalDetail(signals.temperature, 'Display range', telemetry.status === 'error')} accent="cyan" demo={temperatureIsDemo} goal={PROCESS_TEMPERATURE_GOAL} zones={PROCESS_TEMPERATURE_ZONES} scale={PROCESS_TEMPERATURE_SCALE} renderer="glossy-svg" />
-                  <TelemetryDial3D label="Discharge pressure" value={dischargeValue} unit="PSI" minimum={0} maximum={500} detail={dischargeIsDemo ? 'Local demo signal' : signalDetail(signals.highPressure, 'Discharge range', telemetry.status === 'error')} accent="gold" demo={dischargeIsDemo} />
-                  <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.5} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} />
-                  <TelemetryDial3D label="Compressor current" value={currentValue} unit="A" minimum={0} maximum={120} detail={currentIsDemo ? 'Local demo signal' : signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Current range', telemetry.status === 'error')} accent="lime" demo={currentIsDemo} />
+                  <TelemetryDial3D label="Discharge pressure" value={dischargeValue} unit="PSI" minimum={0} maximum={500} detail={dischargeIsDemo ? 'Local demo signal' : signalDetail(signals.highPressure, 'Discharge range', telemetry.status === 'error')} accent="gold" demo={dischargeIsDemo} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.5} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Compressor current" value={currentValue} unit="A" minimum={0} maximum={120} detail={currentIsDemo ? 'Local demo signal' : signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Current range', telemetry.status === 'error')} accent="lime" demo={currentIsDemo} renderer="glossy-svg" />
                 </div>
 
                 <div className="salinas-dashboard__unit-analysis">
@@ -2068,7 +2080,7 @@ export function SalinasEquipmentDashboard({
             >
               <summary>
                 <div>
-                  <strong>{variantName(variant)} · {variant.compressor.model}</strong>
+                  <strong>{compressorDisplayName(variant)}</strong>
                   <span>{variant.baseModelPattern} · Manual page {variant.capacityTable.sourcePage}</span>
                 </div>
                 <span>View 32 points</span>
