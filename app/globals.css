@@ -8110,6 +8110,20 @@ h4 {
   font-size: 0.76rem;
 }
 
+.salinas-dashboard__connection-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: auto;
+}
+
+.salinas-dashboard__connection-actions .salinas-dashboard__live-button,
+.salinas-dashboard__connection-actions .salinas-dashboard__refresh-button {
+  min-height: 36px;
+  margin-left: 0;
+}
+
 .salinas-dashboard__refresh-button {
   display: inline-flex;
   flex: 0 0 auto;

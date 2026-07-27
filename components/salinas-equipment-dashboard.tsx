@@ -118,13 +118,147 @@ const PROCESS_TEMPERATURE_SCALE: TelemetryDialScale = {
     { value: -30, angleDegrees: 84 },
     { value: -20, angleDegrees: 42 },
     { value: 0, angleDegrees: 0 },
+    { value: 10, angleDegrees: -18 },
+    { value: 20, angleDegrees: -36 },
+    { value: 40, angleDegrees: -54 },
     { value: 100, angleDegrees: -135 }
   ],
   tickValues: [
     -50, -45, -40, -35, -30, -25, -20, -15, -10, -5,
     0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
   ],
-  labelValues: [-40, -30, -20, 0, 40, 70, 100]
+  labelValues: [-40, -30, -20, 0, 10, 20, 40, 50, 60, 70, 100]
+};
+
+const DISCHARGE_PRESSURE_SCALE: TelemetryDialScale = {
+  stops: [
+    { value: 0, angleDegrees: 150 },
+    { value: 100, angleDegrees: 90 },
+    { value: 200, angleDegrees: 0 },
+    { value: 300, angleDegrees: -90 },
+    { value: 500, angleDegrees: -150 }
+  ],
+  tickValues: [
+    0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 350, 400, 450, 500
+  ],
+  labelValues: [0, 100, 150, 200, 250, 300, 400, 500],
+  majorTickValues: [0, 100, 150, 200, 250, 300, 400, 500],
+  smoothArc: true
+};
+
+const DISCHARGE_PRESSURE_ZONES: TelemetryDialZone[] = [
+  {
+    from: 0,
+    to: 100,
+    color: '#f4fbff',
+    label: '0–100 PSI white'
+  },
+  {
+    from: 100,
+    to: 150,
+    color: '#b8f27a',
+    label: '100–150 PSI light green'
+  },
+  {
+    from: 150,
+    to: 250,
+    color: '#59c36a',
+    label: '150–250 PSI normal'
+  },
+  {
+    from: 250,
+    to: 300,
+    color: '#f59e0b',
+    label: '250–300 PSI orange'
+  },
+  {
+    from: 300,
+    to: 400,
+    color: '#facc15',
+    label: '300–400 PSI caution'
+  },
+  {
+    from: 400,
+    to: 500,
+    color: '#ef4444',
+    label: '400–500 PSI high'
+  }
+];
+
+const SUCTION_PRESSURE_ZONES: TelemetryDialZone[] = [
+  {
+    from: 0,
+    to: 40,
+    color: '#82d568',
+    label: '0–40 PSI normal'
+  },
+  {
+    from: 5,
+    to: 10,
+    color: '#79d7ff',
+    label: '5–10 PSI light blue'
+  },
+  {
+    from: 0,
+    to: 5,
+    color: '#1e5fa8',
+    label: '0–5 PSI dark blue'
+  },
+  {
+    from: -5,
+    to: 0,
+    color: '#cbd7de',
+    label: '−5–0 PSI platinum',
+    effect: 'platinum'
+  },
+  {
+    from: -10,
+    to: -5,
+    color: '#facc15',
+    label: '−10–−5 PSI caution'
+  },
+  {
+    from: -14.5,
+    to: -10,
+    color: '#ef4444',
+    label: '−14.5–−10 PSI low'
+  },
+  {
+    from: 100,
+    to: 150,
+    color: '#facc15',
+    label: '100–150 PSI caution'
+  },
+  {
+    from: 150,
+    to: 300,
+    color: '#ef4444',
+    label: '150–300 PSI high'
+  }
+];
+
+const SUCTION_PRESSURE_SCALE: TelemetryDialScale = {
+  stops: [
+    { value: -14.5, angleDegrees: 150 },
+    { value: -10, angleDegrees: 120 },
+    { value: -5, angleDegrees: 90 },
+    { value: 0, angleDegrees: 60 },
+    { value: 10, angleDegrees: 0 },
+    { value: 20, angleDegrees: -30 },
+    { value: 40, angleDegrees: -60 },
+    { value: 50, angleDegrees: -75 },
+    { value: 60, angleDegrees: -90 },
+    { value: 100, angleDegrees: -105 },
+    { value: 150, angleDegrees: -135 },
+    { value: 300, angleDegrees: -165 }
+  ],
+  tickValues: [
+    -14.5, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
+    0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300
+  ],
+  labelValues: [-14.5, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
+  majorTickValues: [-14.5, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
+  smoothArc: true
 };
 
 type FastTelemetryState = {
@@ -683,7 +817,7 @@ export function SalinasEquipmentDashboard({
   siteId: string;
   equipmentRecord: SiteEquipmentRecord;
   catalog: CondenserCatalogRecord;
-  view?: 'overview' | 'specs';
+  view?: 'overview' | 'connectivity' | 'specs';
 }) {
   const system = equipmentRecord.processSystems[0];
   const defaultDraft: ConfigurationDraft = {
@@ -1191,6 +1325,79 @@ export function SalinasEquipmentDashboard({
     );
   }
 
+  function renderTelemetryFeedStatusCard(showLiveControl = false) {
+    return (
+      <div className="salinas-dashboard__connection-card">
+        <div className="salinas-dashboard__connection-heading">
+          <span
+            className={`salinas-dashboard__pulse ${telemetry.status === 'error' ? 'is-error' : currentUnitCount ? 'is-live' : ''}`}
+          />
+          <div>
+            <strong>
+              {telemetry.status === 'error'
+                ? 'Telemetry feed unavailable'
+                : ambiguousAliasCount
+                  ? 'Device mapping required'
+                  : currentUnitCount
+                    ? 'PLC signals current'
+                    : staleTelemetryRelevantCount
+                      ? 'PLC signals stale'
+                      : 'Equipment model ready'}
+            </strong>
+            <p>
+              {telemetry.status === 'loading'
+                ? 'Checking the protected telemetry feed...'
+                : telemetry.status === 'error'
+                  ? telemetry.error
+                  : ambiguousAliasCount
+                    ? `${ambiguousAliasCount} aliases appear on more than one device`
+                    : currentUnitCount
+                      ? `${currentUnitCount} of ${analyses.length} units reporting current pressure, temperature, amps, or state`
+                      : staleTelemetryRelevantCount
+                        ? `${staleTelemetryRelevantCount} mapped values are older than five minutes`
+                        : 'Waiting for mapped CH1 / CH2 values'}
+            </p>
+          </div>
+          <div className="salinas-dashboard__connection-actions">
+            {showLiveControl ? (
+              <button
+                type="button"
+                className={`salinas-dashboard__live-button${liveTelemetryActive ? ' is-live' : ''}`}
+                onClick={toggleFacilityLiveTelemetry}
+                aria-pressed={liveTelemetryActive}
+                aria-label={`${liveTelemetryActive ? 'Turn off' : 'Turn on'} live telemetry for the facility`}
+              >
+                <Mic size={14} aria-hidden="true" />
+                <span>Live</span>
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="salinas-dashboard__refresh-button"
+              onClick={refreshTelemetry}
+              disabled={telemetry.status === 'loading'}
+              aria-label="Refresh PLC telemetry now"
+            >
+              <RefreshCw
+                size={15}
+                className={telemetry.status === 'loading' ? 'salinas-dashboard__spin' : undefined}
+              />
+              {telemetry.status === 'loading' ? 'Refreshing' : 'Refresh'}
+            </button>
+          </div>
+        </div>
+        <small>
+          Standard dashboard check every {DEFAULT_TELEMETRY_REFRESH_MS / 1000} seconds
+        </small>
+        <small>
+          Live operating channel: {liveTelemetryActive ? `every ${LIVE_TELEMETRY_REFRESH_MS / 1000} seconds` : 'off'}
+        </small>
+        <span>Newest PLC sample: {formatTimestamp(newestMappedSignalTimestamp, true)}</span>
+        <span>Dashboard check: {formatTimestamp(telemetry.fetchedAt, true)}</span>
+      </div>
+    );
+  }
+
   return (
     <div className="salinas-dashboard">
       {view === 'overview' ? (
@@ -1212,63 +1419,31 @@ export function SalinasEquipmentDashboard({
             <span>Ethanol</span>
           </div>
         </div>
-        <div className="salinas-dashboard__connection-card">
-          <div className="salinas-dashboard__connection-heading">
-            <span
-              className={`salinas-dashboard__pulse ${telemetry.status === 'error' ? 'is-error' : currentUnitCount ? 'is-live' : ''}`}
-            />
-            <div>
-              <strong>
-                {telemetry.status === 'error'
-                  ? 'Telemetry feed unavailable'
-                  : ambiguousAliasCount
-                    ? 'Device mapping required'
-                    : currentUnitCount
-                      ? 'PLC signals current'
-                      : staleTelemetryRelevantCount
-                        ? 'PLC signals stale'
-                        : 'Equipment model ready'}
-              </strong>
-              <p>
-                {telemetry.status === 'loading'
-                  ? 'Checking the protected telemetry feed...'
-                  : telemetry.status === 'error'
-                    ? telemetry.error
-                  : ambiguousAliasCount
-                    ? `${ambiguousAliasCount} aliases appear on more than one device`
-                  : currentUnitCount
-                    ? `${currentUnitCount} of ${analyses.length} units reporting current pressure, temperature, amps, or state`
-                    : staleTelemetryRelevantCount
-                      ? `${staleTelemetryRelevantCount} mapped values are older than five minutes`
-                    : 'Waiting for mapped CH1 / CH2 values'}
-              </p>
-            </div>
-            <button
-              type="button"
-              className="salinas-dashboard__refresh-button"
-              onClick={refreshTelemetry}
-              disabled={telemetry.status === 'loading'}
-              aria-label="Refresh PLC telemetry now"
-            >
-              <RefreshCw
-                size={15}
-                className={telemetry.status === 'loading' ? 'salinas-dashboard__spin' : undefined}
-              />
-              {telemetry.status === 'loading' ? 'Refreshing' : 'Refresh'}
-            </button>
-          </div>
-          <small>
-            Standard dashboard check every {DEFAULT_TELEMETRY_REFRESH_MS / 1000} seconds
-          </small>
-          <small>
-            Live operating channel: {liveTelemetryActive ? `every ${LIVE_TELEMETRY_REFRESH_MS / 1000} seconds` : 'off'}
-          </small>
-          <span>Newest PLC sample: {formatTimestamp(newestMappedSignalTimestamp, true)}</span>
-          <span>Dashboard check: {formatTimestamp(telemetry.fetchedAt, true)}</span>
-        </div>
+        {renderTelemetryFeedStatusCard()}
       </section>
 
         </>
+      ) : null}
+
+      {view === 'connectivity' ? (
+      <section className="salinas-dashboard__hero">
+        <div className="salinas-dashboard__hero-copy">
+          <div className="salinas-dashboard__kicker">
+            <Cpu size={16} /> Live controller connection
+          </div>
+          <h2>PLC connection health</h2>
+          <p>
+            Protected telemetry checks, controller freshness, and signal mapping remain visible here without
+            crowding the operating dials.
+          </p>
+          <div className="salinas-dashboard__chips">
+            <span>15 second standard check</span>
+            <span>2 second live channel</span>
+            <span>15 second heartbeat target</span>
+          </div>
+        </div>
+        {renderTelemetryFeedStatusCard(true)}
+      </section>
       ) : null}
 
       {view === 'specs' ? (
@@ -1413,7 +1588,7 @@ export function SalinasEquipmentDashboard({
       </section>
       ) : null}
 
-      {view === 'specs' ? (
+      {view === 'connectivity' ? (
       <section className="salinas-dashboard__section">
         <div className="salinas-dashboard__section-heading">
           <div>
@@ -1469,7 +1644,7 @@ export function SalinasEquipmentDashboard({
                   ? fastTelemetry.error
                   : liveTelemetryActive
                     ? `Last fast check ${formatTimestamp(fastTelemetry.fetchedAt, true)}`
-                    : 'Turn on Live from Overview to start the 2-second channel'}
+                    : 'Turn on Live above to start the 2-second channel'}
               </small>
             </div>
           </article>
@@ -1902,8 +2077,8 @@ export function SalinasEquipmentDashboard({
 
                 <div className="salinas-dashboard__gauge-grid">
                   <TelemetryDial3D label="Process temperature" value={temperatureValue} unit="°F" minimum={-50} maximum={100} detail={temperatureIsDemo ? 'Local demo signal' : signalDetail(signals.temperature, 'Display range', telemetry.status === 'error')} accent="cyan" demo={temperatureIsDemo} goal={PROCESS_TEMPERATURE_GOAL} zones={PROCESS_TEMPERATURE_ZONES} scale={PROCESS_TEMPERATURE_SCALE} renderer="glossy-svg" />
-                  <TelemetryDial3D label="Discharge pressure" value={dischargeValue} unit="PSI" minimum={0} maximum={500} detail={dischargeIsDemo ? 'Local demo signal' : signalDetail(signals.highPressure, 'Discharge range', telemetry.status === 'error')} accent="gold" demo={dischargeIsDemo} renderer="glossy-svg" />
-                  <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.5} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Discharge pressure" value={dischargeValue} unit="PSI" minimum={0} maximum={500} detail={dischargeIsDemo ? 'Local demo signal' : signalDetail(signals.highPressure, 'Discharge range', telemetry.status === 'error')} accent="gold" demo={dischargeIsDemo} zones={DISCHARGE_PRESSURE_ZONES} scale={DISCHARGE_PRESSURE_SCALE} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.5} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} zones={SUCTION_PRESSURE_ZONES} scale={SUCTION_PRESSURE_SCALE} renderer="glossy-svg" />
                   <TelemetryDial3D label="Compressor current" value={currentValue} unit="A" minimum={0} maximum={120} detail={currentIsDemo ? 'Local demo signal' : signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Current range', telemetry.status === 'error')} accent="lime" demo={currentIsDemo} renderer="glossy-svg" />
                 </div>
 
@@ -1945,7 +2120,10 @@ export function SalinasEquipmentDashboard({
           })}
         </div>
       </section>
+        </>
+      ) : null}
 
+      {view === 'connectivity' ? (
       <section className="salinas-dashboard__performance-summary">
         <div>
           <p className="eyebrow">System estimate</p>
@@ -1977,11 +2155,10 @@ export function SalinasEquipmentDashboard({
           <div><span>Power calculation</span><strong>Awaiting measured 3-phase kW</strong></div>
         </div>
       </section>
-        </>
       ) : null}
 
       <section className="salinas-dashboard__context-grid is-single">
-        {view === 'overview' ? (
+        {view === 'connectivity' ? (
         <article className="salinas-dashboard__panel">
           <div className="salinas-dashboard__panel-heading">
             <span className="salinas-dashboard__panel-icon"><Database size={22} /></span>

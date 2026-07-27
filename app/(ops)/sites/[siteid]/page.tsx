@@ -70,47 +70,23 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
         <EquipmentEventList events={siteEvents.events} timezone={site.timezone} />
       </SectionCard>
 
-      <SectionCard title="Gateway status" eyebrow="Connectivity">
-        <div className="list-row">
-          <div>
-            <strong>Primary edge gateway</strong>
-            <p>Outbound secure tunnel expected for all telemetry traffic.</p>
-          </div>
-          <StatusBadge tone={site.gatewayStatus} />
+      <SectionCard title="Alerts" eyebrow="Recent activity">
+        <div className="list-stack">
+          {siteAlerts.length ? (
+            siteAlerts.map((alert) => (
+              <div key={alert.id} className="list-row list-row-start">
+                <div>
+                  <strong>{alert.message}</strong>
+                  <p>{alert.startedAt}</p>
+                </div>
+                <StatusBadge tone={alert.severity} label={alert.status} />
+              </div>
+            ))
+          ) : (
+            <p className="empty-state">No active site alerts.</p>
+          )}
         </div>
       </SectionCard>
-
-      <div className="content-grid">
-        <SectionCard title="Devices" eyebrow="Controllers">
-          <div className="table-like">
-            {siteDevices.map((device) => (
-              <Link key={device.id} href={`/devices/${device.id}`} className="table-row link-row">
-                <span>{device.name}</span>
-                <span>{device.protocol}</span>
-                <StatusBadge tone={device.status} />
-              </Link>
-            ))}
-          </div>
-        </SectionCard>
-
-        <SectionCard title="Alerts" eyebrow="Recent activity">
-          <div className="list-stack">
-            {siteAlerts.length ? (
-              siteAlerts.map((alert) => (
-                <div key={alert.id} className="list-row list-row-start">
-                  <div>
-                    <strong>{alert.message}</strong>
-                    <p>{alert.startedAt}</p>
-                  </div>
-                  <StatusBadge tone={alert.severity} label={alert.status} />
-                </div>
-              ))
-            ) : (
-              <p className="empty-state">No active site alerts.</p>
-            )}
-          </div>
-        </SectionCard>
-      </div>
 
       {!hasEquipmentDashboard ? (
         <SiteTelemetryPanel

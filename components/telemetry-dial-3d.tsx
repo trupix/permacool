@@ -38,7 +38,7 @@ export type TelemetryDialZone = {
   to: number;
   color: string;
   label: string;
-  effect?: 'frost';
+  effect?: 'frost' | 'platinum';
   secondaryColor?: string;
 };
 
@@ -55,6 +55,8 @@ export type TelemetryDialScale = {
   }>;
   tickValues: number[];
   labelValues: number[];
+  majorTickValues?: number[];
+  smoothArc?: boolean;
 };
 
 type TelemetryDial3DProps = {
@@ -268,10 +270,14 @@ function dialPathPoints(
   radius = 1.72
 ) {
   const steps = 48;
+  const fromAngle = valueAngle(from, minimum, maximum, scale);
+  const toAngle = valueAngle(to, minimum, maximum, scale);
   return Array.from({ length: steps + 1 }, (_, index) => {
     const sampleValue = MathUtils.lerp(from, to, index / steps);
     const point = dialPoint(
-      valueAngle(sampleValue, minimum, maximum, scale),
+      scale?.smoothArc
+        ? MathUtils.lerp(fromAngle, toAngle, index / steps)
+        : valueAngle(sampleValue, minimum, maximum, scale),
       radius
     );
     return `${point.x.toFixed(3)},${point.y.toFixed(3)}`;
@@ -325,6 +331,14 @@ function GlossyTelemetryDial({
           <stop offset="78%" stopColor="#ffffff" />
           <stop offset="100%" stopColor="#17384f" />
         </linearGradient>
+        <linearGradient id={`${id}-platinum`} x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#647581" />
+          <stop offset="20%" stopColor="#d8e7ee" />
+          <stop offset="42%" stopColor="#ffffff" />
+          <stop offset="60%" stopColor="#9babb6" />
+          <stop offset="78%" stopColor="#eefbff" />
+          <stop offset="100%" stopColor="#748a98" />
+        </linearGradient>
         <filter id={`${id}-shadow`} x="-40%" y="-40%" width="180%" height="180%">
           <feDropShadow dx="0" dy="0.08" stdDeviation="0.08" floodColor="#000b10" floodOpacity="0.9" />
         </filter>
@@ -352,7 +366,13 @@ function GlossyTelemetryDial({
           <polyline
             points={dialPathPoints(zone.from, zone.to, minimum, maximum, scale)}
             fill="none"
-            stroke={zone.effect === 'frost' ? `url(#${id}-frost)` : zone.color}
+            stroke={
+              zone.effect === 'frost'
+                ? `url(#${id}-frost)`
+                : zone.effect === 'platinum'
+                  ? `url(#${id}-platinum)`
+                  : zone.color
+            }
             strokeWidth="0.2"
           />
           {zone.effect === 'frost' ? (
@@ -364,6 +384,16 @@ function GlossyTelemetryDial({
               strokeOpacity="0.9"
               strokeWidth="0.055"
             />
+          ) : zone.effect === 'platinum' ? (
+            <polyline
+              points={dialPathPoints(zone.from, zone.to, minimum, maximum, scale, 1.69)}
+              fill="none"
+              stroke="#e9fbff"
+              strokeLinecap="round"
+              strokeOpacity="0.9"
+              strokeWidth="0.045"
+              filter={`url(#${id}-glow)`}
+            />
           ) : null}
         </g>
       ))}
@@ -371,7 +401,7 @@ function GlossyTelemetryDial({
       {tickValues.map((tickValue, index) => {
         const angle = valueAngle(tickValue, minimum, maximum, scale);
         const major = scale
-          ? scale.labelValues.includes(tickValue)
+          ? (scale.majorTickValues ?? scale.labelValues).includes(tickValue)
           : index % 4 === 0;
         const inner = dialPoint(angle, major ? 1.45 : 1.56);
         const outer = dialPoint(angle, 1.76);
@@ -729,7 +759,7 @@ export function TelemetryDial3D({
       const tickValue = tickValues[index];
       const angle = valueAngle(tickValue, minimum, maximum, scale);
       const major = scale
-        ? scale.labelValues.includes(tickValue)
+        ? (scale.majorTickValues ?? scale.labelValues).includes(tickValue)
         : index % 4 === 0;
       const radius = major ? 1.58 : 1.65;
       const tickMaterial = new MeshBasicMaterial({

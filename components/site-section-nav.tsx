@@ -1,10 +1,11 @@
 import Link from 'next/link';
-import { Activity, FileText, LayoutDashboard } from 'lucide-react';
+import { Activity, FileText, LayoutDashboard, Wifi } from 'lucide-react';
 
-type SiteSection = 'overview' | 'specs' | 'events';
+type SiteSection = 'overview' | 'connectivity' | 'specs' | 'events';
 
 const sections = [
-  { id: 'overview' as const, label: 'Overview', suffix: '', icon: LayoutDashboard },
+  { id: 'overview' as const, label: 'Live', suffix: '', icon: LayoutDashboard },
+  { id: 'connectivity' as const, label: 'Connectivity', suffix: '/connectivity', icon: Wifi },
   { id: 'specs' as const, label: 'Location Specs', suffix: '/specs', icon: FileText },
   { id: 'events' as const, label: 'Events', suffix: '/events', icon: Activity }
 ];
