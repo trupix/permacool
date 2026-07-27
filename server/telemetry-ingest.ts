@@ -12,6 +12,11 @@ function telemetryLabel(key: string) {
     .join(' ');
 }
 
+function normalizeTelemetryUnit(unit: string) {
+  if (unit === '°C' || unit === 'Â°C' || unit === '?C') return 'C';
+  return unit;
+}
+
 export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
   if (!hasDatabaseUrl()) {
     return { persisted: false, pointCount: payload.points.length, reason: 'database-not-configured' } as const;
@@ -54,19 +59,28 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
       where: { id: payload.deviceId },
       data: { status: 'online', lastSeenAt: capturedAt }
     }),
+    db.telemetrySample.createMany({
+      data: payload.points.map((point) => ({
+        deviceId: payload.deviceId,
+        key: point.key,
+        value: point.value,
+        unit: normalizeTelemetryUnit(point.unit),
+        capturedAt
+      }))
+    }),
     ...payload.points.map((point) =>
       db.telemetryPoint.upsert({
         where: { deviceId_key: { deviceId: payload.deviceId, key: point.key } },
         update: {
           latestValue: point.value,
-          unit: point.unit,
+          unit: normalizeTelemetryUnit(point.unit),
           latestTimestamp: capturedAt
         },
         create: {
           deviceId: payload.deviceId,
           key: point.key,
           label: telemetryLabel(point.key),
-          unit: point.unit,
+          unit: normalizeTelemetryUnit(point.unit),
           latestValue: point.value,
           latestTimestamp: capturedAt
         }

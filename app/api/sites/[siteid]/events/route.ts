@@ -52,11 +52,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ site
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
 
-  const site = await getSite(siteId);
+  const site = await getSite(user, siteId);
   if (!site) return NextResponse.json({ error: 'Site not found.' }, { status: 404 });
-  if (!user.organizationIds.includes(site.organizationId)) {
-    return NextResponse.json({ error: 'Site access denied.' }, { status: 403 });
-  }
 
   const url = new URL(request.url);
   const download = url.searchParams.get('download') === 'csv';

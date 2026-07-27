@@ -10,6 +10,8 @@ const users = [
     name: 'Jose Perez',
     email: 'jose@perma.cool',
     role: 'owner',
+    platformRole: 'staff_admin',
+    status: 'approved',
     organizationIds: ['org-permacool']
   },
   {
@@ -17,6 +19,8 @@ const users = [
     name: 'Maya Chen',
     email: 'maya@perma.cool',
     role: 'operator',
+    platformRole: 'staff_support',
+    status: 'approved',
     organizationIds: ['org-permacool']
   }
 ];

@@ -2,12 +2,14 @@ import { db } from '@/lib/db';
 import { users } from '@/lib/mock-data';
 import type { AppUser } from '@/types/domain';
 import { shouldUseDatabase } from './shared';
+import { type AccessScope } from '@/lib/access';
 
-export async function getUsers(): Promise<AppUser[]> {
+export async function getUsers(scope: AccessScope): Promise<AppUser[]> {
+  if (scope.platformRole !== 'staff_admin') throw new Error('Forbidden');
   if (!shouldUseDatabase()) return users;
 
   const rows = await db.user.findMany({
-    include: { memberships: true },
+    include: { memberships: true, deviceAccess: true },
     orderBy: { name: 'asc' }
   });
 
@@ -16,6 +18,14 @@ export async function getUsers(): Promise<AppUser[]> {
     name: row.name,
     email: row.email,
     role: row.role,
-    organizationIds: row.memberships.map((membership) => membership.organizationId)
+    platformRole: row.platformRole,
+    status: row.status,
+    companyName: row.companyName ?? undefined,
+    accessNote: row.accessNote ?? undefined,
+    organizationIds: row.memberships.map((membership) => membership.organizationId),
+    allDeviceOrganizationIds: row.memberships
+      .filter((membership) => membership.allDevices)
+      .map((membership) => membership.organizationId),
+    deviceIds: row.deviceAccess.map((assignment) => assignment.deviceId)
   }));
 }

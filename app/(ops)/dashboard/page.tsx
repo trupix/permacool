@@ -7,6 +7,8 @@ import { getAlerts } from '@/server/repositories/alerts';
 import { getDevices } from '@/server/repositories/devices';
 import { getOverviewMetrics } from '@/server/repositories/overview';
 import { getSites } from '@/server/repositories/sites';
+import { requireUser } from '@/lib/auth';
+import { isStaffScope } from '@/lib/access';
 
 export const metadata: Metadata = {
   title: 'SOUL Matrix',
@@ -14,17 +16,18 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
+  const user = await requireUser();
   const [alerts, devices, sites, dashboardSummary] = await Promise.all([
-    getAlerts(),
-    getDevices(),
-    getSites(),
-    getOverviewMetrics()
+    getAlerts(user),
+    getDevices(user),
+    getSites(user),
+    getOverviewMetrics(user)
   ]);
   return (
     <main className="page-stack">
       <header>
-        <p className="eyebrow">Agenticly.Cool</p>
-        <h1>SOUL Matrix</h1>
+        <p className="eyebrow">{isStaffScope(user) ? 'Agenticly.Cool' : 'Customer portal'}</p>
+        <h1>{isStaffScope(user) ? 'SOUL Matrix' : 'My equipment overview'}</h1>
         <p className="page-copy">
           Signals, Operations, Unity &amp; Logic — the living state of every connected system.
         </p>

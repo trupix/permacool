@@ -16,6 +16,209 @@
   --max: 1180px;
 }
 
+/* Customer portal sign-in — isolated from operations panel styles */
+.marketing-shell:has(.sign-in-panel) {
+  display: grid;
+  min-height: 100svh;
+  max-width: none;
+  margin: 0;
+  padding: clamp(2rem, 7vw, 6rem) 1.25rem;
+  place-items: center;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(200, 240, 106, 0.2), transparent 28rem),
+    radial-gradient(circle at 100% 100%, rgba(71, 140, 111, 0.12), transparent 34rem),
+    #f4f6f1;
+}
+
+.sign-in-panel.panel {
+  width: min(100%, 980px);
+  max-width: 980px;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  overflow: visible;
+  border: 1px solid rgba(17, 44, 34, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 255, 252, 0.96);
+  color: #10211b;
+  box-shadow: 0 28px 80px rgba(28, 49, 40, 0.12);
+}
+
+.sign-in-panel .eyebrow {
+  margin: 0 0 0.75rem;
+  color: #547a35;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+}
+
+.sign-in-panel h1 {
+  max-width: 700px;
+  margin: 0;
+  color: #10211b;
+  font-size: clamp(2.35rem, 6vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.sign-in-panel.panel .lede {
+  max-width: 720px;
+  margin: 1.15rem 0 0;
+  color: #5f7069;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.sign-in-panel .auth-callout {
+  margin: 1.5rem 0 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(101, 142, 56, 0.18);
+  border-radius: 12px;
+  background: #edf8cf;
+  color: #38531f;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.sign-in-options {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(1.25rem, 4vw, 3rem);
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(17, 44, 34, 0.1);
+}
+
+.sign-in-option {
+  min-width: 0;
+}
+
+.sign-in-option--request {
+  padding-left: clamp(1.25rem, 3vw, 2.5rem);
+  border-left: 1px solid rgba(17, 44, 34, 0.1);
+}
+
+.sign-in-option h2 {
+  margin: 0;
+  color: #10211b;
+  font-size: clamp(1.55rem, 3vw, 2.25rem);
+  letter-spacing: -0.035em;
+}
+
+.sign-in-option > p {
+  min-height: 3.2em;
+  margin: 0.55rem 0 0;
+  color: #6b7a74;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.sign-in-panel .auth-form {
+  gap: 0.9rem;
+  margin-top: 1.25rem;
+}
+
+.sign-in-panel .auth-form label {
+  gap: 0.42rem;
+  color: #40534b;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.sign-in-panel .auth-form input,
+.sign-in-panel .auth-form select {
+  min-height: 48px;
+  border: 1px solid #b7c3bd;
+  border-radius: 11px;
+  background: #fff;
+  color: #10211b;
+  padding: 0.75rem 0.85rem;
+  box-shadow: 0 1px 0 rgba(17, 44, 34, 0.03);
+}
+
+.sign-in-panel .auth-form input::placeholder {
+  color: #8a9791;
+  opacity: 1;
+}
+
+.sign-in-panel .auth-form input:focus,
+.sign-in-panel .auth-form select:focus {
+  border-color: #547a35;
+  outline: 3px solid rgba(200, 240, 106, 0.38);
+  outline-offset: 1px;
+}
+
+.sign-in-panel .button-primary,
+.sign-in-panel .button-secondary {
+  min-height: 48px;
+  margin-top: 0.2rem;
+  border: 1px solid #10271f;
+  border-radius: 11px;
+  background: #10271f;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.sign-in-panel .button-secondary {
+  border-color: #a6c64f;
+  background: #c8f06a;
+  color: #10211b;
+}
+
+.sign-in-panel .button-primary:hover,
+.sign-in-panel .button-secondary:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.97);
+}
+
+.sign-in-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.sign-in-text-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #60716a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .marketing-shell:has(.sign-in-panel) {
+    align-items: start;
+    padding: 1rem;
+  }
+
+  .sign-in-panel.panel {
+    padding: 1.4rem;
+    border-radius: 18px;
+  }
+
+  .sign-in-panel h1 {
+    font-size: clamp(2.2rem, 12vw, 3.5rem);
+  }
+
+  .sign-in-options {
+    grid-template-columns: 1fr;
+  }
+
+  .sign-in-option--request {
+    padding: 1.5rem 0 0;
+    border-top: 1px solid rgba(17, 44, 34, 0.1);
+    border-left: 0;
+  }
+
+  .sign-in-option > p {
+    min-height: 0;
+  }
+}
+
 /* Site and PLC provisioning */
 .provisioning-page {
   --provisioning-blue: #397081;
@@ -5030,6 +5233,229 @@ h4 {
   }
 
 }
+.telemetry-panel {
+  padding: 1.5rem;
+  border: 1px solid #1f3847;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(102, 212, 255, 0.11), transparent 35%),
+    rgba(15, 31, 43, 0.94);
+}
+
+.telemetry-panel-header,
+.telemetry-modal-header,
+.telemetry-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.telemetry-panel-header h2,
+.telemetry-modal-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.telemetry-freshness {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.65rem 0 0;
+  color: #9fb5c3;
+}
+
+.live-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #6dd8a1;
+  box-shadow: 0 0 0 5px rgba(109, 216, 161, 0.12);
+}
+
+.telemetry-log-button,
+.telemetry-close {
+  border: 1px solid #315064;
+  color: #edf6fb;
+  cursor: pointer;
+}
+
+.gauge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.telemetry-gauge-card {
+  display: grid;
+  justify-items: center;
+  padding: 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.telemetry-gauge {
+  display: grid;
+  place-items: center;
+  width: 132px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 225deg,
+    var(--gauge-accent) 0deg var(--gauge-progress),
+    rgba(255, 255, 255, 0.09) var(--gauge-progress) 270deg,
+    transparent 270deg
+  );
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.28));
+}
+
+.telemetry-gauge-inner {
+  display: grid;
+  place-items: center;
+  width: 98px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #0d1f2a;
+}
+
+.telemetry-gauge-inner strong {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.telemetry-gauge-inner span,
+.telemetry-gauge-card p,
+.telemetry-state p {
+  color: #9fb5c3;
+}
+
+.telemetry-gauge-card h3 {
+  margin: 0.9rem 0 0.25rem;
+  font-size: 1rem;
+}
+
+.telemetry-gauge-card p {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.telemetry-state-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.telemetry-state {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.8rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.telemetry-state p {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+}
+
+.telemetry-state-dot {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+
+.telemetry-state-dot.is-healthy {
+  background: #6dd8a1;
+  box-shadow: 0 0 12px rgba(109, 216, 161, 0.7);
+}
+
+.telemetry-state-dot.is-idle {
+  background: #718390;
+}
+
+.telemetry-modal-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(2, 8, 13, 0.78);
+  backdrop-filter: blur(10px);
+}
+
+.telemetry-modal {
+  width: min(880px, 100%);
+  max-height: min(780px, 90vh);
+  overflow: auto;
+  padding: 1.5rem;
+  border: 1px solid #315064;
+  border-radius: 22px;
+  background: #0d1f2a;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55);
+}
+
+.telemetry-close {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 1.6rem;
+}
+
+.telemetry-reading-list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1.25rem 0;
+}
+
+.telemetry-reading-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 140px minmax(180px, auto);
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.telemetry-reading-row strong {
+  display: block;
+  text-transform: capitalize;
+}
+
+.telemetry-reading-row small,
+.telemetry-reading-row time {
+  color: #9fb5c3;
+}
+
+.telemetry-reading-value {
+  color: #66d4ff;
+  font-weight: 800;
+}
+
+.telemetry-pagination .button-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 680px) {
+  .telemetry-panel-header,
+  .telemetry-modal-header {
+    align-items: flex-start;
+  }
+
+  .telemetry-reading-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+}
+
 
 @media (max-width: 980px) {
   .footer-main {

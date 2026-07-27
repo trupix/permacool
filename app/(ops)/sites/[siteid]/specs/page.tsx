@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 export default async function LocationSpecsPage({ params }: { params: Promise<{ siteid: string }> }) {
   const { siteid: siteId } = await params;
   const user = await requireUser();
-  const site = await getSite(siteId);
+  const site = await getSite(user, siteId);
 
-  if (!site || !user.organizationIds.includes(site.organizationId)) notFound();
+  if (!site) notFound();
 
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;

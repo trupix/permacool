@@ -2,6 +2,7 @@
   "name": "permacool-site",
   "private": true,
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",

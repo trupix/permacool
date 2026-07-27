@@ -1,5 +1,7 @@
 export const dynamic = 'force-dynamic'
 
+import { requireStaff } from '@/lib/auth'
+
 export const metadata = {
   title: 'FreshBooks Connection Result | Perma Cool',
   description: 'FreshBooks OAuth connection status.',
@@ -11,12 +13,12 @@ export const metadata = {
 }
 
 export default async function FreshbooksSuccessPage({ searchParams }) {
+  await requireStaff(['staff_admin'])
   const params = await searchParams
   const tokenOk = String(params?.token || '0') === '1'
   const identityOk = String(params?.identity || '0') === '1'
   const error = params?.error || ''
   const view = params?.view || ''
-  const data = params?.data || ''
 
   return (
     <section className="container section">
@@ -32,7 +34,7 @@ export default async function FreshbooksSuccessPage({ searchParams }) {
         <div className="card mt">
           <h3>One-time token payload</h3>
           <p>Open this once to view/copy tokens for your Freshprince bot:</p>
-          <p><a href={`/freshbooks/token-once?view=${encodeURIComponent(String(view))}&data=${encodeURIComponent(String(data))}`}>/freshbooks/token-once?view={view}</a></p>
+          <p><a href={`/freshbooks/token-once?view=${encodeURIComponent(String(view))}`}>View the one-time token payload</a></p>
         </div>
       ) : null}
     </section>

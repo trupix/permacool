@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 import { fromB64 } from '../_shared'
+import { isFreshbooksAdmin } from '../_auth'
 
 export async function GET(req) {
+  if (!(await isFreshbooksAdmin())) return new NextResponse('Forbidden', { status: 403 })
   const url = new URL(req.url)
   const view = url.searchParams.get('view')
-  const data = url.searchParams.get('data')
 
   const cookieView = req.cookies.get('fb_view_key')?.value
   const cookiePayload = req.cookies.get('fb_tokens_once')?.value
@@ -13,12 +14,10 @@ export async function GET(req) {
 
   if (view && cookieView && view === cookieView && cookiePayload) {
     payloadRaw = cookiePayload
-  } else if (data) {
-    payloadRaw = data
   }
 
   if (!payloadRaw) {
-    return new NextResponse('Token payload unavailable (missing/expired session and no data fallback).', { status: 404 })
+    return new NextResponse('Token payload unavailable or expired.', { status: 404 })
   }
 
   try {

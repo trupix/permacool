@@ -7,9 +7,12 @@ SOUL.md
 TOOLS.md
 USER.md
 .env.local
+.env.vercel.production.local
 .env
 .next-dev*.log
 .next/
 node_modules/
 .vercel/
 *.tsbuildinfo
+vpn-profiles/
+backups/

@@ -6,7 +6,10 @@ import type { ReactNode } from 'react';
 import {
   Activity,
   Bell,
+  BookOpen,
   ChevronRight,
+  CreditCard,
+  Headphones,
   LayoutDashboard,
   MapPinned,
   RadioTower,
@@ -22,15 +25,27 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import type { AppUser } from '@/types/domain';
 
-const navItems: Array<{ href: string; label: string; icon: LucideIcon; matches?: string[] }> = [
+type NavItem = { href: string; label: string; icon: LucideIcon; matches?: string[] };
+
+const sharedNavItems: NavItem[] = [
   { href: '/dashboard', label: 'SOUL Matrix', icon: LayoutDashboard },
   { href: '/sites', label: 'Sites', icon: MapPinned, matches: ['/sites', '/devices'] },
+  { href: '/alerts', label: 'Alerts', icon: Bell },
+  { href: '/support', label: 'Support', icon: Headphones },
+  { href: '/documents', label: 'Documents', icon: BookOpen },
+  { href: '/billing', label: 'Billing', icon: CreditCard }
+];
+
+const staffNavItems: NavItem[] = [
   { href: '/provisioning', label: 'Provisioning', icon: ServerCog },
   { href: '/ingest-test', label: 'Telemetry', icon: RadioTower },
   { href: '/logic', label: 'Logic', icon: Workflow },
-  { href: '/alerts', label: 'Alerts', icon: Bell },
-  { href: '/admin/users', label: 'Team', icon: Users },
   { href: '/audit-log', label: 'Audit log', icon: ScrollText }
+];
+
+const adminNavItems: NavItem[] = [
+  { href: '/admin/users', label: 'Team', icon: Users },
+  { href: '/admin/portal', label: 'Portal admin', icon: ShieldCheck }
 ];
 
 function initials(name: string) {
@@ -44,6 +59,18 @@ function initials(name: string) {
 
 export function AppShell({ user, children }: { user: AppUser; children: ReactNode }) {
   const pathname = usePathname();
+  const isStaff = user.platformRole === 'staff_admin' || user.platformRole === 'staff_support';
+  const navItems = [
+    ...sharedNavItems.map((item) =>
+      user.platformRole === 'customer' && item.href === '/dashboard'
+        ? { ...item, label: 'Overview' }
+        : user.platformRole === 'customer' && item.href === '/sites'
+          ? { ...item, label: 'My Equipment' }
+          : item
+    ),
+    ...(isStaff ? staffNavItems : []),
+    ...(user.platformRole === 'staff_admin' ? adminNavItems : [])
+  ];
 
   return (
     <div className="app-shell">
@@ -89,7 +116,7 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
             <span className="user-avatar" aria-hidden="true">{initials(user.name)}</span>
             <span className="sidebar-user-copy">
               <strong>{user.name}</strong>
-              <small>{user.role}</small>
+              <small>{user.platformRole === 'customer' ? user.role : user.platformRole}</small>
             </span>
           </div>
         </div>
