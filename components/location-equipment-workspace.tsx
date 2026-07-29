@@ -337,10 +337,14 @@ function refrigerantLabel(unit: UnitDraft) {
   return unit.refrigerant === 'other' ? entered(unit.refrigerantOther, 'Other refrigerant') : unit.refrigerant;
 }
 
+function isRussellMinicon6Hp(unit: UnitDraft) {
+  return unit.catalogSelection === 'russell-next-gen-minicon-6hp-zs45k4e-r404a' ||
+    unit.catalogSelection === 'russell-next-gen-minicon-6hp-zs45k4e-r448a';
+}
+
 function isZs45k4e(unit: UnitDraft) {
   return unit.compressorModel.toUpperCase().replaceAll('-', '') === 'ZS45K4E' ||
-    unit.compressorVariant.includes('zs45k4e') ||
-    unit.catalogSelection.includes('zs45k4e');
+    unit.compressorVariant.includes('zs45k4e');
 }
 
 export function LocationEquipmentWorkspace({
@@ -615,27 +619,69 @@ export function LocationEquipmentWorkspace({
               <b>{configuredFields(unit)} of 8 key fields</b>
             </header>
 
-            {isZs45k4e(unit) ? (
-              <div className="location-equipment-compressor-hero">
-                <Image
-                  src="/images/equipment/copeland-zs45k4e-mini-hero.png"
-                  alt="Copeland ZS45K4E scroll compressor"
-                  fill
-                  sizes="(max-width: 700px) 100vw, 920px"
-                />
-                <div className="location-equipment-compressor-hero-shade" />
-                <div className="location-equipment-compressor-hero-content">
-                  <p className="eyebrow">Russell Next-Gen MiniCon</p>
-                  <h3>Copeland ZS45K4E</h3>
-                  <p>6 HP scroll compressor for the R*O600E4S** condensing unit.</p>
-                  <div className="location-equipment-compressor-hero-badges">
-                    <span>{refrigerantLabel(unit) || 'R404A / R448A'}</span>
-                    <span>Capacity map saved</span>
-                    <span>Manual RU-RFH-A1-0925-2</span>
+            <div className="location-equipment-visual-grid" aria-label={`${unit.label} equipment images`}>
+              <article className={`location-equipment-visual-card ${isRussellMinicon6Hp(unit) ? 'has-image' : 'is-empty'}`}>
+                {isRussellMinicon6Hp(unit) ? (
+                  <>
+                    <Image
+                      src="/images/equipment/russell-next-gen-minicon-condenser-hero.png"
+                      alt="Russell Next-Gen MiniCon air-cooled condensing unit"
+                      fill
+                      sizes="(max-width: 700px) 100vw, 50vw"
+                    />
+                    <div className="location-equipment-visual-shade" />
+                    <div className="location-equipment-visual-content">
+                      <span>Condenser</span>
+                      <strong>Russell Next-Gen MiniCon</strong>
+                      <small>R*O600E4S** · 6 HP · {refrigerantLabel(unit)}</small>
+                      <b>Selected visual</b>
+                    </div>
+                  </>
+                ) : (
+                  <div className="location-equipment-visual-placeholder">
+                    <Snowflake size={24} />
+                    <span>Condenser image</span>
+                    <strong>
+                      {unit.catalogSelection && unit.catalogSelection !== 'custom'
+                        ? 'Reference image coming soon'
+                        : 'Select a known condenser'}
+                    </strong>
+                    <small>Its cabinet image will appear here for visual verification.</small>
                   </div>
-                </div>
-              </div>
-            ) : null}
+                )}
+              </article>
+
+              <article className={`location-equipment-visual-card ${isZs45k4e(unit) ? 'has-image' : 'is-empty'}`}>
+                {isZs45k4e(unit) ? (
+                  <>
+                    <Image
+                      src="/images/equipment/copeland-zs45k4e-mini-hero.png"
+                      alt="Copeland ZS45K4E scroll compressor"
+                      fill
+                      sizes="(max-width: 700px) 100vw, 50vw"
+                    />
+                    <div className="location-equipment-visual-shade" />
+                    <div className="location-equipment-visual-content">
+                      <span>Compressor</span>
+                      <strong>Copeland ZS45K4E</strong>
+                      <small>6 HP scroll · {refrigerantLabel(unit) || 'R404A / R448A'}</small>
+                      <b>Selected visual</b>
+                    </div>
+                  </>
+                ) : (
+                  <div className="location-equipment-visual-placeholder">
+                    <Gauge size={24} />
+                    <span>Compressor image</span>
+                    <strong>
+                      {unit.compressorVariant !== 'unconfirmed'
+                        ? 'Reference image coming soon'
+                        : 'Select an installed compressor'}
+                    </strong>
+                    <small>Its product image will appear here for visual verification.</small>
+                  </div>
+                )}
+              </article>
+            </div>
 
             <FormSection icon={<Settings2 size={16} />} title="Condenser identity">
               <label><span>Display name</span><input value={unit.label} onChange={(event) => updateUnit(index, { label: event.target.value })} /></label>
