@@ -345,7 +345,7 @@ export function LocationEquipmentWorkspace({
           <h2>System and condenser records</h2>
           <p>Build the installed-equipment record now; telemetry can be connected afterward.</p>
         </div>
-        <span><CheckCircle2 size={15} /> {loaded ? 'Cannon Falls draft saved' : 'Loading draft'}</span>
+        <span><CheckCircle2 size={15} /> {loaded ? `${siteName} draft saved` : 'Loading draft'}</span>
       </section>
 
       <section className="panel location-equipment-system-form">
@@ -432,7 +432,7 @@ export function LocationEquipmentWorkspace({
 
       <section className="location-equipment-draft-note">
         <Activity size={17} />
-        <div><strong>This is the Cannon Falls equipment draft.</strong><p>Nothing is treated as verified manufacturer data until it is entered from a nameplate or approved manual.</p></div>
+        <div><strong>This is the {siteName} equipment draft.</strong><p>Nothing is treated as verified manufacturer data until it is entered from a nameplate or approved manual.</p></div>
       </section>
     </div>
   );

@@ -199,7 +199,7 @@ export function ProvisioningWorkspace({
             <label><span>Region label</span><input required maxLength={120} value={siteForm.region} onChange={(event) => setSiteForm({ ...siteForm, region: event.target.value })} placeholder="California, US" /></label>
             <label className="is-wide"><span>Time zone</span><select value={siteForm.timezone} onChange={(event) => setSiteForm({ ...siteForm, timezone: event.target.value })}>{timezones.map((timezone) => <option key={timezone}>{timezone}</option>)}</select></label>
           </fieldset>
-          <footer><p>The site begins offline until its first PLC reports.</p><button type="submit" disabled={!canManage || !storageReady || Boolean(saving)}>{saving === 'site' ? <LoaderCircle className="is-spinning" size={15} /> : <Plus size={15} />} Add site</button></footer>
+          <footer><p>Every new site receives blank Live, Connectivity, Location Specs, and Events pages.</p><button type="submit" disabled={!canManage || !storageReady || Boolean(saving)}>{saving === 'site' ? <LoaderCircle className="is-spinning" size={15} /> : <Plus size={15} />} Add site</button></footer>
         </form>
 
         <form className="panel provisioning-form" onSubmit={createDevice}>

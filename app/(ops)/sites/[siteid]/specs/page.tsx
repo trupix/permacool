@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { LocationEquipmentWorkspace } from '@/components/location-equipment-workspace';
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
-import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { requireUser } from '@/lib/auth';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
+import { getDevicesBySite } from '@/server/repositories/devices';
 import { getSite } from '@/server/repositories/sites';
 
 export const metadata: Metadata = {
@@ -20,6 +20,7 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
 
   if (!site) notFound();
 
+  const siteDevices = await getDevicesBySite(user, site.id);
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
@@ -43,22 +44,18 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
           catalog={equipmentCatalog}
           view="specs"
         />
-      ) : site.id === 'site-cannon-falls' ? (
+      ) : (
         <LocationEquipmentWorkspace
           siteId={site.id}
           siteName={site.name}
           view="specs"
           controller={{
-            name: 'Cannon Falls groov EPIC 01',
-            status: 'offline',
-            vpnIdentity: 'cannon-falls-groov-epic-01',
-            tunnelIp: '172.28.0.11'
+            name: siteDevices[0]?.name ?? 'No PLC registered',
+            status: siteDevices[0]?.status ?? 'offline',
+            vpnIdentity: siteDevices[0]?.vpnIdentity ?? 'Not assigned',
+            tunnelIp: siteDevices[0]?.vpnTunnelIp ?? 'Not assigned'
           }}
         />
-      ) : (
-        <SectionCard title="No equipment specifications recorded" eyebrow="Location Specs">
-          <p className="empty-state">Add the site equipment record to populate this workspace.</p>
-        </SectionCard>
       )}
     </main>
   );

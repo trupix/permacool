@@ -79,22 +79,18 @@ export default async function SiteConnectivityPage({
           catalog={equipmentCatalog}
           view="connectivity"
         />
-      ) : site.id === 'site-cannon-falls' ? (
+      ) : (
         <LocationEquipmentWorkspace
           siteId={site.id}
           siteName={site.name}
           view="connectivity"
           controller={{
-            name: siteDevices[0]?.name ?? 'Cannon Falls groov EPIC 01',
+            name: siteDevices[0]?.name ?? 'No PLC registered',
             status: siteDevices[0]?.status ?? 'offline',
-            vpnIdentity: 'cannon-falls-groov-epic-01',
-            tunnelIp: '172.28.0.11'
+            vpnIdentity: siteDevices[0]?.vpnIdentity ?? 'Not assigned',
+            tunnelIp: siteDevices[0]?.vpnTunnelIp ?? 'Not assigned'
           }}
         />
-      ) : (
-        <SectionCard title="Signal readiness unavailable" eyebrow="Telemetry">
-          <p className="empty-state">Add the site equipment record to map diagnostic signal readiness.</p>
-        </SectionCard>
       )}
     </main>
   );
