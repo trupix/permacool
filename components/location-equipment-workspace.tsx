@@ -304,6 +304,7 @@ function normalizeDraft(value: unknown): LocationDraft {
     return backfillSelectedCompressor({
       ...blankUnit(index),
       ...source,
+      manufacturer: source.manufacturer === 'TurboAir' ? 'Turbo Air' : source.manufacturer ?? '',
       refrigerant: legacyRefrigerant ? 'other' : source.refrigerant ?? '',
       refrigerantOther: legacyRefrigerant || source.refrigerantOther || '',
       compressorVariant: inferCompressorVariant(source)
@@ -727,7 +728,14 @@ export function LocationEquipmentWorkspace({
               <label><span>Display name</span><input value={unit.label} onChange={(event) => updateUnit(index, { label: event.target.value })} /></label>
               <label><span>Dashboard channel</span><select value={unit.channel} onChange={(event) => updateUnit(index, { channel: event.target.value })}><option>CH1</option><option>CH2</option></select></label>
               <label className="is-wide"><span>Known condenser selection</span><select value={unit.catalogSelection} onChange={(event) => selectCatalog(index, event.target.value)}>{catalogOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-              <label><span>Manufacturer</span><input value={unit.manufacturer} onChange={(event) => updateUnit(index, { manufacturer: event.target.value })} placeholder="Russell, Turbo Air, etc." /></label>
+              <label>
+                <span>Manufacturer</span>
+                <select value={unit.manufacturer} onChange={(event) => updateUnit(index, { manufacturer: event.target.value })}>
+                  <option value="">Select manufacturer</option>
+                  <option value="Russell">Russell</option>
+                  <option value="Turbo Air">Turbo Air</option>
+                </select>
+              </label>
               <label><span>Product family</span><input value={unit.productFamily} onChange={(event) => updateUnit(index, { productFamily: event.target.value })} placeholder="Series or family" /></label>
               <label><span>Exact model number</span><input value={unit.exactModelNumber} onChange={(event) => updateUnit(index, { exactModelNumber: event.target.value })} placeholder="From nameplate" /></label>
               <label><span>Condenser serial number</span><input value={unit.serialNumber} onChange={(event) => updateUnit(index, { serialNumber: event.target.value })} placeholder="From nameplate" /></label>
