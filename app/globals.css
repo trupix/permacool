@@ -12051,6 +12051,66 @@ h4 {
   color: #8a938e;
 }
 
+.location-equipment-address-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.location-equipment-address-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.location-equipment-address-save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-radius: 12px;
+  background: #1d382f;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.location-equipment-address-save:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.location-equipment-address-actions > span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.location-equipment-address-actions > span.is-saved {
+  color: #3c6d2a;
+  font-weight: 750;
+}
+
+.location-equipment-address-actions > span.is-error {
+  color: #a34337;
+  font-weight: 750;
+}
+
+.location-equipment-weather-hero {
+  margin: 0;
+}
+
+.location-equipment-weather-hero .salinas-dashboard__weather-dock.is-empty a {
+  display: inline-flex;
+  margin-top: 0.65rem;
+  color: #dffe9a;
+  font-weight: 800;
+  text-decoration: none;
+}
+
 .location-equipment-spec-card-list {
   display: grid;
   gap: 1rem;

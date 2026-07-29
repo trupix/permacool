@@ -16,6 +16,12 @@ import {
   Snowflake,
   Zap
 } from 'lucide-react';
+import { FacilityAddressEditor } from '@/components/facility-address-editor';
+import { LocationWeatherHero } from '@/components/location-weather-hero';
+import {
+  emptyFacilityAddress,
+  type FacilityAddress
+} from '@/lib/site-location';
 
 type WorkspaceView = 'overview' | 'connectivity' | 'specs';
 type CondenserCount = 1 | 2;
@@ -430,7 +436,8 @@ export function LocationEquipmentWorkspace({
   siteId,
   siteName,
   view,
-  controller
+  controller,
+  initialAddress = emptyFacilityAddress
 }: {
   siteId: string;
   siteName: string;
@@ -441,6 +448,7 @@ export function LocationEquipmentWorkspace({
     vpnIdentity: string;
     tunnelIp: string;
   };
+  initialAddress?: FacilityAddress;
 }) {
   const storageKey = `permacool:location-equipment-draft:${siteId}`;
   const [draft, setDraft] = useState<LocationDraft>(defaultDraft);
@@ -524,6 +532,8 @@ export function LocationEquipmentWorkspace({
           <article><span><Settings2 size={17} /></span><div><small>Specs completed</small><strong>{configurationPercent}%</strong></div></article>
           <article><span><Network size={17} /></span><div><small>VPN address</small><strong>{controller.tunnelIp}</strong></div></article>
         </section>
+
+        <LocationWeatherHero siteId={siteId} siteName={siteName} address={initialAddress} />
 
         <div className="location-equipment-unit-grid">
           {draft.units.map((unit, index) => (
@@ -609,6 +619,8 @@ export function LocationEquipmentWorkspace({
         </div>
         <span><CheckCircle2 size={15} /> {loaded ? `${siteName} draft saved` : 'Loading draft'}</span>
       </section>
+
+      <FacilityAddressEditor siteId={siteId} initialAddress={initialAddress} />
 
       <section className="panel location-equipment-system-form">
         <header className="location-equipment-panel-heading">

@@ -20,6 +20,14 @@ export type NewPlcInput = {
   tunnelIp: string | null;
 };
 
+export type SiteAddressInput = {
+  addressLine1: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+};
+
 function text(value: unknown, maximum: number) {
   if (typeof value !== 'string') return null;
   const result = value.trim();
@@ -84,4 +92,17 @@ export function parseNewPlcInput(value: unknown): NewPlcInput | null {
     localIpAddress,
     tunnelIp
   };
+}
+
+export function parseSiteAddressInput(value: unknown): SiteAddressInput | null {
+  if (!value || typeof value !== 'object') return null;
+  const input = value as Record<string, unknown>;
+  const addressLine1 = text(input.addressLine1, 180);
+  const city = text(input.city, 100);
+  const state = text(input.state, 80);
+  const postalCode = text(input.postalCode, 24);
+  const country = text(input.country, 60) ?? 'US';
+
+  if (!addressLine1 || !city || !state || !postalCode) return null;
+  return { addressLine1, city, state, postalCode, country };
 }

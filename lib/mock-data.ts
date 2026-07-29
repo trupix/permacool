@@ -51,7 +51,12 @@ export const sites: Site[] = [
     region: 'California, US',
     timezone: 'America/Los_Angeles',
     gatewayStatus: 'online',
-    deviceIds: ['epic-mvp-01', 'plc-sal-01', 'plc-sal-02']
+    deviceIds: ['epic-mvp-01', 'plc-sal-01', 'plc-sal-02'],
+    addressLine1: '3558 E 8th St',
+    city: 'Los Angeles',
+    state: 'CA',
+    postalCode: '90023',
+    country: 'US'
   },
   {
     id: 'site-cannon-falls',

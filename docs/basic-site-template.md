@@ -33,6 +33,7 @@ foundation. No page copy is required when a new customer is added.
 - Salinas-compatible frequency and frequency-dependent voltage dropdowns, plus phase, RLA, and LRA
 - Capacity-model inputs for PLC/weather entering air and a suction-source priority of measured saturated suction temperature, fresh ethanol temperature estimate, then manual fallback
 - Installation notes
+- Durable facility address used to generate the overview's satellite hero, nearest NWS observation, and local forecast context
 
 The unverified equipment record is stored as a site-specific browser draft. The storage key and original fields
 remain stable when new template options are added, so previously entered site data is preserved. A verified

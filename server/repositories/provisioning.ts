@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { devices as fallbackDevices, sites as fallbackSites } from '@/lib/mock-data';
 import { ensureProvisioningStorage } from '@/server/provisioning-storage';
-import type { NewPlcInput, NewSiteInput } from '@/server/provisioning-input';
+import type { NewPlcInput, NewSiteInput, SiteAddressInput } from '@/server/provisioning-input';
 import type { AppUser, VpnProfileStatus } from '@/types/domain';
 import { shouldUseDatabase } from './shared';
 
@@ -52,11 +52,11 @@ function fallbackSnapshot(): ProvisioningSnapshot {
     storageReady: false,
     sites: fallbackSites.map((site) => ({
       ...site,
-      addressLine1: null,
-      city: null,
-      state: null,
-      postalCode: null,
-      country: null,
+      addressLine1: site.addressLine1 ?? null,
+      city: site.city ?? null,
+      state: site.state ?? null,
+      postalCode: site.postalCode ?? null,
+      country: site.country ?? null,
       devices: fallbackDevices.filter((device) => device.siteId === site.id).map((device) => ({
         ...device,
         serialNumber: device.serialNumber ?? null,
@@ -211,6 +211,37 @@ export async function createProvisionedDevice(input: NewPlcInput, actor: AppUser
       }
     });
     return device;
+  });
+}
+
+export async function updateProvisionedSiteAddress(
+  siteId: string,
+  input: SiteAddressInput,
+  actor: AppUser
+) {
+  if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return null;
+  const site = await db.site.findFirst({
+    where: { id: siteId, organizationId: { in: actor.organizationIds } },
+    select: { id: true, name: true }
+  });
+  if (!site) return null;
+
+  return db.$transaction(async (transaction) => {
+    const details = await transaction.siteProvisioningDetails.upsert({
+      where: { siteId: site.id },
+      update: input,
+      create: { siteId: site.id, ...input }
+    });
+    await transaction.auditLog.create({
+      data: {
+        actorUserId: actor.id,
+        entityType: 'site',
+        entityId: site.id,
+        action: `Updated facility address: ${site.name}`,
+        metadata: input
+      }
+    });
+    return details;
   });
 }
 

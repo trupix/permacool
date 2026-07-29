@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { FacilityAddressEditor } from '@/components/facility-address-editor';
 import { LocationEquipmentWorkspace } from '@/components/location-equipment-workspace';
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SiteSectionNav } from '@/components/site-section-nav';
@@ -38,17 +39,36 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
       </header>
 
       {equipmentRecord && equipmentCatalog ? (
-        <SalinasEquipmentDashboard
-          siteId={site.id}
-          equipmentRecord={equipmentRecord}
-          catalog={equipmentCatalog}
-          view="specs"
-        />
+        <>
+          <FacilityAddressEditor
+            siteId={site.id}
+            initialAddress={{
+              addressLine1: site.addressLine1 ?? '',
+              city: site.city ?? '',
+              state: site.state ?? '',
+              postalCode: site.postalCode ?? '',
+              country: site.country ?? 'US'
+            }}
+          />
+          <SalinasEquipmentDashboard
+            siteId={site.id}
+            equipmentRecord={equipmentRecord}
+            catalog={equipmentCatalog}
+            view="specs"
+          />
+        </>
       ) : (
         <LocationEquipmentWorkspace
           siteId={site.id}
           siteName={site.name}
           view="specs"
+          initialAddress={{
+            addressLine1: site.addressLine1 ?? '',
+            city: site.city ?? '',
+            state: site.state ?? '',
+            postalCode: site.postalCode ?? '',
+            country: site.country ?? 'US'
+          }}
           controller={{
             name: siteDevices[0]?.name ?? 'No PLC registered',
             status: siteDevices[0]?.status ?? 'offline',

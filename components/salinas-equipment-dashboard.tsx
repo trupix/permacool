@@ -33,6 +33,7 @@ import {
   type SuctionTemperatureSource
 } from '@/lib/equipment/performance';
 import { normalizeTelemetryKey, resolveTelemetryPoint } from '@/lib/equipment/telemetry';
+import type { SiteWeatherData } from '@/lib/site-weather';
 import { mergeTelemetryPoints } from '@/lib/telemetry-groups';
 import { displayTelemetryUnit } from '@/lib/telemetry-units';
 import {
@@ -267,56 +268,9 @@ type FastTelemetryState = {
   error: string | null;
 };
 
-type WeatherData = {
-  locationLabel: string;
-  observation: {
-    stationId: string;
-    stationName: string;
-    temperatureF: number | null;
-    humidityPercent: number | null;
-    dewpointF: number | null;
-    windSpeedMph: number | null;
-    windGustMph: number | null;
-    windDirectionDegrees: number | null;
-    windDirectionCardinal: string | null;
-    pressureInHg: number | null;
-    precipitationLastHourIn: number | null;
-    precipitationLast3HoursIn: number | null;
-    condition: string | null;
-    observedAt: string;
-    ageMinutes: number | null;
-    isCurrent: boolean;
-    source: string;
-    sourceUrl: string;
-  };
-  forecast: {
-    temperatureF: number | null;
-    humidityPercent: number | null;
-    rainChancePercent: number | null;
-    precipitationAmountIn: number | null;
-    skyCoverPercent: number | null;
-    sunlightEstimatePercent: number | null;
-    sunlightMethod: string;
-    isDaytime: boolean;
-    windSpeed: string | null;
-    windDirection: string | null;
-    condition: string | null;
-    periodStartAt: string | null;
-    source: string;
-    sourceUrl: string;
-    sourceUpdatedAt: string | null;
-  } | null;
-  ambientFallback: {
-    temperatureF: number | null;
-    source: 'nws_observation';
-    observedAt: string;
-  };
-  fetchedAt: string;
-};
-
 type WeatherState = {
   status: 'loading' | 'ready' | 'error';
-  data: WeatherData | null;
+  data: SiteWeatherData | null;
   error: string | null;
 };
 
@@ -1046,7 +1000,7 @@ export function SalinasEquipmentDashboard({
     async function loadWeather() {
       try {
         const response = await fetch(`/api/sites/${siteId}/weather`, { cache: 'no-store' });
-        const payload = (await response.json()) as WeatherData & { error?: string };
+        const payload = (await response.json()) as SiteWeatherData & { error?: string };
         if (!response.ok) throw new Error(payload.error ?? 'Weather request failed.');
         if (!mounted) return;
         setWeather({ status: 'ready', data: payload, error: null });
@@ -1787,7 +1741,10 @@ export function SalinasEquipmentDashboard({
           <div
             className="salinas-dashboard__weather-hero-imagery"
             role="img"
-            aria-label="Aerial satellite view centered on 3558 E 8th Street in Los Angeles"
+            aria-label={`Aerial satellite view centered on ${weather.data?.locationLabel ?? 'the facility address'}`}
+            style={weather.data?.imageryUrl
+              ? { backgroundImage: `url("${weather.data.imageryUrl}")` }
+              : undefined}
           />
           <div className="salinas-dashboard__weather-hero-shade" aria-hidden="true" />
 
@@ -1806,7 +1763,7 @@ export function SalinasEquipmentDashboard({
             </span>
             <div>
               <strong>Salinas operating site</strong>
-              <small>3558 E 8th St · Los Angeles, CA</small>
+              <small>{weather.data?.locationLabel ?? '3558 E 8th St · Los Angeles, CA'}</small>
             </div>
           </div>
 

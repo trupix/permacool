@@ -64,6 +64,13 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
           siteId={site.id}
           siteName={site.name}
           view="overview"
+          initialAddress={{
+            addressLine1: site.addressLine1 ?? '',
+            city: site.city ?? '',
+            state: site.state ?? '',
+            postalCode: site.postalCode ?? '',
+            country: site.country ?? 'US'
+          }}
           controller={{
             name: siteDevices[0]?.name ?? 'No PLC registered',
             status: siteDevices[0]?.status ?? 'offline',
