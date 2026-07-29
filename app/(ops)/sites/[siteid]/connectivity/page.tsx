@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { LocationEquipmentWorkspace } from '@/components/location-equipment-workspace';
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
@@ -77,6 +78,18 @@ export default async function SiteConnectivityPage({
           equipmentRecord={equipmentRecord}
           catalog={equipmentCatalog}
           view="connectivity"
+        />
+      ) : site.id === 'site-cannon-falls' ? (
+        <LocationEquipmentWorkspace
+          siteId={site.id}
+          siteName={site.name}
+          view="connectivity"
+          controller={{
+            name: siteDevices[0]?.name ?? 'Cannon Falls groov EPIC 01',
+            status: siteDevices[0]?.status ?? 'offline',
+            vpnIdentity: 'cannon-falls-groov-epic-01',
+            tunnelIp: '172.28.0.11'
+          }}
         />
       ) : (
         <SectionCard title="Signal readiness unavailable" eyebrow="Telemetry">

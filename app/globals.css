@@ -11723,3 +11723,429 @@ h4 {
     align-items: flex-start;
   }
 }
+
+/* Draft-first equipment workspace used before a site's installed hardware is verified. */
+.location-equipment-workspace {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.location-equipment-hero,
+.location-equipment-specs-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.3rem, 3vw, 2.25rem);
+  border: 1px solid rgba(34, 65, 55, 0.1);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(184, 242, 96, 0.2), transparent 27%),
+    linear-gradient(135deg, #f8fbf7 0%, #eef4ed 100%);
+  box-shadow: 0 18px 50px rgba(35, 56, 47, 0.08);
+}
+
+.location-equipment-hero h2,
+.location-equipment-specs-heading h2 {
+  margin: 0.25rem 0 0.55rem;
+  font-size: clamp(1.7rem, 4vw, 2.55rem);
+  letter-spacing: -0.045em;
+}
+
+.location-equipment-hero p,
+.location-equipment-specs-heading p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.location-equipment-controller,
+.location-equipment-specs-heading > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex: 0 0 auto;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(34, 65, 55, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.84);
+  color: #385247;
+  box-shadow: 0 10px 26px rgba(35, 56, 47, 0.07);
+}
+
+.location-equipment-controller span {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.location-equipment-controller small {
+  color: var(--muted);
+  font-size: 0.67rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.location-equipment-controller strong,
+.location-equipment-definition-list dd:last-child {
+  text-transform: capitalize;
+}
+
+.location-equipment-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.location-equipment-status-grid article {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 92px;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(34, 65, 55, 0.1);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.location-equipment-status-grid article > span,
+.location-equipment-panel-heading > span {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #eff6e7;
+  color: #4e7132;
+}
+
+.location-equipment-status-grid article div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.location-equipment-status-grid small,
+.location-equipment-unit-card header small,
+.location-equipment-unit-card header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.location-equipment-status-grid strong {
+  font-size: 1.08rem;
+}
+
+.location-equipment-unit-grid,
+.location-equipment-connectivity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.location-equipment-unit-card {
+  overflow: hidden;
+  border: 1px solid rgba(34, 65, 55, 0.1);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 18px 45px rgba(35, 56, 47, 0.07);
+}
+
+.location-equipment-unit-card > header,
+.location-equipment-spec-card > header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.location-equipment-unit-card > header {
+  padding: 1.15rem;
+  border-bottom: 1px solid rgba(34, 65, 55, 0.08);
+}
+
+.location-equipment-unit-card > header > span,
+.location-equipment-spec-card > header > span {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: #1d382f;
+  color: #dffe9a;
+  font-weight: 800;
+}
+
+.location-equipment-unit-card h3,
+.location-equipment-spec-card h3 {
+  margin: 0.08rem 0 0.15rem;
+}
+
+.location-equipment-unit-card header b {
+  padding: 0.38rem 0.55rem;
+  border-radius: 999px;
+  background: #f3f1ec;
+  color: #7a746b;
+  font-size: 0.7rem;
+}
+
+.location-equipment-reading-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: rgba(34, 65, 55, 0.08);
+}
+
+.location-equipment-reading-grid div {
+  display: grid;
+  min-height: 112px;
+  padding: 0.9rem;
+  background: #fbfcfa;
+}
+
+.location-equipment-reading-grid small,
+.location-equipment-reading-grid span {
+  color: var(--muted);
+}
+
+.location-equipment-reading-grid strong {
+  align-self: end;
+  font-size: 1.6rem;
+}
+
+.location-equipment-reading-grid span {
+  font-size: 0.7rem;
+}
+
+.location-equipment-primary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 13px;
+  background: #1d382f;
+  color: #fff;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.location-equipment-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.location-equipment-panel-heading h2,
+.location-equipment-panel-heading h3 {
+  margin: 0.15rem 0 0;
+}
+
+.location-equipment-definition-list,
+.location-equipment-signal-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+}
+
+.location-equipment-definition-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(34, 65, 55, 0.08);
+}
+
+.location-equipment-definition-list dt {
+  color: var(--muted);
+}
+
+.location-equipment-definition-list dd {
+  margin: 0;
+  font-weight: 750;
+  text-align: right;
+}
+
+.location-equipment-signal-list div {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.75rem;
+  border-radius: 12px;
+  background: #f6f7f4;
+  color: #6f746f;
+}
+
+.location-equipment-signal-list b {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.location-equipment-specs-heading > span {
+  color: #42642f;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.location-equipment-system-form,
+.location-equipment-spec-card {
+  padding: clamp(1.1rem, 2.5vw, 1.6rem);
+}
+
+.location-equipment-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.location-equipment-form-grid.is-four {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.location-equipment-form-grid label,
+.location-equipment-notes {
+  display: grid;
+  gap: 0.38rem;
+}
+
+.location-equipment-form-grid label > span,
+.location-equipment-notes > span {
+  color: #53655d;
+  font-size: 0.73rem;
+  font-weight: 750;
+}
+
+.location-equipment-form-grid label.is-wide {
+  grid-column: 1 / -1;
+}
+
+.location-equipment-form-grid input,
+.location-equipment-form-grid select,
+.location-equipment-form-grid textarea,
+.location-equipment-notes textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.68rem 0.75rem;
+  border: 1px solid rgba(34, 65, 55, 0.16);
+  border-radius: 11px;
+  background: #fff;
+  color: #203b32;
+  font: inherit;
+}
+
+.location-equipment-form-grid textarea,
+.location-equipment-notes textarea {
+  resize: vertical;
+}
+
+.location-equipment-spec-card-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.location-equipment-spec-card > header {
+  margin-bottom: 1.15rem;
+}
+
+.location-equipment-spec-card > header b {
+  color: var(--muted);
+  font-size: 0.73rem;
+}
+
+.location-equipment-form-section {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(34, 65, 55, 0.08);
+}
+
+.location-equipment-form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #315548;
+}
+
+.location-equipment-input-unit {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  border: 1px solid rgba(34, 65, 55, 0.16);
+  border-radius: 11px;
+  background: #fff;
+}
+
+.location-equipment-input-unit input {
+  border: 0;
+  background: transparent;
+}
+
+.location-equipment-input-unit b {
+  padding-right: 0.75rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.location-equipment-notes {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(34, 65, 55, 0.08);
+}
+
+.location-equipment-draft-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(170, 128, 22, 0.2);
+  border-radius: 16px;
+  background: #fff9e9;
+  color: #725b20;
+}
+
+.location-equipment-draft-note p {
+  margin: 0.2rem 0 0;
+  color: #806d3f;
+  line-height: 1.55;
+}
+
+@media (max-width: 980px) {
+  .location-equipment-unit-grid,
+  .location-equipment-connectivity-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .location-equipment-form-grid.is-four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .location-equipment-hero,
+  .location-equipment-specs-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .location-equipment-status-grid,
+  .location-equipment-form-grid,
+  .location-equipment-form-grid.is-four {
+    grid-template-columns: 1fr;
+  }
+
+  .location-equipment-reading-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .location-equipment-unit-card > header,
+  .location-equipment-spec-card > header {
+    grid-template-columns: auto 1fr;
+  }
+
+  .location-equipment-unit-card > header > b,
+  .location-equipment-spec-card > header > b {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}

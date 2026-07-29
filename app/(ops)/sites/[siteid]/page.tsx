@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { EquipmentEventList } from '@/components/equipment-event-list';
+import { LocationEquipmentWorkspace } from '@/components/location-equipment-workspace';
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
@@ -29,7 +30,8 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
   const hasEquipmentDashboard = Boolean(equipmentRecord && equipmentCatalog);
-  const telemetryByDevice = hasEquipmentDashboard
+  const hasLocationWorkspace = hasEquipmentDashboard || site.id === 'site-cannon-falls';
+  const telemetryByDevice = hasLocationWorkspace
     ? []
     : await Promise.all(
         siteDevices.map(async (device) => ({
@@ -55,6 +57,20 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
           siteId={site.id}
           equipmentRecord={equipmentRecord}
           catalog={equipmentCatalog}
+        />
+      ) : null}
+
+      {site.id === 'site-cannon-falls' ? (
+        <LocationEquipmentWorkspace
+          siteId={site.id}
+          siteName={site.name}
+          view="overview"
+          controller={{
+            name: siteDevices[0]?.name ?? 'Cannon Falls groov EPIC 01',
+            status: siteDevices[0]?.status ?? 'offline',
+            vpnIdentity: 'cannon-falls-groov-epic-01',
+            tunnelIp: '172.28.0.11'
+          }}
         />
       ) : null}
 
@@ -88,7 +104,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
         </div>
       </SectionCard>
 
-      {!hasEquipmentDashboard ? (
+      {!hasLocationWorkspace ? (
         <SiteTelemetryPanel
           siteId={site.id}
           initialPoints={telemetryByDevice.flatMap(({ device, points }) =>

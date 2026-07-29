@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { LocationEquipmentWorkspace } from '@/components/location-equipment-workspace';
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
@@ -41,6 +42,18 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
           equipmentRecord={equipmentRecord}
           catalog={equipmentCatalog}
           view="specs"
+        />
+      ) : site.id === 'site-cannon-falls' ? (
+        <LocationEquipmentWorkspace
+          siteId={site.id}
+          siteName={site.name}
+          view="specs"
+          controller={{
+            name: 'Cannon Falls groov EPIC 01',
+            status: 'offline',
+            vpnIdentity: 'cannon-falls-groov-epic-01',
+            tunnelIp: '172.28.0.11'
+          }}
         />
       ) : (
         <SectionCard title="No equipment specifications recorded" eyebrow="Location Specs">
