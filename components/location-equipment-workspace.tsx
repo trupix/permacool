@@ -129,26 +129,46 @@ const catalogOptions = [
 const compressorOptions = [
   {
     value: 'russell-next-gen-minicon-6hp-zs45k4e-r404a',
-    label: 'Copeland Scroll 6 HP ZS45K4E · R404A curve',
+    label: 'Copeland ZS45K4E · 6 HP · R404A · 208-230 V / 3 / 60',
     catalogSelections: ['russell-next-gen-minicon-6hp-zs45k4e-r404a'],
     values: {
+      catalogSelection: 'russell-next-gen-minicon-6hp-zs45k4e-r404a',
+      manufacturer: 'Russell',
+      productFamily: 'Next-Gen MiniCon',
+      exactModelNumber: 'R*O600E4S**',
+      nominalHorsepower: '6',
       refrigerant: 'R404A',
       refrigerantOther: '',
       compressorManufacturer: 'Copeland',
       compressorTechnology: 'Scroll',
-      compressorModel: 'ZS45K4E'
+      compressorModel: 'ZS45K4E',
+      voltage: '208-230',
+      phase: '3',
+      frequencyHz: '60',
+      nameplateRlaA: '21.5',
+      nameplateLraA: '156'
     }
   },
   {
     value: 'russell-next-gen-minicon-6hp-zs45k4e-r448a',
-    label: 'Copeland Scroll 6 HP ZS45K4E · R448A curve',
+    label: 'Copeland ZS45K4E · 6 HP · R448A · 208-230 V / 3 / 60',
     catalogSelections: ['russell-next-gen-minicon-6hp-zs45k4e-r448a'],
     values: {
+      catalogSelection: 'russell-next-gen-minicon-6hp-zs45k4e-r448a',
+      manufacturer: 'Russell',
+      productFamily: 'Next-Gen MiniCon',
+      exactModelNumber: 'R*O600E4S**',
+      nominalHorsepower: '6',
       refrigerant: 'R448A',
       refrigerantOther: '',
       compressorManufacturer: 'Copeland',
       compressorTechnology: 'Scroll',
-      compressorModel: 'ZS45K4E'
+      compressorModel: 'ZS45K4E',
+      voltage: '208-230',
+      phase: '3',
+      frequencyHz: '60',
+      nameplateRlaA: '21.5',
+      nameplateLraA: '156'
     }
   },
   {
@@ -241,6 +261,20 @@ function inferCompressorVariant(unit: Partial<UnitDraft>): string {
   return model ? 'other' : 'unconfirmed';
 }
 
+function backfillSelectedCompressor(unit: UnitDraft): UnitDraft {
+  const option = compressorOptions.find((candidate) => candidate.value === unit.compressorVariant);
+  if (!option) return unit;
+
+  const defaults = option.values as Partial<UnitDraft>;
+  const next = { ...unit };
+  for (const [key, defaultValue] of Object.entries(defaults) as Array<[keyof UnitDraft, string]>) {
+    if ((next[key] === '' || next[key] === 'unconfirmed') && defaultValue) {
+      next[key] = defaultValue;
+    }
+  }
+  return next;
+}
+
 function normalizeDraft(value: unknown): LocationDraft {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return defaultDraft;
   const candidate = value as Partial<LocationDraft>;
@@ -267,13 +301,13 @@ function normalizeDraft(value: unknown): LocationDraft {
         ? source.refrigerant
         : '';
 
-    return {
+    return backfillSelectedCompressor({
       ...blankUnit(index),
       ...source,
       refrigerant: legacyRefrigerant ? 'other' : source.refrigerant ?? '',
       refrigerantOther: legacyRefrigerant || source.refrigerantOther || '',
       compressorVariant: inferCompressorVariant(source)
-    };
+    });
   });
 
   return {
@@ -421,11 +455,17 @@ export function LocationEquipmentWorkspace({
         : selection === 'russell-next-gen-ii-22hp-r404a'
           ? 'unconfirmed'
           : undefined;
-    updateUnit(index, {
-      catalogSelection: selection,
-      ...(option?.values ?? {}),
-      ...(compressorVariant ? { compressorVariant } : {})
-    });
+    setDraft((current) => ({
+      ...current,
+      units: current.units.map((unit, unitIndex) => unitIndex === index
+        ? backfillSelectedCompressor({
+            ...unit,
+            catalogSelection: selection,
+            ...(option?.values ?? {}),
+            ...(compressorVariant ? { compressorVariant } : {})
+          })
+        : unit)
+    }));
   }
 
   function selectCompressor(index: number, selection: string) {
