@@ -28,12 +28,15 @@ foundation. No page copy is required when a new customer is added.
 - Ethanol, butane, or another process solvent
 - Known condenser catalog selections or manual equipment entry
 - Manufacturer, product family, exact model, serial number, horsepower, refrigerant, and charge
+- Salinas-compatible refrigerant and installed-compressor dropdowns backed by the loaded equipment catalogs
 - Compressor manufacturer, technology, model, and serial number
-- Voltage, phase, frequency, RLA, and LRA
+- Salinas-compatible frequency and frequency-dependent voltage dropdowns, plus phase, RLA, and LRA
+- Capacity-model inputs for PLC/weather entering air and validated saturated suction temperature
 - Installation notes
 
-The unverified equipment record is stored as a site-specific browser draft. A verified manufacturer record can
-replace the basic template later without changing the page URLs or navigation.
+The unverified equipment record is stored as a site-specific browser draft. The storage key and original fields
+remain stable when new template options are added, so previously entered site data is preserved. A verified
+manufacturer record can replace the basic template later without changing the page URLs or navigation.
 
 ## Events
 

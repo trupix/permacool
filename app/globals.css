@@ -12004,6 +12004,10 @@ h4 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
+.location-equipment-form-grid.location-equipment-analysis-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .location-equipment-form-grid label,
 .location-equipment-notes {
   display: grid;
@@ -12038,6 +12042,13 @@ h4 {
 .location-equipment-form-grid textarea,
 .location-equipment-notes textarea {
   resize: vertical;
+}
+
+.location-equipment-form-grid input:disabled,
+.location-equipment-form-grid select:disabled {
+  cursor: not-allowed;
+  background: #f2f4f0;
+  color: #8a938e;
 }
 
 .location-equipment-spec-card-list {
@@ -12088,6 +12099,45 @@ h4 {
   font-size: 0.72rem;
 }
 
+.location-equipment-validation-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  color: #42564e;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.location-equipment-validation-check input {
+  width: 16px;
+  height: 16px;
+  margin-top: 0.12rem;
+  accent-color: #42642f;
+}
+
+.location-equipment-analysis-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(170, 128, 22, 0.17);
+  border-radius: 13px;
+  background: #fffbef;
+  color: #725b20;
+}
+
+.location-equipment-analysis-note svg {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+}
+
+.location-equipment-analysis-note p {
+  margin: 0;
+  line-height: 1.55;
+}
+
 .location-equipment-notes {
   padding-top: 1rem;
   border-top: 1px solid rgba(34, 65, 55, 0.08);
@@ -12119,6 +12169,10 @@ h4 {
   .location-equipment-form-grid.is-four {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .location-equipment-form-grid.location-equipment-analysis-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 700px) {
@@ -12130,7 +12184,8 @@ h4 {
 
   .location-equipment-status-grid,
   .location-equipment-form-grid,
-  .location-equipment-form-grid.is-four {
+  .location-equipment-form-grid.is-four,
+  .location-equipment-form-grid.location-equipment-analysis-grid {
     grid-template-columns: 1fr;
   }
 
