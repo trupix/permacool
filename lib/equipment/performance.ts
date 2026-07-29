@@ -15,6 +15,7 @@ export type AmbientTemperatureSource =
 export type SuctionTemperatureSource =
   | 'validated_pressure_temperature_conversion'
   | 'validated_manufacturer_axis_sensor'
+  | 'process_fluid_temperature_estimate'
   | 'manual_entry'
   | 'unknown';
 
@@ -114,6 +115,7 @@ export interface RussellCapacityQuality {
   suctionInputQuality:
     | 'validated_pressure_temperature_conversion'
     | 'validated_manufacturer_axis_sensor'
+    | 'process_fluid_temperature_estimate'
     | 'other'
     | null;
   frequencyAdjustment: 'none' | 'manufacturer_50hz_multiplier' | null;
@@ -633,6 +635,9 @@ function inputQualityForSuction(
   if (source === 'validated_manufacturer_axis_sensor') {
     return 'validated_manufacturer_axis_sensor';
   }
+  if (source === 'process_fluid_temperature_estimate') {
+    return 'process_fluid_temperature_estimate';
+  }
   return 'other';
 }
 
@@ -723,7 +728,10 @@ function evaluateLoadedCatalogUnit(
     );
   }
 
-  if (!point.suctionAxisValidated) {
+  if (
+    !point.suctionAxisValidated &&
+    point.suctionSource !== 'process_fluid_temperature_estimate'
+  ) {
     return failedUnitEvaluation(
       request,
       'unvalidated_suction_axis',
@@ -779,7 +787,11 @@ function evaluateLoadedCatalogUnit(
     point.suctionSource !== 'validated_pressure_temperature_conversion' &&
     point.suctionSource !== 'validated_manufacturer_axis_sensor'
   ) {
-    warnings.push('Suction-axis validation was asserted using a lower-quality input source.');
+    warnings.push(
+      point.suctionSource === 'process_fluid_temperature_estimate'
+        ? 'Process-fluid temperature was used as an estimated stand-in for saturated suction temperature; actual capacity may differ materially.'
+        : 'Suction-axis validation was asserted using a lower-quality input source.',
+    );
   }
   if (request.installedFrequencyHz === 50) {
     warnings.push(

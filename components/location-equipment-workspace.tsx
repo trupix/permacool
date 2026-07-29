@@ -838,7 +838,7 @@ export function LocationEquipmentWorkspace({
             }))}
           />
           <UnitInput
-            label="Catalog suction temperature"
+            label="Manual suction fallback"
             unit="°F"
             value={String(draft.manualSuctionF)}
             min={-40}
@@ -849,6 +849,16 @@ export function LocationEquipmentWorkspace({
               manualSuctionF: Number(value)
             }))}
           />
+          <label>
+            <span>Suction source priority</span>
+            <select value="automatic" disabled aria-label="Suction source priority">
+              <option value="automatic">
+                {draft.processSolvent === 'ethanol'
+                  ? 'Suction sensor, then ethanol temperature'
+                  : 'Suction sensor, then manual fallback'}
+              </option>
+            </select>
+          </label>
         </div>
         <label className="location-equipment-validation-check">
           <input
@@ -859,13 +869,17 @@ export function LocationEquipmentWorkspace({
               manualSuctionValidated: event.target.checked
             }))}
           />
-          <span>I confirm the manual value is saturated suction temperature, not pipe temperature.</span>
+          <span>
+            Use this manually entered saturated suction temperature only when neither telemetry source is available.
+          </span>
         </label>
         <div className="location-equipment-analysis-note">
           <CircleAlert size={17} />
           <p>
-            Capacity stays locked until the unit model and frequency are confirmed and the suction-table axis is
-            validated. Automatic entering air will use the PLC inlet-air sensor first, then observed local weather.
+            {draft.processSolvent === 'ethanol'
+              ? 'A real suction-temperature reading is preferred. Until that sensor is installed, fresh ethanol temperature is used as a clearly labeled lower-confidence estimate.'
+              : 'A real suction-temperature reading is required unless a manually entered saturated suction temperature is explicitly accepted.'}{' '}
+            Automatic entering air uses the PLC inlet-air sensor first, then observed local weather.
           </p>
         </div>
       </section>

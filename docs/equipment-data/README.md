@@ -76,7 +76,7 @@ Important calculation rules:
 - The manual does not publish compressor input kW, COP, or EER for these 22 HP low-temperature models.
 - Weather data may select or interpolate a catalog rating point, but it must never overwrite catalog data.
 - Parallel capacity may be summed only when both units are operating at comparable conditions; the result is an estimate until validated against the shared evaporator, piping, controls, and refrigerant distribution.
-- Operational capacity remains locked until each condenser's exact catalog variant and installed frequency are confirmed and the suction input is explicitly validated as saturated suction temperature.
+- Operational capacity requires each condenser's exact catalog variant and installed frequency. The suction input priority is measured saturated suction temperature, then fresh ethanol process-fluid temperature as a clearly labeled lower-confidence estimate, then an explicitly accepted manual fallback.
 - Dashboard signals older than five minutes remain identifiable as last-known readings but are excluded from run state, readiness, weather override, and capacity calculations.
 - Each condenser can store a `telemetryDeviceId`. Until Jose supplies that production mapping, unique CH-key matching is allowed; duplicate aliases across devices are treated as ambiguous and never resolved by taking the first match.
 

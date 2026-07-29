@@ -198,6 +198,17 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     updatedBy: 'System catalog'
   },
   {
+    slug: 'operation-capacity-suction-source-priority',
+    category: 'operation',
+    title: 'Capacity-model suction input priority',
+    signalKey: 'ch1/ch2_suction_saturation_temp_f / ch1/ch2_temperature_f',
+    definition: 'The capacity model prefers measured saturated suction temperature. When that sensor is unavailable on an ethanol system, it uses the current ethanol temperature as the closest available estimate.',
+    behavior: 'Source priority is fresh suction-temperature telemetry, then fresh ethanol process-fluid temperature, then a manually entered fallback. Ethanol temperature remains labeled as an estimate and never becomes stored or displayed as measured suction temperature.',
+    implementationStatus: 'deployed',
+    sortOrder: 128,
+    updatedBy: 'System catalog'
+  },
+  {
     slug: 'event-high-pressure-open',
     category: 'event',
     title: 'Open high-pressure alarm',

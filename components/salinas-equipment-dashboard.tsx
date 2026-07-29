@@ -742,6 +742,16 @@ function capacityStatusText(evaluations: CandidateEvaluation[]): string {
   return 'A valid model and operating point are required';
 }
 
+function suctionSourceLabel(source: SuctionTemperatureSource, solvent: ProcessSolventSelection): string {
+  if (source === 'validated_pressure_temperature_conversion') return 'Pressure-derived saturated suction';
+  if (source === 'validated_manufacturer_axis_sensor') return 'Suction-temperature sensor';
+  if (source === 'process_fluid_temperature_estimate') {
+    return `${solvent === 'ethanol' ? 'Ethanol' : 'Process-fluid'} temperature fallback`;
+  }
+  if (source === 'manual_entry') return 'Manual fallback';
+  return 'Unknown source';
+}
+
 function MetricTile({ icon, label, value, detail }: { icon: ReactNode; label: string; value: string; detail: string }) {
   return (
     <article className="salinas-dashboard__metric-tile">
@@ -1079,6 +1089,11 @@ export function SalinasEquipmentDashboard({
       );
       const freshInletAir = signals.inletAir?.isFresh ? signals.inletAir : null;
       const freshSuctionSaturation = signals.suctionSaturation?.isFresh ? signals.suctionSaturation : null;
+      const freshProcessTemperature = signals.temperature?.isFresh ? signals.temperature : null;
+      const processTemperatureFallback =
+        draft.solvent === 'ethanol' ? freshProcessTemperature : null;
+      const usedProcessTemperatureFallback =
+        freshSuctionSaturation ? null : processTemperatureFallback;
       const observedAmbient = finiteOrNull(weather.data?.ambientFallback.temperatureF);
       const automaticAmbient = freshInletAir?.value ?? observedAmbient;
       const ambientTemperatureF =
@@ -1093,10 +1108,15 @@ export function SalinasEquipmentDashboard({
             : observedAmbient !== null
               ? 'local_weather'
               : 'manual_entry';
-      const suctionTemperatureF = freshSuctionSaturation?.value ?? draft.manualSuctionF;
+      const suctionTemperatureF =
+        freshSuctionSaturation?.value ??
+        usedProcessTemperatureFallback?.value ??
+        draft.manualSuctionF;
       const suctionSource: SuctionTemperatureSource = freshSuctionSaturation
         ? 'validated_manufacturer_axis_sensor'
-        : 'manual_entry';
+        : usedProcessTemperatureFallback
+          ? 'process_fluid_temperature_estimate'
+          : 'manual_entry';
       const selectedVariant =
         configuration.variant === 'unconfirmed' ? undefined : variantById.get(configuration.variant);
       const selectedVariants = selectedVariant ? [selectedVariant] : [];
@@ -1105,9 +1125,15 @@ export function SalinasEquipmentDashboard({
           ? configuration.frequencyHz
           : null;
       const suctionAxisValidated = Boolean(freshSuctionSaturation || draft.manualSuctionValidated);
+      const hasUsableSuctionInput = Boolean(
+        freshSuctionSaturation ||
+        usedProcessTemperatureFallback ||
+        draft.manualSuctionValidated
+      );
       const contributingTimestamps = [
         freshInletAir?.point.latestTimestamp,
         freshSuctionSaturation?.point.latestTimestamp,
+        usedProcessTemperatureFallback?.point.latestTimestamp,
         !freshInletAir && ambientSource === 'local_weather' ? weather.data?.observation.observedAt : undefined
       ].filter((value): value is string => Boolean(value));
       const parsedTimestamps = contributingTimestamps
@@ -1123,8 +1149,8 @@ export function SalinasEquipmentDashboard({
             ? 'Confirm the exact compressor model from this unit nameplate'
             : confirmedFrequency === null
               ? 'Confirm installed frequency from this unit nameplate'
-              : !suctionAxisValidated
-                ? 'Validate that the suction input is saturated suction temperature'
+              : !hasUsableSuctionInput
+                ? 'Waiting for suction temperature, ethanol temperature, or a validated manual fallback'
                 : null;
       const evaluations =
         capacityBlockedReason === null && selectedVariant && confirmedFrequency !== null
@@ -1182,7 +1208,10 @@ export function SalinasEquipmentDashboard({
           analysis.capacityBlockedReason !== null ||
           analysis.configuration.variant === 'unconfirmed' ||
           analysis.configuration.frequencyHz === 'unconfirmed' ||
-          !analysis.suctionAxisValidated
+          (
+            !analysis.suctionAxisValidated &&
+            analysis.suctionSource !== 'process_fluid_temperature_estimate'
+          )
       )
     ) {
       return null;
@@ -1241,10 +1270,21 @@ export function SalinasEquipmentDashboard({
       { label: 'Low-side pressure', available: allFresh((signals) => signals.lowPressure), unlocks: 'Evaporator-side context' },
       { label: 'Compressor amps', available: allFresh((signals) => signals.compressorAmps), unlocks: 'Electrical loading' },
       { label: 'Condenser inlet air', available: allFresh((signals) => signals.inletAir), unlocks: 'True entering-air correction' },
-      { label: 'Validated suction saturation', available: allFresh((signals) => signals.suctionSaturation), unlocks: 'Automatic capacity lookup' },
+      {
+        label: 'Suction-temperature input',
+        available: analyses.every(
+          (analysis) =>
+            analysis.signals.suctionSaturation?.isFresh === true ||
+            (
+              draft.solvent === 'ethanol' &&
+              analysis.signals.temperature?.isFresh === true
+            )
+        ),
+        unlocks: 'Sensor reading or labeled ethanol estimate'
+      },
       { label: 'Three-phase real power', available: allFresh((signals) => signals.realPowerKw), unlocks: 'kW, COP and efficiency' }
     ];
-  }, [analyses]);
+  }, [analyses, draft.solvent]);
 
   const readyCount = readinessRows.filter((row) => row.available).length;
   const fastSignalAvailability = {
@@ -1881,7 +1921,7 @@ export function SalinasEquipmentDashboard({
               </div>
             </label>
             <label>
-              <span>Catalog suction temperature</span>
+              <span>Manual suction fallback</span>
               <div className="salinas-dashboard__number-input">
                 <input
                   type="number"
@@ -1894,6 +1934,16 @@ export function SalinasEquipmentDashboard({
                 <b>°F</b>
               </div>
             </label>
+            <label>
+              <span>Suction source priority</span>
+              <select value="automatic" disabled aria-label="Suction source priority">
+                <option value="automatic">
+                  {draft.solvent === 'ethanol'
+                    ? 'Suction sensor, then ethanol temperature'
+                    : 'Suction sensor, then manual fallback'}
+                </option>
+              </select>
+            </label>
           </div>
           <label className="salinas-dashboard__validation-check">
             <input
@@ -1901,13 +1951,17 @@ export function SalinasEquipmentDashboard({
               checked={draft.manualSuctionValidated}
               onChange={(event) => updateDraft('manualSuctionValidated', event.target.checked)}
             />
-            <span>I confirm the manual value is saturated suction temperature, not pipe temperature.</span>
+            <span>
+              Use this manually entered saturated suction temperature only when neither telemetry source is
+              available.
+            </span>
           </label>
           <div className="salinas-dashboard__analysis-warning">
             <CircleAlert size={17} />
             <p>
-              Capacity stays locked until each unit model and frequency are confirmed and the suction-table axis is
-              validated. A normal pipe-temperature probe must not be substituted for this value.
+              {draft.solvent === 'ethanol'
+                ? 'A real suction-temperature reading is preferred. Until that sensor is installed, fresh ethanol temperature is used as a clearly labeled lower-confidence estimate. The model never overwrites or relabels the ethanol reading as measured suction temperature.'
+                : 'A real suction-temperature reading is required unless a manually entered saturated suction temperature is explicitly accepted.'}
             </p>
           </div>
         </article>
@@ -2091,7 +2145,7 @@ export function SalinasEquipmentDashboard({
                   <div>
                     <span>Suction-table input</span>
                     <strong>{oneDecimalFormatter.format(analysis.suctionTemperatureF)} °F</strong>
-                    <small>{analysis.suctionSource.replaceAll('_', ' ')}</small>
+                    <small>{suctionSourceLabel(analysis.suctionSource, draft.solvent)}</small>
                   </div>
                   <div>
                     <span>Total compressor runtime</span>

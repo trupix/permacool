@@ -31,7 +31,7 @@ foundation. No page copy is required when a new customer is added.
 - Salinas-compatible refrigerant and installed-compressor dropdowns backed by the loaded equipment catalogs
 - Compressor manufacturer, technology, model, and serial number
 - Salinas-compatible frequency and frequency-dependent voltage dropdowns, plus phase, RLA, and LRA
-- Capacity-model inputs for PLC/weather entering air and validated saturated suction temperature
+- Capacity-model inputs for PLC/weather entering air and a suction-source priority of measured saturated suction temperature, fresh ethanol temperature estimate, then manual fallback
 - Installation notes
 
 The unverified equipment record is stored as a site-specific browser draft. The storage key and original fields
