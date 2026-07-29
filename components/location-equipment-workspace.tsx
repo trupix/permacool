@@ -105,16 +105,6 @@ const compressorOptions = [
     }
   },
   {
-    value: 'russell-next-gen-ii-22hp-low-temp-bitzer-r404a',
-    label: 'Bitzer semi-hermetic reciprocating 22 HP 4GE-23',
-    catalogSelections: ['russell-next-gen-ii-22hp-r404a'],
-    values: {
-      compressorManufacturer: 'Bitzer',
-      compressorTechnology: 'Semi-hermetic reciprocating',
-      compressorModel: '4GE-23'
-    }
-  },
-  {
     value: 'turbo-air-ts060xr404a3a',
     label: 'Copeland Scroll ZF18K4E-TF5 · TS060XR404A3A',
     catalogSelections: ['turbo-air-ts060xr404a3a'],
@@ -174,12 +164,17 @@ const defaultDraft: LocationDraft = {
 };
 
 function inferCompressorVariant(unit: Partial<UnitDraft>): string {
-  if (typeof unit.compressorVariant === 'string' && unit.compressorVariant) return unit.compressorVariant;
+  if (
+    typeof unit.compressorVariant === 'string' &&
+    unit.compressorVariant &&
+    unit.compressorVariant !== 'russell-next-gen-ii-22hp-low-temp-bitzer-r404a'
+  ) {
+    return unit.compressorVariant;
+  }
   const model = typeof unit.compressorModel === 'string'
     ? unit.compressorModel.toUpperCase().replaceAll('-', '')
     : '';
   if (model === '4DJNF76KE') return 'russell-next-gen-ii-22hp-low-temp-discus-r404a';
-  if (model === '4GE23') return 'russell-next-gen-ii-22hp-low-temp-bitzer-r404a';
   if (model === 'ZF18K4ETF5') return 'turbo-air-ts060xr404a3a';
   return model ? 'other' : 'unconfirmed';
 }
@@ -572,7 +567,7 @@ export function LocationEquipmentWorkspace({
                   ) : null}
                 </select>
               </label>
-              <label><span>Manufacturer</span><input value={unit.compressorManufacturer} onChange={(event) => updateUnit(index, { compressorManufacturer: event.target.value })} placeholder="Copeland, Bitzer, etc." /></label>
+              <label><span>Manufacturer</span><input value={unit.compressorManufacturer} onChange={(event) => updateUnit(index, { compressorManufacturer: event.target.value })} placeholder="Copeland or other manufacturer" /></label>
               <label><span>Technology</span><input value={unit.compressorTechnology} onChange={(event) => updateUnit(index, { compressorTechnology: event.target.value })} placeholder="Scroll, Discus, reciprocating" /></label>
               <label><span>Compressor model</span><input value={unit.compressorModel} onChange={(event) => updateUnit(index, { compressorModel: event.target.value })} placeholder="From compressor nameplate" /></label>
               <label><span>Compressor serial number</span><input value={unit.compressorSerialNumber} onChange={(event) => updateUnit(index, { compressorSerialNumber: event.target.value })} placeholder="Optional" /></label>
