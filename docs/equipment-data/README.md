@@ -27,7 +27,7 @@ For every condenser, preserve:
 
 `site-salinas-equipment.json` records the user-verified configuration as two 22 HP Russell Next-Gen II air-cooled condensing units in parallel on the same R404A refrigeration system, chilling ethanol.
 
-The supplied 2017 Russell catalog contains two possible 22 HP R404A low-temperature models: Copeland Discus and Bitzer. The exact installed model, compressor, voltage, serial number, and nameplate amperage remain deliberately unassigned until a unit nameplate confirms them.
+The supplied 2017 Russell catalog contains two possible 22 HP R404A low-temperature models: Copeland Discus and Bitzer. The exact installed model, compressor, voltage, serial number, and nameplate amperage remain deliberately unassigned until a unit nameplate confirms them. The Bitzer row remains archived as manufacturer source data, but it is intentionally excluded from the installed-compressor selector because PermaCool does not use that compressor.
 
 ### Russell 22 HP candidates
 
@@ -74,6 +74,36 @@ Important calculation rules:
 - Operational capacity remains locked until each condenser's exact catalog variant and installed frequency are confirmed and the suction input is explicitly validated as saturated suction temperature.
 - Dashboard signals older than five minutes remain identifiable as last-known readings but are excluded from run state, readiness, weather override, and capacity calculations.
 - Each condenser can store a `telemetryDeviceId`. Until Jose supplies that production mapping, unique CH-key matching is allowed; duplicate aliases across devices are treated as ambiguous and never resolved by taking the first match.
+
+## Russell Next-Gen MiniCon 6 HP option
+
+`russell-next-gen-minicon-6hp-zs45k4e-r404a.json` and
+`russell-next-gen-minicon-6hp-zs45k4e-r448a.json` add the Russell
+`R*O600E4S**` extended-medium-temperature unit with the Copeland
+`ZS45K4E` scroll compressor. The two refrigerants remain separate selections because their published capacity tables use different suction-temperature columns.
+
+| Field | Verified value |
+| --- | --- |
+| Nominal horsepower | 6 HP |
+| Refrigerants | R404A or R448A |
+| Compressor | Copeland scroll `ZS45K4E` |
+| Connections | 1-1/8 in suction, 5/8 in liquid |
+| Standard receiver at 90% | 28.0 lb R404A; 29.4 lb R448A |
+| Oversized receiver at 90% | 37.9 lb R404A; 39.8 lb R448A |
+| Cabinet / dimensions | FM4; 33 D x 43-7/8 W x 35 H in |
+| Fans / shipping weight / sound | One fan; approximately 405 lb; 76 dBA |
+| AWEF | 7.60 for R404A and R448A |
+| Ambient rating | Up to 110 F |
+| Published liquid subcooling | 3-5 F average |
+
+### Electrical references
+
+| Supply | Compressor RLA / LRA | Condenser fan FLA | Air-defrost MCA / MOPD | Electric-defrost MCA / MOPD |
+| --- | ---: | ---: | ---: | ---: |
+| 208-230 V / 3 / 60 or 200-220 V / 3 / 50 | 21.5 / 156 A | 5.2 A | 33.1 / 50 A | 45.1 / 60 A |
+| 460 V / 3 / 60 or 380 V / 3 / 50 | 8.3 / 75 A | 3.1 A | 15 / 20 A | 26 / 30 A |
+
+The R404A map contains 28 published positions across 90-110 F ambient and 45 to -20 F suction temperature, with unavailable cells retained as `null`; its published non-null range is 18,340-80,860 BTU/h. The R448A map contains 32 positions across 90-110 F ambient and 45 to -10 F suction temperature, also retaining unavailable cells; its published non-null range is 24,330-73,700 BTU/h. The manual instructs multiplying the 60 Hz capacities by `0.83` for 50 Hz operation. Never extrapolate outside either map, and do not treat RLA, LRA, MCA, MOPD, or AWEF as live telemetry.
 
 ## Turbo Air TS060XR404A3A option
 

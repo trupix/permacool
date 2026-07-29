@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   Activity,
@@ -76,6 +77,38 @@ const catalogOptions = [
     }
   },
   {
+    value: 'russell-next-gen-minicon-6hp-zs45k4e-r404a',
+    label: 'Russell Next-Gen MiniCon R*O600E4S** · 6 HP · R404A',
+    values: {
+      manufacturer: 'Russell',
+      productFamily: 'Next-Gen MiniCon',
+      exactModelNumber: 'R*O600E4S**',
+      nominalHorsepower: '6',
+      refrigerant: 'R404A',
+      refrigerantOther: '',
+      compressorVariant: 'russell-next-gen-minicon-6hp-zs45k4e-r404a',
+      compressorManufacturer: 'Copeland',
+      compressorTechnology: 'Scroll',
+      compressorModel: 'ZS45K4E'
+    }
+  },
+  {
+    value: 'russell-next-gen-minicon-6hp-zs45k4e-r448a',
+    label: 'Russell Next-Gen MiniCon R*O600E4S** · 6 HP · R448A',
+    values: {
+      manufacturer: 'Russell',
+      productFamily: 'Next-Gen MiniCon',
+      exactModelNumber: 'R*O600E4S**',
+      nominalHorsepower: '6',
+      refrigerant: 'R448A',
+      refrigerantOther: '',
+      compressorVariant: 'russell-next-gen-minicon-6hp-zs45k4e-r448a',
+      compressorManufacturer: 'Copeland',
+      compressorTechnology: 'Scroll',
+      compressorModel: 'ZS45K4E'
+    }
+  },
+  {
     value: 'turbo-air-ts060xr404a3a',
     label: 'Turbo Air TS060XR404A3A · R404A',
     values: {
@@ -94,6 +127,30 @@ const catalogOptions = [
 ] as const;
 
 const compressorOptions = [
+  {
+    value: 'russell-next-gen-minicon-6hp-zs45k4e-r404a',
+    label: 'Copeland Scroll 6 HP ZS45K4E · R404A curve',
+    catalogSelections: ['russell-next-gen-minicon-6hp-zs45k4e-r404a'],
+    values: {
+      refrigerant: 'R404A',
+      refrigerantOther: '',
+      compressorManufacturer: 'Copeland',
+      compressorTechnology: 'Scroll',
+      compressorModel: 'ZS45K4E'
+    }
+  },
+  {
+    value: 'russell-next-gen-minicon-6hp-zs45k4e-r448a',
+    label: 'Copeland Scroll 6 HP ZS45K4E · R448A curve',
+    catalogSelections: ['russell-next-gen-minicon-6hp-zs45k4e-r448a'],
+    values: {
+      refrigerant: 'R448A',
+      refrigerantOther: '',
+      compressorManufacturer: 'Copeland',
+      compressorTechnology: 'Scroll',
+      compressorModel: 'ZS45K4E'
+    }
+  },
   {
     value: 'russell-next-gen-ii-22hp-low-temp-discus-r404a',
     label: 'Copeland Discus 22 HP 4DJNF-76KE',
@@ -175,6 +232,11 @@ function inferCompressorVariant(unit: Partial<UnitDraft>): string {
     ? unit.compressorModel.toUpperCase().replaceAll('-', '')
     : '';
   if (model === '4DJNF76KE') return 'russell-next-gen-ii-22hp-low-temp-discus-r404a';
+  if (model === 'ZS45K4E') {
+    return unit.refrigerant === 'R448A'
+      ? 'russell-next-gen-minicon-6hp-zs45k4e-r448a'
+      : 'russell-next-gen-minicon-6hp-zs45k4e-r404a';
+  }
   if (model === 'ZF18K4ETF5') return 'turbo-air-ts060xr404a3a';
   return model ? 'other' : 'unconfirmed';
 }
@@ -200,6 +262,7 @@ function normalizeDraft(value: unknown): LocationDraft {
       typeof source.refrigerant === 'string' &&
       source.refrigerant &&
       source.refrigerant !== 'R404A' &&
+      source.refrigerant !== 'R448A' &&
       source.refrigerant !== 'other'
         ? source.refrigerant
         : '';
@@ -272,6 +335,12 @@ function voltageOptions(frequencyHz: string) {
 
 function refrigerantLabel(unit: UnitDraft) {
   return unit.refrigerant === 'other' ? entered(unit.refrigerantOther, 'Other refrigerant') : unit.refrigerant;
+}
+
+function isZs45k4e(unit: UnitDraft) {
+  return unit.compressorModel.toUpperCase().replaceAll('-', '') === 'ZS45K4E' ||
+    unit.compressorVariant.includes('zs45k4e') ||
+    unit.catalogSelection.includes('zs45k4e');
 }
 
 export function LocationEquipmentWorkspace({
@@ -358,6 +427,37 @@ export function LocationEquipmentWorkspace({
   function selectCompressor(index: number, selection: string) {
     const option = compressorOptions.find((candidate) => candidate.value === selection);
     updateUnit(index, { compressorVariant: selection, ...(option?.values ?? {}) });
+  }
+
+  function selectRefrigerant(index: number, refrigerant: string) {
+    setDraft((current) => ({
+      ...current,
+      units: current.units.map((unit, unitIndex) => {
+        if (unitIndex !== index) return unit;
+
+        const usesZs45k4eCatalog =
+          unit.catalogSelection === 'russell-next-gen-minicon-6hp-zs45k4e-r404a' ||
+          unit.catalogSelection === 'russell-next-gen-minicon-6hp-zs45k4e-r448a';
+        const matchingCatalog =
+          refrigerant === 'R448A'
+            ? 'russell-next-gen-minicon-6hp-zs45k4e-r448a'
+            : 'russell-next-gen-minicon-6hp-zs45k4e-r404a';
+
+        return {
+          ...unit,
+          refrigerant,
+          ...(refrigerant === 'R404A' || refrigerant === 'R448A'
+            ? { refrigerantOther: '' }
+            : {}),
+          ...(usesZs45k4eCatalog && (refrigerant === 'R404A' || refrigerant === 'R448A')
+            ? {
+                catalogSelection: matchingCatalog,
+                compressorVariant: matchingCatalog
+              }
+            : {})
+        };
+      })
+    }));
   }
 
   if (view === 'overview') {
@@ -515,6 +615,28 @@ export function LocationEquipmentWorkspace({
               <b>{configuredFields(unit)} of 8 key fields</b>
             </header>
 
+            {isZs45k4e(unit) ? (
+              <div className="location-equipment-compressor-hero">
+                <Image
+                  src="/images/equipment/copeland-zs45k4e-mini-hero.png"
+                  alt="Copeland ZS45K4E scroll compressor"
+                  fill
+                  sizes="(max-width: 700px) 100vw, 920px"
+                />
+                <div className="location-equipment-compressor-hero-shade" />
+                <div className="location-equipment-compressor-hero-content">
+                  <p className="eyebrow">Russell Next-Gen MiniCon</p>
+                  <h3>Copeland ZS45K4E</h3>
+                  <p>6 HP scroll compressor for the R*O600E4S** condensing unit.</p>
+                  <div className="location-equipment-compressor-hero-badges">
+                    <span>{refrigerantLabel(unit) || 'R404A / R448A'}</span>
+                    <span>Capacity map saved</span>
+                    <span>Manual RU-RFH-A1-0925-2</span>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
             <FormSection icon={<Settings2 size={16} />} title="Condenser identity">
               <label><span>Display name</span><input value={unit.label} onChange={(event) => updateUnit(index, { label: event.target.value })} /></label>
               <label><span>Dashboard channel</span><select value={unit.channel} onChange={(event) => updateUnit(index, { channel: event.target.value })}><option>CH1</option><option>CH2</option></select></label>
@@ -528,13 +650,11 @@ export function LocationEquipmentWorkspace({
                 <span>Refrigerant</span>
                 <select
                   value={unit.refrigerant}
-                  onChange={(event) => updateUnit(index, {
-                    refrigerant: event.target.value,
-                    ...(event.target.value === 'R404A' ? { refrigerantOther: '' } : {})
-                  })}
+                  onChange={(event) => selectRefrigerant(index, event.target.value)}
                 >
                   <option value="">Nameplate pending</option>
                   <option value="R404A">R404A - catalog loaded</option>
+                  <option value="R448A">R448A - catalog loaded</option>
                   <option value="other">Other - curve required</option>
                 </select>
               </label>

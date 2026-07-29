@@ -12065,6 +12065,78 @@ h4 {
   font-size: 0.73rem;
 }
 
+.location-equipment-compressor-hero {
+  position: relative;
+  min-height: 250px;
+  margin-bottom: 0.35rem;
+  overflow: hidden;
+  border: 1px solid rgba(238, 194, 92, 0.22);
+  border-radius: 18px;
+  background: #0b1b16;
+  isolation: isolate;
+}
+
+.location-equipment-compressor-hero > img {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center;
+}
+
+.location-equipment-compressor-hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(5, 24, 19, 0.98) 0%, rgba(7, 28, 22, 0.88) 42%, rgba(7, 28, 22, 0.2) 74%),
+    linear-gradient(0deg, rgba(5, 19, 16, 0.35), transparent 52%);
+}
+
+.location-equipment-compressor-hero-content {
+  display: grid;
+  align-content: center;
+  width: min(56%, 570px);
+  min-height: 250px;
+  padding: clamp(1.35rem, 3vw, 2.2rem);
+  color: #f7fbf5;
+}
+
+.location-equipment-compressor-hero-content .eyebrow {
+  color: #ecc567;
+}
+
+.location-equipment-compressor-hero-content h3 {
+  margin: 0.35rem 0 0.45rem;
+  color: #fff;
+  font-size: clamp(1.6rem, 3vw, 2.35rem);
+  letter-spacing: -0.035em;
+}
+
+.location-equipment-compressor-hero-content > p:not(.eyebrow) {
+  max-width: 36rem;
+  margin: 0;
+  color: rgba(238, 246, 240, 0.78);
+  line-height: 1.55;
+}
+
+.location-equipment-compressor-hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.2rem;
+}
+
+.location-equipment-compressor-hero-badges span {
+  padding: 0.38rem 0.62rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.025em;
+  backdrop-filter: blur(8px);
+}
+
 .location-equipment-form-section {
   display: grid;
   gap: 0.8rem;
@@ -12202,5 +12274,23 @@ h4 {
   .location-equipment-spec-card > header > b {
     grid-column: 1 / -1;
     justify-self: start;
+  }
+
+  .location-equipment-compressor-hero {
+    min-height: 310px;
+  }
+
+  .location-equipment-compressor-hero > img {
+    opacity: 0.7;
+    object-position: 66% center;
+  }
+
+  .location-equipment-compressor-hero-shade {
+    background: linear-gradient(90deg, rgba(5, 24, 19, 0.96), rgba(5, 24, 19, 0.64));
+  }
+
+  .location-equipment-compressor-hero-content {
+    width: 100%;
+    min-height: 310px;
   }
 }

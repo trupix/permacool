@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "catalogRecordId": "russell-next-gen-minicon-6hp-zs45k4e-r404a",
+  "manufacturer": "Russell",
+  "productFamily": "Next-Gen MiniCon",
+  "equipmentType": "air_cooled_condensing_unit",
+  "nominalHorsepower": 6,
+  "applicationRange": "extended_range_medium",
+  "refrigerant": "R404A",
+  "source": {
+    "documentTitle": "R-Series Next-Gen MiniCon 1/2 to 6 HP Air-Cooled Condensing Units",
+    "publicationNumber": "RU-RFH-A1-0925-2",
+    "replacesPublication": null,
+    "publicationDate": "2025-09",
+    "fileName": "RU-RFH-A1-0925-2.pdf",
+    "sha256": "d285e32a87d8650b7cf61322f4289c25504a0e2eb8fff123b9b6f4846413af31",
+    "sourcePages": {
+      "featuresAndNomenclature": [2, 3, 4, 5],
+      "r404aCapacity": [8, 9],
+      "r448aCapacity": [14, 15],
+      "electrical": [26, 27],
+      "connectionsAndReceiver": 28,
+      "dimensionsAndSound": 29,
+      "awef": 34
+    }
+  },
+  "commonFeatures": [
+    {
+      "feature": "Integral ambient-air liquid subcooling circuit",
+      "detail": "Russell states an average 3 to 5 F of subcooling.",
+      "sourcePage": 2
+    },
+    {
+      "feature": "High-efficiency condenser with enhanced copper tubes and aluminum fins",
+      "sourcePage": 3
+    },
+    {
+      "feature": "Crankcase heater and fixed-high/adjustable-low pressure control",
+      "sourcePage": 3
+    },
+    {
+      "feature": "All-weather galvanized painted housing and receiver with isolation valve",
+      "sourcePage": 3
+    },
+    {
+      "feature": "Rated for ambient air temperatures up to 110 F",
+      "sourcePage": 2
+    }
+  ],
+  "capacityRatingBasis": {
+    "capacityUnit": "BTU/h",
+    "frequencyHz": 60,
+    "ambientTemperaturesF": [90, 95, 100, 110],
+    "suctionTemperaturesF": [45, 35, 25, 20, 0, -10, -20],
+    "compressorSuperheatF": null,
+    "capacityMultiplierFor50Hz": 0.83,
+    "approximateCapacityMultiplierAt65FReturnGas": null,
+    "notes": [
+      "The published R404A map is for the Russell R*O600E4S** extended-medium-temperature unit with Copeland ZS45K4E scroll compressor.",
+      "The manual identifies the table axis as suction temperature; the live value must be validated as saturated suction temperature before capacity lookup.",
+      "The manual directs multiplying published 60 Hz capacity by 0.83 for 50 Hz operation.",
+      "Do not extrapolate outside the published 90-110 F ambient and 45 to -20 F suction-temperature envelope."
+    ]
+  },
+  "powerRatingAvailability": {
+    "inputPowerCurveStatus": "not_published_in_source",
+    "inputPowerUnit": "kW",
+    "inputPowerValues": null,
+    "copStatus": "not_published_in_source",
+    "eerStatus": "not_published_in_source",
+    "awefStatus": "published_for_r404a",
+    "awefValue": 7.6,
+    "sourcePageForAwefLimitation": 34,
+    "preferredFutureSource": "Installed three-phase power meter or Copeland compressor performance data at the operating point."
+  },
+  "modelVariants": [
+    {
+      "catalogVariantId": "russell-next-gen-minicon-6hp-zs45k4e-r404a",
+      "baseModelPattern": "R*O600E4S**",
+      "modelNumberStatus": "Base pattern verified from the supplied Russell manual; style, refrigerant, voltage, vintage, and option characters require the installed nameplate.",
+      "compressor": {
+        "manufacturer": "Copeland",
+        "technology": "Scroll",
+        "model": "ZS45K4E",
+        "count": 1,
+        "staging": "single_binary",
+        "lowTemperatureCoolingProvision": "Extended-medium-temperature application; no low-temperature injection provision is specified for this unit."
+      },
+      "fixedSpecifications": {
+        "nominalHorsepower": 6,
+        "suctionConnectionIn": "1-1/8",
+        "liquidConnectionIn": "5/8",
+        "receiverPumpDownCapacityLbAt80Percent": null,
+        "receiverPumpDownCapacityLbAt90Percent": {
+          "standardReceiver": {
+            "R404A": 28,
+            "R448A": 29.4
+          },
+          "oversizedReceiver": {
+            "R404A": 37.9,
+            "R448A": 39.8
+          }
+        },
+        "cabinetSize": "FM4",
+        "condenserFanQuantity": 1,
+        "dimensionsIn": {
+          "depth": 33,
+          "width": "43-7/8",
+          "height": 35
+        },
+        "approximateShipWeightLb": 405,
+        "soundDba": 76,
+        "sourcePages": [28, 29]
+      },
+      "electricalRatings": [
+        {
+          "supplyOptions": [
+            {
+              "voltage": "208-230",
+              "phase": 3,
+              "frequencyHz": 60
+            },
+            {
+              "voltage": "200-220",
+              "phase": 3,
+              "frequencyHz": 50
+            }
+          ],
+          "compressorRlaA": 21.5,
+          "compressorLraA": 156,
+          "totalCondenserFanFlaA": 5.2,
+          "minimumCircuitAmpacityA": 33.1,
+          "maximumOvercurrentProtectionA": 50,
+          "airDefrostMcaA": 33.1,
+          "airDefrostMopdA": 50,
+          "electricDefrostMcaA": 45.1,
+          "electricDefrostMopdA": 60,
+          "representativeDefrostAmpsA": 30,
+          "representativeEvaporatorFanAmpsA": 12,
+          "sourcePage": 26
+        },
+        {
+          "supplyOptions": [
+            {
+              "voltage": "460",
+              "phase": 3,
+              "frequencyHz": 60
+            },
+            {
+              "voltage": "380",
+              "phase": 3,
+              "frequencyHz": 50
+            }
+          ],
+          "compressorRlaA": 8.3,
+          "compressorLraA": 75,
+          "totalCondenserFanFlaA": 3.1,
+          "minimumCircuitAmpacityA": 15,
+          "maximumOvercurrentProtectionA": 20,
+          "airDefrostMcaA": 15,
+          "airDefrostMopdA": 20,
+          "electricDefrostMcaA": 26,
+          "electricDefrostMopdA": 30,
+          "representativeDefrostAmpsA": 20,
+          "representativeEvaporatorFanAmpsA": 6,
+          "sourcePage": 27
+        }
+      ],
+      "capacityTable": {
+        "suctionTemperaturesF": [45, 35, 25, 20, 0, -10, -20],
+        "interpolationPolicy": "Bilinear interpolation is allowed only between adjacent published ambient and suction-temperature points after confirming the suction input represents saturated suction temperature.",
+        "extrapolationPolicy": "Never extrapolate beyond the published table envelope.",
+        "rows": [
+          {
+            "ambientTemperatureF": 90,
+            "capacityBtuPerHour": [80860, 67300, 55630, 50700, 34240, 27730, 22150]
+          },
+          {
+            "ambientTemperatureF": 95,
+            "capacityBtuPerHour": [77500, 64500, 53280, 48530, 32730, 26520, 21230]
+          },
+          {
+            "ambientTemperatureF": 100,
+            "capacityBtuPerHour": [null, 61650, 50900, 46350, 31220, 25300, 20290]
+          },
+          {
+            "ambientTemperatureF": 110,
+            "capacityBtuPerHour": [null, 53410, 46090, 41930, 28140, 22810, 18340]
+          }
+        ],
+        "sourcePage": 8,
+        "sourcePages": [8, 9]
+      }
+    }
+  ],
+  "calculationWarnings": [
+    "The R404A and R448A capacity maps use different suction-temperature columns and must remain separate catalog records.",
+    "RLA and LRA are nameplate reference ratings, not live compressor-current readings or real power.",
+    "MCA and MOPD are circuit-sizing references, not normal operating-current targets.",
+    "AWEF 7.60 is a manufacturer rating and must not be treated as live efficiency.",
+    "Capacity interpolation requires verified condenser entering-air temperature, refrigerant, frequency, and saturated suction temperature."
+  ]
+}
