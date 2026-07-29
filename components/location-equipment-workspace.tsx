@@ -64,76 +64,6 @@ type LocationDraft = {
   units: UnitDraft[];
 };
 
-const catalogOptions = [
-  { value: '', label: 'Select a known condenser or enter manually', values: {} },
-  {
-    value: 'russell-next-gen-ii-22hp-r404a',
-    label: 'Russell Next-Gen II · 22 HP · Copeland Discus · R404A',
-    values: {
-      manufacturer: 'Russell',
-      productFamily: 'Next-Gen II',
-      exactModelNumber: 'R*DS22L4S**',
-      nominalHorsepower: '22',
-      refrigerant: 'R404A',
-      refrigerantOther: '',
-      compressorVariant: 'russell-next-gen-ii-22hp-low-temp-discus-r404a',
-      compressorManufacturer: 'Copeland',
-      compressorTechnology: 'Discus',
-      compressorModel: '4DJNF-76KE',
-      phase: '3',
-      frequencyHz: '60'
-    }
-  },
-  {
-    value: 'russell-next-gen-minicon-6hp-zs45k4e-r404a',
-    label: 'Russell Next-Gen MiniCon R*O600E4S** · 6 HP · R404A',
-    values: {
-      manufacturer: 'Russell',
-      productFamily: 'Next-Gen MiniCon',
-      exactModelNumber: 'R*O600E4S**',
-      nominalHorsepower: '6',
-      refrigerant: 'R404A',
-      refrigerantOther: '',
-      compressorVariant: 'russell-next-gen-minicon-6hp-zs45k4e-r404a',
-      compressorManufacturer: 'Copeland',
-      compressorTechnology: 'Scroll',
-      compressorModel: 'ZS45K4E'
-    }
-  },
-  {
-    value: 'russell-next-gen-minicon-6hp-zs45k4e-r448a',
-    label: 'Russell Next-Gen MiniCon R*O600E4S** · 6 HP · R448A',
-    values: {
-      manufacturer: 'Russell',
-      productFamily: 'Next-Gen MiniCon',
-      exactModelNumber: 'R*O600E4S**',
-      nominalHorsepower: '6',
-      refrigerant: 'R448A',
-      refrigerantOther: '',
-      compressorVariant: 'russell-next-gen-minicon-6hp-zs45k4e-r448a',
-      compressorManufacturer: 'Copeland',
-      compressorTechnology: 'Scroll',
-      compressorModel: 'ZS45K4E'
-    }
-  },
-  {
-    value: 'turbo-air-ts060xr404a3a',
-    label: 'Turbo Air TS060XR404A3A · R404A',
-    values: {
-      manufacturer: 'Turbo Air',
-      productFamily: 'TS Series',
-      exactModelNumber: 'TS060XR404A3A',
-      refrigerant: 'R404A',
-      refrigerantOther: '',
-      compressorVariant: 'turbo-air-ts060xr404a3a',
-      compressorManufacturer: 'Copeland',
-      compressorTechnology: 'Scroll',
-      compressorModel: 'ZF18K4E-TF5'
-    }
-  },
-  { value: 'custom', label: 'Other / custom condenser', values: {} }
-] as const;
-
 const compressorOptions = [
   {
     value: 'russell-next-gen-minicon-6hp-zs45k4e-r404a',
@@ -266,13 +196,22 @@ function inferCompressorVariant(unit: Partial<UnitDraft>): string {
   ) {
     return unit.compressorVariant;
   }
-  if (unit.catalogSelection === 'russell-next-gen-ii-22hp-r404a') {
-    return 'russell-next-gen-ii-22hp-low-temp-discus-r404a';
+  if (
+    unit.catalogSelection === 'russell-next-gen-ii-22hp-r404a' ||
+    unit.catalogSelection === 'russell-next-gen-ii-22hp-r448a'
+  ) {
+    return unit.catalogSelection.endsWith('r448a')
+      ? 'russell-next-gen-ii-22hp-low-temp-discus-r448a'
+      : 'russell-next-gen-ii-22hp-low-temp-discus-r404a';
   }
   const model = typeof unit.compressorModel === 'string'
     ? unit.compressorModel.toUpperCase().replaceAll('-', '')
     : '';
-  if (model === '4DJNF76KE') return 'russell-next-gen-ii-22hp-low-temp-discus-r404a';
+  if (model === '4DJNF76KE') {
+    return unit.refrigerant === 'R448A'
+      ? 'russell-next-gen-ii-22hp-low-temp-discus-r448a'
+      : 'russell-next-gen-ii-22hp-low-temp-discus-r404a';
+  }
   if (model === 'ZS45K4E') {
     return unit.refrigerant === 'R448A'
       ? 'russell-next-gen-minicon-6hp-zs45k4e-r448a'
@@ -294,6 +233,105 @@ function backfillSelectedCompressor(unit: UnitDraft): UnitDraft {
     }
   }
   return next;
+}
+
+function applySupportedEquipmentProfile(unit: UnitDraft): UnitDraft {
+  const next: UnitDraft = {
+    ...unit,
+    refrigerantOther: '',
+    productFamily: '',
+    exactModelNumber: '',
+    catalogSelection: '',
+    compressorVariant: 'unconfirmed',
+    compressorManufacturer: '',
+    compressorTechnology: '',
+    compressorModel: '',
+    phase: unit.manufacturer && unit.nominalHorsepower ? '3' : '',
+    frequencyHz: unit.manufacturer && unit.nominalHorsepower ? '60' : 'unconfirmed',
+    nameplateRlaA: '',
+    nameplateLraA: ''
+  };
+  const isR448 = next.refrigerant === 'R448A';
+  const hasCatalogRefrigerant = next.refrigerant === 'R404A' || isR448;
+  const isLowVoltage = next.voltage === '208-230';
+  const isHighVoltage = next.voltage === '460';
+
+  if (next.manufacturer === 'Russell' && next.nominalHorsepower === '6') {
+    const catalogId = isR448
+      ? 'russell-next-gen-minicon-6hp-zs45k4e-r448a'
+      : 'russell-next-gen-minicon-6hp-zs45k4e-r404a';
+    Object.assign(next, {
+      productFamily: 'Next-Gen MiniCon',
+      exactModelNumber: 'R*O600E4S**',
+      catalogSelection: hasCatalogRefrigerant ? catalogId : '',
+      compressorVariant: hasCatalogRefrigerant ? catalogId : 'unconfirmed',
+      compressorManufacturer: 'Copeland',
+      compressorTechnology: 'Scroll',
+      compressorModel: 'ZS45K4E'
+    });
+    if (isLowVoltage) Object.assign(next, { nameplateRlaA: '21.5', nameplateLraA: '156' });
+    if (isHighVoltage) Object.assign(next, { nameplateRlaA: '8.3', nameplateLraA: '75' });
+  }
+
+  if (next.manufacturer === 'Russell' && next.nominalHorsepower === '22') {
+    const catalogId = isR448
+      ? 'russell-next-gen-ii-22hp-r448a'
+      : 'russell-next-gen-ii-22hp-r404a';
+    const variantId = isR448
+      ? 'russell-next-gen-ii-22hp-low-temp-discus-r448a'
+      : 'russell-next-gen-ii-22hp-low-temp-discus-r404a';
+    Object.assign(next, {
+      productFamily: 'Next-Gen II',
+      exactModelNumber: 'R*DS22L4S**',
+      catalogSelection: hasCatalogRefrigerant ? catalogId : '',
+      compressorVariant: hasCatalogRefrigerant ? variantId : 'unconfirmed',
+      compressorManufacturer: 'Copeland',
+      compressorTechnology: 'Discus',
+      compressorModel: '4DJNF-76KE'
+    });
+    if (isLowVoltage) Object.assign(next, { nameplateRlaA: '57.7', nameplateLraA: '374' });
+    if (isHighVoltage) Object.assign(next, { nameplateRlaA: '28.8', nameplateLraA: '187' });
+  }
+
+  if (next.manufacturer === 'Russell' && next.nominalHorsepower === '30') {
+    Object.assign(next, {
+      productFamily: '30 HP low-temperature',
+      exactModelNumber: 'RVDV030L4S**',
+      compressorVariant: 'russell-30hp-discus-pending',
+      compressorManufacturer: 'Copeland',
+      compressorTechnology: 'Discus'
+    });
+  }
+
+  if (next.manufacturer === 'Turbo Air' && next.nominalHorsepower === '6') {
+    const hasExactSource = next.refrigerant === 'R404A' && isLowVoltage;
+    Object.assign(next, {
+      productFamily: 'TS Series',
+      exactModelNumber: hasExactSource ? 'TS060XR404A3A' : '',
+      catalogSelection: hasExactSource ? 'turbo-air-ts060xr404a3a' : '',
+      compressorVariant: hasExactSource ? 'turbo-air-ts060xr404a3a' : 'unconfirmed',
+      compressorManufacturer: 'Copeland',
+      compressorTechnology: 'Scroll',
+      compressorModel: hasExactSource ? 'ZF18K4E-TF5' : ''
+    });
+    if (hasExactSource) Object.assign(next, { nameplateRlaA: '21.8', nameplateLraA: '156' });
+  }
+
+  return next;
+}
+
+function equipmentSourceNote(unit: UnitDraft): string {
+  if (unit.manufacturer === 'Russell' && unit.nominalHorsepower === '30') {
+    return 'The 30 HP order identifies Russell RVDV030L4SEA with Copeland Discus, but its manufacturer performance sheet is still needed before RLA, LRA, and capacity can be filled safely.';
+  }
+  if (
+    unit.manufacturer === 'Turbo Air' &&
+    unit.nominalHorsepower === '6' &&
+    (unit.refrigerant === 'R448A' || unit.voltage === '460')
+  ) {
+    return 'The supplied Turbo Air sheet covers TS060XR404A3A at R404A and 208-230 V only. The matching R448 or 460 V model sheet is needed for automatic electrical and capacity values.';
+  }
+  return '';
 }
 
 function normalizeDraft(value: unknown): LocationDraft {
@@ -322,14 +360,25 @@ function normalizeDraft(value: unknown): LocationDraft {
         ? source.refrigerant
         : '';
 
-    return backfillSelectedCompressor({
+    const normalizedUnit = backfillSelectedCompressor({
       ...blankUnit(index),
       ...source,
       manufacturer: source.manufacturer === 'TurboAir' ? 'Turbo Air' : source.manufacturer ?? '',
+      voltage:
+        source.voltage === '208' || source.voltage === '230'
+          ? '208-230'
+          : source.voltage === '480' || source.voltage === '460/480'
+            ? '460'
+            : source.voltage ?? 'unconfirmed',
       refrigerant: legacyRefrigerant ? 'other' : source.refrigerant ?? '',
       refrigerantOther: legacyRefrigerant || source.refrigerantOther || '',
       compressorVariant: inferCompressorVariant(source)
     });
+    return normalizedUnit.manufacturer &&
+      ['6', '22', '30'].includes(normalizedUnit.nominalHorsepower) &&
+      ['R404A', 'R448A'].includes(normalizedUnit.refrigerant)
+      ? applySupportedEquipmentProfile(normalizedUnit)
+      : normalizedUnit;
   });
 
   return {
@@ -361,32 +410,6 @@ function configuredFields(unit: UnitDraft) {
     unit.nameplateRlaA,
     unit.nameplateLraA
   ].filter((value) => value.trim()).length;
-}
-
-function availableCompressorOptions(unit: UnitDraft) {
-  if (!unit.catalogSelection || unit.catalogSelection === 'custom') return [...compressorOptions];
-  const matched = compressorOptions.filter((option) =>
-    option.catalogSelections.some((selection) => selection === unit.catalogSelection)
-  );
-  const saved = compressorOptions.find((option) => option.value === unit.compressorVariant);
-  return saved && !matched.some((option) => option.value === saved.value) ? [...matched, saved] : matched;
-}
-
-function voltageOptions(frequencyHz: string) {
-  if (frequencyHz === '50') {
-    return [
-      { value: '200-220', label: '200-220 V / 3 phase / 50 Hz' },
-      { value: '380', label: '380 V / 3 phase / 50 Hz' }
-    ];
-  }
-  if (frequencyHz === '60') {
-    return [
-      { value: '208-230', label: '208-230 V / 3 phase / 60 Hz' },
-      { value: '460', label: '460 V / 3 phase / 60 Hz' },
-      { value: '575', label: '575 V / 3 phase / 60 Hz' }
-    ];
-  }
-  return [];
 }
 
 function refrigerantLabel(unit: UnitDraft) {
@@ -469,58 +492,12 @@ export function LocationEquipmentWorkspace({
     }));
   }
 
-  function selectCatalog(index: number, selection: string) {
-    const option = catalogOptions.find((candidate) => candidate.value === selection);
-    const compressorVariant =
-      selection === 'turbo-air-ts060xr404a3a'
-        ? 'turbo-air-ts060xr404a3a'
-        : undefined;
+  function configureUnit(index: number, patch: Partial<UnitDraft>) {
     setDraft((current) => ({
       ...current,
-      units: current.units.map((unit, unitIndex) => unitIndex === index
-        ? backfillSelectedCompressor({
-            ...unit,
-            catalogSelection: selection,
-            ...(option?.values ?? {}),
-            ...(compressorVariant ? { compressorVariant } : {})
-          })
-        : unit)
-    }));
-  }
-
-  function selectCompressor(index: number, selection: string) {
-    const option = compressorOptions.find((candidate) => candidate.value === selection);
-    updateUnit(index, { compressorVariant: selection, ...(option?.values ?? {}) });
-  }
-
-  function selectRefrigerant(index: number, refrigerant: string) {
-    setDraft((current) => ({
-      ...current,
-      units: current.units.map((unit, unitIndex) => {
-        if (unitIndex !== index) return unit;
-
-        const usesZs45k4eCatalog =
-          unit.catalogSelection === 'russell-next-gen-minicon-6hp-zs45k4e-r404a' ||
-          unit.catalogSelection === 'russell-next-gen-minicon-6hp-zs45k4e-r448a';
-        const matchingCatalog =
-          refrigerant === 'R448A'
-            ? 'russell-next-gen-minicon-6hp-zs45k4e-r448a'
-            : 'russell-next-gen-minicon-6hp-zs45k4e-r404a';
-
-        return {
-          ...unit,
-          refrigerant,
-          ...(refrigerant === 'R404A' || refrigerant === 'R448A'
-            ? { refrigerantOther: '' }
-            : {}),
-          ...(usesZs45k4eCatalog && (refrigerant === 'R404A' || refrigerant === 'R448A')
-            ? {
-                catalogSelection: matchingCatalog,
-                compressorVariant: matchingCatalog
-              }
-            : {})
-        };
-      })
+      units: current.units.map((unit, unitIndex) =>
+        unitIndex === index ? applySupportedEquipmentProfile({ ...unit, ...patch }) : unit
+      )
     }));
   }
 
@@ -704,7 +681,7 @@ export function LocationEquipmentWorkspace({
                     <strong>
                       {unit.catalogSelection && unit.catalogSelection !== 'custom'
                         ? 'Reference image coming soon'
-                        : 'Select a known condenser'}
+                        : 'Complete equipment selection'}
                     </strong>
                     <small>Its cabinet image will appear here for visual verification.</small>
                   </div>
@@ -735,7 +712,7 @@ export function LocationEquipmentWorkspace({
                     <strong>
                       {unit.compressorVariant !== 'unconfirmed'
                         ? 'Reference image coming soon'
-                        : 'Select an installed compressor'}
+                        : 'Select the unit size'}
                     </strong>
                     <small>Its product image will appear here for visual verification.</small>
                   </div>
@@ -743,114 +720,82 @@ export function LocationEquipmentWorkspace({
               </article>
             </div>
 
-            <FormSection icon={<Settings2 size={16} />} title="Condenser identity">
+            <FormSection icon={<Settings2 size={16} />} title="Equipment selection">
               <label><span>Display name</span><input value={unit.label} onChange={(event) => updateUnit(index, { label: event.target.value })} /></label>
               <label><span>Dashboard channel</span><select value={unit.channel} onChange={(event) => updateUnit(index, { channel: event.target.value })}><option>CH1</option><option>CH2</option></select></label>
-              <label className="is-wide"><span>Known condenser selection</span><select value={unit.catalogSelection} onChange={(event) => selectCatalog(index, event.target.value)}>{catalogOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
               <label>
                 <span>Manufacturer</span>
-                <select value={unit.manufacturer} onChange={(event) => updateUnit(index, { manufacturer: event.target.value })}>
+                <select
+                  value={unit.manufacturer}
+                  onChange={(event) => configureUnit(index, {
+                    manufacturer: event.target.value,
+                    nominalHorsepower: event.target.value === 'Turbo Air' ? '6' : unit.nominalHorsepower
+                  })}
+                >
                   <option value="">Select manufacturer</option>
                   <option value="Russell">Russell</option>
                   <option value="Turbo Air">Turbo Air</option>
                 </select>
               </label>
-              <label><span>Product family</span><input value={unit.productFamily} onChange={(event) => updateUnit(index, { productFamily: event.target.value })} placeholder="Series or family" /></label>
-              <label><span>Exact model number</span><input value={unit.exactModelNumber} onChange={(event) => updateUnit(index, { exactModelNumber: event.target.value })} placeholder="From nameplate" /></label>
-              <label><span>Condenser serial number</span><input value={unit.serialNumber} onChange={(event) => updateUnit(index, { serialNumber: event.target.value })} placeholder="From nameplate" /></label>
-              <label><span>Nominal horsepower</span><input type="number" min={0} step={0.1} value={unit.nominalHorsepower} onChange={(event) => updateUnit(index, { nominalHorsepower: event.target.value })} placeholder="HP" /></label>
               <label>
-                <span>Refrigerant</span>
+                <span>Equipment size</span>
                 <select
-                  value={unit.refrigerant}
-                  onChange={(event) => selectRefrigerant(index, event.target.value)}
+                  value={unit.nominalHorsepower}
+                  disabled={!unit.manufacturer}
+                  onChange={(event) => configureUnit(index, { nominalHorsepower: event.target.value })}
                 >
-                  <option value="">Nameplate pending</option>
-                  <option value="R404A">R404A - catalog loaded</option>
-                  <option value="R448A">R448A - catalog loaded</option>
-                  <option value="other">Other - curve required</option>
-                </select>
-              </label>
-              {unit.refrigerant === 'other' ? (
-                <label>
-                  <span>Other refrigerant</span>
-                  <input
-                    value={unit.refrigerantOther}
-                    onChange={(event) => updateUnit(index, { refrigerantOther: event.target.value })}
-                    placeholder="Enter refrigerant type"
-                  />
-                </label>
-              ) : null}
-              <UnitInput label="Refrigerant charge" unit="lb" value={unit.refrigerantChargeLb} onChange={(value) => updateUnit(index, { refrigerantChargeLb: value })} />
-            </FormSection>
-
-            <FormSection icon={<Gauge size={16} />} title="Installed compressor">
-              <label className="is-wide">
-                <span>Installed compressor</span>
-                <select value={unit.compressorVariant} onChange={(event) => selectCompressor(index, event.target.value)}>
-                  <option value="unconfirmed">Nameplate model pending</option>
-                  {availableCompressorOptions(unit).map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                  <option value="other">Other / manually entered compressor</option>
-                  {!compressorOptions.some((option) => option.value === unit.compressorVariant) &&
-                  unit.compressorVariant !== 'unconfirmed' &&
-                  unit.compressorVariant !== 'other' ? (
-                    <option value={unit.compressorVariant}>{unit.compressorVariant} · saved draft</option>
-                  ) : null}
-                </select>
-              </label>
-              <label><span>Manufacturer</span><input value={unit.compressorManufacturer} onChange={(event) => updateUnit(index, { compressorManufacturer: event.target.value })} placeholder="Copeland or other manufacturer" /></label>
-              <label><span>Technology</span><input value={unit.compressorTechnology} onChange={(event) => updateUnit(index, { compressorTechnology: event.target.value })} placeholder="Scroll, Discus, reciprocating" /></label>
-              <label><span>Compressor model</span><input value={unit.compressorModel} onChange={(event) => updateUnit(index, { compressorModel: event.target.value })} placeholder="From compressor nameplate" /></label>
-              <label><span>Compressor serial number</span><input value={unit.compressorSerialNumber} onChange={(event) => updateUnit(index, { compressorSerialNumber: event.target.value })} placeholder="Optional" /></label>
-            </FormSection>
-
-            <FormSection icon={<Zap size={16} />} title="Electrical nameplate" className="is-four">
-              <label><span>Phase</span><select value={unit.phase} onChange={(event) => updateUnit(index, { phase: event.target.value })}><option value="">Unknown</option><option value="1">1 phase</option><option value="3">3 phase</option></select></label>
-              <label>
-                <span>Installed frequency</span>
-                <select
-                  value={unit.frequencyHz || 'unconfirmed'}
-                  onChange={(event) => updateUnit(index, {
-                    frequencyHz: event.target.value,
-                    voltage: 'unconfirmed'
-                  })}
-                >
-                  <option value="unconfirmed">Nameplate pending</option>
-                  <option value="60">60 Hz</option>
-                  <option value="50">50 Hz - 0.83 capacity factor</option>
-                  {unit.frequencyHz &&
-                  unit.frequencyHz !== 'unconfirmed' &&
-                  unit.frequencyHz !== '60' &&
-                  unit.frequencyHz !== '50' ? (
-                    <option value={unit.frequencyHz}>{unit.frequencyHz} Hz · saved draft</option>
-                  ) : null}
+                  <option value="">{unit.manufacturer ? 'Select size' : 'Select manufacturer first'}</option>
+                  <option value="6">6 HP</option>
+                  {unit.manufacturer === 'Russell' ? <option value="22">22 HP</option> : null}
+                  {unit.manufacturer === 'Russell' ? <option value="30">30 HP</option> : null}
                 </select>
               </label>
               <label>
                 <span>Installed voltage</span>
                 <select
                   value={unit.voltage || 'unconfirmed'}
-                  disabled={unit.frequencyHz !== '50' && unit.frequencyHz !== '60'}
-                  onChange={(event) => updateUnit(index, { voltage: event.target.value })}
+                  onChange={(event) => configureUnit(index, { voltage: event.target.value })}
                 >
-                  <option value="unconfirmed">
-                    {unit.frequencyHz === '50' || unit.frequencyHz === '60' ? 'Nameplate pending' : 'Confirm frequency first'}
-                  </option>
-                  {voltageOptions(unit.frequencyHz).map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                  {unit.voltage &&
-                  unit.voltage !== 'unconfirmed' &&
-                  !voltageOptions(unit.frequencyHz).some((option) => option.value === unit.voltage) ? (
-                    <option value={unit.voltage}>{unit.voltage} V · saved draft</option>
-                  ) : null}
+                  <option value="unconfirmed">Select voltage</option>
+                  <option value="208-230">208-230 V</option>
+                  <option value="460">460 V equipment / 480 V service</option>
                 </select>
               </label>
-              <UnitInput label="Compressor RLA" unit="A" value={unit.nameplateRlaA} onChange={(value) => updateUnit(index, { nameplateRlaA: value })} />
-              <UnitInput label="Compressor LRA" unit="A" value={unit.nameplateLraA} onChange={(value) => updateUnit(index, { nameplateLraA: value })} />
+              <label>
+                <span>Refrigerant</span>
+                <select value={unit.refrigerant} onChange={(event) => configureUnit(index, { refrigerant: event.target.value })}>
+                  <option value="">Select refrigerant</option>
+                  <option value="R404A">R404A</option>
+                  <option value="R448A">R448</option>
+                </select>
+              </label>
+              <label><span>Product family</span><input value={unit.productFamily} disabled placeholder="Filled automatically" /></label>
+              <label><span>Model pattern</span><input value={unit.exactModelNumber} disabled placeholder="Filled automatically" /></label>
+              <label><span>Condenser serial number</span><input value={unit.serialNumber} onChange={(event) => updateUnit(index, { serialNumber: event.target.value })} placeholder="Optional nameplate value" /></label>
+              <UnitInput label="Refrigerant charge" unit="lb" value={unit.refrigerantChargeLb} onChange={(value) => updateUnit(index, { refrigerantChargeLb: value })} />
             </FormSection>
+
+            <FormSection icon={<Gauge size={16} />} title="Installed compressor">
+              <label><span>Manufacturer</span><input value={unit.compressorManufacturer} disabled placeholder="Filled automatically" /></label>
+              <label><span>Technology</span><input value={unit.compressorTechnology} disabled placeholder="Filled automatically" /></label>
+              <label><span>Compressor model</span><input value={unit.compressorModel} disabled placeholder="Datasheet pending" /></label>
+              <label><span>Compressor serial number</span><input value={unit.compressorSerialNumber} onChange={(event) => updateUnit(index, { compressorSerialNumber: event.target.value })} placeholder="Optional" /></label>
+            </FormSection>
+
+            <FormSection icon={<Zap size={16} />} title="Electrical nameplate" className="is-four">
+              <label><span>Phase</span><input value={unit.phase ? `${unit.phase} phase` : ''} disabled placeholder="Filled automatically" /></label>
+              <label><span>Frequency</span><input value={unit.frequencyHz === '60' ? '60 Hz' : ''} disabled placeholder="Filled automatically" /></label>
+              <label><span>Voltage class</span><input value={unit.voltage === '460' ? '460 V / 480 V service' : unit.voltage === '208-230' ? '208-230 V' : ''} disabled placeholder="Select above" /></label>
+              <UnitInput label="Compressor RLA" unit="A" value={unit.nameplateRlaA} disabled onChange={() => undefined} />
+              <UnitInput label="Compressor LRA" unit="A" value={unit.nameplateLraA} disabled onChange={() => undefined} />
+            </FormSection>
+
+            {equipmentSourceNote(unit) ? (
+              <div className="location-equipment-analysis-note">
+                <CircleAlert size={18} />
+                <p>{equipmentSourceNote(unit)}</p>
+              </div>
+            ) : null}
 
             <label className="location-equipment-notes">
               <span>Installation notes</span>

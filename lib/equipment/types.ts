@@ -181,6 +181,10 @@ export interface CatalogFixedSpecifications {
     standardReceiverR404A: number;
     oversizedReceiverR404A: number;
   } | null;
+  receiverPumpDownCapacityLbAt80PercentByRefrigerant?: {
+    standardReceiver: Record<string, number>;
+    oversizedReceiver: Record<string, number>;
+  } | null;
   receiverPumpDownCapacityLbAt90Percent?: {
     standardReceiver: Record<string, number>;
     oversizedReceiver: Record<string, number>;

@@ -68,4 +68,23 @@ assert.deepEqual(russellR448a.capacityRatingBasis.suctionTemperaturesF, [45, 35,
 assert.equal(russellR448a.modelVariants[0].capacityTable.rows[0].capacityBtuPerHour[0], 73700);
 assert.equal(russellR448a.modelVariants[0].capacityTable.rows[3].capacityBtuPerHour[5], 27820);
 
+const russell22HpR448a = readCatalog('russell-next-gen-ii-22hp-r448a.json');
+assert.equal(russell22HpR448a.catalogRecordId, 'russell-next-gen-ii-22hp-r448a');
+assert.equal(russell22HpR448a.refrigerant, 'R448A');
+assert.equal(russell22HpR448a.nominalHorsepower, 22);
+assert.equal(russell22HpR448a.modelVariants.length, 1);
+const russell22HpR448aVariant = russell22HpR448a.modelVariants[0];
+assert.equal(russell22HpR448aVariant.compressor.manufacturer, 'Copeland');
+assert.equal(russell22HpR448aVariant.compressor.technology, 'Discus');
+assert.equal(russell22HpR448aVariant.compressor.model, '4DJNF76KE');
+assert.equal(
+  russell22HpR448aVariant.fixedSpecifications.receiverPumpDownCapacityLbAt80PercentByRefrigerant
+    .standardReceiver.R448A,
+  47
+);
+assert.equal(russell22HpR448aVariant.electricalRatings[0].compressorRlaA, 57.7);
+assert.equal(russell22HpR448aVariant.electricalRatings[1].compressorRlaA, 28.8);
+assert.equal(russell22HpR448aVariant.capacityTable.rows[0].capacityBtuPerHour[0], 126050);
+assert.equal(russell22HpR448aVariant.capacityTable.rows[3].capacityBtuPerHour[7], 20700);
+
 console.log('Equipment catalog ingestion checks passed.');

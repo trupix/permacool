@@ -25,6 +25,8 @@ For every condenser, preserve:
 
 PermaCool's supported-equipment rule is user verified: its 6 HP Russell and Turbo Air units use scroll compressors, while its 22 HP and 30 HP Russell units use Copeland Discus compressors. Bitzer data may remain archived as manufacturer reference material but must not appear as an installed-equipment choice.
 
+The normal equipment setup path asks only for manufacturer, size (`6`, `22`, or `30` HP as supported by that manufacturer), installed voltage (`208-230 V` or `460 V equipment / 480 V service`), and refrigerant (`R404A` or the simplified dashboard label `R448`). The stored refrigerant identifier for `R448` is `R448A`. Product family, model pattern, compressor technology, compressor model, phase, frequency, RLA, LRA, and catalog curve are derived from those selections. Unknown values must remain blank rather than being inferred when a matching manufacturer sheet is not available.
+
 ## Salinas record
 
 `site-salinas-equipment.json` records the user-verified configuration as two 22 HP Russell Next-Gen II air-cooled condensing units in parallel on the same R404A refrigeration system, chilling ethanol.
@@ -57,14 +59,15 @@ The tables also group 200-220 V/3/50 Hz with the first row and 380 V/3/50 Hz wit
 
 | Candidate | 95 F ambient / -20 F suction | 100 F ambient / -20 F suction | Full published-map range |
 | --- | ---: | ---: | ---: |
-| Discus | 78,840 BTU/h (6.57 tons) | 74,230 BTU/h (6.19 tons) | 30,330-129,720 BTU/h |
+| Discus R404A | 78,840 BTU/h (6.57 tons) | 74,230 BTU/h (6.19 tons) | 30,330-129,720 BTU/h |
+| Discus R448A | 71,180 BTU/h (5.93 tons) | 67,250 BTU/h (5.60 tons) | 20,700-126,050 BTU/h |
 | Bitzer | 76,890 BTU/h (6.41 tons) | 72,110 BTU/h (6.01 tons) | 32,880-132,420 BTU/h |
 
 For two identical active units in parallel, the simple catalog sum at 95 F ambient and -20 F suction is 157,680 BTU/h for the Discus candidate or 153,780 BTU/h for the Bitzer candidate. This is a derived estimate, not a guaranteed shared-system capacity.
 
 ## Catalog record
 
-`russell-next-gen-ii-22hp-r404a.json` contains the complete 22 HP R404A capacity rows and electrical ratings from Russell publication `RU-NG2-0617A` for both catalog candidates. Manufacturer catalog values must remain visually distinct from live PLC measurements and derived calculations.
+`russell-next-gen-ii-22hp-r404a.json` contains the complete 22 HP R404A capacity rows and electrical ratings from Russell publication `RU-NG2-0617A`. `russell-next-gen-ii-22hp-r448a.json` contains the separate combined R448A/R449A manufacturer curve as the dashboard's R448 selection, with all eight suction-temperature points at 90, 95, 100, and 110 F ambient. Manufacturer catalog values must remain visually distinct from live PLC measurements and derived calculations.
 
 Important calculation rules:
 
