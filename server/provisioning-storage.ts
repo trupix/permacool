@@ -47,21 +47,38 @@ async function initializeProvisioningStorage() {
     await db.$executeRawUnsafe(
       'CREATE UNIQUE INDEX IF NOT EXISTS "VpnEnrollment_tunnelIp_key" ON "VpnEnrollment"("tunnelIp")'
     );
-    const salinasEpic = await db.device.findUnique({ where: { id: 'epic-mvp-01' }, select: { id: true } });
-    if (salinasEpic) {
+    const externalEnrollments = [
+      {
+        deviceId: 'epic-mvp-01',
+        identity: 'salinas-groov-epic-01',
+        tunnelIp: '172.28.0.10'
+      },
+      {
+        deviceId: 'epic-cannon-falls-01',
+        identity: 'cannon-falls-groov-epic-01',
+        tunnelIp: '172.28.0.11'
+      }
+    ];
+    for (const enrollment of externalEnrollments) {
+      const device = await db.device.findUnique({ where: { id: enrollment.deviceId }, select: { id: true } });
+      if (!device) continue;
       try {
         await db.vpnEnrollment.upsert({
-          where: { deviceId: salinasEpic.id },
-          update: {},
+          where: { deviceId: device.id },
+          update: {
+            identity: enrollment.identity,
+            tunnelIp: enrollment.tunnelIp,
+            profileStatus: 'external'
+          },
           create: {
-            deviceId: salinasEpic.id,
-            identity: 'salinas-groov-epic-01',
-            tunnelIp: '172.28.0.10',
+            deviceId: device.id,
+            identity: enrollment.identity,
+            tunnelIp: enrollment.tunnelIp,
             profileStatus: 'external'
           }
         });
       } catch (error) {
-        console.warn('The existing Salinas EPIC VPN identity could not be registered.', error);
+        console.warn(`The existing ${enrollment.identity} VPN identity could not be registered.`, error);
       }
     }
     return true;

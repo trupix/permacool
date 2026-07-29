@@ -43,6 +43,14 @@ const sites = [
     gatewayStatus: 'online'
   },
   {
+    id: 'site-cannon-falls',
+    organizationId: 'org-permacool',
+    name: 'Cannon Falls',
+    region: 'Minnesota, US',
+    timezone: 'America/Chicago',
+    gatewayStatus: 'offline'
+  },
+  {
     id: 'site-okc',
     organizationId: 'org-permacool',
     name: 'Oklahoma City Process Plant',
@@ -53,6 +61,16 @@ const sites = [
 ];
 
 const devices = [
+  {
+    id: 'epic-cannon-falls-01',
+    siteId: 'site-cannon-falls',
+    name: 'Cannon Falls groov EPIC 01',
+    plcModel: 'Opto 22 groov EPIC',
+    protocol: 'Node-RED HTTPS telemetry',
+    status: 'offline',
+    lastSeenAt: null,
+    firmwareVersion: null
+  },
   {
     id: 'epic-mvp-01',
     siteId: 'site-salinas',
@@ -92,6 +110,23 @@ const devices = [
     status: 'degraded',
     lastSeenAt: '2026-04-25T19:49:44Z',
     firmwareVersion: 'v3.1.0'
+  }
+];
+
+const vpnEnrollments = [
+  {
+    deviceId: 'epic-mvp-01',
+    identity: 'salinas-groov-epic-01',
+    tunnelIp: '172.28.0.10',
+    profileStatus: 'external',
+    vpnServerHost: '35.243.46.137'
+  },
+  {
+    deviceId: 'epic-cannon-falls-01',
+    identity: 'cannon-falls-groov-epic-01',
+    tunnelIp: '172.28.0.11',
+    profileStatus: 'external',
+    vpnServerHost: '35.243.46.137'
   }
 ];
 
@@ -236,6 +271,14 @@ async function main() {
       where: { id: device.id },
       update: data,
       create: data
+    });
+  }
+
+  for (const enrollment of vpnEnrollments) {
+    await prisma.vpnEnrollment.upsert({
+      where: { deviceId: enrollment.deviceId },
+      update: enrollment,
+      create: enrollment
     });
   }
 

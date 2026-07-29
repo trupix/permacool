@@ -61,10 +61,10 @@ function fallbackSnapshot(): ProvisioningSnapshot {
         ...device,
         serialNumber: device.serialNumber ?? null,
         firmwareVersion: device.firmwareVersion || null,
-        vpnIdentity: null,
-        tunnelIp: null,
+        vpnIdentity: device.vpnIdentity ?? null,
+        tunnelIp: device.vpnTunnelIp ?? null,
         localIpAddress: null,
-        vpnProfileStatus: 'external',
+        vpnProfileStatus: device.vpnProfileStatus ?? 'external',
         vpnProfileIssuedAt: null
       }))
     }))

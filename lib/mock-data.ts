@@ -39,7 +39,7 @@ export const organizations: Organization[] = [
     id: 'org-permacool',
     name: 'PermaCool Operations',
     status: 'active',
-    siteIds: ['site-salinas', 'site-okc']
+    siteIds: ['site-salinas', 'site-cannon-falls', 'site-okc']
   }
 ];
 
@@ -54,6 +54,15 @@ export const sites: Site[] = [
     deviceIds: ['epic-mvp-01', 'plc-sal-01', 'plc-sal-02']
   },
   {
+    id: 'site-cannon-falls',
+    organizationId: 'org-permacool',
+    name: 'Cannon Falls',
+    region: 'Minnesota, US',
+    timezone: 'America/Chicago',
+    gatewayStatus: 'offline',
+    deviceIds: ['epic-cannon-falls-01']
+  },
+  {
     id: 'site-okc',
     organizationId: 'org-permacool',
     name: 'Oklahoma City Process Plant',
@@ -65,6 +74,19 @@ export const sites: Site[] = [
 ];
 
 export const devices: Device[] = [
+  {
+    id: 'epic-cannon-falls-01',
+    siteId: 'site-cannon-falls',
+    name: 'Cannon Falls groov EPIC 01',
+    plcModel: 'Opto 22 groov EPIC',
+    protocol: 'Node-RED HTTPS telemetry',
+    status: 'offline',
+    lastSeenAt: 'Never',
+    firmwareVersion: 'Unknown',
+    vpnIdentity: 'cannon-falls-groov-epic-01',
+    vpnTunnelIp: '172.28.0.11',
+    vpnProfileStatus: 'external'
+  },
   {
     id: 'epic-mvp-01',
     siteId: 'site-salinas',
