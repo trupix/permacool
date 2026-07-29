@@ -43,7 +43,7 @@
           "refrigerant": "R404A",
           "parallelGroupId": "salinas-parallel-group-01",
           "catalogRecordId": "russell-next-gen-ii-22hp-r404a",
-          "catalogVariantId": null,
+          "catalogVariantId": "russell-next-gen-ii-22hp-low-temp-discus-r404a",
           "catalogVariantCandidates": [
             "russell-next-gen-ii-22hp-low-temp-discus-r404a"
           ],
@@ -58,11 +58,11 @@
             "verificationStatus": "requires_nameplate"
           },
           "compressor": {
-            "manufacturer": null,
-            "technology": null,
-            "model": null,
+            "manufacturer": "Copeland",
+            "technology": "Discus",
+            "model": "4DJNF-76KE",
             "serialNumber": null,
-            "verificationStatus": "requires_nameplate"
+            "verificationStatus": "verified"
           }
         },
         {
@@ -78,7 +78,7 @@
           "refrigerant": "R404A",
           "parallelGroupId": "salinas-parallel-group-01",
           "catalogRecordId": "russell-next-gen-ii-22hp-r404a",
-          "catalogVariantId": null,
+          "catalogVariantId": "russell-next-gen-ii-22hp-low-temp-discus-r404a",
           "catalogVariantCandidates": [
             "russell-next-gen-ii-22hp-low-temp-discus-r404a"
           ],
@@ -93,11 +93,11 @@
             "verificationStatus": "requires_nameplate"
           },
           "compressor": {
-            "manufacturer": null,
-            "technology": null,
-            "model": null,
+            "manufacturer": "Copeland",
+            "technology": "Discus",
+            "model": "4DJNF-76KE",
             "serialNumber": null,
-            "verificationStatus": "requires_nameplate"
+            "verificationStatus": "verified"
           }
         }
       ]

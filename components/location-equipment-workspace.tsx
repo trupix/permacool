@@ -68,12 +68,20 @@ const catalogOptions = [
   { value: '', label: 'Select a known condenser or enter manually', values: {} },
   {
     value: 'russell-next-gen-ii-22hp-r404a',
-    label: 'Russell Next-Gen II · 22 HP · R404A',
+    label: 'Russell Next-Gen II · 22 HP · Copeland Discus · R404A',
     values: {
       manufacturer: 'Russell',
       productFamily: 'Next-Gen II',
+      exactModelNumber: 'R*DS22L4S**',
       nominalHorsepower: '22',
-      refrigerant: 'R404A'
+      refrigerant: 'R404A',
+      refrigerantOther: '',
+      compressorVariant: 'russell-next-gen-ii-22hp-low-temp-discus-r404a',
+      compressorManufacturer: 'Copeland',
+      compressorTechnology: 'Discus',
+      compressorModel: '4DJNF-76KE',
+      phase: '3',
+      frequencyHz: '60'
     }
   },
   {
@@ -173,12 +181,21 @@ const compressorOptions = [
   },
   {
     value: 'russell-next-gen-ii-22hp-low-temp-discus-r404a',
-    label: 'Copeland Discus 22 HP 4DJNF-76KE',
+    label: 'Copeland Discus 4DJNF-76KE · 22 HP · R404A',
     catalogSelections: ['russell-next-gen-ii-22hp-r404a'],
     values: {
+      catalogSelection: 'russell-next-gen-ii-22hp-r404a',
+      manufacturer: 'Russell',
+      productFamily: 'Next-Gen II',
+      exactModelNumber: 'R*DS22L4S**',
+      nominalHorsepower: '22',
+      refrigerant: 'R404A',
+      refrigerantOther: '',
       compressorManufacturer: 'Copeland',
       compressorTechnology: 'Discus',
-      compressorModel: '4DJNF-76KE'
+      compressorModel: '4DJNF-76KE',
+      phase: '3',
+      frequencyHz: '60'
     }
   },
   {
@@ -244,9 +261,13 @@ function inferCompressorVariant(unit: Partial<UnitDraft>): string {
   if (
     typeof unit.compressorVariant === 'string' &&
     unit.compressorVariant &&
+    unit.compressorVariant !== 'unconfirmed' &&
     unit.compressorVariant !== 'russell-next-gen-ii-22hp-low-temp-bitzer-r404a'
   ) {
     return unit.compressorVariant;
+  }
+  if (unit.catalogSelection === 'russell-next-gen-ii-22hp-r404a') {
+    return 'russell-next-gen-ii-22hp-low-temp-discus-r404a';
   }
   const model = typeof unit.compressorModel === 'string'
     ? unit.compressorModel.toUpperCase().replaceAll('-', '')
@@ -453,9 +474,7 @@ export function LocationEquipmentWorkspace({
     const compressorVariant =
       selection === 'turbo-air-ts060xr404a3a'
         ? 'turbo-air-ts060xr404a3a'
-        : selection === 'russell-next-gen-ii-22hp-r404a'
-          ? 'unconfirmed'
-          : undefined;
+        : undefined;
     setDraft((current) => ({
       ...current,
       units: current.units.map((unit, unitIndex) => unitIndex === index

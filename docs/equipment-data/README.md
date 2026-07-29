@@ -23,11 +23,13 @@ For every condenser, preserve:
 - source-document revision and page for every catalog rating;
 - condition-dependent cooling-capacity points rather than one misleading fixed capacity.
 
+PermaCool's supported-equipment rule is user verified: its 6 HP Russell and Turbo Air units use scroll compressors, while its 22 HP and 30 HP Russell units use Copeland Discus compressors. Bitzer data may remain archived as manufacturer reference material but must not appear as an installed-equipment choice.
+
 ## Salinas record
 
 `site-salinas-equipment.json` records the user-verified configuration as two 22 HP Russell Next-Gen II air-cooled condensing units in parallel on the same R404A refrigeration system, chilling ethanol.
 
-The supplied 2017 Russell catalog contains two possible 22 HP R404A low-temperature models: Copeland Discus and Bitzer. The exact installed model, compressor, voltage, serial number, and nameplate amperage remain deliberately unassigned until a unit nameplate confirms them. The Bitzer row remains archived as manufacturer source data, but it is intentionally excluded from the installed-compressor selector because PermaCool does not use that compressor.
+The supplied 2017 Russell catalog contains two possible 22 HP R404A low-temperature models: Copeland Discus and Bitzer. PermaCool has verified that its installed 22 HP units use the Copeland Discus configuration. Voltage, serial number, and installed nameplate amperage remain deliberately unassigned until the installation or nameplate confirms them. The Bitzer row remains archived as manufacturer source data, but it is intentionally excluded from the installed-compressor selector because PermaCool does not use that compressor.
 
 ### Russell 22 HP candidates
 
