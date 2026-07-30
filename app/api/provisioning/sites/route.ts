@@ -1,7 +1,7 @@
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
-import { canAccessProvisioning } from '@/lib/workspace-access';
+import { canAccessProvisioning, canManageSiteEquipment } from '@/lib/workspace-access';
 import { parseNewSiteInput } from '@/server/provisioning-input';
 import { createProvisionedSite } from '@/server/repositories/provisioning';
 
@@ -16,6 +16,12 @@ export async function POST(request: Request) {
 
   const input = parseNewSiteInput(await request.json().catch(() => null));
   if (!input) return NextResponse.json({ error: 'Select an organization and check the site name, region, and time zone.' }, { status: 400 });
+  if (!canManageSiteEquipment(user, input.organizationId)) {
+    return NextResponse.json(
+      { error: 'Owner or Operator access is required for the selected organization.' },
+      { status: 403 }
+    );
+  }
 
   try {
     const site = await createProvisionedSite(input, user);

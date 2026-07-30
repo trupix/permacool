@@ -32,6 +32,10 @@ assert.match(weatherRoute, /temperatureF: observationIsCurrent && observedTemper
 
 assert.match(equipmentRoute, /getSite\(user, siteid\)/);
 assert.match(equipmentRoute, /canManageSiteEquipment\(user, site\.organizationId\)/);
+assert.match(
+  read('app/api/provisioning/sites/route.ts'),
+  /canManageSiteEquipment\(user, input\.organizationId\)/
+);
 assert.match(telemetryRoute, /getSite\(user, siteid\)|siteWhere\(user\)/);
 assert.match(eventsRoute, /getSite\(user, siteI[dD]\)/);
 

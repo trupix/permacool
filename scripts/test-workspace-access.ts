@@ -5,18 +5,26 @@ const path = require('node:path');
 
 const {
   canAccessProvisioning,
-  canManageLogicDefinitions
+  canIssueVpnProfile,
+  canManageLogicDefinitions,
+  canManageSiteEquipment,
+  roleForOrganization
 } = require(path.join(__dirname, '..', 'lib', 'workspace-access.ts'));
 
 function user(overrides = {}) {
+  const role = overrides.role ?? 'viewer';
+  const organizationIds = overrides.organizationIds ?? ['org-permacool'];
   return {
     id: 'user-test',
     name: 'Test user',
     email: 'test@perma.cool',
-    role: 'viewer',
+    role,
     platformRole: 'customer',
     status: 'approved',
-    organizationIds: ['org-permacool'],
+    organizationIds,
+    organizationRoles:
+      overrides.organizationRoles ??
+      Object.fromEntries(organizationIds.map((organizationId) => [organizationId, role])),
     allDeviceOrganizationIds: ['org-permacool'],
     deviceIds: [],
     ...overrides
@@ -50,6 +58,37 @@ const staffSupport = user({
 });
 assert.equal(canAccessProvisioning(staffSupport), true);
 assert.equal(canManageLogicDefinitions(staffSupport), true);
+
+const mixedRoleUser = user({
+  role: 'owner',
+  organizationIds: ['org-permacool', 'org-customer'],
+  organizationRoles: {
+    'org-permacool': 'owner',
+    'org-customer': 'viewer'
+  },
+  allDeviceOrganizationIds: ['org-permacool', 'org-customer']
+});
+assert.equal(roleForOrganization(mixedRoleUser, 'org-permacool'), 'owner');
+assert.equal(roleForOrganization(mixedRoleUser, 'org-customer'), 'viewer');
+assert.equal(canManageSiteEquipment(mixedRoleUser, 'org-permacool'), true);
+assert.equal(canManageSiteEquipment(mixedRoleUser, 'org-customer'), false);
+assert.equal(canIssueVpnProfile(mixedRoleUser, 'org-permacool'), true);
+assert.equal(canIssueVpnProfile(mixedRoleUser, 'org-customer'), false);
+
+const mixedOperatorUser = user({
+  role: 'owner',
+  organizationIds: ['org-permacool', 'org-customer'],
+  organizationRoles: {
+    'org-permacool': 'viewer',
+    'org-customer': 'operator'
+  },
+  allDeviceOrganizationIds: ['org-permacool', 'org-customer']
+});
+assert.equal(canAccessProvisioning(mixedOperatorUser), true);
+assert.equal(canManageLogicDefinitions(mixedOperatorUser), false);
+assert.equal(canManageSiteEquipment(mixedOperatorUser, 'org-permacool'), false);
+assert.equal(canManageSiteEquipment(mixedOperatorUser, 'org-customer'), true);
+assert.equal(canIssueVpnProfile(mixedOperatorUser, 'org-customer'), false);
 
 console.log('Workspace access policy tests passed.');
 }

@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { canAccessOrganization, deviceWhere, siteWhere } from '@/lib/access';
+import { deviceWhere, siteWhere } from '@/lib/access';
 import { devices as fallbackDevices, sites as fallbackSites } from '@/lib/mock-data';
 import { scopeProvisioningFallback } from '@/lib/provisioning-scope';
 import { canManageSiteEquipment } from '@/lib/workspace-access';
@@ -137,7 +137,7 @@ async function uniqueDeviceIdentity(siteName: string, deviceName: string) {
 
 export async function createProvisionedSite(input: NewSiteInput, actor: AppUser) {
   if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return null;
-  if (!canAccessOrganization(actor, input.organizationId)) return null;
+  if (!canManageSiteEquipment(actor, input.organizationId)) return null;
   const organizationId = input.organizationId;
   const id = await uniqueSiteId(input.name);
 

@@ -120,6 +120,7 @@ export interface AppUser {
   platformRole: PlatformRole;
   status: UserStatus;
   organizationIds: string[];
+  organizationRoles: Record<string, UserRole>;
   allDeviceOrganizationIds: string[];
   deviceIds: string[];
   companyName?: string;

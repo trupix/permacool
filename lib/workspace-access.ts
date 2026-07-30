@@ -1,9 +1,17 @@
-import type { AppUser } from '@/types/domain';
+import type { AppUser, MembershipRole, UserRole } from '@/types/domain';
 
 export const PERMACOOL_OPERATOR_ORGANIZATION_ID = 'org-permacool';
 
+export function userRoleForMembership(role: MembershipRole): UserRole {
+  return role === 'customer_admin' ? 'owner' : role;
+}
+
 export function isPlatformStaff(user: AppUser) {
   return user.platformRole === 'staff_admin' || user.platformRole === 'staff_support';
+}
+
+export function roleForOrganization(user: AppUser, organizationId: string): UserRole | undefined {
+  return isPlatformStaff(user) ? user.role : user.organizationRoles[organizationId];
 }
 
 export function canAccessProvisioning(user: AppUser) {
@@ -11,8 +19,10 @@ export function canAccessProvisioning(user: AppUser) {
 
   return (
     user.platformRole === 'customer' &&
-    user.role !== 'viewer' &&
-    user.organizationIds.length > 0
+    user.organizationIds.some((organizationId) => {
+      const role = roleForOrganization(user, organizationId);
+      return role === 'owner' || role === 'operator';
+    })
   );
 }
 
@@ -21,21 +31,15 @@ export function canManageLogicDefinitions(user: AppUser) {
 
   return (
     user.platformRole === 'customer' &&
-    user.role === 'owner' &&
-    user.organizationIds.includes(PERMACOOL_OPERATOR_ORGANIZATION_ID)
+    roleForOrganization(user, PERMACOOL_OPERATOR_ORGANIZATION_ID) === 'owner'
   );
 }
 
 export function canManageSiteEquipment(user: AppUser, organizationId: string) {
-  return (
-    (user.role === 'owner' || user.role === 'operator') &&
-    (isPlatformStaff(user) || user.organizationIds.includes(organizationId))
-  );
+  const role = roleForOrganization(user, organizationId);
+  return role === 'owner' || role === 'operator';
 }
 
 export function canIssueVpnProfile(user: AppUser, organizationId: string) {
-  return (
-    user.role === 'owner' &&
-    (isPlatformStaff(user) || user.organizationIds.includes(organizationId))
-  );
+  return roleForOrganization(user, organizationId) === 'owner';
 }

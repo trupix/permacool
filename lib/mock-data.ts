@@ -18,6 +18,7 @@ export const users: AppUser[] = [
     platformRole: 'staff_admin',
     status: 'approved',
     organizationIds: ['org-permacool'],
+    organizationRoles: { 'org-permacool': 'owner' },
     allDeviceOrganizationIds: ['org-permacool'],
     deviceIds: []
   },
@@ -29,6 +30,7 @@ export const users: AppUser[] = [
     platformRole: 'staff_support',
     status: 'approved',
     organizationIds: ['org-permacool'],
+    organizationRoles: { 'org-permacool': 'operator' },
     allDeviceOrganizationIds: ['org-permacool'],
     deviceIds: []
   }
