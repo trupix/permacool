@@ -18,10 +18,12 @@ import {
 } from 'lucide-react';
 import { FacilityAddressEditor } from '@/components/facility-address-editor';
 import { LocationWeatherHero } from '@/components/location-weather-hero';
+import { useSiteEquipmentConfiguration } from '@/components/use-site-equipment-configuration';
 import {
   emptyFacilityAddress,
   type FacilityAddress
 } from '@/lib/site-location';
+import type { StoredEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 
 type WorkspaceView = 'overview' | 'connectivity' | 'specs';
 type CondenserCount = 1 | 2;
@@ -437,7 +439,10 @@ export function LocationEquipmentWorkspace({
   siteName,
   view,
   controller,
-  initialAddress = emptyFacilityAddress
+  initialAddress = emptyFacilityAddress,
+  initialConfiguration = null,
+  equipmentStorageReady = false,
+  canEdit = false
 }: {
   siteId: string;
   siteName: string;
@@ -449,30 +454,21 @@ export function LocationEquipmentWorkspace({
     tunnelIp: string;
   };
   initialAddress?: FacilityAddress;
+  initialConfiguration?: StoredEquipmentConfiguration | null;
+  equipmentStorageReady?: boolean;
+  canEdit?: boolean;
 }) {
   const storageKey = `permacool:location-equipment-draft:${siteId}`;
-  const [draft, setDraft] = useState<LocationDraft>(defaultDraft);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(storageKey);
-      if (saved) setDraft(normalizeDraft(JSON.parse(saved)));
-    } catch {
-      // A damaged local draft should not block the workspace.
-    } finally {
-      setLoaded(true);
-    }
-  }, [storageKey]);
-
-  useEffect(() => {
-    if (!loaded) return;
-    try {
-      window.localStorage.setItem(storageKey, JSON.stringify(draft));
-    } catch {
-      // The workspace remains usable if browser storage is unavailable.
-    }
-  }, [draft, loaded, storageKey]);
+  const [draft, setDraft, saveState] = useSiteEquipmentConfiguration<LocationDraft>({
+    siteId,
+    kind: 'location',
+    storageKey,
+    initialConfiguration,
+    defaultValue: defaultDraft,
+    normalize: normalizeDraft,
+    canEdit,
+    storageReady: equipmentStorageReady
+  });
 
   const configurationPercent = useMemo(() => {
     const complete = draft.units.reduce((total, unit) => total + configuredFields(unit), 0);
@@ -617,11 +613,18 @@ export function LocationEquipmentWorkspace({
           <h2>System and condenser records</h2>
           <p>Build the installed-equipment record now; telemetry can be connected afterward.</p>
         </div>
-        <span><CheckCircle2 size={15} /> {loaded ? `${siteName} draft saved` : 'Loading draft'}</span>
+        <span><CheckCircle2 size={15} /> {
+          saveState === 'saving' ? 'Saving equipment record' :
+          saveState === 'error' ? 'Database save needs attention' :
+          saveState === 'browser-only' ? 'Browser draft · database unavailable' :
+          saveState === 'read-only' ? 'Read-only equipment record' :
+          `${siteName} equipment saved`
+        }</span>
       </section>
 
-      <FacilityAddressEditor siteId={siteId} initialAddress={initialAddress} />
+      <FacilityAddressEditor siteId={siteId} initialAddress={initialAddress} canEdit={canEdit} />
 
+      <fieldset className="location-equipment-edit-fieldset" disabled={!canEdit}>
       <section className="panel location-equipment-system-form">
         <header className="location-equipment-panel-heading">
           <span><Snowflake size={19} /></span>
@@ -895,10 +898,11 @@ export function LocationEquipmentWorkspace({
           </p>
         </div>
       </section>
+      </fieldset>
 
       <section className="location-equipment-draft-note">
         <Activity size={17} />
-        <div><strong>This is the {siteName} equipment draft.</strong><p>Nothing is treated as verified manufacturer data until it is entered from a nameplate or approved manual.</p></div>
+        <div><strong>This is the {siteName} equipment record.</strong><p>{canEdit ? 'Owner and Operator changes are saved to the organization database.' : 'Viewer access can inspect this record but cannot change it.'} Nothing is treated as verified manufacturer data until it is entered from a nameplate or approved manual.</p></div>
       </section>
     </div>
   );

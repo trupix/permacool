@@ -9,9 +9,11 @@ import { SiteSectionNav } from '@/components/site-section-nav';
 import { StatusBadge } from '@/components/status-badge';
 import { SiteTelemetryPanel } from '@/components/site-telemetry-panel';
 import { requireUser } from '@/lib/auth';
+import { canManageSiteEquipment } from '@/lib/workspace-access';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
 import { getDeviceTelemetry, getDevicesBySite } from '@/server/repositories/devices';
 import { getSiteEquipmentEvents } from '@/server/repositories/equipment-events';
+import { getEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 import { getSite, getSiteAlerts } from '@/server/repositories/sites';
 
 export default async function SiteDetailPage({ params }: { params: Promise<{ siteid: string }> }) {
@@ -21,11 +23,13 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
 
   if (!site) notFound();
 
-  const [siteDevices, siteAlerts, siteEvents] = await Promise.all([
+  const [siteDevices, siteAlerts, siteEvents, equipmentConfiguration] = await Promise.all([
     getDevicesBySite(user, site.id),
     getSiteAlerts(user, site.id),
-    getSiteEquipmentEvents(site.id, { limit: 5 })
+    getSiteEquipmentEvents(site.id, { limit: 5 }),
+    getEquipmentConfiguration(site.id)
   ]);
+  const canEditEquipment = canManageSiteEquipment(user, site.organizationId);
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
@@ -56,6 +60,9 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
           siteId={site.id}
           equipmentRecord={equipmentRecord}
           catalog={equipmentCatalog}
+          initialConfiguration={equipmentConfiguration.configuration}
+          equipmentStorageReady={equipmentConfiguration.storageReady}
+          canEdit={canEditEquipment}
         />
       ) : null}
 
@@ -64,6 +71,9 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
           siteId={site.id}
           siteName={site.name}
           view="overview"
+          initialConfiguration={equipmentConfiguration.configuration}
+          equipmentStorageReady={equipmentConfiguration.storageReady}
+          canEdit={canEditEquipment}
           initialAddress={{
             addressLine1: site.addressLine1 ?? '',
             city: site.city ?? '',

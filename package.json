@@ -12,8 +12,12 @@
     "logic:catalog:test": "node scripts/test-logic-catalog.ts",
     "telemetry:groups:test": "node scripts/test-telemetry-groups.ts",
     "workspace:access:test": "node scripts/test-workspace-access.ts",
+    "organization:isolation:test": "node scripts/test-organization-isolation.ts",
+    "dashboard:guardrails:test": "node scripts/test-dashboard-guardrails.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:preflight:cannon-falls": "node scripts/preflight-cannon-falls-migration.ts",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:seed": "node prisma/seed.js",
     "prisma:studio": "prisma studio"
   },

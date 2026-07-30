@@ -25,3 +25,17 @@ export function canManageLogicDefinitions(user: AppUser) {
     user.organizationIds.includes(PERMACOOL_OPERATOR_ORGANIZATION_ID)
   );
 }
+
+export function canManageSiteEquipment(user: AppUser, organizationId: string) {
+  return (
+    (user.role === 'owner' || user.role === 'operator') &&
+    (isPlatformStaff(user) || user.organizationIds.includes(organizationId))
+  );
+}
+
+export function canIssueVpnProfile(user: AppUser, organizationId: string) {
+  return (
+    user.role === 'owner' &&
+    (isPlatformStaff(user) || user.organizationIds.includes(organizationId))
+  );
+}

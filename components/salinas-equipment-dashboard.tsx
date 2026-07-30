@@ -42,6 +42,8 @@ import {
   type TelemetryDialScale,
   type TelemetryDialZone
 } from '@/components/telemetry-dial-3d';
+import { useSiteEquipmentConfiguration } from '@/components/use-site-equipment-configuration';
+import type { StoredEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 import type {
   CatalogElectricalRating,
   CondenserArrangementSelection,
@@ -219,7 +221,7 @@ const SUCTION_PRESSURE_ZONES: TelemetryDialZone[] = [
     label: '−10–−5 PSI caution'
   },
   {
-    from: -14.5,
+    from: -14.7,
     to: -10,
     color: '#ef4444',
     label: '−14.5–−10 PSI low'
@@ -240,7 +242,7 @@ const SUCTION_PRESSURE_ZONES: TelemetryDialZone[] = [
 
 const SUCTION_PRESSURE_SCALE: TelemetryDialScale = {
   stops: [
-    { value: -14.5, angleDegrees: 150 },
+    { value: -14.7, angleDegrees: 150 },
     { value: -10, angleDegrees: 120 },
     { value: -5, angleDegrees: 90 },
     { value: 0, angleDegrees: 60 },
@@ -254,11 +256,11 @@ const SUCTION_PRESSURE_SCALE: TelemetryDialScale = {
     { value: 300, angleDegrees: -165 }
   ],
   tickValues: [
-    -14.5, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
+    -14.7, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
     0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300
   ],
-  labelValues: [-14.5, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
-  majorTickValues: [-14.5, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
+  labelValues: [-14.7, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
+  majorTickValues: [-14.7, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
   smoothArc: true
 };
 
@@ -776,12 +778,18 @@ export function SalinasEquipmentDashboard({
   siteId,
   equipmentRecord,
   catalog,
-  view = 'overview'
+  view = 'overview',
+  initialConfiguration = null,
+  equipmentStorageReady = false,
+  canEdit = false
 }: {
   siteId: string;
   equipmentRecord: SiteEquipmentRecord;
   catalog: CondenserCatalogRecord;
   view?: 'overview' | 'connectivity' | 'specs';
+  initialConfiguration?: StoredEquipmentConfiguration | null;
+  equipmentStorageReady?: boolean;
+  canEdit?: boolean;
 }) {
   const system = equipmentRecord.processSystems[0];
   const defaultDraft: ConfigurationDraft = {
@@ -803,8 +811,17 @@ export function SalinasEquipmentDashboard({
     manualSuctionF: -20,
     manualSuctionValidated: false
   };
-  const [draft, setDraft] = useState<ConfigurationDraft>(defaultDraft);
-  const [draftLoaded, setDraftLoaded] = useState(false);
+  const storageKey = `permacool:equipment-draft:${siteId}`;
+  const [draft, setDraft, equipmentSaveState] = useSiteEquipmentConfiguration<ConfigurationDraft>({
+    siteId,
+    kind: 'salinas',
+    storageKey,
+    initialConfiguration,
+    defaultValue: defaultDraft,
+    normalize: (value) => sanitizeConfigurationDraft(value, defaultDraft, equipmentRecord, catalog),
+    canEdit,
+    storageReady: equipmentStorageReady
+  });
   const [telemetry, setTelemetry] = useState<TelemetryState>({
     status: 'loading',
     points: [],
@@ -824,7 +841,6 @@ export function SalinasEquipmentDashboard({
   const [facilityLiveUntil, setFacilityLiveUntil] = useState(0);
   const [dialDemoTick, setDialDemoTick] = useState(0);
   const [weather, setWeather] = useState<WeatherState>({ status: 'loading', data: null, error: null });
-  const storageKey = `permacool:equipment-draft:${siteId}`;
   const liveTelemetryActive = facilityLiveUntil > Date.now();
   const localDialDemoEnabled = process.env.NODE_ENV === 'development';
 
@@ -836,29 +852,6 @@ export function SalinasEquipmentDashboard({
     );
     return () => window.clearInterval(timer);
   }, [localDialDemoEnabled]);
-
-  useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(storageKey);
-      if (saved) {
-        const parsed: unknown = JSON.parse(saved);
-        setDraft((current) => sanitizeConfigurationDraft(parsed, current, equipmentRecord, catalog));
-      }
-    } catch {
-      // A malformed browser draft should never block the verified equipment record.
-    } finally {
-      setDraftLoaded(true);
-    }
-  }, [storageKey]);
-
-  useEffect(() => {
-    if (!draftLoaded) return;
-    try {
-      window.localStorage.setItem(storageKey, JSON.stringify(draft));
-    } catch {
-      // Storage can be disabled or full; the dashboard must remain usable without persistence.
-    }
-  }, [draft, draftLoaded, storageKey]);
 
   useEffect(() => {
     let mounted = true;
@@ -1448,7 +1441,13 @@ export function SalinasEquipmentDashboard({
             <h2>System and condenser records</h2>
           </div>
           <span className="salinas-dashboard__draft-label">
-            <CheckCircle2 size={15} /> Browser draft saved
+            <CheckCircle2 size={15} /> {
+              equipmentSaveState === 'saving' ? 'Saving equipment record' :
+              equipmentSaveState === 'error' ? 'Database save needs attention' :
+              equipmentSaveState === 'browser-only' ? 'Browser draft · database unavailable' :
+              equipmentSaveState === 'read-only' ? 'Read-only equipment record' :
+              'Equipment record saved'
+            }
           </span>
         </div>
 
@@ -1456,6 +1455,7 @@ export function SalinasEquipmentDashboard({
           <label>
             <span>Condenser arrangement</span>
             <select
+              disabled={!canEdit}
               value={draft.arrangement}
               onChange={(event) => updateDraft('arrangement', event.target.value as CondenserArrangementSelection)}
             >
@@ -1467,6 +1467,7 @@ export function SalinasEquipmentDashboard({
           <label>
             <span>Process solvent</span>
             <select
+              disabled={!canEdit}
               value={draft.solvent}
               onChange={(event) => updateDraft('solvent', event.target.value as ProcessSolventSelection)}
             >
@@ -1495,7 +1496,7 @@ export function SalinasEquipmentDashboard({
                   : [];
 
             return (
-              <fieldset className="salinas-dashboard__unit-config-card" key={asset.assetId}>
+              <fieldset className="salinas-dashboard__unit-config-card" key={asset.assetId} disabled={!canEdit}>
                 <legend>
                   <span>0{index + 1}</span>
                   <div>
@@ -1576,8 +1577,8 @@ export function SalinasEquipmentDashboard({
           })}
         </div>
         <p className="salinas-dashboard__configuration-note">
-          The verified Salinas defaults are preserved in the source record. Changes here are an engineering draft
-          stored in this browser until Jose&apos;s production database/schema is available.
+          The verified Salinas defaults are preserved in the source record. Owner and Operator changes are stored
+          in the organization database; Viewer access is read-only.
         </p>
       </section>
       ) : null}
@@ -1858,7 +1859,7 @@ export function SalinasEquipmentDashboard({
           <div className="salinas-dashboard__input-grid">
             <label>
               <span>Entering-air source</span>
-              <select value={draft.ambientMode} onChange={(event) => updateDraft('ambientMode', event.target.value as AmbientMode)}>
+              <select disabled={!canEdit} value={draft.ambientMode} onChange={(event) => updateDraft('ambientMode', event.target.value as AmbientMode)}>
                 <option value="automatic">PLC inlet-air, then observed weather</option>
                 <option value="manual">Manual value</option>
               </select>
@@ -1868,6 +1869,7 @@ export function SalinasEquipmentDashboard({
               <div className="salinas-dashboard__number-input">
                 <input
                   type="number"
+                  disabled={!canEdit}
                   min={-20}
                   max={140}
                   step={1}
@@ -1882,6 +1884,7 @@ export function SalinasEquipmentDashboard({
               <div className="salinas-dashboard__number-input">
                 <input
                   type="number"
+                  disabled={!canEdit}
                   min={-40}
                   max={0}
                   step={1}
@@ -1905,6 +1908,7 @@ export function SalinasEquipmentDashboard({
           <label className="salinas-dashboard__validation-check">
             <input
               type="checkbox"
+              disabled={!canEdit}
               checked={draft.manualSuctionValidated}
               onChange={(event) => updateDraft('manualSuctionValidated', event.target.checked)}
             />
@@ -2089,7 +2093,7 @@ export function SalinasEquipmentDashboard({
                 <div className="salinas-dashboard__gauge-grid">
                   <TelemetryDial3D label="Process temperature" value={temperatureValue} unit="°F" minimum={-50} maximum={100} detail={temperatureIsDemo ? 'Local demo signal' : signalDetail(signals.temperature, 'Display range', telemetry.status === 'error')} accent="cyan" demo={temperatureIsDemo} goal={PROCESS_TEMPERATURE_GOAL} zones={PROCESS_TEMPERATURE_ZONES} scale={PROCESS_TEMPERATURE_SCALE} renderer="glossy-svg" />
                   <TelemetryDial3D label="Discharge pressure" value={dischargeValue} unit="PSI" minimum={0} maximum={500} detail={dischargeIsDemo ? 'Local demo signal' : signalDetail(signals.highPressure, 'Discharge range', telemetry.status === 'error')} accent="gold" demo={dischargeIsDemo} zones={DISCHARGE_PRESSURE_ZONES} scale={DISCHARGE_PRESSURE_SCALE} renderer="glossy-svg" />
-                  <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.5} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} zones={SUCTION_PRESSURE_ZONES} scale={SUCTION_PRESSURE_SCALE} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.7} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} zones={SUCTION_PRESSURE_ZONES} scale={SUCTION_PRESSURE_SCALE} renderer="glossy-svg" />
                   <TelemetryDial3D label="Compressor current" value={currentValue} unit="A" minimum={0} maximum={120} detail={currentIsDemo ? 'Local demo signal' : signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Current range', telemetry.status === 'error')} accent="lime" demo={currentIsDemo} renderer="glossy-svg" />
                 </div>
 

@@ -1,5 +1,8 @@
 import { db } from '@/lib/db';
+import { canAccessOrganization, deviceWhere, siteWhere } from '@/lib/access';
 import { devices as fallbackDevices, sites as fallbackSites } from '@/lib/mock-data';
+import { scopeProvisioningFallback } from '@/lib/provisioning-scope';
+import { canManageSiteEquipment } from '@/lib/workspace-access';
 import { ensureProvisioningStorage } from '@/server/provisioning-storage';
 import type { NewPlcInput, NewSiteInput, SiteAddressInput } from '@/server/provisioning-input';
 import type { AppUser, VpnProfileStatus } from '@/types/domain';
@@ -47,17 +50,18 @@ function slug(value: string) {
     .slice(0, 52) || 'controller';
 }
 
-function fallbackSnapshot(): ProvisioningSnapshot {
+function fallbackSnapshot(user: AppUser): ProvisioningSnapshot {
+  const scoped = scopeProvisioningFallback(user, fallbackSites, fallbackDevices);
   return {
     storageReady: false,
-    sites: fallbackSites.map((site) => ({
+    sites: scoped.sites.map((site) => ({
       ...site,
       addressLine1: site.addressLine1 ?? null,
       city: site.city ?? null,
       state: site.state ?? null,
       postalCode: site.postalCode ?? null,
       country: site.country ?? null,
-      devices: fallbackDevices.filter((device) => device.siteId === site.id).map((device) => ({
+      devices: scoped.devices.filter((device) => device.siteId === site.id).map((device) => ({
         ...device,
         serialNumber: device.serialNumber ?? null,
         firmwareVersion: device.firmwareVersion || null,
@@ -72,13 +76,15 @@ function fallbackSnapshot(): ProvisioningSnapshot {
 }
 
 export async function getProvisioningSnapshot(user: AppUser): Promise<ProvisioningSnapshot> {
-  if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return fallbackSnapshot();
+  if (!shouldUseDatabase()) return fallbackSnapshot(user);
+  if (!(await ensureProvisioningStorage())) return { storageReady: false, sites: [] };
 
   const rows = await db.site.findMany({
-    where: { organizationId: { in: user.organizationIds } },
+    where: siteWhere(user),
     include: {
       provisioningDetails: true,
       devices: {
+        where: deviceWhere(user),
         include: { vpnEnrollment: true },
         orderBy: { name: 'asc' }
       }
@@ -131,8 +137,8 @@ async function uniqueDeviceIdentity(siteName: string, deviceName: string) {
 
 export async function createProvisionedSite(input: NewSiteInput, actor: AppUser) {
   if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return null;
-  const organizationId = actor.organizationIds[0];
-  if (!organizationId) return null;
+  if (!canAccessOrganization(actor, input.organizationId)) return null;
+  const organizationId = input.organizationId;
   const id = await uniqueSiteId(input.name);
 
   return db.$transaction(async (transaction) => {
@@ -171,10 +177,10 @@ export async function createProvisionedSite(input: NewSiteInput, actor: AppUser)
 export async function createProvisionedDevice(input: NewPlcInput, actor: AppUser) {
   if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return null;
   const site = await db.site.findFirst({
-    where: { id: input.siteId, organizationId: { in: actor.organizationIds } },
-    select: { id: true, name: true }
+    where: { AND: [{ id: input.siteId }, siteWhere(actor)] },
+    select: { id: true, name: true, organizationId: true }
   });
-  if (!site) return null;
+  if (!site || !canManageSiteEquipment(actor, site.organizationId)) return null;
 
   const identity = await uniqueDeviceIdentity(site.name, input.name);
   const id = `${input.plcModel.toLowerCase().includes('groov') ? 'epic' : 'plc'}-${identity}-${Date.now().toString(36).slice(-4)}`;
@@ -221,10 +227,10 @@ export async function updateProvisionedSiteAddress(
 ) {
   if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return null;
   const site = await db.site.findFirst({
-    where: { id: siteId, organizationId: { in: actor.organizationIds } },
-    select: { id: true, name: true }
+    where: { AND: [{ id: siteId }, siteWhere(actor)] },
+    select: { id: true, name: true, organizationId: true }
   });
-  if (!site) return null;
+  if (!site || !canManageSiteEquipment(actor, site.organizationId)) return null;
 
   return db.$transaction(async (transaction) => {
     const details = await transaction.siteProvisioningDetails.upsert({
@@ -248,7 +254,7 @@ export async function updateProvisionedSiteAddress(
 export async function getDeviceForVpnIssue(deviceId: string, actor: AppUser) {
   if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return null;
   return db.device.findFirst({
-    where: { id: deviceId, site: { organizationId: { in: actor.organizationIds } } },
+    where: { AND: [{ id: deviceId }, deviceWhere(actor)] },
     include: { site: true, vpnEnrollment: true }
   });
 }

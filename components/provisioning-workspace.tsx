@@ -49,12 +49,14 @@ function downloadName(disposition: string | null, fallback: string) {
 
 export function ProvisioningWorkspace({
   initialSites,
+  organizations,
   storageReady,
   vpnConfigured,
   vpnHost,
   currentRole
 }: {
   initialSites: ProvisioningSite[];
+  organizations: Array<{ id: string; name: string }>;
   storageReady: boolean;
   vpnConfigured: boolean;
   vpnHost: string | null;
@@ -65,7 +67,7 @@ export function ProvisioningWorkspace({
   const [saving, setSaving] = useState<'site' | 'device' | null>(null);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [siteForm, setSiteForm] = useState({
-    name: '', addressLine1: '', city: '', state: 'CA', postalCode: '', country: 'US', region: 'California, US', timezone: 'America/Los_Angeles'
+    organizationId: organizations[0]?.id ?? '', name: '', addressLine1: '', city: '', state: 'CA', postalCode: '', country: 'US', region: 'California, US', timezone: 'America/Los_Angeles'
   });
   const [deviceForm, setDeviceForm] = useState({
     siteId: initialSites[0]?.id ?? '',
@@ -101,7 +103,7 @@ export function ProvisioningWorkspace({
       });
       const payload = await response.json() as { site?: { name: string }; error?: string };
       if (!response.ok || !payload.site) throw new Error(payload.error || 'The site could not be created.');
-      setSiteForm({ name: '', addressLine1: '', city: '', state: 'CA', postalCode: '', country: 'US', region: 'California, US', timezone: 'America/Los_Angeles' });
+      setSiteForm((current) => ({ ...current, name: '', addressLine1: '', city: '', state: 'CA', postalCode: '', country: 'US', region: 'California, US', timezone: 'America/Los_Angeles' }));
       setNotice({ tone: 'success', text: `${payload.site.name} was added to Agenticly.Cool.` });
       router.refresh();
     } catch (error) {
@@ -191,6 +193,7 @@ export function ProvisioningWorkspace({
         <form className="panel provisioning-form" onSubmit={createSite}>
           <header><span><MapPin size={18} /></span><div><p className="eyebrow">Step 1</p><h2>Add a site</h2></div></header>
           <fieldset disabled={!canManage || !storageReady || Boolean(saving)}>
+            <label className="is-wide"><span>Organization</span><select required value={siteForm.organizationId} onChange={(event) => setSiteForm({ ...siteForm, organizationId: event.target.value })}>{organizations.map((organization) => <option key={organization.id} value={organization.id}>{organization.name}</option>)}</select></label>
             <label className="is-wide"><span>Site name</span><input required maxLength={120} value={siteForm.name} onChange={(event) => setSiteForm({ ...siteForm, name: event.target.value })} placeholder="Los Angeles Process Campus" /></label>
             <label className="is-wide"><span>Street address</span><input maxLength={180} value={siteForm.addressLine1} onChange={(event) => setSiteForm({ ...siteForm, addressLine1: event.target.value })} placeholder="3558 E 8th St" /></label>
             <label><span>City</span><input maxLength={100} value={siteForm.city} onChange={(event) => setSiteForm({ ...siteForm, city: event.target.value })} placeholder="Los Angeles" /></label>

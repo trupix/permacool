@@ -10,10 +10,12 @@ import {
 
 export function FacilityAddressEditor({
   siteId,
-  initialAddress = emptyFacilityAddress
+  initialAddress = emptyFacilityAddress,
+  canEdit = false
 }: {
   siteId: string;
   initialAddress?: FacilityAddress;
+  canEdit?: boolean;
 }) {
   const [address, setAddress] = useState<FacilityAddress>(() => ({
     ...emptyFacilityAddress,
@@ -30,6 +32,7 @@ export function FacilityAddressEditor({
 
   async function saveAddress(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!canEdit) return;
     if (!hasCompleteFacilityAddress(address)) {
       setSaveState('error');
       setSaveMessage('Enter the street, city, state, and ZIP code.');
@@ -61,6 +64,7 @@ export function FacilityAddressEditor({
         <div><p className="eyebrow">Facility location</p><h3>Address and local conditions</h3></div>
       </header>
       <form className="location-equipment-address-form" onSubmit={saveAddress}>
+        <fieldset disabled={!canEdit || saveState === 'saving'}>
         <div className="location-equipment-form-grid">
           <label className="is-wide">
             <span>Street address</span>
@@ -109,15 +113,18 @@ export function FacilityAddressEditor({
           <button
             className="location-equipment-address-save"
             type="submit"
-            disabled={saveState === 'saving' || !hasCompleteFacilityAddress(address)}
+            disabled={!canEdit || saveState === 'saving' || !hasCompleteFacilityAddress(address)}
           >
             <Save size={16} />
             {saveState === 'saving' ? 'Saving address…' : 'Save facility address'}
           </button>
           <span className={`is-${saveState}`}>
-            {saveMessage || 'Used to locate the nearest NWS station and center the satellite hero.'}
+            {saveMessage || (canEdit
+              ? 'Used to locate the nearest NWS station and center the satellite hero.'
+              : 'Viewer access is read-only.')}
           </span>
         </div>
+        </fieldset>
       </form>
     </section>
   );

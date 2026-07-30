@@ -112,19 +112,30 @@ model UserOrganization {
 }
 
 model Site {
-  id                  String                   @id @default(cuid())
-  organizationId      String
-  name                String
-  region              String
-  timezone            String
-  gatewayStatus       DeviceStatus             @default(online)
-  organization        Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  devices             Device[]
-  alerts              Alert[]
-  equipmentEvents     EquipmentEvent[]
-  provisioningDetails SiteProvisioningDetails?
-  createdAt           DateTime                 @default(now())
-  updatedAt           DateTime                 @updatedAt
+  id                     String                      @id @default(cuid())
+  organizationId         String
+  name                   String
+  region                 String
+  timezone               String
+  gatewayStatus          DeviceStatus                @default(online)
+  organization           Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  devices                Device[]
+  alerts                 Alert[]
+  equipmentEvents        EquipmentEvent[]
+  equipmentConfiguration SiteEquipmentConfiguration?
+  provisioningDetails    SiteProvisioningDetails?
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
+}
+
+model SiteEquipmentConfiguration {
+  siteId        String   @id
+  schemaVersion Int      @default(1)
+  configuration Json
+  updatedById   String?
+  site          Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Device {

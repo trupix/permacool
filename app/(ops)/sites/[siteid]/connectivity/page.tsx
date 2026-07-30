@@ -7,8 +7,10 @@ import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { StatusBadge } from '@/components/status-badge';
 import { requireUser } from '@/lib/auth';
+import { canManageSiteEquipment } from '@/lib/workspace-access';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
 import { getDevicesBySite } from '@/server/repositories/devices';
+import { getEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 import { getSite } from '@/server/repositories/sites';
 
 export const metadata: Metadata = {
@@ -27,7 +29,11 @@ export default async function SiteConnectivityPage({
 
   if (!site) notFound();
 
-  const siteDevices = await getDevicesBySite(user, site.id);
+  const [siteDevices, equipmentConfiguration] = await Promise.all([
+    getDevicesBySite(user, site.id),
+    getEquipmentConfiguration(site.id)
+  ]);
+  const canEditEquipment = canManageSiteEquipment(user, site.organizationId);
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
@@ -78,12 +84,18 @@ export default async function SiteConnectivityPage({
           equipmentRecord={equipmentRecord}
           catalog={equipmentCatalog}
           view="connectivity"
+          initialConfiguration={equipmentConfiguration.configuration}
+          equipmentStorageReady={equipmentConfiguration.storageReady}
+          canEdit={canEditEquipment}
         />
       ) : (
         <LocationEquipmentWorkspace
           siteId={site.id}
           siteName={site.name}
           view="connectivity"
+          initialConfiguration={equipmentConfiguration.configuration}
+          equipmentStorageReady={equipmentConfiguration.storageReady}
+          canEdit={canEditEquipment}
           controller={{
             name: siteDevices[0]?.name ?? 'No PLC registered',
             status: siteDevices[0]?.status ?? 'offline',

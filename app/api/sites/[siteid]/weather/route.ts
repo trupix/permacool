@@ -84,9 +84,11 @@ type ResolvedWeatherLocation = {
   longitude: number;
   hourlyUrl: string;
   gridUrl: string;
-  stationId: string;
-  stationName: string | null;
-  observationUrl: string;
+  stations: Array<{
+    stationId: string;
+    stationName: string | null;
+    observationUrl: string;
+  }>;
   imageryUrl: string;
 };
 
@@ -291,14 +293,22 @@ async function resolveWeatherLocation(site: Site): Promise<ResolvedWeatherLocati
     throw new Error(`NWS station lookup failed with ${stationsResponse.status}.`);
   }
   const stationsPayload = (await stationsResponse.json()) as { features?: NwsStationFeature[] };
-  const station = stationsPayload.features?.[0];
-  const stationId =
-    typeof station?.properties?.stationIdentifier === 'string'
-      ? station.properties.stationIdentifier
-      : typeof station?.id === 'string'
-        ? station.id.split('/').filter(Boolean).at(-1) ?? null
-        : null;
-  if (!stationId) throw new Error('NWS returned no observation station for this address.');
+  const stations = (stationsPayload.features ?? []).slice(0, 8).flatMap((station) => {
+    const stationId =
+      typeof station?.properties?.stationIdentifier === 'string'
+        ? station.properties.stationIdentifier
+        : typeof station?.id === 'string'
+          ? station.id.split('/').filter(Boolean).at(-1) ?? null
+          : null;
+    return stationId
+      ? [{
+          stationId,
+          stationName: typeof station.properties?.name === 'string' ? station.properties.name : null,
+          observationUrl: `https://api.weather.gov/stations/${stationId}/observations/latest`
+        }]
+      : [];
+  });
+  if (!stations.length) throw new Error('NWS returned no observation station for this address.');
 
   return {
     locationLabel: geocoded.locationLabel,
@@ -306,12 +316,49 @@ async function resolveWeatherLocation(site: Site): Promise<ResolvedWeatherLocati
     longitude: geocoded.longitude,
     hourlyUrl,
     gridUrl,
-    stationId,
-    stationName:
-      typeof station?.properties?.name === 'string' ? station.properties.name : null,
-    observationUrl: `https://api.weather.gov/stations/${stationId}/observations/latest`,
+    stations,
     imageryUrl: satelliteImageryUrl(geocoded.latitude, geocoded.longitude)
   };
+}
+
+async function fetchBestObservation(
+  stations: ResolvedWeatherLocation['stations'],
+  headers: Record<string, string>
+) {
+  const results = await Promise.allSettled(stations.map(async (station) => {
+    const response = await fetch(station.observationUrl, {
+      headers,
+      signal: AbortSignal.timeout(8_000),
+      next: { revalidate: 300 }
+    });
+    if (!response.ok) throw new Error(`${station.stationId}: ${response.status}`);
+    const payload = (await response.json()) as { properties?: ObservationProperties };
+    if (!payload.properties || typeof payload.properties.timestamp !== 'string') {
+      throw new Error(`${station.stationId}: no timestamp`);
+    }
+    const observedAtMs = Date.parse(payload.properties.timestamp);
+    const observedTemperatureF = temperatureF(payload.properties.temperature);
+    const isCurrent =
+      Number.isFinite(observedAtMs) &&
+      Date.now() - observedAtMs <= OBSERVATION_CURRENT_MS;
+    return {
+      station,
+      observed: payload.properties,
+      observedAtMs,
+      observedTemperatureF,
+      usable: isCurrent && observedTemperatureF !== null
+    };
+  }));
+
+  const observations = results.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []);
+  observations.sort((left, right) =>
+    Number(right.usable) - Number(left.usable) ||
+    Number(right.observedTemperatureF !== null) - Number(left.observedTemperatureF !== null) ||
+    right.observedAtMs - left.observedAtMs
+  );
+  const selected = observations[0];
+  if (!selected) throw new Error('NWS observation requests failed for all nearby stations.');
+  return selected;
 }
 
 export async function GET(
@@ -337,23 +384,20 @@ export async function GET(
       Accept: 'application/geo+json',
       'User-Agent': NWS_USER_AGENT
     };
-    const signal = AbortSignal.timeout(8_000);
-
     const [observationResult, hourlyResult, gridResult] = await Promise.allSettled([
-      fetch(location.observationUrl, { headers, signal, next: { revalidate: 300 } }),
-      fetch(location.hourlyUrl, { headers, signal, next: { revalidate: 900 } }),
-      fetch(location.gridUrl, { headers, signal, next: { revalidate: 900 } })
+      fetchBestObservation(location.stations, headers),
+      fetch(location.hourlyUrl, { headers, signal: AbortSignal.timeout(8_000), next: { revalidate: 900 } }),
+      fetch(location.gridUrl, { headers, signal: AbortSignal.timeout(8_000), next: { revalidate: 900 } })
     ]);
 
-    const observationResponse = observationResult.status === 'fulfilled' ? observationResult.value : null;
+    const selectedObservation = observationResult.status === 'fulfilled' ? observationResult.value : null;
     const hourlyResponse = hourlyResult.status === 'fulfilled' ? hourlyResult.value : null;
     const gridResponse = gridResult.status === 'fulfilled' ? gridResult.value : null;
 
-    if (!observationResponse?.ok) {
-      throw new Error(`NWS observation request failed${observationResponse ? ` with ${observationResponse.status}` : ''}.`);
+    if (!selectedObservation) {
+      throw new Error('NWS observation request failed for all nearby stations.');
     }
 
-    const observation = (await observationResponse.json()) as { properties?: ObservationProperties };
     const hourly = hourlyResponse?.ok
       ? ((await hourlyResponse.json()) as {
           properties?: { updated?: unknown; generatedAt?: unknown; periods?: unknown };
@@ -368,20 +412,20 @@ export async function GET(
           };
         })
       : null;
-    const observed = observation.properties;
+    const observed = selectedObservation.observed;
     const period = firstCurrentPeriod(hourly?.properties?.periods);
 
-    if (!observed || typeof observed.timestamp !== 'string') {
-      throw new Error('NWS returned no current station observation.');
-    }
-
     const now = Date.now();
-    const observedAtMs = Date.parse(observed.timestamp);
+    const observedAt = observed.timestamp as string;
+    const observedAtMs = Date.parse(observedAt);
     const observationAgeMinutes = Number.isFinite(observedAtMs)
       ? Math.max(0, Math.round((now - observedAtMs) / 60_000))
       : null;
-    const observationIsCurrent = observationAgeMinutes !== null && now - observedAtMs <= OBSERVATION_CURRENT_MS;
-    const observedTemperatureF = temperatureF(observed.temperature);
+    const observedTemperatureF = selectedObservation.observedTemperatureF;
+    const observationIsCurrent =
+      observationAgeMinutes !== null &&
+      now - observedAtMs <= OBSERVATION_CURRENT_MS &&
+      observedTemperatureF !== null;
     const observedWindDirectionDegrees = quantityValue(observed.windDirection);
     const observedPressureInHg = pressureInHg(observed.barometricPressure) ?? pressureInHg(observed.seaLevelPressure);
     const observedPrecipitationLastHourIn = precipitationIn(observed.precipitationLastHour);
@@ -435,11 +479,11 @@ export async function GET(
         },
         imageryUrl: location.imageryUrl,
         observation: {
-          stationId: typeof observed.stationId === 'string' ? observed.stationId : location.stationId,
+          stationId: typeof observed.stationId === 'string' ? observed.stationId : selectedObservation.station.stationId,
           stationName:
             typeof observed.stationName === 'string'
               ? observed.stationName
-              : location.stationName ?? location.stationId,
+              : selectedObservation.station.stationName ?? selectedObservation.station.stationId,
           temperatureF: observedTemperatureF,
           humidityPercent: quantityValue(observed.relativeHumidity),
           dewpointF: temperatureF(observed.dewpoint),
@@ -453,17 +497,17 @@ export async function GET(
           condition: typeof observed.textDescription === 'string' && observed.textDescription.trim()
             ? observed.textDescription
             : null,
-          observedAt: observed.timestamp,
+          observedAt,
           ageMinutes: observationAgeMinutes,
           isCurrent: observationIsCurrent,
           source: 'National Weather Service station observation',
-          sourceUrl: location.observationUrl
+          sourceUrl: selectedObservation.station.observationUrl
         },
         forecast,
         ambientFallback: {
-          temperatureF: observationIsCurrent ? observedTemperatureF : null,
+          temperatureF: observationIsCurrent && observedTemperatureF !== null ? observedTemperatureF : null,
           source: 'nws_observation',
-          observedAt: observed.timestamp
+          observedAt
         },
         fetchedAt: new Date(now).toISOString()
       },

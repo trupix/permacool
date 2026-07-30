@@ -5,8 +5,10 @@ import { LocationEquipmentWorkspace } from '@/components/location-equipment-work
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { requireUser } from '@/lib/auth';
+import { canManageSiteEquipment } from '@/lib/workspace-access';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
 import { getDevicesBySite } from '@/server/repositories/devices';
+import { getEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 import { getSite } from '@/server/repositories/sites';
 
 export const metadata: Metadata = {
@@ -21,7 +23,11 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
 
   if (!site) notFound();
 
-  const siteDevices = await getDevicesBySite(user, site.id);
+  const [siteDevices, equipmentConfiguration] = await Promise.all([
+    getDevicesBySite(user, site.id),
+    getEquipmentConfiguration(site.id)
+  ]);
+  const canEditEquipment = canManageSiteEquipment(user, site.organizationId);
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
@@ -42,6 +48,7 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
         <>
           <FacilityAddressEditor
             siteId={site.id}
+            canEdit={canEditEquipment}
             initialAddress={{
               addressLine1: site.addressLine1 ?? '',
               city: site.city ?? '',
@@ -55,6 +62,9 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
             equipmentRecord={equipmentRecord}
             catalog={equipmentCatalog}
             view="specs"
+            initialConfiguration={equipmentConfiguration.configuration}
+            equipmentStorageReady={equipmentConfiguration.storageReady}
+            canEdit={canEditEquipment}
           />
         </>
       ) : (
@@ -62,6 +72,9 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
           siteId={site.id}
           siteName={site.name}
           view="specs"
+          initialConfiguration={equipmentConfiguration.configuration}
+          equipmentStorageReady={equipmentConfiguration.storageReady}
+          canEdit={canEditEquipment}
           initialAddress={{
             addressLine1: site.addressLine1 ?? '',
             city: site.city ?? '',

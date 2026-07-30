@@ -12339,6 +12339,14 @@ h4 {
   color: #725b20;
 }
 
+.location-equipment-edit-fieldset,
+.location-equipment-address-form > fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
 .location-equipment-draft-note p {
   margin: 0.2rem 0 0;
   color: #806d3f;

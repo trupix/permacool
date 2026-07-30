@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   }
 
   const input = parseNewSiteInput(await request.json().catch(() => null));
-  if (!input) return NextResponse.json({ error: 'Check the site name, region, and time zone.' }, { status: 400 });
+  if (!input) return NextResponse.json({ error: 'Select an organization and check the site name, region, and time zone.' }, { status: 400 });
 
   try {
     const site = await createProvisionedSite(input, user);
