@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import { ProvisioningWorkspace } from '@/components/provisioning-workspace';
 import { requireUser } from '@/lib/auth';
+import { canAccessProvisioning } from '@/lib/workspace-access';
 import { getOpenVpnProvisioningStatus } from '@/server/openvpn-access-server';
 import { getProvisioningSnapshot } from '@/server/repositories/provisioning';
 
@@ -13,6 +15,8 @@ export const dynamic = 'force-dynamic';
 
 export default async function ProvisioningPage() {
   const user = await requireUser();
+  if (!canAccessProvisioning(user)) redirect('/dashboard');
+
   const [snapshot, vpn] = await Promise.all([
     getProvisioningSnapshot(user),
     Promise.resolve(getOpenVpnProvisioningStatus())

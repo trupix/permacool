@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { env, isSupabaseAuthEnabled, hasDatabaseUrl } from '@/lib/env';
 import { currentUser } from '@/lib/mock-data';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { isPlatformStaff } from '@/lib/workspace-access';
 import type { AppUser } from '@/types/domain';
 
 export async function getCurrentUser(): Promise<AppUser | undefined> {
@@ -67,7 +68,7 @@ export async function requireUser() {
 }
 
 export function isStaff(user: AppUser) {
-  return user.platformRole === 'staff_admin' || user.platformRole === 'staff_support';
+  return isPlatformStaff(user);
 }
 
 export async function requireStaff(roles: Array<AppUser['platformRole']> = ['staff_admin', 'staff_support']) {
