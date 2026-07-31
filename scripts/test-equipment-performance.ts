@@ -173,6 +173,29 @@ assertions += 2;
 assert.equal(weatherAssisted.status, 'ok');
 assert.equal(weatherAssisted.quality.overall, 'reduced_input_quality');
 
+const ethanolTemperatureFallback = equipmentPerformance.evaluateRussellUnitCapacity(
+  catalog,
+  request({
+    liveOperatingPoint: {
+      ...operatingPoint(95, -20),
+      suctionSource: 'process_fluid_temperature_estimate',
+      suctionAxisValidated: false,
+    },
+  }),
+);
+assertions += 4;
+assert.equal(ethanolTemperatureFallback.status, 'ok');
+assert.equal(ethanolTemperatureFallback.quality.overall, 'reduced_input_quality');
+assert.equal(
+  ethanolTemperatureFallback.quality.suctionInputQuality,
+  'process_fluid_temperature_estimate',
+);
+check(
+  ethanolTemperatureFallback.quality.warnings.some((warning: string) =>
+    warning.includes('Process-fluid temperature was used'),
+  ),
+);
+
 const parallel = equipmentPerformance.evaluateRussellParallelCapacity(catalog, [
   request({ unitId: 'ch1' }),
   request({ unitId: 'ch2' }),

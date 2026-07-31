@@ -1,4 +1,7 @@
 import rawCatalogRecord from '../../docs/equipment-data/russell-next-gen-ii-22hp-r404a.json';
+import rawRussell22HpR448aCatalogRecord from '../../docs/equipment-data/russell-next-gen-ii-22hp-r448a.json';
+import rawRussellMiniconR404aCatalogRecord from '../../docs/equipment-data/russell-next-gen-minicon-6hp-zs45k4e-r404a.json';
+import rawRussellMiniconR448aCatalogRecord from '../../docs/equipment-data/russell-next-gen-minicon-6hp-zs45k4e-r448a.json';
 import rawTurboAirCatalogRecord from '../../docs/equipment-data/turbo-air-ts060xr404a3a-r404a.json';
 import rawSiteRecord from '../../docs/equipment-data/site-salinas-equipment.json';
 
@@ -570,6 +573,25 @@ function validateFixedSpecifications(value: unknown, path: string): void {
       `${path}.receiverPumpDownCapacityLbAt80Percent.oversizedReceiverR404A`
     );
   }
+  for (const field of [
+    'receiverPumpDownCapacityLbAt80PercentByRefrigerant',
+    'receiverPumpDownCapacityLbAt90Percent'
+  ] as const) {
+    if (record[field] === undefined || record[field] === null) continue;
+    const pumpDown = expectRecord(record[field], `${path}.${field}`);
+    for (const receiver of ['standardReceiver', 'oversizedReceiver'] as const) {
+      const capacities = expectRecord(pumpDown[receiver], `${path}.${field}.${receiver}`);
+      if (Object.keys(capacities).length === 0) {
+        fail(`${path}.${field}.${receiver}`, 'must not be empty');
+      }
+      Object.entries(capacities).forEach(([refrigerant, capacity]) => {
+        if (!refrigerant.trim()) {
+          fail(`${path}.${field}.${receiver}`, 'requires refrigerant names');
+        }
+        expectPositiveNumber(capacity, `${path}.${field}.${receiver}.${refrigerant}`);
+      });
+    }
+  }
   if (record.receiverCapacityLbAt90Percent !== undefined) {
     expectNullablePositiveNumber(record.receiverCapacityLbAt90Percent, `${path}.receiverCapacityLbAt90Percent`);
   }
@@ -663,6 +685,9 @@ function validateCapacityTable(value: unknown, path: string): CatalogCapacityTab
   });
   ensureUniqueNumbers(ambientTemperatures, `${path}.rows.ambientTemperatureF`);
   expectPage(record.sourcePage, `${path}.sourcePage`);
+  if (record.sourcePages !== undefined) {
+    expectPageArray(record.sourcePages, `${path}.sourcePages`);
+  }
 
   return value as CatalogCapacityTable;
 }
@@ -778,14 +803,26 @@ function validateCrossRecordReferences(bundle: EquipmentDataBundle): void {
 export function loadEquipmentData(): EquipmentDataBundle {
   const siteRecord: unknown = rawSiteRecord;
   const catalogRecord: unknown = rawCatalogRecord;
+  const russell22HpR448aCatalogRecord: unknown = rawRussell22HpR448aCatalogRecord;
+  const russellMiniconR404aCatalogRecord: unknown = rawRussellMiniconR404aCatalogRecord;
+  const russellMiniconR448aCatalogRecord: unknown = rawRussellMiniconR448aCatalogRecord;
   const turboAirCatalogRecord: unknown = rawTurboAirCatalogRecord;
   validateSiteEquipmentRecord(siteRecord);
   validateCondenserCatalogRecord(catalogRecord);
+  validateCondenserCatalogRecord(russell22HpR448aCatalogRecord);
+  validateCondenserCatalogRecord(russellMiniconR404aCatalogRecord);
+  validateCondenserCatalogRecord(russellMiniconR448aCatalogRecord);
   validateCondenserCatalogRecord(turboAirCatalogRecord);
 
   const bundle: EquipmentDataBundle = {
     sites: [siteRecord],
-    catalogs: [catalogRecord, turboAirCatalogRecord]
+    catalogs: [
+      catalogRecord,
+      russell22HpR448aCatalogRecord,
+      russellMiniconR404aCatalogRecord,
+      russellMiniconR448aCatalogRecord,
+      turboAirCatalogRecord
+    ]
   };
   validateCrossRecordReferences(bundle);
   return bundle;

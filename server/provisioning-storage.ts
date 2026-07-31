@@ -47,23 +47,6 @@ async function initializeProvisioningStorage() {
     await db.$executeRawUnsafe(
       'CREATE UNIQUE INDEX IF NOT EXISTS "VpnEnrollment_tunnelIp_key" ON "VpnEnrollment"("tunnelIp")'
     );
-    const salinasEpic = await db.device.findUnique({ where: { id: 'epic-mvp-01' }, select: { id: true } });
-    if (salinasEpic) {
-      try {
-        await db.vpnEnrollment.upsert({
-          where: { deviceId: salinasEpic.id },
-          update: {},
-          create: {
-            deviceId: salinasEpic.id,
-            identity: 'salinas-groov-epic-01',
-            tunnelIp: '172.28.0.10',
-            profileStatus: 'external'
-          }
-        });
-      } catch (error) {
-        console.warn('The existing Salinas EPIC VPN identity could not be registered.', error);
-      }
-    }
     return true;
   } catch (error) {
     console.error('Site and PLC provisioning storage could not be initialized.', error);

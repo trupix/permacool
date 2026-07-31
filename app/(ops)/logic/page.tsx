@@ -1,9 +1,13 @@
+import { redirect } from 'next/navigation';
 import { LogicDefinitionWorkspace } from '@/components/logic-definition-workspace';
 import { requireUser } from '@/lib/auth';
+import { canManageLogicDefinitions } from '@/lib/workspace-access';
 import { getLogicDefinitions } from '@/server/repositories/logic-definitions';
 
 export default async function LogicPage() {
   const user = await requireUser();
+  if (!canManageLogicDefinitions(user)) redirect('/dashboard');
+
   const catalog = await getLogicDefinitions();
 
   return (

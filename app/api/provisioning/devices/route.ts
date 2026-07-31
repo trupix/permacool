@@ -1,6 +1,7 @@
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
+import { canAccessProvisioning } from '@/lib/workspace-access';
 import { parseNewPlcInput } from '@/server/provisioning-input';
 import { createProvisionedDevice } from '@/server/repositories/provisioning';
 
@@ -9,7 +10,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
-  if (user.role === 'viewer') {
+  if (!canAccessProvisioning(user)) {
     return NextResponse.json({ error: 'An owner or operator role is required to add PLCs.' }, { status: 403 });
   }
 

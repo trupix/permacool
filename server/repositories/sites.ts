@@ -17,7 +17,10 @@ export async function getSites(scope: AccessScope): Promise<Site[]> {
 
   const rows = await db.site.findMany({
     where: siteWhere(scope),
-    include: { devices: { select: { id: true } } },
+    include: {
+      provisioningDetails: true,
+      devices: { select: { id: true } }
+    },
     orderBy: { name: 'asc' }
   });
 
@@ -28,7 +31,12 @@ export async function getSites(scope: AccessScope): Promise<Site[]> {
     region: row.region,
     timezone: row.timezone,
     gatewayStatus: row.gatewayStatus,
-    deviceIds: row.devices.map((device) => device.id)
+    deviceIds: row.devices.map((device) => device.id),
+    addressLine1: row.provisioningDetails?.addressLine1 ?? null,
+    city: row.provisioningDetails?.city ?? null,
+    state: row.provisioningDetails?.state ?? null,
+    postalCode: row.provisioningDetails?.postalCode ?? null,
+    country: row.provisioningDetails?.country ?? null
   }));
 }
 
@@ -37,7 +45,10 @@ export async function getSite(scope: AccessScope, siteId: string): Promise<Site 
 
   const row = await db.site.findFirst({
     where: { AND: [{ id: siteId }, siteWhere(scope)] },
-    include: { devices: { select: { id: true } } }
+    include: {
+      provisioningDetails: true,
+      devices: { select: { id: true } }
+    }
   });
 
   if (!row) return undefined;
@@ -49,7 +60,12 @@ export async function getSite(scope: AccessScope, siteId: string): Promise<Site 
     region: row.region,
     timezone: row.timezone,
     gatewayStatus: row.gatewayStatus,
-    deviceIds: row.devices.map((device) => device.id)
+    deviceIds: row.devices.map((device) => device.id),
+    addressLine1: row.provisioningDetails?.addressLine1 ?? null,
+    city: row.provisioningDetails?.city ?? null,
+    state: row.provisioningDetails?.state ?? null,
+    postalCode: row.provisioningDetails?.postalCode ?? null,
+    country: row.provisioningDetails?.country ?? null
   };
 }
 

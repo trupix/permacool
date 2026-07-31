@@ -1,5 +1,13 @@
 import Link from 'next/link';
-import { Activity, FileText, LayoutDashboard, Wifi } from 'lucide-react';
+import {
+  Activity,
+  ExternalLink,
+  FileText,
+  LayoutDashboard,
+  RadioTower,
+  Wifi,
+  Workflow
+} from 'lucide-react';
 
 type SiteSection = 'overview' | 'connectivity' | 'specs' | 'events';
 
@@ -13,11 +21,15 @@ const sections = [
 export function SiteSectionNav({
   siteId,
   siteName,
-  active
+  active,
+  controllerManageUrl = null,
+  nodeRedUrl = null
 }: {
   siteId: string;
   siteName: string;
   active: SiteSection;
+  controllerManageUrl?: string | null;
+  nodeRedUrl?: string | null;
 }) {
   return (
     <nav className="site-section-nav" aria-label={`${siteName} pages`}>
@@ -37,6 +49,32 @@ export function SiteSectionNav({
           </Link>
         );
       })}
+      {controllerManageUrl ? (
+        <a
+          className="is-groov-manage"
+          href={controllerManageUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open ${siteName} groov Manage over VPN`}
+        >
+          <RadioTower size={15} aria-hidden="true" />
+          <span>groov Manage</span>
+          <ExternalLink size={12} aria-hidden="true" />
+        </a>
+      ) : null}
+      {nodeRedUrl ? (
+        <a
+          className="is-node-red"
+          href={nodeRedUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open ${siteName} Node-RED editor over VPN`}
+        >
+          <Workflow size={15} aria-hidden="true" />
+          <span>Node-RED</span>
+          <ExternalLink size={12} aria-hidden="true" />
+        </a>
+      ) : null}
     </nav>
   );
 }

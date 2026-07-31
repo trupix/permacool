@@ -47,28 +47,48 @@ function downloadName(disposition: string | null, fallback: string) {
   return match?.[1] || `${fallback}.ovpn`;
 }
 
+function canManageRole(role: UserRole | undefined) {
+  return role === 'owner' || role === 'operator';
+}
+
+function profileStatusLabel(status: ProvisioningSite['devices'][number]['vpnProfileStatus']) {
+  const label = status.replaceAll('_', ' ');
+  return `${label.charAt(0).toUpperCase()}${label.slice(1)}`;
+}
+
 export function ProvisioningWorkspace({
   initialSites,
+  organizations,
   storageReady,
   vpnConfigured,
-  vpnHost,
-  currentRole
+  vpnHost
 }: {
   initialSites: ProvisioningSite[];
+  organizations: Array<{ id: string; name: string; role: UserRole }>;
   storageReady: boolean;
   vpnConfigured: boolean;
   vpnHost: string | null;
-  currentRole: UserRole;
 }) {
   const router = useRouter();
+  const editableOrganizations = organizations.filter(({ role }) => canManageRole(role));
+  const editableOrganizationIds = new Set(editableOrganizations.map(({ id }) => id));
+  const editableSites = initialSites.filter((site) => editableOrganizationIds.has(site.organizationId));
   const [notice, setNotice] = useState<Notice>(null);
   const [saving, setSaving] = useState<'site' | 'device' | null>(null);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [siteForm, setSiteForm] = useState({
-    name: '', addressLine1: '', city: '', state: 'CA', postalCode: '', country: 'US', region: 'California, US', timezone: 'America/Los_Angeles'
+    organizationId: editableOrganizations[0]?.id ?? '',
+    name: '',
+    addressLine1: '',
+    city: '',
+    state: 'CA',
+    postalCode: '',
+    country: 'US',
+    region: 'California, US',
+    timezone: 'America/Los_Angeles'
   });
   const [deviceForm, setDeviceForm] = useState({
-    siteId: initialSites[0]?.id ?? '',
+    siteId: editableSites[0]?.id ?? '',
     name: '',
     plcModel: controllerModels[0],
     serialNumber: '',
@@ -79,18 +99,27 @@ export function ProvisioningWorkspace({
   });
 
   const devices = useMemo(() => initialSites.flatMap((site) => site.devices), [initialSites]);
-  const canManage = currentRole === 'owner' || currentRole === 'operator';
-  const canIssue = currentRole === 'owner';
+  const roleByOrganization = useMemo(
+    () => new Map(organizations.map(({ id, role }) => [id, role])),
+    [organizations]
+  );
+  const roleForSite = (siteId: string) => {
+    const site = initialSites.find((candidate) => candidate.id === siteId);
+    return site ? roleByOrganization.get(site.organizationId) : undefined;
+  };
+  const canManageAny = editableOrganizations.length > 0;
+  const canManageSelectedOrganization = canManageRole(roleByOrganization.get(siteForm.organizationId));
+  const canManageSelectedSite = canManageRole(roleForSite(deviceForm.siteId));
 
   useEffect(() => {
-    if (!deviceForm.siteId && initialSites[0]?.id) {
-      setDeviceForm((current) => ({ ...current, siteId: initialSites[0].id }));
+    if (!deviceForm.siteId && editableSites[0]?.id) {
+      setDeviceForm((current) => ({ ...current, siteId: editableSites[0].id }));
     }
-  }, [deviceForm.siteId, initialSites]);
+  }, [deviceForm.siteId, editableSites]);
 
   async function createSite(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!canManage || !storageReady || saving) return;
+    if (!canManageSelectedOrganization || !storageReady || saving) return;
     setSaving('site');
     setNotice(null);
     try {
@@ -101,7 +130,7 @@ export function ProvisioningWorkspace({
       });
       const payload = await response.json() as { site?: { name: string }; error?: string };
       if (!response.ok || !payload.site) throw new Error(payload.error || 'The site could not be created.');
-      setSiteForm({ name: '', addressLine1: '', city: '', state: 'CA', postalCode: '', country: 'US', region: 'California, US', timezone: 'America/Los_Angeles' });
+      setSiteForm((current) => ({ ...current, name: '', addressLine1: '', city: '', state: 'CA', postalCode: '', country: 'US', region: 'California, US', timezone: 'America/Los_Angeles' }));
       setNotice({ tone: 'success', text: `${payload.site.name} was added to Agenticly.Cool.` });
       router.refresh();
     } catch (error) {
@@ -113,7 +142,7 @@ export function ProvisioningWorkspace({
 
   async function createDevice(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!canManage || !storageReady || saving) return;
+    if (!canManageSelectedSite || !storageReady || saving) return;
     setSaving('device');
     setNotice(null);
     try {
@@ -134,8 +163,8 @@ export function ProvisioningWorkspace({
     }
   }
 
-  async function generateProfile(deviceId: string, identity: string) {
-    if (!canIssue || !vpnConfigured || generatingId) return;
+  async function generateProfile(deviceId: string, identity: string, organizationId: string) {
+    if (roleByOrganization.get(organizationId) !== 'owner' || !vpnConfigured || generatingId) return;
     setGeneratingId(deviceId);
     setNotice(null);
     try {
@@ -182,15 +211,16 @@ export function ProvisioningWorkspace({
       </section>
 
       {!storageReady ? <div className="ops-notice">Provisioning storage is not connected, so changes are disabled.</div> : null}
-      {!canManage ? (
-        <div className="provisioning-role-notice"><LockKeyhole size={17} /><p>Your account is currently <strong>{currentRole}</strong>. An owner must promote it before you can add infrastructure or issue credentials.</p></div>
+      {!canManageAny ? (
+        <div className="provisioning-role-notice"><LockKeyhole size={17} /><p>Your organization memberships are currently <strong>read-only</strong>. An owner must promote the appropriate membership before you can add infrastructure or issue credentials.</p></div>
       ) : null}
       {notice ? <div className={`provisioning-notice is-${notice.tone}`}>{notice.tone === 'success' ? <Check size={16} /> : <CircleAlert size={16} />}{notice.text}</div> : null}
 
       <div className="provisioning-form-grid">
         <form className="panel provisioning-form" onSubmit={createSite}>
           <header><span><MapPin size={18} /></span><div><p className="eyebrow">Step 1</p><h2>Add a site</h2></div></header>
-          <fieldset disabled={!canManage || !storageReady || Boolean(saving)}>
+          <fieldset disabled={!canManageSelectedOrganization || !storageReady || Boolean(saving)}>
+            <label className="is-wide"><span>Organization</span><select required value={siteForm.organizationId} onChange={(event) => setSiteForm({ ...siteForm, organizationId: event.target.value })}>{editableOrganizations.map((organization) => <option key={organization.id} value={organization.id}>{organization.name}</option>)}</select></label>
             <label className="is-wide"><span>Site name</span><input required maxLength={120} value={siteForm.name} onChange={(event) => setSiteForm({ ...siteForm, name: event.target.value })} placeholder="Los Angeles Process Campus" /></label>
             <label className="is-wide"><span>Street address</span><input maxLength={180} value={siteForm.addressLine1} onChange={(event) => setSiteForm({ ...siteForm, addressLine1: event.target.value })} placeholder="3558 E 8th St" /></label>
             <label><span>City</span><input maxLength={100} value={siteForm.city} onChange={(event) => setSiteForm({ ...siteForm, city: event.target.value })} placeholder="Los Angeles" /></label>
@@ -199,13 +229,13 @@ export function ProvisioningWorkspace({
             <label><span>Region label</span><input required maxLength={120} value={siteForm.region} onChange={(event) => setSiteForm({ ...siteForm, region: event.target.value })} placeholder="California, US" /></label>
             <label className="is-wide"><span>Time zone</span><select value={siteForm.timezone} onChange={(event) => setSiteForm({ ...siteForm, timezone: event.target.value })}>{timezones.map((timezone) => <option key={timezone}>{timezone}</option>)}</select></label>
           </fieldset>
-          <footer><p>The site begins offline until its first PLC reports.</p><button type="submit" disabled={!canManage || !storageReady || Boolean(saving)}>{saving === 'site' ? <LoaderCircle className="is-spinning" size={15} /> : <Plus size={15} />} Add site</button></footer>
+          <footer><p>Every new site receives blank Live, Connectivity, Location Specs, and Events pages.</p><button type="submit" disabled={!canManageSelectedOrganization || !storageReady || Boolean(saving)}>{saving === 'site' ? <LoaderCircle className="is-spinning" size={15} /> : <Plus size={15} />} Add site</button></footer>
         </form>
 
         <form className="panel provisioning-form" onSubmit={createDevice}>
           <header><span><ServerCog size={18} /></span><div><p className="eyebrow">Step 2</p><h2>Add an Opto 22 PLC</h2></div></header>
-          <fieldset disabled={!canManage || !storageReady || Boolean(saving) || !initialSites.length}>
-            <label className="is-wide"><span>Site</span><select required value={deviceForm.siteId} onChange={(event) => setDeviceForm({ ...deviceForm, siteId: event.target.value })}>{initialSites.map((site) => <option key={site.id} value={site.id}>{site.name}</option>)}</select></label>
+          <fieldset disabled={!canManageSelectedSite || !storageReady || Boolean(saving) || !editableSites.length}>
+            <label className="is-wide"><span>Site</span><select required value={deviceForm.siteId} onChange={(event) => setDeviceForm({ ...deviceForm, siteId: event.target.value })}>{editableSites.map((site) => <option key={site.id} value={site.id}>{site.name}</option>)}</select></label>
             <label className="is-wide"><span>Controller name</span><input required maxLength={120} value={deviceForm.name} onChange={(event) => setDeviceForm({ ...deviceForm, name: event.target.value })} placeholder="Los Angeles groov EPIC 01" /></label>
             <label className="is-wide"><span>PLC model</span><select value={deviceForm.plcModel} onChange={(event) => setDeviceForm({ ...deviceForm, plcModel: event.target.value })}>{controllerModels.map((model) => <option key={model}>{model}</option>)}</select></label>
             <label><span>Serial number</span><input maxLength={100} value={deviceForm.serialNumber} onChange={(event) => setDeviceForm({ ...deviceForm, serialNumber: event.target.value })} placeholder="Optional" /></label>
@@ -213,7 +243,7 @@ export function ProvisioningWorkspace({
             <label><span>PLC local IP</span><input inputMode="decimal" value={deviceForm.localIpAddress} onChange={(event) => setDeviceForm({ ...deviceForm, localIpAddress: event.target.value })} placeholder="192.168.1.10" /></label>
             <label><span>Requested VPN IP</span><input inputMode="decimal" value={deviceForm.tunnelIp} onChange={(event) => setDeviceForm({ ...deviceForm, tunnelIp: event.target.value })} placeholder="Leave blank for dynamic" /></label>
           </fieldset>
-          <footer><p>A unique VPN identity is generated from the site and controller names.</p><button type="submit" disabled={!canManage || !storageReady || Boolean(saving) || !initialSites.length}>{saving === 'device' ? <LoaderCircle className="is-spinning" size={15} /> : <Plus size={15} />} Add PLC</button></footer>
+          <footer><p>A unique VPN identity is generated from the site and controller names.</p><button type="submit" disabled={!canManageSelectedSite || !storageReady || Boolean(saving) || !editableSites.length}>{saving === 'device' ? <LoaderCircle className="is-spinning" size={15} /> : <Plus size={15} />} Add PLC</button></footer>
         </form>
       </div>
 
@@ -231,18 +261,19 @@ export function ProvisioningWorkspace({
                   const managed = Boolean(device.vpnIdentity);
                   const issuing = generatingId === device.id;
                   const issued = device.vpnProfileStatus === 'issued';
+                  const canIssueForSite = roleByOrganization.get(site.organizationId) === 'owner';
                   return (
                     <div className="provisioning-device-row" key={device.id}>
                       <span className="provisioning-device-icon"><HardDrive size={17} /></span>
                       <div className="provisioning-device-name"><strong>{device.name}</strong><small>{device.plcModel}</small></div>
-                      <div><span>VPN identity</span><code>{device.vpnIdentity || 'Existing / external'}</code></div>
-                      <div><span>Tunnel IP</span><strong>{device.tunnelIp || (managed ? 'Dynamic' : 'Not recorded')}</strong></div>
-                      <span className={`provisioning-profile-status is-${device.vpnProfileStatus}`}>{device.vpnProfileStatus.replaceAll('_', ' ')}</span>
+                      <div><span>VPN identity</span><code>{device.vpnIdentity || 'Not assigned'}</code></div>
+                      <div><span>Tunnel IP</span><strong>{device.tunnelIp || (managed ? 'Dynamic' : 'Not assigned')}</strong></div>
+                      <span className={`provisioning-profile-status is-${device.vpnProfileStatus}`}>{profileStatusLabel(device.vpnProfileStatus)}</span>
                       <button
                         type="button"
-                        onClick={() => managed && generateProfile(device.id, device.vpnIdentity as string)}
-                        disabled={!managed || issued || !canIssue || !vpnConfigured || Boolean(generatingId)}
-                        title={!canIssue ? 'Owner role required' : !vpnConfigured ? 'Connect the OpenVPN provisioning bridge first' : !managed ? 'Existing PLC profile is managed outside this workspace' : issued ? 'This one-time profile has already been issued' : 'Generate a new unique profile'}
+                        onClick={() => managed && generateProfile(device.id, device.vpnIdentity as string, site.organizationId)}
+                        disabled={!managed || issued || !canIssueForSite || !vpnConfigured || Boolean(generatingId)}
+                        title={!canIssueForSite ? 'Owner role required for this organization' : !vpnConfigured ? 'Connect the OpenVPN provisioning bridge first' : !managed ? 'Existing PLC profile is managed outside this workspace' : issued ? 'This one-time profile has already been issued' : 'Generate a new unique profile'}
                       >
                         {issuing ? <LoaderCircle className="is-spinning" size={14} /> : issued ? <Check size={14} /> : <Download size={14} />} {issued ? 'Profile issued' : 'Generate .ovpn'}
                       </button>

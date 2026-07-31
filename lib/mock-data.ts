@@ -18,6 +18,7 @@ export const users: AppUser[] = [
     platformRole: 'staff_admin',
     status: 'approved',
     organizationIds: ['org-permacool'],
+    organizationRoles: { 'org-permacool': 'owner' },
     allDeviceOrganizationIds: ['org-permacool'],
     deviceIds: []
   },
@@ -29,6 +30,7 @@ export const users: AppUser[] = [
     platformRole: 'staff_support',
     status: 'approved',
     organizationIds: ['org-permacool'],
+    organizationRoles: { 'org-permacool': 'operator' },
     allDeviceOrganizationIds: ['org-permacool'],
     deviceIds: []
   }
@@ -39,7 +41,7 @@ export const organizations: Organization[] = [
     id: 'org-permacool',
     name: 'PermaCool Operations',
     status: 'active',
-    siteIds: ['site-salinas', 'site-okc']
+    siteIds: ['site-salinas', 'site-cannon-falls', 'site-okc']
   }
 ];
 
@@ -51,7 +53,21 @@ export const sites: Site[] = [
     region: 'California, US',
     timezone: 'America/Los_Angeles',
     gatewayStatus: 'online',
-    deviceIds: ['epic-mvp-01', 'plc-sal-01', 'plc-sal-02']
+    deviceIds: ['epic-mvp-01', 'plc-sal-01', 'plc-sal-02'],
+    addressLine1: '3558 E 8th St',
+    city: 'Los Angeles',
+    state: 'CA',
+    postalCode: '90023',
+    country: 'US'
+  },
+  {
+    id: 'site-cannon-falls',
+    organizationId: 'org-permacool',
+    name: 'Cannon Falls',
+    region: 'Minnesota, US',
+    timezone: 'America/Chicago',
+    gatewayStatus: 'offline',
+    deviceIds: ['epic-cannon-falls-01']
   },
   {
     id: 'site-okc',
@@ -65,6 +81,19 @@ export const sites: Site[] = [
 ];
 
 export const devices: Device[] = [
+  {
+    id: 'epic-cannon-falls-01',
+    siteId: 'site-cannon-falls',
+    name: 'Cannon Falls groov EPIC 01',
+    plcModel: 'Opto 22 groov EPIC',
+    protocol: 'Node-RED HTTPS telemetry',
+    status: 'offline',
+    lastSeenAt: 'Never',
+    firmwareVersion: 'Unknown',
+    vpnIdentity: 'cannon-falls-groov-epic-01',
+    vpnTunnelIp: '172.28.0.11',
+    vpnProfileStatus: 'external'
+  },
   {
     id: 'epic-mvp-01',
     siteId: 'site-salinas',

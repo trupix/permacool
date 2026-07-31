@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { EquipmentEventList } from '@/components/equipment-event-list';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { requireUser } from '@/lib/auth';
+import { groovManageUrlForDevices, nodeRedUrlForDevices } from '@/lib/controller-links';
+import { getDevicesBySite } from '@/server/repositories/devices';
 import { getSiteEquipmentEvents } from '@/server/repositories/equipment-events';
 import { getSite } from '@/server/repositories/sites';
 
@@ -21,15 +23,26 @@ export default async function SiteEventsPage({
   if (!site) notFound();
 
   const pageNumber = Math.max(Number.parseInt(query.page ?? '1', 10) || 1, 1);
-  const eventPage = await getSiteEquipmentEvents(site.id, {
-    limit: PAGE_SIZE,
-    offset: (pageNumber - 1) * PAGE_SIZE
-  });
+  const [eventPage, siteDevices] = await Promise.all([
+    getSiteEquipmentEvents(site.id, {
+      limit: PAGE_SIZE,
+      offset: (pageNumber - 1) * PAGE_SIZE
+    }),
+    getDevicesBySite(user, site.id)
+  ]);
+  const controllerManageUrl = groovManageUrlForDevices(siteDevices);
+  const nodeRedUrl = nodeRedUrlForDevices(siteDevices);
   const totalPages = Math.max(Math.ceil(eventPage.total / PAGE_SIZE), 1);
 
   return (
     <main className="page-stack">
-      <SiteSectionNav siteId={site.id} siteName={site.name} active="events" />
+      <SiteSectionNav
+        siteId={site.id}
+        siteName={site.name}
+        active="events"
+        controllerManageUrl={controllerManageUrl}
+        nodeRedUrl={nodeRedUrl}
+      />
 
       <header className="site-events-heading">
         <p className="eyebrow">Permanent operating record</p>

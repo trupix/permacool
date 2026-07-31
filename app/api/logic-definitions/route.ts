@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
+import { canManageLogicDefinitions } from '@/lib/workspace-access';
 import {
   createLogicDefinition,
   getLogicDefinitions
@@ -11,6 +12,10 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+  if (!canManageLogicDefinitions(user)) {
+    return NextResponse.json({ error: 'An owner role is required to access logic definitions.' }, { status: 403 });
+  }
+
   const result = await getLogicDefinitions();
   return NextResponse.json(result, { headers: { 'Cache-Control': 'private, no-store' } });
 }
@@ -18,6 +23,10 @@ export async function GET() {
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+  if (!canManageLogicDefinitions(user)) {
+    return NextResponse.json({ error: 'An owner role is required to manage logic definitions.' }, { status: 403 });
+  }
+
   const input = parseLogicDefinitionInput(await request.json().catch(() => null));
   if (!input) return NextResponse.json({ error: 'Invalid logic definition.' }, { status: 400 });
 

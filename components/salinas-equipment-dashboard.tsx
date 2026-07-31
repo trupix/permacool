@@ -33,6 +33,7 @@ import {
   type SuctionTemperatureSource
 } from '@/lib/equipment/performance';
 import { normalizeTelemetryKey, resolveTelemetryPoint } from '@/lib/equipment/telemetry';
+import type { SiteWeatherData } from '@/lib/site-weather';
 import { mergeTelemetryPoints } from '@/lib/telemetry-groups';
 import { displayTelemetryUnit } from '@/lib/telemetry-units';
 import {
@@ -41,6 +42,8 @@ import {
   type TelemetryDialScale,
   type TelemetryDialZone
 } from '@/components/telemetry-dial-3d';
+import { useSiteEquipmentConfiguration } from '@/components/use-site-equipment-configuration';
+import type { StoredEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 import type {
   CatalogElectricalRating,
   CondenserArrangementSelection,
@@ -218,7 +221,7 @@ const SUCTION_PRESSURE_ZONES: TelemetryDialZone[] = [
     label: '−10–−5 PSI caution'
   },
   {
-    from: -14.5,
+    from: -14.7,
     to: -10,
     color: '#ef4444',
     label: '−14.5–−10 PSI low'
@@ -239,7 +242,7 @@ const SUCTION_PRESSURE_ZONES: TelemetryDialZone[] = [
 
 const SUCTION_PRESSURE_SCALE: TelemetryDialScale = {
   stops: [
-    { value: -14.5, angleDegrees: 150 },
+    { value: -14.7, angleDegrees: 150 },
     { value: -10, angleDegrees: 120 },
     { value: -5, angleDegrees: 90 },
     { value: 0, angleDegrees: 60 },
@@ -253,11 +256,11 @@ const SUCTION_PRESSURE_SCALE: TelemetryDialScale = {
     { value: 300, angleDegrees: -165 }
   ],
   tickValues: [
-    -14.5, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
+    -14.7, -14, -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1,
     0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300
   ],
-  labelValues: [-14.5, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
-  majorTickValues: [-14.5, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
+  labelValues: [-14.7, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
+  majorTickValues: [-14.7, -10, -5, 0, 5, 10, 15, 20, 30, 40, 50, 60, 100, 150, 300],
   smoothArc: true
 };
 
@@ -267,56 +270,9 @@ type FastTelemetryState = {
   error: string | null;
 };
 
-type WeatherData = {
-  locationLabel: string;
-  observation: {
-    stationId: string;
-    stationName: string;
-    temperatureF: number | null;
-    humidityPercent: number | null;
-    dewpointF: number | null;
-    windSpeedMph: number | null;
-    windGustMph: number | null;
-    windDirectionDegrees: number | null;
-    windDirectionCardinal: string | null;
-    pressureInHg: number | null;
-    precipitationLastHourIn: number | null;
-    precipitationLast3HoursIn: number | null;
-    condition: string | null;
-    observedAt: string;
-    ageMinutes: number | null;
-    isCurrent: boolean;
-    source: string;
-    sourceUrl: string;
-  };
-  forecast: {
-    temperatureF: number | null;
-    humidityPercent: number | null;
-    rainChancePercent: number | null;
-    precipitationAmountIn: number | null;
-    skyCoverPercent: number | null;
-    sunlightEstimatePercent: number | null;
-    sunlightMethod: string;
-    isDaytime: boolean;
-    windSpeed: string | null;
-    windDirection: string | null;
-    condition: string | null;
-    periodStartAt: string | null;
-    source: string;
-    sourceUrl: string;
-    sourceUpdatedAt: string | null;
-  } | null;
-  ambientFallback: {
-    temperatureF: number | null;
-    source: 'nws_observation';
-    observedAt: string;
-  };
-  fetchedAt: string;
-};
-
 type WeatherState = {
   status: 'loading' | 'ready' | 'error';
-  data: WeatherData | null;
+  data: SiteWeatherData | null;
   error: string | null;
 };
 
@@ -742,6 +698,16 @@ function capacityStatusText(evaluations: CandidateEvaluation[]): string {
   return 'A valid model and operating point are required';
 }
 
+function suctionSourceLabel(source: SuctionTemperatureSource, solvent: ProcessSolventSelection): string {
+  if (source === 'validated_pressure_temperature_conversion') return 'Pressure-derived saturated suction';
+  if (source === 'validated_manufacturer_axis_sensor') return 'Suction-temperature sensor';
+  if (source === 'process_fluid_temperature_estimate') {
+    return `${solvent === 'ethanol' ? 'Ethanol' : 'Process-fluid'} temperature fallback`;
+  }
+  if (source === 'manual_entry') return 'Manual fallback';
+  return 'Unknown source';
+}
+
 function MetricTile({ icon, label, value, detail }: { icon: ReactNode; label: string; value: string; detail: string }) {
   return (
     <article className="salinas-dashboard__metric-tile">
@@ -812,12 +778,18 @@ export function SalinasEquipmentDashboard({
   siteId,
   equipmentRecord,
   catalog,
-  view = 'overview'
+  view = 'overview',
+  initialConfiguration = null,
+  equipmentStorageReady = false,
+  canEdit = false
 }: {
   siteId: string;
   equipmentRecord: SiteEquipmentRecord;
   catalog: CondenserCatalogRecord;
   view?: 'overview' | 'connectivity' | 'specs';
+  initialConfiguration?: StoredEquipmentConfiguration | null;
+  equipmentStorageReady?: boolean;
+  canEdit?: boolean;
 }) {
   const system = equipmentRecord.processSystems[0];
   const defaultDraft: ConfigurationDraft = {
@@ -839,8 +811,17 @@ export function SalinasEquipmentDashboard({
     manualSuctionF: -20,
     manualSuctionValidated: false
   };
-  const [draft, setDraft] = useState<ConfigurationDraft>(defaultDraft);
-  const [draftLoaded, setDraftLoaded] = useState(false);
+  const storageKey = `permacool:equipment-draft:${siteId}`;
+  const [draft, setDraft, equipmentSaveState] = useSiteEquipmentConfiguration<ConfigurationDraft>({
+    siteId,
+    kind: 'salinas',
+    storageKey,
+    initialConfiguration,
+    defaultValue: defaultDraft,
+    normalize: (value) => sanitizeConfigurationDraft(value, defaultDraft, equipmentRecord, catalog),
+    canEdit,
+    storageReady: equipmentStorageReady
+  });
   const [telemetry, setTelemetry] = useState<TelemetryState>({
     status: 'loading',
     points: [],
@@ -860,7 +841,6 @@ export function SalinasEquipmentDashboard({
   const [facilityLiveUntil, setFacilityLiveUntil] = useState(0);
   const [dialDemoTick, setDialDemoTick] = useState(0);
   const [weather, setWeather] = useState<WeatherState>({ status: 'loading', data: null, error: null });
-  const storageKey = `permacool:equipment-draft:${siteId}`;
   const liveTelemetryActive = facilityLiveUntil > Date.now();
   const localDialDemoEnabled = process.env.NODE_ENV === 'development';
 
@@ -872,29 +852,6 @@ export function SalinasEquipmentDashboard({
     );
     return () => window.clearInterval(timer);
   }, [localDialDemoEnabled]);
-
-  useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(storageKey);
-      if (saved) {
-        const parsed: unknown = JSON.parse(saved);
-        setDraft((current) => sanitizeConfigurationDraft(parsed, current, equipmentRecord, catalog));
-      }
-    } catch {
-      // A malformed browser draft should never block the verified equipment record.
-    } finally {
-      setDraftLoaded(true);
-    }
-  }, [storageKey]);
-
-  useEffect(() => {
-    if (!draftLoaded) return;
-    try {
-      window.localStorage.setItem(storageKey, JSON.stringify(draft));
-    } catch {
-      // Storage can be disabled or full; the dashboard must remain usable without persistence.
-    }
-  }, [draft, draftLoaded, storageKey]);
 
   useEffect(() => {
     let mounted = true;
@@ -1036,7 +993,7 @@ export function SalinasEquipmentDashboard({
     async function loadWeather() {
       try {
         const response = await fetch(`/api/sites/${siteId}/weather`, { cache: 'no-store' });
-        const payload = (await response.json()) as WeatherData & { error?: string };
+        const payload = (await response.json()) as SiteWeatherData & { error?: string };
         if (!response.ok) throw new Error(payload.error ?? 'Weather request failed.');
         if (!mounted) return;
         setWeather({ status: 'ready', data: payload, error: null });
@@ -1079,6 +1036,11 @@ export function SalinasEquipmentDashboard({
       );
       const freshInletAir = signals.inletAir?.isFresh ? signals.inletAir : null;
       const freshSuctionSaturation = signals.suctionSaturation?.isFresh ? signals.suctionSaturation : null;
+      const freshProcessTemperature = signals.temperature?.isFresh ? signals.temperature : null;
+      const processTemperatureFallback =
+        draft.solvent === 'ethanol' ? freshProcessTemperature : null;
+      const usedProcessTemperatureFallback =
+        freshSuctionSaturation ? null : processTemperatureFallback;
       const observedAmbient = finiteOrNull(weather.data?.ambientFallback.temperatureF);
       const automaticAmbient = freshInletAir?.value ?? observedAmbient;
       const ambientTemperatureF =
@@ -1093,10 +1055,15 @@ export function SalinasEquipmentDashboard({
             : observedAmbient !== null
               ? 'local_weather'
               : 'manual_entry';
-      const suctionTemperatureF = freshSuctionSaturation?.value ?? draft.manualSuctionF;
+      const suctionTemperatureF =
+        freshSuctionSaturation?.value ??
+        usedProcessTemperatureFallback?.value ??
+        draft.manualSuctionF;
       const suctionSource: SuctionTemperatureSource = freshSuctionSaturation
         ? 'validated_manufacturer_axis_sensor'
-        : 'manual_entry';
+        : usedProcessTemperatureFallback
+          ? 'process_fluid_temperature_estimate'
+          : 'manual_entry';
       const selectedVariant =
         configuration.variant === 'unconfirmed' ? undefined : variantById.get(configuration.variant);
       const selectedVariants = selectedVariant ? [selectedVariant] : [];
@@ -1105,9 +1072,15 @@ export function SalinasEquipmentDashboard({
           ? configuration.frequencyHz
           : null;
       const suctionAxisValidated = Boolean(freshSuctionSaturation || draft.manualSuctionValidated);
+      const hasUsableSuctionInput = Boolean(
+        freshSuctionSaturation ||
+        usedProcessTemperatureFallback ||
+        draft.manualSuctionValidated
+      );
       const contributingTimestamps = [
         freshInletAir?.point.latestTimestamp,
         freshSuctionSaturation?.point.latestTimestamp,
+        usedProcessTemperatureFallback?.point.latestTimestamp,
         !freshInletAir && ambientSource === 'local_weather' ? weather.data?.observation.observedAt : undefined
       ].filter((value): value is string => Boolean(value));
       const parsedTimestamps = contributingTimestamps
@@ -1123,8 +1096,8 @@ export function SalinasEquipmentDashboard({
             ? 'Confirm the exact compressor model from this unit nameplate'
             : confirmedFrequency === null
               ? 'Confirm installed frequency from this unit nameplate'
-              : !suctionAxisValidated
-                ? 'Validate that the suction input is saturated suction temperature'
+              : !hasUsableSuctionInput
+                ? 'Waiting for suction temperature, ethanol temperature, or a validated manual fallback'
                 : null;
       const evaluations =
         capacityBlockedReason === null && selectedVariant && confirmedFrequency !== null
@@ -1182,7 +1155,10 @@ export function SalinasEquipmentDashboard({
           analysis.capacityBlockedReason !== null ||
           analysis.configuration.variant === 'unconfirmed' ||
           analysis.configuration.frequencyHz === 'unconfirmed' ||
-          !analysis.suctionAxisValidated
+          (
+            !analysis.suctionAxisValidated &&
+            analysis.suctionSource !== 'process_fluid_temperature_estimate'
+          )
       )
     ) {
       return null;
@@ -1241,10 +1217,21 @@ export function SalinasEquipmentDashboard({
       { label: 'Low-side pressure', available: allFresh((signals) => signals.lowPressure), unlocks: 'Evaporator-side context' },
       { label: 'Compressor amps', available: allFresh((signals) => signals.compressorAmps), unlocks: 'Electrical loading' },
       { label: 'Condenser inlet air', available: allFresh((signals) => signals.inletAir), unlocks: 'True entering-air correction' },
-      { label: 'Validated suction saturation', available: allFresh((signals) => signals.suctionSaturation), unlocks: 'Automatic capacity lookup' },
+      {
+        label: 'Suction-temperature input',
+        available: analyses.every(
+          (analysis) =>
+            analysis.signals.suctionSaturation?.isFresh === true ||
+            (
+              draft.solvent === 'ethanol' &&
+              analysis.signals.temperature?.isFresh === true
+            )
+        ),
+        unlocks: 'Sensor reading or labeled ethanol estimate'
+      },
       { label: 'Three-phase real power', available: allFresh((signals) => signals.realPowerKw), unlocks: 'kW, COP and efficiency' }
     ];
-  }, [analyses]);
+  }, [analyses, draft.solvent]);
 
   const readyCount = readinessRows.filter((row) => row.available).length;
   const fastSignalAvailability = {
@@ -1454,7 +1441,13 @@ export function SalinasEquipmentDashboard({
             <h2>System and condenser records</h2>
           </div>
           <span className="salinas-dashboard__draft-label">
-            <CheckCircle2 size={15} /> Browser draft saved
+            <CheckCircle2 size={15} /> {
+              equipmentSaveState === 'saving' ? 'Saving equipment record' :
+              equipmentSaveState === 'error' ? 'Database save needs attention' :
+              equipmentSaveState === 'browser-only' ? 'Browser draft · database unavailable' :
+              equipmentSaveState === 'read-only' ? 'Read-only equipment record' :
+              'Equipment record saved'
+            }
           </span>
         </div>
 
@@ -1462,6 +1455,7 @@ export function SalinasEquipmentDashboard({
           <label>
             <span>Condenser arrangement</span>
             <select
+              disabled={!canEdit}
               value={draft.arrangement}
               onChange={(event) => updateDraft('arrangement', event.target.value as CondenserArrangementSelection)}
             >
@@ -1473,6 +1467,7 @@ export function SalinasEquipmentDashboard({
           <label>
             <span>Process solvent</span>
             <select
+              disabled={!canEdit}
               value={draft.solvent}
               onChange={(event) => updateDraft('solvent', event.target.value as ProcessSolventSelection)}
             >
@@ -1501,7 +1496,7 @@ export function SalinasEquipmentDashboard({
                   : [];
 
             return (
-              <fieldset className="salinas-dashboard__unit-config-card" key={asset.assetId}>
+              <fieldset className="salinas-dashboard__unit-config-card" key={asset.assetId} disabled={!canEdit}>
                 <legend>
                   <span>0{index + 1}</span>
                   <div>
@@ -1582,8 +1577,8 @@ export function SalinasEquipmentDashboard({
           })}
         </div>
         <p className="salinas-dashboard__configuration-note">
-          The verified Salinas defaults are preserved in the source record. Changes here are an engineering draft
-          stored in this browser until Jose&apos;s production database/schema is available.
+          The verified Salinas defaults are preserved in the source record. Owner and Operator changes are stored
+          in the organization database; Viewer access is read-only.
         </p>
       </section>
       ) : null}
@@ -1747,7 +1742,10 @@ export function SalinasEquipmentDashboard({
           <div
             className="salinas-dashboard__weather-hero-imagery"
             role="img"
-            aria-label="Aerial satellite view centered on 3558 E 8th Street in Los Angeles"
+            aria-label={`Aerial satellite view centered on ${weather.data?.locationLabel ?? 'the facility address'}`}
+            style={weather.data?.imageryUrl
+              ? { backgroundImage: `url("${weather.data.imageryUrl}")` }
+              : undefined}
           />
           <div className="salinas-dashboard__weather-hero-shade" aria-hidden="true" />
 
@@ -1766,7 +1764,7 @@ export function SalinasEquipmentDashboard({
             </span>
             <div>
               <strong>Salinas operating site</strong>
-              <small>3558 E 8th St · Los Angeles, CA</small>
+              <small>{weather.data?.locationLabel ?? '3558 E 8th St · Los Angeles, CA'}</small>
             </div>
           </div>
 
@@ -1861,7 +1859,7 @@ export function SalinasEquipmentDashboard({
           <div className="salinas-dashboard__input-grid">
             <label>
               <span>Entering-air source</span>
-              <select value={draft.ambientMode} onChange={(event) => updateDraft('ambientMode', event.target.value as AmbientMode)}>
+              <select disabled={!canEdit} value={draft.ambientMode} onChange={(event) => updateDraft('ambientMode', event.target.value as AmbientMode)}>
                 <option value="automatic">PLC inlet-air, then observed weather</option>
                 <option value="manual">Manual value</option>
               </select>
@@ -1871,6 +1869,7 @@ export function SalinasEquipmentDashboard({
               <div className="salinas-dashboard__number-input">
                 <input
                   type="number"
+                  disabled={!canEdit}
                   min={-20}
                   max={140}
                   step={1}
@@ -1881,10 +1880,11 @@ export function SalinasEquipmentDashboard({
               </div>
             </label>
             <label>
-              <span>Catalog suction temperature</span>
+              <span>Manual suction fallback</span>
               <div className="salinas-dashboard__number-input">
                 <input
                   type="number"
+                  disabled={!canEdit}
                   min={-40}
                   max={0}
                   step={1}
@@ -1894,20 +1894,35 @@ export function SalinasEquipmentDashboard({
                 <b>°F</b>
               </div>
             </label>
+            <label>
+              <span>Suction source priority</span>
+              <select value="automatic" disabled aria-label="Suction source priority">
+                <option value="automatic">
+                  {draft.solvent === 'ethanol'
+                    ? 'Suction sensor, then ethanol temperature'
+                    : 'Suction sensor, then manual fallback'}
+                </option>
+              </select>
+            </label>
           </div>
           <label className="salinas-dashboard__validation-check">
             <input
               type="checkbox"
+              disabled={!canEdit}
               checked={draft.manualSuctionValidated}
               onChange={(event) => updateDraft('manualSuctionValidated', event.target.checked)}
             />
-            <span>I confirm the manual value is saturated suction temperature, not pipe temperature.</span>
+            <span>
+              Use this manually entered saturated suction temperature only when neither telemetry source is
+              available.
+            </span>
           </label>
           <div className="salinas-dashboard__analysis-warning">
             <CircleAlert size={17} />
             <p>
-              Capacity stays locked until each unit model and frequency are confirmed and the suction-table axis is
-              validated. A normal pipe-temperature probe must not be substituted for this value.
+              {draft.solvent === 'ethanol'
+                ? 'A real suction-temperature reading is preferred. Until that sensor is installed, fresh ethanol temperature is used as a clearly labeled lower-confidence estimate. The model never overwrites or relabels the ethanol reading as measured suction temperature.'
+                : 'A real suction-temperature reading is required unless a manually entered saturated suction temperature is explicitly accepted.'}
             </p>
           </div>
         </article>
@@ -2078,7 +2093,7 @@ export function SalinasEquipmentDashboard({
                 <div className="salinas-dashboard__gauge-grid">
                   <TelemetryDial3D label="Process temperature" value={temperatureValue} unit="°F" minimum={-50} maximum={100} detail={temperatureIsDemo ? 'Local demo signal' : signalDetail(signals.temperature, 'Display range', telemetry.status === 'error')} accent="cyan" demo={temperatureIsDemo} goal={PROCESS_TEMPERATURE_GOAL} zones={PROCESS_TEMPERATURE_ZONES} scale={PROCESS_TEMPERATURE_SCALE} renderer="glossy-svg" />
                   <TelemetryDial3D label="Discharge pressure" value={dischargeValue} unit="PSI" minimum={0} maximum={500} detail={dischargeIsDemo ? 'Local demo signal' : signalDetail(signals.highPressure, 'Discharge range', telemetry.status === 'error')} accent="gold" demo={dischargeIsDemo} zones={DISCHARGE_PRESSURE_ZONES} scale={DISCHARGE_PRESSURE_SCALE} renderer="glossy-svg" />
-                  <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.5} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} zones={SUCTION_PRESSURE_ZONES} scale={SUCTION_PRESSURE_SCALE} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.7} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} zones={SUCTION_PRESSURE_ZONES} scale={SUCTION_PRESSURE_SCALE} renderer="glossy-svg" />
                   <TelemetryDial3D label="Compressor current" value={currentValue} unit="A" minimum={0} maximum={120} detail={currentIsDemo ? 'Local demo signal' : signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Current range', telemetry.status === 'error')} accent="lime" demo={currentIsDemo} renderer="glossy-svg" />
                 </div>
 
@@ -2091,7 +2106,7 @@ export function SalinasEquipmentDashboard({
                   <div>
                     <span>Suction-table input</span>
                     <strong>{oneDecimalFormatter.format(analysis.suctionTemperatureF)} °F</strong>
-                    <small>{analysis.suctionSource.replaceAll('_', ' ')}</small>
+                    <small>{suctionSourceLabel(analysis.suctionSource, draft.solvent)}</small>
                   </div>
                   <div>
                     <span>Total compressor runtime</span>

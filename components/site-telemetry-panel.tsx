@@ -19,16 +19,17 @@ type GaugeDefinition = {
   label: string;
   min: number;
   max: number;
+  unit: "°F" | "PSI";
   accent: string;
 };
 
 const gauges: GaugeDefinition[] = [
-  { key: "ch1_temperature_c", label: "CH1 Temperature", min: -60, max: 20, accent: "#66d4ff" },
-  { key: "ch1_high_pressure", label: "CH1 High Pressure", min: 0, max: 350, accent: "#91c83e" },
-  { key: "ch1_low_pressure", label: "CH1 Low Pressure", min: 0, max: 100, accent: "#b7e8ff" },
-  { key: "ch2_temperature_c", label: "CH2 Temperature", min: -60, max: 20, accent: "#66d4ff" },
-  { key: "ch2_high_pressure", label: "CH2 High Pressure", min: 0, max: 350, accent: "#91c83e" },
-  { key: "ch2_low_pressure", label: "CH2 Low Pressure", min: 0, max: 100, accent: "#b7e8ff" }
+  { key: "ch1_temperature_c", label: "CH1 Temperature", min: -50, max: 100, unit: "°F", accent: "#66d4ff" },
+  { key: "ch1_high_pressure", label: "CH1 High Pressure", min: 0, max: 500, unit: "PSI", accent: "#91c83e" },
+  { key: "ch1_low_pressure", label: "CH1 Low Pressure", min: -14.7, max: 300, unit: "PSI", accent: "#b7e8ff" },
+  { key: "ch2_temperature_c", label: "CH2 Temperature", min: -50, max: 100, unit: "°F", accent: "#66d4ff" },
+  { key: "ch2_high_pressure", label: "CH2 High Pressure", min: 0, max: 500, unit: "PSI", accent: "#91c83e" },
+  { key: "ch2_low_pressure", label: "CH2 Low Pressure", min: -14.7, max: 300, unit: "PSI", accent: "#b7e8ff" }
 ];
 
 const stateKeys = [
@@ -131,12 +132,12 @@ export function SiteTelemetryPanel({
               <div className="telemetry-gauge" style={style}>
                 <div className="telemetry-gauge-inner">
                   <strong>{point ? valueText(point.latestValue) : "—"}</strong>
-                  <span>{point?.unit ?? ""}</span>
+                  <span>{definition.unit}</span>
                 </div>
               </div>
               <h3>{definition.label}</h3>
               <p>
-                Range {definition.min}–{definition.max} {point?.unit ?? ""}
+                Range {definition.min}–{definition.max} {definition.unit}
               </p>
             </article>
           );

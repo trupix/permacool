@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import { ProvisioningWorkspace } from '@/components/provisioning-workspace';
 import { requireUser } from '@/lib/auth';
+import { canAccessProvisioning, roleForOrganization } from '@/lib/workspace-access';
 import { getOpenVpnProvisioningStatus } from '@/server/openvpn-access-server';
+import { getOrganizations } from '@/server/repositories/organizations';
 import { getProvisioningSnapshot } from '@/server/repositories/provisioning';
 
 export const metadata: Metadata = {
@@ -13,9 +16,12 @@ export const dynamic = 'force-dynamic';
 
 export default async function ProvisioningPage() {
   const user = await requireUser();
-  const [snapshot, vpn] = await Promise.all([
+  if (!canAccessProvisioning(user)) redirect('/dashboard');
+
+  const [snapshot, vpn, organizations] = await Promise.all([
     getProvisioningSnapshot(user),
-    Promise.resolve(getOpenVpnProvisioningStatus())
+    Promise.resolve(getOpenVpnProvisioningStatus()),
+    getOrganizations(user)
   ]);
 
   return (
@@ -30,10 +36,14 @@ export default async function ProvisioningPage() {
 
       <ProvisioningWorkspace
         initialSites={snapshot.sites}
+        organizations={organizations.map(({ id, name }) => ({
+          id,
+          name,
+          role: roleForOrganization(user, id) ?? 'viewer'
+        }))}
         storageReady={snapshot.storageReady}
         vpnConfigured={vpn.configured}
         vpnHost={vpn.host}
-        currentRole={user.role}
       />
     </main>
   );

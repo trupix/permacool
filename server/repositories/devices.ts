@@ -21,19 +21,30 @@ function requireMockSiteOrganization(siteId: string) {
 export async function getDevices(scope: AccessScope): Promise<Device[]> {
   if (!shouldUseDatabase()) return filterMockDevices(scope, devices);
 
-  const rows = await db.device.findMany({ where: deviceWhere(scope), orderBy: { name: 'asc' } });
+  const rows = await db.device.findMany({
+    where: deviceWhere(scope),
+    include: { vpnEnrollment: true },
+    orderBy: { name: 'asc' }
+  });
   return rows.map(mapDevice);
 }
 
 export async function getDevicesBySite(scope: AccessScope, siteId: string): Promise<Device[]> {
   if (!shouldUseDatabase()) return filterMockDevices(scope, getDevicesForSite(siteId));
-  const rows = await db.device.findMany({ where: { AND: [{ siteId }, deviceWhere(scope)] }, orderBy: { name: 'asc' } });
+  const rows = await db.device.findMany({
+    where: { AND: [{ siteId }, deviceWhere(scope)] },
+    include: { vpnEnrollment: true },
+    orderBy: { name: 'asc' }
+  });
   return rows.map(mapDevice);
 }
 
 export async function getDevice(scope: AccessScope, deviceId: string): Promise<Device | undefined> {
   if (!shouldUseDatabase()) return filterMockDevices(scope, devices).find((device) => device.id === deviceId);
-  const row = await db.device.findFirst({ where: { AND: [{ id: deviceId }, deviceWhere(scope)] } });
+  const row = await db.device.findFirst({
+    where: { AND: [{ id: deviceId }, deviceWhere(scope)] },
+    include: { vpnEnrollment: true }
+  });
   return row ? mapDevice(row) : undefined;
 }
 
@@ -69,6 +80,14 @@ function mapDevice(row: {
   status: Device['status'];
   lastSeenAt: Date | null;
   firmwareVersion: string | null;
+  serialNumber: string | null;
+  vpnEnrollment?: {
+    identity: string;
+    tunnelIp: string | null;
+    localIpAddress: string | null;
+    profileStatus: string;
+    lastProfileIssuedAt: Date | null;
+  } | null;
 }): Device {
   return {
     id: row.id,
@@ -78,6 +97,13 @@ function mapDevice(row: {
     protocol: row.protocol,
     status: row.status,
     lastSeenAt: row.lastSeenAt?.toISOString() ?? 'Never',
-    firmwareVersion: row.firmwareVersion ?? 'Unknown'
+    firmwareVersion: row.firmwareVersion ?? 'Unknown',
+    serialNumber: row.serialNumber,
+    vpnIdentity: row.vpnEnrollment?.identity ?? null,
+    vpnTunnelIp: row.vpnEnrollment?.tunnelIp ?? null,
+    localIpAddress: row.vpnEnrollment?.localIpAddress ?? null,
+    vpnProfileStatus:
+      (row.vpnEnrollment?.profileStatus as Device['vpnProfileStatus'] | undefined) ?? 'external',
+    vpnProfileIssuedAt: row.vpnEnrollment?.lastProfileIssuedAt?.toISOString() ?? null
   };
 }

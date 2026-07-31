@@ -1,11 +1,10 @@
 import type { Prisma } from '@prisma/client';
-import { isStaff } from '@/lib/auth';
 import type { AppUser } from '@/types/domain';
 
 export type AccessScope = AppUser;
 
 export function isStaffScope(scope: AccessScope) {
-  return isStaff(scope);
+  return scope.platformRole === 'staff_admin' || scope.platformRole === 'staff_support';
 }
 
 export function organizationWhere(scope: AccessScope): Prisma.OrganizationWhereInput {

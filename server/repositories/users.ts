@@ -3,6 +3,7 @@ import { users } from '@/lib/mock-data';
 import type { AppUser } from '@/types/domain';
 import { shouldUseDatabase } from './shared';
 import { type AccessScope } from '@/lib/access';
+import { userRoleForMembership } from '@/lib/workspace-access';
 
 export async function getUsers(scope: AccessScope): Promise<AppUser[]> {
   if (scope.platformRole !== 'staff_admin') throw new Error('Forbidden');
@@ -23,6 +24,12 @@ export async function getUsers(scope: AccessScope): Promise<AppUser[]> {
     companyName: row.companyName ?? undefined,
     accessNote: row.accessNote ?? undefined,
     organizationIds: row.memberships.map((membership) => membership.organizationId),
+    organizationRoles: Object.fromEntries(
+      row.memberships.map((membership) => [
+        membership.organizationId,
+        userRoleForMembership(membership.role)
+      ])
+    ),
     allDeviceOrganizationIds: row.memberships
       .filter((membership) => membership.allDevices)
       .map((membership) => membership.organizationId),

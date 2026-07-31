@@ -1,13 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { LocationEquipmentWorkspace } from '@/components/location-equipment-workspace';
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { StatusBadge } from '@/components/status-badge';
 import { requireUser } from '@/lib/auth';
+import { groovManageUrlForDevices, nodeRedUrlForDevices } from '@/lib/controller-links';
+import { canManageSiteEquipment } from '@/lib/workspace-access';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
 import { getDevicesBySite } from '@/server/repositories/devices';
+import { getEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 import { getSite } from '@/server/repositories/sites';
 
 export const metadata: Metadata = {
@@ -26,14 +30,26 @@ export default async function SiteConnectivityPage({
 
   if (!site) notFound();
 
-  const siteDevices = await getDevicesBySite(user, site.id);
+  const [siteDevices, equipmentConfiguration] = await Promise.all([
+    getDevicesBySite(user, site.id),
+    getEquipmentConfiguration(site.id)
+  ]);
+  const canEditEquipment = canManageSiteEquipment(user, site.organizationId);
+  const controllerManageUrl = groovManageUrlForDevices(siteDevices);
+  const nodeRedUrl = nodeRedUrlForDevices(siteDevices);
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
 
   return (
     <main className="page-stack">
-      <SiteSectionNav siteId={site.id} siteName={site.name} active="connectivity" />
+      <SiteSectionNav
+        siteId={site.id}
+        siteName={site.name}
+        active="connectivity"
+        controllerManageUrl={controllerManageUrl}
+        nodeRedUrl={nodeRedUrl}
+      />
 
       <header className="site-detail-heading">
         <p className="eyebrow">{site.name}</p>
@@ -77,11 +93,25 @@ export default async function SiteConnectivityPage({
           equipmentRecord={equipmentRecord}
           catalog={equipmentCatalog}
           view="connectivity"
+          initialConfiguration={equipmentConfiguration.configuration}
+          equipmentStorageReady={equipmentConfiguration.storageReady}
+          canEdit={canEditEquipment}
         />
       ) : (
-        <SectionCard title="Signal readiness unavailable" eyebrow="Telemetry">
-          <p className="empty-state">Add the site equipment record to map diagnostic signal readiness.</p>
-        </SectionCard>
+        <LocationEquipmentWorkspace
+          siteId={site.id}
+          siteName={site.name}
+          view="connectivity"
+          initialConfiguration={equipmentConfiguration.configuration}
+          equipmentStorageReady={equipmentConfiguration.storageReady}
+          canEdit={canEditEquipment}
+          controller={{
+            name: siteDevices[0]?.name ?? 'No PLC registered',
+            status: siteDevices[0]?.status ?? 'offline',
+            vpnIdentity: siteDevices[0]?.vpnIdentity ?? 'Not assigned',
+            tunnelIp: siteDevices[0]?.vpnTunnelIp ?? 'Not assigned'
+          }}
+        />
       )}
     </main>
   );

@@ -11,8 +11,15 @@
     "equipment:catalog:test": "node scripts/test-equipment-catalog.ts",
     "logic:catalog:test": "node scripts/test-logic-catalog.ts",
     "telemetry:groups:test": "node scripts/test-telemetry-groups.ts",
+    "workspace:access:test": "node scripts/test-workspace-access.ts",
+    "organization:isolation:test": "node scripts/test-organization-isolation.ts",
+    "provisioning:read-only:test": "node scripts/test-provisioning-read-only.ts",
+    "dashboard:guardrails:test": "node scripts/test-dashboard-guardrails.ts",
+    "controller:links:test": "node scripts/test-controller-links.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:preflight:cannon-falls": "node scripts/preflight-cannon-falls-migration.ts",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:seed": "node prisma/seed.js",
     "prisma:studio": "prisma studio"
   },
@@ -21,10 +28,10 @@
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.104.1",
     "lucide-react": "^1.11.0",
-    "next": "^16.1.6",
+    "next": "^16.2.12",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "resend": "^6.12.0",
+    "resend": "^6.18.1",
     "three": "^0.185.1"
   },
   "devDependencies": {
@@ -35,5 +42,9 @@
     "dotenv": "^17.4.2",
     "prisma": "^6.7.0",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "postcss": "8.5.18",
+    "sharp": "0.35.0"
   }
 }

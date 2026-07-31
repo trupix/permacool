@@ -1,4 +1,5 @@
 export type NewSiteInput = {
+  organizationId: string;
   name: string;
   addressLine1: string | null;
   city: string | null;
@@ -20,6 +21,14 @@ export type NewPlcInput = {
   tunnelIp: string | null;
 };
 
+export type SiteAddressInput = {
+  addressLine1: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+};
+
 function text(value: unknown, maximum: number) {
   if (typeof value !== 'string') return null;
   const result = value.trim();
@@ -39,6 +48,7 @@ function isIpv4(value: string) {
 export function parseNewSiteInput(value: unknown): NewSiteInput | null {
   if (!value || typeof value !== 'object') return null;
   const input = value as Record<string, unknown>;
+  const organizationId = text(input.organizationId, 100);
   const name = text(input.name, 120);
   const timezone = text(input.timezone, 80);
   const country = text(input.country, 60) ?? 'US';
@@ -46,9 +56,10 @@ export function parseNewSiteInput(value: unknown): NewSiteInput | null {
   const city = optionalText(input.city, 100);
   const region = optionalText(input.region, 120) ?? [state, country].filter(Boolean).join(', ');
 
-  if (!name || !timezone || !region || !/^[A-Za-z_]+\/[A-Za-z0-9_+\-/]+$/.test(timezone)) return null;
+  if (!organizationId || !name || !timezone || !region || !/^[A-Za-z_]+\/[A-Za-z0-9_+\-/]+$/.test(timezone)) return null;
 
   return {
+    organizationId,
     name,
     addressLine1: optionalText(input.addressLine1, 180),
     city,
@@ -84,4 +95,17 @@ export function parseNewPlcInput(value: unknown): NewPlcInput | null {
     localIpAddress,
     tunnelIp
   };
+}
+
+export function parseSiteAddressInput(value: unknown): SiteAddressInput | null {
+  if (!value || typeof value !== 'object') return null;
+  const input = value as Record<string, unknown>;
+  const addressLine1 = text(input.addressLine1, 180);
+  const city = text(input.city, 100);
+  const state = text(input.state, 80);
+  const postalCode = text(input.postalCode, 24);
+  const country = text(input.country, 60) ?? 'US';
+
+  if (!addressLine1 || !city || !state || !postalCode) return null;
+  return { addressLine1, city, state, postalCode, country };
 }

@@ -1,13 +1,17 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
+import { hasDatabaseUrl } from '@/lib/env';
+import { parseSiteAddressInput } from '@/server/provisioning-input';
 import { getSite } from '@/server/repositories/sites';
+import type { Site } from '@/types/domain';
 
-const NWS_GRID_URL = 'https://api.weather.gov/gridpoints/LOX/156,43';
-const NWS_HOURLY_URL = `${NWS_GRID_URL}/forecast/hourly`;
-const NWS_STATION_ID = process.env.NWS_SALINAS_STATION_ID ?? 'FHMC1';
-const NWS_OBSERVATION_URL = `https://api.weather.gov/stations/${NWS_STATION_ID}/observations/latest`;
 const NWS_USER_AGENT = process.env.NWS_USER_AGENT ?? 'PermaCoolOps/1.0 (operations@perma.cool)';
 const OBSERVATION_CURRENT_MS = 90 * 60_000;
+const SALINAS_FALLBACK_ADDRESS = '3558 E 8th St, Los Angeles, CA 90023';
+const SALINAS_FALLBACK_COORDINATES = {
+  latitude: 34.01948668358,
+  longitude: -118.200198666354
+};
 
 type GridValue = {
   validTime?: unknown;
@@ -48,6 +52,46 @@ type ObservationProperties = {
   seaLevelPressure?: QuantitativeValue;
   precipitationLastHour?: QuantitativeValue;
   precipitationLast3Hours?: QuantitativeValue;
+};
+
+type CensusGeocoderResponse = {
+  result?: {
+    addressMatches?: Array<{
+      matchedAddress?: unknown;
+      coordinates?: {
+        x?: unknown;
+        y?: unknown;
+      };
+    }>;
+  };
+};
+
+type NwsPointProperties = {
+  forecastHourly?: unknown;
+  forecastGridData?: unknown;
+  observationStations?: unknown;
+};
+
+type NwsStationFeature = {
+  id?: unknown;
+  properties?: {
+    stationIdentifier?: unknown;
+    name?: unknown;
+  };
+};
+
+type ResolvedWeatherLocation = {
+  locationLabel: string;
+  latitude: number;
+  longitude: number;
+  hourlyUrl: string;
+  gridUrl: string;
+  stations: Array<{
+    stationId: string;
+    stationName: string | null;
+    observationUrl: string;
+  }>;
+  imageryUrl: string;
 };
 
 function asFiniteNumber(value: unknown): number | null {
@@ -152,8 +196,175 @@ function firstCurrentPeriod(periods: unknown): HourlyPeriod | null {
   );
 }
 
+function siteAddressLabel(site: Site): string | null {
+  if (site.addressLine1 && site.city && site.state && site.postalCode) {
+    return `${site.addressLine1}, ${site.city}, ${site.state} ${site.postalCode}`;
+  }
+  return site.id === 'site-salinas' ? SALINAS_FALLBACK_ADDRESS : null;
+}
+
+async function geocodeAddress(
+  address: string,
+  siteId: string
+): Promise<{ latitude: number; longitude: number; locationLabel: string }> {
+  const url = new URL('https://geocoding.geo.census.gov/geocoder/locations/onelineaddress');
+  url.searchParams.set('address', address);
+  url.searchParams.set('benchmark', 'Public_AR_Current');
+  url.searchParams.set('format', 'json');
+
+  try {
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(8_000),
+      next: { revalidate: 86_400 }
+    });
+    if (!response.ok) throw new Error(`Census geocoder returned ${response.status}.`);
+    const payload = (await response.json()) as CensusGeocoderResponse;
+    const match = payload.result?.addressMatches?.[0];
+    const longitude = asFiniteNumber(match?.coordinates?.x);
+    const latitude = asFiniteNumber(match?.coordinates?.y);
+    if (latitude === null || longitude === null) throw new Error('No address match was returned.');
+    return {
+      latitude,
+      longitude,
+      locationLabel: address
+    };
+  } catch (error) {
+    if (siteId !== 'site-salinas') throw error;
+    return { ...SALINAS_FALLBACK_COORDINATES, locationLabel: SALINAS_FALLBACK_ADDRESS };
+  }
+}
+
+function satelliteImageryUrl(latitude: number, longitude: number) {
+  const latitudeHalfSpan = 0.0011;
+  const longitudeHalfSpan =
+    (latitudeHalfSpan * (16 / 9)) /
+    Math.max(0.25, Math.cos((latitude * Math.PI) / 180));
+  const bbox = [
+    longitude - longitudeHalfSpan,
+    latitude - latitudeHalfSpan,
+    longitude + longitudeHalfSpan,
+    latitude + latitudeHalfSpan
+  ].map((value) => value.toFixed(6)).join(',');
+  const url = new URL(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export'
+  );
+  url.searchParams.set('bbox', bbox);
+  url.searchParams.set('bboxSR', '4326');
+  url.searchParams.set('imageSR', '4326');
+  url.searchParams.set('size', '1600,900');
+  url.searchParams.set('format', 'jpg');
+  url.searchParams.set('f', 'image');
+  return url.toString();
+}
+
+async function resolveWeatherLocation(site: Site): Promise<ResolvedWeatherLocation> {
+  const address = siteAddressLabel(site);
+  if (!address) throw new Error('Add a complete facility address in Location Specs.');
+
+  const geocoded = await geocodeAddress(address, site.id);
+  const headers = {
+    Accept: 'application/geo+json',
+    'User-Agent': NWS_USER_AGENT
+  };
+  const pointsUrl =
+    `https://api.weather.gov/points/${geocoded.latitude.toFixed(4)},${geocoded.longitude.toFixed(4)}`;
+  const pointsResponse = await fetch(pointsUrl, {
+    headers,
+    signal: AbortSignal.timeout(8_000),
+    next: { revalidate: 86_400 }
+  });
+  if (!pointsResponse.ok) {
+    throw new Error(`NWS location lookup failed with ${pointsResponse.status}.`);
+  }
+  const pointsPayload = (await pointsResponse.json()) as { properties?: NwsPointProperties };
+  const properties = pointsPayload.properties;
+  const hourlyUrl = typeof properties?.forecastHourly === 'string' ? properties.forecastHourly : null;
+  const gridUrl = typeof properties?.forecastGridData === 'string' ? properties.forecastGridData : null;
+  const stationsUrl =
+    typeof properties?.observationStations === 'string' ? properties.observationStations : null;
+  if (!hourlyUrl || !gridUrl || !stationsUrl) {
+    throw new Error('NWS did not return forecast and station links for this address.');
+  }
+
+  const stationsResponse = await fetch(stationsUrl, {
+    headers,
+    signal: AbortSignal.timeout(8_000),
+    next: { revalidate: 86_400 }
+  });
+  if (!stationsResponse.ok) {
+    throw new Error(`NWS station lookup failed with ${stationsResponse.status}.`);
+  }
+  const stationsPayload = (await stationsResponse.json()) as { features?: NwsStationFeature[] };
+  const stations = (stationsPayload.features ?? []).slice(0, 8).flatMap((station) => {
+    const stationId =
+      typeof station?.properties?.stationIdentifier === 'string'
+        ? station.properties.stationIdentifier
+        : typeof station?.id === 'string'
+          ? station.id.split('/').filter(Boolean).at(-1) ?? null
+          : null;
+    return stationId
+      ? [{
+          stationId,
+          stationName: typeof station.properties?.name === 'string' ? station.properties.name : null,
+          observationUrl: `https://api.weather.gov/stations/${stationId}/observations/latest`
+        }]
+      : [];
+  });
+  if (!stations.length) throw new Error('NWS returned no observation station for this address.');
+
+  return {
+    locationLabel: geocoded.locationLabel,
+    latitude: geocoded.latitude,
+    longitude: geocoded.longitude,
+    hourlyUrl,
+    gridUrl,
+    stations,
+    imageryUrl: satelliteImageryUrl(geocoded.latitude, geocoded.longitude)
+  };
+}
+
+async function fetchBestObservation(
+  stations: ResolvedWeatherLocation['stations'],
+  headers: Record<string, string>
+) {
+  const results = await Promise.allSettled(stations.map(async (station) => {
+    const response = await fetch(station.observationUrl, {
+      headers,
+      signal: AbortSignal.timeout(8_000),
+      next: { revalidate: 300 }
+    });
+    if (!response.ok) throw new Error(`${station.stationId}: ${response.status}`);
+    const payload = (await response.json()) as { properties?: ObservationProperties };
+    if (!payload.properties || typeof payload.properties.timestamp !== 'string') {
+      throw new Error(`${station.stationId}: no timestamp`);
+    }
+    const observedAtMs = Date.parse(payload.properties.timestamp);
+    const observedTemperatureF = temperatureF(payload.properties.temperature);
+    const isCurrent =
+      Number.isFinite(observedAtMs) &&
+      Date.now() - observedAtMs <= OBSERVATION_CURRENT_MS;
+    return {
+      station,
+      observed: payload.properties,
+      observedAtMs,
+      observedTemperatureF,
+      usable: isCurrent && observedTemperatureF !== null
+    };
+  }));
+
+  const observations = results.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []);
+  observations.sort((left, right) =>
+    Number(right.usable) - Number(left.usable) ||
+    Number(right.observedTemperatureF !== null) - Number(left.observedTemperatureF !== null) ||
+    right.observedAtMs - left.observedAtMs
+  );
+  const selected = observations[0];
+  if (!selected) throw new Error('NWS observation requests failed for all nearby stations.');
+  return selected;
+}
+
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ siteid: string }> }
 ) {
   const { siteid } = await params;
@@ -169,32 +380,38 @@ export async function GET(
     return NextResponse.json({ error: 'Site not found.' }, { status: 404 });
   }
 
-  if (site.id !== 'site-salinas') {
-    return NextResponse.json({ error: 'Weather location is not configured for this site.' }, { status: 404 });
-  }
-
   try {
+    const requestUrl = new URL(request.url);
+    const browserDraftAddress = !hasDatabaseUrl()
+      ? parseSiteAddressInput({
+          addressLine1: requestUrl.searchParams.get('addressLine1'),
+          city: requestUrl.searchParams.get('city'),
+          state: requestUrl.searchParams.get('state'),
+          postalCode: requestUrl.searchParams.get('postalCode'),
+          country: requestUrl.searchParams.get('country')
+        })
+      : null;
+    const location = await resolveWeatherLocation(
+      browserDraftAddress ? { ...site, ...browserDraftAddress } : site
+    );
     const headers = {
       Accept: 'application/geo+json',
       'User-Agent': NWS_USER_AGENT
     };
-    const signal = AbortSignal.timeout(8_000);
-
     const [observationResult, hourlyResult, gridResult] = await Promise.allSettled([
-      fetch(NWS_OBSERVATION_URL, { headers, signal, next: { revalidate: 300 } }),
-      fetch(NWS_HOURLY_URL, { headers, signal, next: { revalidate: 900 } }),
-      fetch(NWS_GRID_URL, { headers, signal, next: { revalidate: 900 } })
+      fetchBestObservation(location.stations, headers),
+      fetch(location.hourlyUrl, { headers, signal: AbortSignal.timeout(8_000), next: { revalidate: 900 } }),
+      fetch(location.gridUrl, { headers, signal: AbortSignal.timeout(8_000), next: { revalidate: 900 } })
     ]);
 
-    const observationResponse = observationResult.status === 'fulfilled' ? observationResult.value : null;
+    const selectedObservation = observationResult.status === 'fulfilled' ? observationResult.value : null;
     const hourlyResponse = hourlyResult.status === 'fulfilled' ? hourlyResult.value : null;
     const gridResponse = gridResult.status === 'fulfilled' ? gridResult.value : null;
 
-    if (!observationResponse?.ok) {
-      throw new Error(`NWS observation request failed${observationResponse ? ` with ${observationResponse.status}` : ''}.`);
+    if (!selectedObservation) {
+      throw new Error('NWS observation request failed for all nearby stations.');
     }
 
-    const observation = (await observationResponse.json()) as { properties?: ObservationProperties };
     const hourly = hourlyResponse?.ok
       ? ((await hourlyResponse.json()) as {
           properties?: { updated?: unknown; generatedAt?: unknown; periods?: unknown };
@@ -209,20 +426,20 @@ export async function GET(
           };
         })
       : null;
-    const observed = observation.properties;
+    const observed = selectedObservation.observed;
     const period = firstCurrentPeriod(hourly?.properties?.periods);
 
-    if (!observed || typeof observed.timestamp !== 'string') {
-      throw new Error('NWS returned no current station observation.');
-    }
-
     const now = Date.now();
-    const observedAtMs = Date.parse(observed.timestamp);
+    const observedAt = observed.timestamp as string;
+    const observedAtMs = Date.parse(observedAt);
     const observationAgeMinutes = Number.isFinite(observedAtMs)
       ? Math.max(0, Math.round((now - observedAtMs) / 60_000))
       : null;
-    const observationIsCurrent = observationAgeMinutes !== null && now - observedAtMs <= OBSERVATION_CURRENT_MS;
-    const observedTemperatureF = temperatureF(observed.temperature);
+    const observedTemperatureF = selectedObservation.observedTemperatureF;
+    const observationIsCurrent =
+      observationAgeMinutes !== null &&
+      now - observedAtMs <= OBSERVATION_CURRENT_MS &&
+      observedTemperatureF !== null;
     const observedWindDirectionDegrees = quantityValue(observed.windDirection);
     const observedPressureInHg = pressureInHg(observed.barometricPressure) ?? pressureInHg(observed.seaLevelPressure);
     const observedPrecipitationLastHourIn = precipitationIn(observed.precipitationLastHour);
@@ -254,7 +471,7 @@ export async function GET(
             condition: typeof period.shortForecast === 'string' ? period.shortForecast : null,
             periodStartAt: typeof period.startTime === 'string' ? period.startTime : null,
             source: 'National Weather Service hourly forecast',
-            sourceUrl: NWS_HOURLY_URL,
+            sourceUrl: location.hourlyUrl,
             sourceUpdatedAt:
               typeof hourly?.properties?.generatedAt === 'string'
                 ? hourly.properties.generatedAt
@@ -269,10 +486,18 @@ export async function GET(
 
     return NextResponse.json(
       {
-        locationLabel: '3558 E 8th St, Los Angeles, CA',
+        locationLabel: location.locationLabel,
+        coordinates: {
+          latitude: location.latitude,
+          longitude: location.longitude
+        },
+        imageryUrl: location.imageryUrl,
         observation: {
-          stationId: typeof observed.stationId === 'string' ? observed.stationId : NWS_STATION_ID,
-          stationName: typeof observed.stationName === 'string' ? observed.stationName : 'Los Angeles Downtown',
+          stationId: typeof observed.stationId === 'string' ? observed.stationId : selectedObservation.station.stationId,
+          stationName:
+            typeof observed.stationName === 'string'
+              ? observed.stationName
+              : selectedObservation.station.stationName ?? selectedObservation.station.stationId,
           temperatureF: observedTemperatureF,
           humidityPercent: quantityValue(observed.relativeHumidity),
           dewpointF: temperatureF(observed.dewpoint),
@@ -286,17 +511,17 @@ export async function GET(
           condition: typeof observed.textDescription === 'string' && observed.textDescription.trim()
             ? observed.textDescription
             : null,
-          observedAt: observed.timestamp,
+          observedAt,
           ageMinutes: observationAgeMinutes,
           isCurrent: observationIsCurrent,
           source: 'National Weather Service station observation',
-          sourceUrl: NWS_OBSERVATION_URL
+          sourceUrl: selectedObservation.station.observationUrl
         },
         forecast,
         ambientFallback: {
-          temperatureF: observationIsCurrent ? observedTemperatureF : null,
+          temperatureF: observationIsCurrent && observedTemperatureF !== null ? observedTemperatureF : null,
           source: 'nws_observation',
-          observedAt: observed.timestamp
+          observedAt
         },
         fetchedAt: new Date(now).toISOString()
       },

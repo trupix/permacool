@@ -181,6 +181,14 @@ export interface CatalogFixedSpecifications {
     standardReceiverR404A: number;
     oversizedReceiverR404A: number;
   } | null;
+  receiverPumpDownCapacityLbAt80PercentByRefrigerant?: {
+    standardReceiver: Record<string, number>;
+    oversizedReceiver: Record<string, number>;
+  } | null;
+  receiverPumpDownCapacityLbAt90Percent?: {
+    standardReceiver: Record<string, number>;
+    oversizedReceiver: Record<string, number>;
+  } | null;
   receiverCapacityLbAt90Percent?: number | null;
   cabinetSize: string | null;
   condenserFanQuantity: number;
@@ -229,6 +237,7 @@ export interface CatalogCapacityTable {
   extrapolationPolicy: string;
   rows: CapacityTableRow[];
   sourcePage: number;
+  sourcePages?: number[];
 }
 
 export interface CondenserCatalogVariant {

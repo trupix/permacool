@@ -23,6 +23,11 @@ import {
   Workflow
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import {
+  canAccessProvisioning,
+  canManageLogicDefinitions,
+  isPlatformStaff
+} from '@/lib/workspace-access';
 import type { AppUser } from '@/types/domain';
 
 type NavItem = { href: string; label: string; icon: LucideIcon; matches?: string[] };
@@ -36,10 +41,23 @@ const sharedNavItems: NavItem[] = [
   { href: '/billing', label: 'Billing', icon: CreditCard }
 ];
 
-const staffNavItems: NavItem[] = [
-  { href: '/provisioning', label: 'Provisioning', icon: ServerCog },
+const provisioningNavItem: NavItem = {
+  href: '/provisioning',
+  label: 'Provisioning',
+  icon: ServerCog
+};
+
+const logicNavItem: NavItem = {
+  href: '/logic',
+  label: 'Logic',
+  icon: Workflow
+};
+
+const staffNavItemsBeforeLogic: NavItem[] = [
   { href: '/ingest-test', label: 'Telemetry', icon: RadioTower },
-  { href: '/logic', label: 'Logic', icon: Workflow },
+];
+
+const staffNavItemsAfterLogic: NavItem[] = [
   { href: '/audit-log', label: 'Audit log', icon: ScrollText }
 ];
 
@@ -59,7 +77,7 @@ function initials(name: string) {
 
 export function AppShell({ user, children }: { user: AppUser; children: ReactNode }) {
   const pathname = usePathname();
-  const isStaff = user.platformRole === 'staff_admin' || user.platformRole === 'staff_support';
+  const isStaff = isPlatformStaff(user);
   const navItems = [
     ...sharedNavItems.map((item) =>
       user.platformRole === 'customer' && item.href === '/dashboard'
@@ -68,7 +86,10 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
           ? { ...item, label: 'My Equipment' }
           : item
     ),
-    ...(isStaff ? staffNavItems : []),
+    ...(canAccessProvisioning(user) ? [provisioningNavItem] : []),
+    ...(isStaff ? staffNavItemsBeforeLogic : []),
+    ...(canManageLogicDefinitions(user) ? [logicNavItem] : []),
+    ...(isStaff ? staffNavItemsAfterLogic : []),
     ...(user.platformRole === 'staff_admin' ? adminNavItems : [])
   ];
 
