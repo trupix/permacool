@@ -1,4 +1,4 @@
-import { requestAccess, sendMagicLink, signOut } from './actions';
+import { requestAccess, requestPasswordReset, sendMagicLink, signInWithPassword, signOut } from './actions';
 import { isSupabaseAuthEnabled } from '@/lib/env';
 
 export const metadata = {
@@ -15,13 +15,19 @@ function statusMessage(status?: string) {
     case 'check-email':
       return 'If this email is approved, a sign-in link will arrive shortly. New customers can request access below.';
     case 'missing-email':
-      return 'Enter an email address to request a magic link.';
+      return 'Enter your email address.';
+    case 'missing-credentials':
+      return 'Enter both your email address and password.';
+    case 'invalid-credentials':
+      return 'The email or password was not recognized.';
     case 'auth-error':
-      return 'Supabase could not send the magic link. Check the auth settings and allowed redirect URL.';
+      return 'The authentication service is unavailable. Try again shortly.';
     case 'callback-error':
       return 'The sign-in callback could not create a session. Try requesting a fresh link.';
     case 'signed-out':
       return 'Signed out.';
+    case 'password-email-sent':
+      return 'If this approved account exists, a password setup link will arrive shortly.';
     case 'mock-fallback':
       return 'Supabase auth is not configured, so the app is using local fallback mode.';
     case 'request-received':
@@ -53,15 +59,39 @@ export default async function SignInPage({ searchParams }: { searchParams: Promi
           <div className="sign-in-options">
             <section className="sign-in-option">
               <h2>Sign in</h2>
-              <p>Approved customers and PermaCool staff can request a secure sign-in link.</p>
-              <form action={sendMagicLink} className="auth-form">
+              <p>Use your approved PermaCool account. Password login does not require a new email each time.</p>
+              <form action={signInWithPassword} className="auth-form">
                 <input type="hidden" name="next" value={next} />
                 <label>
                   Email
                   <input name="email" type="email" placeholder="operator@company.com" required />
                 </label>
-                <button className="button-primary" type="submit">Send magic link</button>
+                <label>
+                  Password
+                  <input name="password" type="password" autoComplete="current-password" required />
+                </label>
+                <button className="button-primary" type="submit">Sign in</button>
               </form>
+
+              <details className="sign-in-recovery">
+                <summary>Set, reset, or use an email link</summary>
+                <form action={requestPasswordReset} className="auth-form auth-form--compact">
+                  <input type="hidden" name="next" value={next} />
+                  <label>
+                    Email for password setup
+                    <input name="email" type="email" placeholder="operator@company.com" required />
+                  </label>
+                  <button className="button-secondary" type="submit">Email password setup link</button>
+                </form>
+                <form action={sendMagicLink} className="auth-form auth-form--compact">
+                  <input type="hidden" name="next" value={next} />
+                  <label>
+                    Email for one-time sign-in
+                    <input name="email" type="email" placeholder="operator@company.com" required />
+                  </label>
+                  <button className="sign-in-text-button" type="submit">Email a one-time sign-in link</button>
+                </form>
+              </details>
             </section>
             <section className="sign-in-option sign-in-option--request">
               <h2>Request customer access</h2>

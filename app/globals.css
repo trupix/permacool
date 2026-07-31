@@ -177,6 +177,29 @@
   margin-top: 1.5rem;
 }
 
+.sign-in-recovery {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(17, 44, 34, 0.1);
+  color: #60716a;
+  font-size: 0.8rem;
+}
+
+.sign-in-recovery summary {
+  cursor: pointer;
+  color: #40534b;
+  font-weight: 800;
+}
+
+.sign-in-panel .auth-form--compact {
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.sign-in-panel--compact.panel {
+  max-width: 620px;
+}
+
 .sign-in-text-button {
   padding: 0;
   border: 0;
