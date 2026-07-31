@@ -59,6 +59,13 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
       <SiteEquipmentDashboard
         siteId={site.id}
         siteName={site.name}
+        facilityAddress={{
+          addressLine1: site.addressLine1 ?? '',
+          city: site.city ?? '',
+          state: site.state ?? '',
+          postalCode: site.postalCode ?? '',
+          country: site.country ?? 'US'
+        }}
         equipmentRecord={siteFoundation.equipmentRecord}
         catalog={siteFoundation.primaryCatalog}
         catalogs={equipmentCatalogRecords}

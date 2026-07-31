@@ -34,6 +34,11 @@ import {
   type SuctionTemperatureSource
 } from '@/lib/equipment/performance';
 import { normalizeTelemetryKey, resolveTelemetryPoint } from '@/lib/equipment/telemetry';
+import {
+  formatFacilityAddress,
+  hasCompleteFacilityAddress,
+  type FacilityAddress
+} from '@/lib/site-location';
 import type { SiteWeatherData } from '@/lib/site-weather';
 import { mergeTelemetryPoints } from '@/lib/telemetry-groups';
 import { displayTelemetryUnit } from '@/lib/telemetry-units';
@@ -787,6 +792,7 @@ export function SiteEquipmentDashboard({
   equipmentRecord,
   catalog,
   catalogs,
+  facilityAddress,
   view = 'overview',
   initialConfiguration = null,
   equipmentStorageReady = false,
@@ -797,6 +803,7 @@ export function SiteEquipmentDashboard({
   equipmentRecord: SiteEquipmentRecord;
   catalog: CondenserCatalogRecord;
   catalogs?: readonly CondenserCatalogRecord[];
+  facilityAddress?: FacilityAddress;
   view?: 'overview' | 'connectivity' | 'specs';
   initialConfiguration?: StoredEquipmentConfiguration | null;
   equipmentStorageReady?: boolean;
@@ -808,6 +815,9 @@ export function SiteEquipmentDashboard({
     [catalog, catalogs]
   );
   const equipmentSelectionPending = equipmentRecord.recordStatus === 'base_template_pending';
+  const facilityAddressLabel = facilityAddress && hasCompleteFacilityAddress(facilityAddress)
+    ? formatFacilityAddress(facilityAddress)
+    : null;
   const condenserCount = system.condensers.length;
   const horsepowerValues = [...new Set(system.condensers.map((asset) => asset.nominalHorsepower).filter((value) => value > 0))];
   const refrigerants = [...new Set(system.condensers
@@ -1803,7 +1813,7 @@ export function SiteEquipmentDashboard({
           <div
             className="salinas-dashboard__weather-hero-imagery"
             role="img"
-            aria-label={`Aerial satellite view centered on ${weather.data?.locationLabel ?? 'the facility address'}`}
+            aria-label={`Aerial satellite view centered on ${weather.data?.locationLabel ?? facilityAddressLabel ?? 'the facility address'}`}
             style={weather.data?.imageryUrl
               ? { backgroundImage: `url("${weather.data.imageryUrl}")` }
               : undefined}
@@ -1825,7 +1835,7 @@ export function SiteEquipmentDashboard({
             </span>
             <div>
               <strong>{siteName} operating site</strong>
-              <small>{weather.data?.locationLabel ?? 'Facility address pending'}</small>
+              <small>{weather.data?.locationLabel ?? facilityAddressLabel ?? 'Facility address not entered'}</small>
             </div>
           </div>
 
