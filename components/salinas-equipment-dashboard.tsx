@@ -17,6 +17,7 @@ import {
   Mic,
   Power,
   RefreshCw,
+  Save,
   Satellite,
   Settings2,
   ShieldAlert,
@@ -812,7 +813,13 @@ export function SalinasEquipmentDashboard({
     manualSuctionValidated: false
   };
   const storageKey = `permacool:equipment-draft:${siteId}`;
-  const [draft, setDraft, equipmentSaveState] = useSiteEquipmentConfiguration<ConfigurationDraft>({
+  const {
+    draft,
+    setDraft,
+    saveState: equipmentSaveState,
+    save: saveEquipmentChanges,
+    hasUnsavedChanges: hasUnsavedEquipmentChanges
+  } = useSiteEquipmentConfiguration<ConfigurationDraft>({
     siteId,
     kind: 'salinas',
     storageKey,
@@ -1440,15 +1447,29 @@ export function SalinasEquipmentDashboard({
             <p className="eyebrow">System configuration</p>
             <h2>System and condenser records</h2>
           </div>
-          <span className="salinas-dashboard__draft-label">
-            <CheckCircle2 size={15} /> {
-              equipmentSaveState === 'saving' ? 'Saving equipment record' :
-              equipmentSaveState === 'error' ? 'Database save needs attention' :
-              equipmentSaveState === 'browser-only' ? 'Browser draft · database unavailable' :
-              equipmentSaveState === 'read-only' ? 'Read-only equipment record' :
-              'Equipment record saved'
-            }
-          </span>
+          <div className="equipment-save-actions">
+            <span className="salinas-dashboard__draft-label">
+              <CheckCircle2 size={15} /> {
+                equipmentSaveState === 'saving' ? 'Saving equipment record' :
+                equipmentSaveState === 'error' ? 'Database save needs attention' :
+                equipmentSaveState === 'unsaved' ? 'Unsaved equipment changes' :
+                equipmentSaveState === 'browser-only' ? 'Browser draft · database unavailable' :
+                equipmentSaveState === 'read-only' ? 'Read-only equipment record' :
+                equipmentSaveState === 'unchanged' ? 'No equipment changes yet' :
+                'Equipment record saved'
+              }
+            </span>
+            {canEdit ? (
+              <button
+                className="equipment-save-button"
+                type="button"
+                disabled={!hasUnsavedEquipmentChanges || equipmentSaveState === 'saving'}
+                onClick={() => void saveEquipmentChanges()}
+              >
+                <Save size={15} /> {equipmentSaveState === 'saving' ? 'Saving…' : 'Save equipment changes'}
+              </button>
+            ) : null}
+          </div>
         </div>
 
         <div className="salinas-dashboard__configuration-grid">
@@ -1578,7 +1599,7 @@ export function SalinasEquipmentDashboard({
         </div>
         <p className="salinas-dashboard__configuration-note">
           The verified Salinas defaults are preserved in the source record. Owner and Operator changes are stored
-          in the organization database; Viewer access is read-only.
+          only after Save equipment changes is selected; Viewer access is read-only.
         </p>
       </section>
       ) : null}

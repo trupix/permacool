@@ -1,9 +1,22 @@
 'use client';
 
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import {
+  equipmentDraftFingerprint,
+  persistEquipmentConfiguration,
+  resolveInitialEquipmentDraft
+} from '@/lib/equipment/configuration-persistence';
 import type { StoredEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 
-type SaveState = 'loading' | 'saved' | 'saving' | 'browser-only' | 'read-only' | 'error';
+export type EquipmentSaveState =
+  | 'loading'
+  | 'unchanged'
+  | 'unsaved'
+  | 'saved'
+  | 'saving'
+  | 'browser-only'
+  | 'read-only'
+  | 'error';
 
 export function useSiteEquipmentConfiguration<T>({
   siteId,
@@ -23,55 +36,99 @@ export function useSiteEquipmentConfiguration<T>({
   normalize: (value: unknown) => T;
   canEdit: boolean;
   storageReady: boolean;
-}): [T, Dispatch<SetStateAction<T>>, SaveState] {
+}) {
   const normalizeRef = useRef(normalize);
   normalizeRef.current = normalize;
-  const [draft, setDraft] = useState<T>(() =>
-    initialConfiguration?.kind === kind
-      ? normalize(initialConfiguration.draft)
-      : defaultValue
-  );
+  const initialDraft = resolveInitialEquipmentDraft({
+    initialConfiguration,
+    kind,
+    defaultValue,
+    normalize
+  });
+  const [draft, setDraftState] = useState<T>(initialDraft);
+  const draftRef = useRef(draft);
+  draftRef.current = draft;
+  const persistedFingerprintRef = useRef(equipmentDraftFingerprint(initialDraft));
   const [loaded, setLoaded] = useState(false);
-  const [saveState, setSaveState] = useState<SaveState>('loading');
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [saveState, setSaveState] = useState<EquipmentSaveState>('loading');
 
   useEffect(() => {
+    let nextDraft = draftRef.current;
     if (!initialConfiguration) {
       try {
         const saved = window.localStorage.getItem(storageKey);
-        if (saved) setDraft(normalizeRef.current(JSON.parse(saved)));
+        if (saved) {
+          nextDraft = normalizeRef.current(JSON.parse(saved));
+          setDraftState(nextDraft);
+        }
       } catch {
         // Ignore a damaged legacy browser draft. The validated default remains usable.
       }
     }
+    const isDirty = equipmentDraftFingerprint(nextDraft) !== persistedFingerprintRef.current;
+    setHasUnsavedChanges(isDirty);
     setLoaded(true);
-    setSaveState(canEdit ? (storageReady ? 'saved' : 'browser-only') : 'read-only');
+    setSaveState(
+      !canEdit
+        ? 'read-only'
+        : isDirty
+          ? 'unsaved'
+          : initialConfiguration
+            ? 'saved'
+            : storageReady
+              ? 'unchanged'
+              : 'browser-only'
+    );
   }, [canEdit, initialConfiguration, storageKey, storageReady]);
+
+  const setDraft: Dispatch<SetStateAction<T>> = useCallback((value) => {
+    setDraftState(value);
+  }, []);
 
   useEffect(() => {
     if (!loaded) return;
-    try {
-      window.localStorage.setItem(storageKey, JSON.stringify(draft));
-    } catch {
-      // Database persistence remains authoritative when browser storage is unavailable.
-    }
-    if (!canEdit || !storageReady) return;
+    const isDirty = equipmentDraftFingerprint(draft) !== persistedFingerprintRef.current;
+    setHasUnsavedChanges(isDirty);
+    setSaveState(
+      !canEdit
+        ? 'read-only'
+        : isDirty
+          ? 'unsaved'
+          : initialConfiguration
+            ? 'saved'
+            : storageReady
+              ? 'unchanged'
+              : 'browser-only'
+    );
+  }, [canEdit, draft, initialConfiguration, loaded, storageReady]);
+
+  const save = useCallback(async () => {
+    if (!loaded || !canEdit) return false;
+    const draftToSave = draftRef.current;
+    const fingerprint = equipmentDraftFingerprint(draftToSave);
+    if (fingerprint === persistedFingerprintRef.current) return true;
 
     setSaveState('saving');
-    const timer = window.setTimeout(async () => {
-      try {
-        const response = await fetch(`/api/sites/${encodeURIComponent(siteId)}/equipment`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ kind, draft })
-        });
-        if (!response.ok) throw new Error('Save failed');
-        setSaveState('saved');
-      } catch {
-        setSaveState('error');
+    try {
+      if (storageReady) {
+        await persistEquipmentConfiguration({ siteId, kind, draft: draftToSave });
       }
-    }, 600);
-    return () => window.clearTimeout(timer);
-  }, [canEdit, draft, kind, loaded, siteId, storageKey, storageReady]);
+      try {
+        window.localStorage.setItem(storageKey, JSON.stringify(draftToSave));
+      } catch {
+        // A database save is still authoritative when browser storage is unavailable.
+      }
+      persistedFingerprintRef.current = fingerprint;
+      const changedDuringSave = equipmentDraftFingerprint(draftRef.current) !== fingerprint;
+      setHasUnsavedChanges(changedDuringSave);
+      setSaveState(changedDuringSave ? 'unsaved' : storageReady ? 'saved' : 'browser-only');
+      return true;
+    } catch {
+      setSaveState('error');
+      return false;
+    }
+  }, [canEdit, kind, loaded, siteId, storageKey, storageReady]);
 
-  return [draft, setDraft, saveState];
+  return { draft, setDraft, saveState, save, hasUnsavedChanges };
 }

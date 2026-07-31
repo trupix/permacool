@@ -12,6 +12,7 @@ import {
   Gauge,
   HardDrive,
   Network,
+  Save,
   Settings2,
   Snowflake,
   Zap
@@ -459,7 +460,13 @@ export function LocationEquipmentWorkspace({
   canEdit?: boolean;
 }) {
   const storageKey = `permacool:location-equipment-draft:${siteId}`;
-  const [draft, setDraft, saveState] = useSiteEquipmentConfiguration<LocationDraft>({
+  const {
+    draft,
+    setDraft,
+    saveState,
+    save,
+    hasUnsavedChanges
+  } = useSiteEquipmentConfiguration<LocationDraft>({
     siteId,
     kind: 'location',
     storageKey,
@@ -618,13 +625,27 @@ export function LocationEquipmentWorkspace({
           <h2>System and condenser records</h2>
           <p>Build the installed-equipment record now; telemetry can be connected afterward.</p>
         </div>
-        <span><CheckCircle2 size={15} /> {
-          saveState === 'saving' ? 'Saving equipment record' :
-          saveState === 'error' ? 'Database save needs attention' :
-          saveState === 'browser-only' ? 'Browser draft · database unavailable' :
-          saveState === 'read-only' ? 'Read-only equipment record' :
-          `${siteName} equipment saved`
-        }</span>
+        <div className="equipment-save-actions">
+          <span><CheckCircle2 size={15} /> {
+            saveState === 'saving' ? 'Saving equipment record' :
+            saveState === 'error' ? 'Database save needs attention' :
+            saveState === 'unsaved' ? 'Unsaved equipment changes' :
+            saveState === 'browser-only' ? 'Browser draft · database unavailable' :
+            saveState === 'read-only' ? 'Read-only equipment record' :
+            saveState === 'unchanged' ? 'No equipment changes yet' :
+            `${siteName} equipment saved`
+          }</span>
+          {canEdit ? (
+            <button
+              className="equipment-save-button"
+              type="button"
+              disabled={!hasUnsavedChanges || saveState === 'saving'}
+              onClick={() => void save()}
+            >
+              <Save size={15} /> {saveState === 'saving' ? 'Saving…' : 'Save equipment changes'}
+            </button>
+          ) : null}
+        </div>
       </section>
 
       <FacilityAddressEditor
@@ -912,7 +933,7 @@ export function LocationEquipmentWorkspace({
 
       <section className="location-equipment-draft-note">
         <Activity size={17} />
-        <div><strong>This is the {siteName} equipment record.</strong><p>{canEdit ? 'Owner and Operator changes are saved to the organization database.' : 'Viewer access can inspect this record but cannot change it.'} Nothing is treated as verified manufacturer data until it is entered from a nameplate or approved manual.</p></div>
+        <div><strong>This is the {siteName} equipment record.</strong><p>{canEdit ? 'Owner and Operator changes are stored only after Save equipment changes is selected.' : 'Viewer access can inspect this record but cannot change it.'} Nothing is treated as verified manufacturer data until it is entered from a nameplate or approved manual.</p></div>
       </section>
     </div>
   );
