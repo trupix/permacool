@@ -11785,7 +11785,7 @@ h4 {
 }
 
 .location-equipment-controller,
-.location-equipment-specs-heading > span {
+.location-equipment-specs-heading .equipment-save-actions > span {
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
@@ -12007,10 +12007,53 @@ h4 {
   letter-spacing: 0.07em;
 }
 
-.location-equipment-specs-heading > span {
+.location-equipment-specs-heading .equipment-save-actions > span {
   color: #42642f;
   font-size: 0.78rem;
   font-weight: 750;
+}
+
+.equipment-save-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.equipment-save-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 40px;
+  padding: 0.62rem 0.85rem;
+  border: 1px solid #294f41;
+  border-radius: 12px;
+  background: #294f41;
+  color: #fff;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
+}
+
+.equipment-save-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #1f4035;
+}
+
+.equipment-save-button:focus-visible {
+  outline: 3px solid rgba(117, 171, 72, 0.28);
+  outline-offset: 2px;
+}
+
+.equipment-save-button:disabled {
+  border-color: rgba(41, 79, 65, 0.14);
+  background: rgba(41, 79, 65, 0.08);
+  color: #86958f;
+  cursor: not-allowed;
 }
 
 .location-equipment-system-form,
@@ -12400,6 +12443,11 @@ h4 {
   }
 
   .location-equipment-controller {
+    width: 100%;
+  }
+
+  .equipment-save-actions,
+  .equipment-save-button {
     width: 100%;
   }
 
