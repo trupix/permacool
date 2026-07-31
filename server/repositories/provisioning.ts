@@ -68,7 +68,7 @@ function fallbackSnapshot(user: AppUser): ProvisioningSnapshot {
         vpnIdentity: device.vpnIdentity ?? null,
         tunnelIp: device.vpnTunnelIp ?? null,
         localIpAddress: null,
-        vpnProfileStatus: device.vpnProfileStatus ?? 'external',
+        vpnProfileStatus: device.vpnProfileStatus ?? (device.vpnIdentity ? 'external' : 'not_generated'),
         vpnProfileIssuedAt: null
       }))
     }))
@@ -116,7 +116,7 @@ export async function getProvisioningSnapshot(user: AppUser): Promise<Provisioni
         vpnIdentity: device.vpnEnrollment?.identity ?? null,
         tunnelIp: device.vpnEnrollment?.tunnelIp ?? null,
         localIpAddress: device.vpnEnrollment?.localIpAddress ?? null,
-        vpnProfileStatus: (device.vpnEnrollment?.profileStatus as VpnProfileStatus | undefined) ?? 'external',
+        vpnProfileStatus: (device.vpnEnrollment?.profileStatus as VpnProfileStatus | undefined) ?? 'not_generated',
         vpnProfileIssuedAt: device.vpnEnrollment?.lastProfileIssuedAt?.toISOString() ?? null
       }))
     }))

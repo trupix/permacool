@@ -51,6 +51,20 @@ assert.doesNotMatch(
   snapshotBody,
   /\.(?:create|createMany|upsert|update|updateMany|delete|deleteMany)\s*\(/
 );
+assert.match(
+  snapshotBody,
+  /device\.vpnEnrollment\?\.profileStatus[\s\S]*\?\? 'not_generated'/
+);
+
+const provisioningWorkspace = read('components/provisioning-workspace.tsx');
+assert.doesNotMatch(provisioningWorkspace, /Existing \/ external/);
+assert.doesNotMatch(provisioningWorkspace, /Not recorded/);
+assert.match(provisioningWorkspace, /device\.vpnIdentity \|\| 'Not assigned'/);
+assert.match(
+  provisioningWorkspace,
+  /device\.tunnelIp \|\| \(managed \? 'Dynamic' : 'Not assigned'\)/
+);
+assert.match(provisioningWorkspace, /profileStatusLabel\(device\.vpnProfileStatus\)/);
 
 const provisioningPage = read('app/(ops)/provisioning/page.tsx');
 const connectivityPage = read('app/(ops)/sites/[siteid]/connectivity/page.tsx');

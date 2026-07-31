@@ -51,6 +51,11 @@ function canManageRole(role: UserRole | undefined) {
   return role === 'owner' || role === 'operator';
 }
 
+function profileStatusLabel(status: ProvisioningSite['devices'][number]['vpnProfileStatus']) {
+  const label = status.replaceAll('_', ' ');
+  return `${label.charAt(0).toUpperCase()}${label.slice(1)}`;
+}
+
 export function ProvisioningWorkspace({
   initialSites,
   organizations,
@@ -261,9 +266,9 @@ export function ProvisioningWorkspace({
                     <div className="provisioning-device-row" key={device.id}>
                       <span className="provisioning-device-icon"><HardDrive size={17} /></span>
                       <div className="provisioning-device-name"><strong>{device.name}</strong><small>{device.plcModel}</small></div>
-                      <div><span>VPN identity</span><code>{device.vpnIdentity || 'Existing / external'}</code></div>
-                      <div><span>Tunnel IP</span><strong>{device.tunnelIp || (managed ? 'Dynamic' : 'Not recorded')}</strong></div>
-                      <span className={`provisioning-profile-status is-${device.vpnProfileStatus}`}>{device.vpnProfileStatus.replaceAll('_', ' ')}</span>
+                      <div><span>VPN identity</span><code>{device.vpnIdentity || 'Not assigned'}</code></div>
+                      <div><span>Tunnel IP</span><strong>{device.tunnelIp || (managed ? 'Dynamic' : 'Not assigned')}</strong></div>
+                      <span className={`provisioning-profile-status is-${device.vpnProfileStatus}`}>{profileStatusLabel(device.vpnProfileStatus)}</span>
                       <button
                         type="button"
                         onClick={() => managed && generateProfile(device.id, device.vpnIdentity as string, site.organizationId)}
