@@ -9,7 +9,7 @@ function read(relativePath) {
 }
 
 const genericTelemetry = read('components/site-telemetry-panel.tsx');
-const salinasTelemetry = read('components/salinas-equipment-dashboard.tsx');
+const salinasTelemetry = read('components/site-equipment-dashboard.tsx');
 const weatherRoute = read('app/api/sites/[siteid]/weather/route.ts');
 const equipmentRoute = read('app/api/sites/[siteid]/equipment/route.ts');
 const telemetryRoute = read('app/api/sites/[siteid]/telemetry/route.ts');

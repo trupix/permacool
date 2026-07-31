@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { FacilityAddressEditor } from '@/components/facility-address-editor';
 import { LocationEquipmentWorkspace } from '@/components/location-equipment-workspace';
-import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
+import { SiteEquipmentDashboard } from '@/components/site-equipment-dashboard';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { requireUser } from '@/lib/auth';
 import { groovManageUrlForDevices, nodeRedUrlForDevices } from '@/lib/controller-links';
@@ -67,8 +67,9 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
               country: site.country ?? 'US'
             }}
           />
-          <SalinasEquipmentDashboard
+          <SiteEquipmentDashboard
             siteId={site.id}
+            siteName={site.name}
             equipmentRecord={equipmentRecord}
             catalog={equipmentCatalog}
             view="specs"

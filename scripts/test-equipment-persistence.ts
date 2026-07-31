@@ -96,7 +96,7 @@ async function run() {
 
   for (const componentPath of [
     'components/location-equipment-workspace.tsx',
-    'components/salinas-equipment-dashboard.tsx'
+    'components/site-equipment-dashboard.tsx'
   ]) {
     const component = read(componentPath);
     assert.match(component, /Save equipment changes/);

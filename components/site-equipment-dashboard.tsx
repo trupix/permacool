@@ -225,7 +225,7 @@ const SUCTION_PRESSURE_ZONES: TelemetryDialZone[] = [
     from: -14.7,
     to: -10,
     color: '#ef4444',
-    label: '−14.5–−10 PSI low'
+    label: '−14.7–−10 PSI low'
   },
   {
     from: 100,
@@ -339,6 +339,7 @@ type CapacityRange = {
 
 type AssetAnalysis = {
   asset: CondenserAsset;
+  catalog: CondenserCatalogRecord;
   signals: AssetSignals;
   ambientTemperatureF: number;
   ambientSource: AmbientTemperatureSource;
@@ -493,7 +494,8 @@ function sanitizeConfigurationDraft(
   value: unknown,
   fallback: ConfigurationDraft,
   equipmentRecord: SiteEquipmentRecord,
-  catalog: CondenserCatalogRecord
+  catalogs: readonly CondenserCatalogRecord[],
+  fallbackCatalog: CondenserCatalogRecord
 ): ConfigurationDraft {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return fallback;
 
@@ -514,6 +516,10 @@ function sanitizeConfigurationDraft(
       : {};
   const units = Object.fromEntries(
     Object.entries(fallback.units).map(([assetId, fallbackUnit]) => {
+      const asset = equipmentRecord.processSystems
+        .flatMap((system) => system.condensers)
+        .find((condenser) => condenser.assetId === assetId);
+      const catalog = catalogs.find((candidate) => candidate.catalogRecordId === asset?.catalogRecordId) ?? fallbackCatalog;
       const rawUnit =
         candidateUnits[assetId] && typeof candidateUnits[assetId] === 'object' && !Array.isArray(candidateUnits[assetId])
           ? (candidateUnits[assetId] as Record<string, unknown>)
@@ -775,24 +781,46 @@ function TelemetryRefreshCountdown({
   );
 }
 
-export function SalinasEquipmentDashboard({
+export function SiteEquipmentDashboard({
   siteId,
+  siteName,
   equipmentRecord,
   catalog,
+  catalogs,
   view = 'overview',
   initialConfiguration = null,
   equipmentStorageReady = false,
   canEdit = false
 }: {
   siteId: string;
+  siteName: string;
   equipmentRecord: SiteEquipmentRecord;
   catalog: CondenserCatalogRecord;
+  catalogs?: readonly CondenserCatalogRecord[];
   view?: 'overview' | 'connectivity' | 'specs';
   initialConfiguration?: StoredEquipmentConfiguration | null;
   equipmentStorageReady?: boolean;
   canEdit?: boolean;
 }) {
   const system = equipmentRecord.processSystems[0];
+  const availableCatalogs = useMemo(
+    () => catalogs?.length ? catalogs : [catalog],
+    [catalog, catalogs]
+  );
+  const equipmentSelectionPending = equipmentRecord.recordStatus === 'base_template_pending';
+  const condenserCount = system.condensers.length;
+  const horsepowerValues = [...new Set(system.condensers.map((asset) => asset.nominalHorsepower).filter((value) => value > 0))];
+  const refrigerants = [...new Set(system.condensers
+    .map((asset) => asset.refrigerant)
+    .filter((value) => value && !['unconfirmed', 'pending'].includes(value.toLowerCase())))];
+  const overviewChips = [
+    horsepowerValues.length === 1
+      ? `${condenserCount} × ${horsepowerValues[0]} HP`
+      : `${condenserCount} condenser${condenserCount === 1 ? '' : 's'}`,
+    system.condenserArrangement.displayName,
+    refrigerants.join(' / ') || 'Refrigerant pending',
+    system.processSolvent.displayName
+  ];
   const defaultDraft: ConfigurationDraft = {
     arrangement: system.condenserArrangement.selection,
     solvent: system.processSolvent.selection,
@@ -825,7 +853,7 @@ export function SalinasEquipmentDashboard({
     storageKey,
     initialConfiguration,
     defaultValue: defaultDraft,
-    normalize: (value) => sanitizeConfigurationDraft(value, defaultDraft, equipmentRecord, catalog),
+    normalize: (value) => sanitizeConfigurationDraft(value, defaultDraft, equipmentRecord, availableCatalogs, catalog),
     canEdit,
     storageReady: equipmentStorageReady
   });
@@ -1022,13 +1050,20 @@ export function SalinasEquipmentDashboard({
     };
   }, [siteId]);
 
+  const catalogByRecordId = useMemo(
+    () => new Map(availableCatalogs.map((candidate) => [candidate.catalogRecordId, candidate])),
+    [availableCatalogs]
+  );
   const variantById = useMemo(
-    () => new Map(catalog.modelVariants.map((variant) => [variant.catalogVariantId, variant])),
-    [catalog.modelVariants]
+    () => new Map(availableCatalogs.flatMap((candidate) =>
+      candidate.modelVariants.map((variant) => [variant.catalogVariantId, variant] as const)
+    )),
+    [availableCatalogs]
   );
 
   const analyses = useMemo<AssetAnalysis[]>(() => {
     return system.condensers.map((asset) => {
+      const assetCatalog = catalogByRecordId.get(asset.catalogRecordId) ?? catalog;
       const configuration = draft.units[asset.assetId] ?? {
         refrigerant: asset.refrigerant,
         variant: 'unconfirmed',
@@ -1096,8 +1131,11 @@ export function SalinasEquipmentDashboard({
       const operatingPointCapturedAt = parsedTimestamps.length
         ? new Date(Math.min(...parsedTimestamps)).toISOString()
         : undefined;
+      const hasCatalogReference = Boolean(asset.catalogVariantId || asset.catalogVariantCandidates.length);
       const capacityBlockedReason =
-        configuration.refrigerant !== catalog.refrigerant
+        !hasCatalogReference
+          ? 'Select the installed condenser in Location Specs'
+          : configuration.refrigerant !== assetCatalog.refrigerant
           ? `No ${configuration.refrigerant} manufacturer curve is loaded`
           : !selectedVariant
             ? 'Confirm the exact compressor model from this unit nameplate'
@@ -1111,7 +1149,7 @@ export function SalinasEquipmentDashboard({
           ? [
               {
                 variant: selectedVariant,
-                evaluation: evaluateRussellUnitCapacity(catalog, {
+                evaluation: evaluateRussellUnitCapacity(assetCatalog, {
                   unitId: asset.assetId,
                   active: true,
                   catalogVariantId: selectedVariant.catalogVariantId,
@@ -1132,6 +1170,7 @@ export function SalinasEquipmentDashboard({
 
       return {
         asset,
+        catalog: assetCatalog,
         signals,
         ambientTemperatureF,
         ambientSource,
@@ -1146,7 +1185,7 @@ export function SalinasEquipmentDashboard({
         operatingPointCapturedAt
       };
     });
-  }, [catalog, draft, system.condensers, telemetry.fetchedAt, telemetry.points, variantById, weather.data]);
+  }, [catalog, catalogByRecordId, draft, system.condensers, telemetry.fetchedAt, telemetry.points, variantById, weather.data]);
 
   const hasCurrentRunStates =
     telemetry.status === 'ready' &&
@@ -1336,7 +1375,9 @@ export function SalinasEquipmentDashboard({
                     ? 'PLC signals current'
                     : staleTelemetryRelevantCount
                       ? 'PLC signals stale'
-                      : 'Equipment model ready'}
+                      : equipmentSelectionPending
+                        ? 'Equipment selections pending'
+                        : 'Equipment model ready'}
             </strong>
             <p>
               {telemetry.status === 'loading'
@@ -1349,7 +1390,9 @@ export function SalinasEquipmentDashboard({
                       ? `${currentUnitCount} of ${analyses.length} units reporting current pressure, temperature, amps, or state`
                       : staleTelemetryRelevantCount
                         ? `${staleTelemetryRelevantCount} mapped values are older than five minutes`
-                        : 'Waiting for mapped CH1 / CH2 values'}
+                        : equipmentSelectionPending
+                          ? 'Complete this site in Location Specs to load its equipment model'
+                          : `Waiting for mapped ${system.condensers.map((asset) => asset.dashboardChannel).join(' / ')} values`}
             </p>
           </div>
           <div className="salinas-dashboard__connection-actions">
@@ -1399,18 +1442,15 @@ export function SalinasEquipmentDashboard({
       <section className="salinas-dashboard__hero">
         <div className="salinas-dashboard__hero-copy">
           <div className="salinas-dashboard__kicker">
-            <Database size={16} /> Verified equipment record
+            <Database size={16} /> {equipmentRecord.recordStatus === 'base_template_pending' ? 'Base equipment template' : 'Configured equipment record'}
           </div>
           <h2>{system.displayName}</h2>
           <p>
-            A condition-aware view of two Russell Next-Gen II condensing units. Manufacturer ratings, live PLC
-            signals and derived estimates remain separate and traceable.
+            A condition-aware view of {condenserCount} condensing unit{condenserCount === 1 ? '' : 's'} at {siteName}.
+            Manufacturer ratings, live PLC signals and derived estimates remain separate and traceable.
           </p>
           <div className="salinas-dashboard__chips">
-            <span>2 x 22 HP</span>
-            <span>Parallel system</span>
-            <span>R404A</span>
-            <span>Ethanol</span>
+            {overviewChips.map((chip) => <span key={chip}>{chip}</span>)}
           </div>
         </div>
         {renderTelemetryFeedStatusCard()}
@@ -1522,7 +1562,7 @@ export function SalinasEquipmentDashboard({
                   <span>0{index + 1}</span>
                   <div>
                     <strong>{asset.displayName}</strong>
-                    <small>{asset.nominalHorsepower} HP Russell Next-Gen II</small>
+                    <small>{asset.nominalHorsepower > 0 ? `${asset.nominalHorsepower} HP` : 'HP pending'} {asset.manufacturer} {asset.productFamily}</small>
                   </div>
                 </legend>
                 <div className="salinas-dashboard__unit-config-fields">
@@ -1598,7 +1638,7 @@ export function SalinasEquipmentDashboard({
           })}
         </div>
         <p className="salinas-dashboard__configuration-note">
-          The verified Salinas defaults are preserved in the source record. Owner and Operator changes are stored
+          The configured {siteName} defaults are preserved in the site record. Owner and Operator changes are stored
           only after Save equipment changes is selected; Viewer access is read-only.
         </p>
       </section>
@@ -1784,8 +1824,8 @@ export function SalinasEquipmentDashboard({
               <MapPin size={18} />
             </span>
             <div>
-              <strong>Salinas operating site</strong>
-              <small>{weather.data?.locationLabel ?? '3558 E 8th St · Los Angeles, CA'}</small>
+              <strong>{siteName} operating site</strong>
+              <small>{weather.data?.locationLabel ?? 'Facility address pending'}</small>
             </div>
           </div>
 
@@ -1977,7 +2017,7 @@ export function SalinasEquipmentDashboard({
                       ? 'Condenser on'
                       : running === false
                         ? 'Condenser off'
-                        : 'Run state pending'}
+                      : 'Waiting for PLC'}
                 </strong>
               </div>
               <div className="salinas-dashboard__status-meta">
@@ -2002,7 +2042,7 @@ export function SalinasEquipmentDashboard({
         <div className="salinas-dashboard__section-heading">
           <div>
             <p className="eyebrow">Live operating units</p>
-            <h2>CH1 and CH2 condenser performance</h2>
+            <h2>{system.condensers.map((asset) => asset.dashboardChannel).join(' and ')} condenser performance</h2>
           </div>
           <div className="salinas-dashboard__live-refresh-controls">
             <button
@@ -2095,14 +2135,14 @@ export function SalinasEquipmentDashboard({
                     ? 'Last state retained'
                   : signals.ambiguousAliasCount
                     ? 'Device mapping pending'
-                    : 'Run state pending';
+                    : 'Waiting for PLC';
 
             return (
               <article className="salinas-dashboard__condenser-card" key={asset.assetId}>
                 <header>
                   <div className="salinas-dashboard__unit-index">0{index + 1}</div>
                   <div>
-                    <p className="eyebrow">Russell Next-Gen II</p>
+                    <p className="eyebrow">{asset.manufacturer} {asset.productFamily}</p>
                     <h3>{asset.displayName}</h3>
                     <span>{asset.nominalHorsepower} HP air-cooled condensing unit</span>
                   </div>
@@ -2148,7 +2188,11 @@ export function SalinasEquipmentDashboard({
 
                 <footer>
                   <span><Cpu size={15} /> {analysis.selectedVariants.length ? variantName(analysis.selectedVariants[0]) : 'Nameplate model pending'}</span>
-                  <span><BookOpen size={15} /> Russell pages {analysis.evaluations.map(({ variant }) => variant.capacityTable.sourcePage).join(', ') || '20 / 28'}</span>
+                  <span><BookOpen size={15} /> {
+                    asset.catalogVariantId || asset.catalogVariantCandidates.length
+                      ? `${analysis.catalog.source.publicationNumber} pages ${analysis.evaluations.map(({ variant }) => variant.capacityTable.sourcePage).join(', ') || 'pending'}`
+                      : 'Manufacturer source pending'
+                  }</span>
                   {signals.ambiguousAliasCount ? <span><CircleAlert size={15} /> Assign a production telemetry device ID</span> : null}
                 </footer>
               </article>
