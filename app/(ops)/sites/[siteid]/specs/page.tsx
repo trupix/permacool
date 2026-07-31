@@ -5,6 +5,7 @@ import { LocationEquipmentWorkspace } from '@/components/location-equipment-work
 import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { requireUser } from '@/lib/auth';
+import { groovManageUrlForDevices, nodeRedUrlForDevices } from '@/lib/controller-links';
 import { canManageSiteEquipment } from '@/lib/workspace-access';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
 import { getDevicesBySite } from '@/server/repositories/devices';
@@ -28,13 +29,21 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
     getEquipmentConfiguration(site.id)
   ]);
   const canEditEquipment = canManageSiteEquipment(user, site.organizationId);
+  const controllerManageUrl = groovManageUrlForDevices(siteDevices);
+  const nodeRedUrl = nodeRedUrlForDevices(siteDevices);
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
 
   return (
     <main className="page-stack">
-      <SiteSectionNav siteId={site.id} siteName={site.name} active="specs" />
+      <SiteSectionNav
+        siteId={site.id}
+        siteName={site.name}
+        active="specs"
+        controllerManageUrl={controllerManageUrl}
+        nodeRedUrl={nodeRedUrl}
+      />
 
       <header className="site-detail-heading">
         <p className="eyebrow">{site.name}</p>
@@ -49,6 +58,7 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
           <FacilityAddressEditor
             siteId={site.id}
             canEdit={canEditEquipment}
+            storageReady={equipmentConfiguration.storageReady}
             initialAddress={{
               addressLine1: site.addressLine1 ?? '',
               city: site.city ?? '',

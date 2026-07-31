@@ -1,28 +1,49 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { MapPin, Save } from 'lucide-react';
 import {
   emptyFacilityAddress,
+  FACILITY_ADDRESS_UPDATED_EVENT,
+  facilityAddressDraftKey,
   hasCompleteFacilityAddress,
+  parseFacilityAddressDraft,
   type FacilityAddress
 } from '@/lib/site-location';
 
 export function FacilityAddressEditor({
   siteId,
   initialAddress = emptyFacilityAddress,
-  canEdit = false
+  canEdit = false,
+  storageReady = false
 }: {
   siteId: string;
   initialAddress?: FacilityAddress;
   canEdit?: boolean;
+  storageReady?: boolean;
 }) {
+  const storageKey = facilityAddressDraftKey(siteId);
   const [address, setAddress] = useState<FacilityAddress>(() => ({
     ...emptyFacilityAddress,
     ...initialAddress
   }));
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [saveMessage, setSaveMessage] = useState('');
+
+  useEffect(() => {
+    if (!canEdit || storageReady) return;
+    try {
+      const saved = window.localStorage.getItem(storageKey);
+      if (!saved) return;
+      const parsed = parseFacilityAddressDraft(JSON.parse(saved));
+      if (!parsed) return;
+      setAddress(parsed);
+      setSaveState('saved');
+      setSaveMessage('Browser draft restored. Database storage is not connected to this local preview.');
+    } catch {
+      // Ignore a damaged browser draft and keep the validated server/default address.
+    }
+  }, [canEdit, storageKey, storageReady]);
 
   function updateAddress(field: keyof FacilityAddress, value: string) {
     setAddress((current) => ({ ...current, [field]: value }));
@@ -41,6 +62,21 @@ export function FacilityAddressEditor({
 
     setSaveState('saving');
     setSaveMessage('');
+    if (!storageReady) {
+      try {
+        window.localStorage.setItem(storageKey, JSON.stringify(address));
+        window.dispatchEvent(new CustomEvent(FACILITY_ADDRESS_UPDATED_EVENT, {
+          detail: { siteId, address }
+        }));
+        setSaveState('saved');
+        setSaveMessage('Browser draft saved for this local preview. Connect the staging database for shared storage.');
+      } catch {
+        setSaveState('error');
+        setSaveMessage('Browser storage is not available. The address was not saved.');
+      }
+      return;
+    }
+
     try {
       const response = await fetch(`/api/sites/${encodeURIComponent(siteId)}/details`, {
         method: 'PATCH',
@@ -120,7 +156,9 @@ export function FacilityAddressEditor({
           </button>
           <span className={`is-${saveState}`}>
             {saveMessage || (canEdit
-              ? 'Used to locate the nearest NWS station and center the satellite hero.'
+              ? storageReady
+                ? 'Used to locate the nearest NWS station and center the satellite hero.'
+                : 'Local preview: saves stay in this browser until staging storage is connected.'
               : 'Viewer access is read-only.')}
           </span>
         </div>

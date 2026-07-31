@@ -15,6 +15,7 @@
     "organization:isolation:test": "node scripts/test-organization-isolation.ts",
     "provisioning:read-only:test": "node scripts/test-provisioning-read-only.ts",
     "dashboard:guardrails:test": "node scripts/test-dashboard-guardrails.ts",
+    "controller:links:test": "node scripts/test-controller-links.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:preflight:cannon-falls": "node scripts/preflight-cannon-falls-migration.ts",

@@ -10808,6 +10808,30 @@ h4 {
   box-shadow: 0 8px 18px rgba(17, 44, 34, 0.13);
 }
 
+.site-section-nav a.is-groov-manage {
+  border: 1px solid rgba(169, 117, 11, 0.22);
+  background: linear-gradient(135deg, #f6cf67, #eab83d);
+  color: #30250d;
+  box-shadow: 0 7px 16px rgba(169, 117, 11, 0.15);
+}
+
+.site-section-nav a.is-groov-manage:hover {
+  background: linear-gradient(135deg, #f9da82, #efc352);
+  color: #231b09;
+}
+
+.site-section-nav a.is-node-red {
+  border: 1px solid rgba(177, 44, 50, 0.22);
+  background: linear-gradient(135deg, #d65b60, #b82f38);
+  color: #fff;
+  box-shadow: 0 7px 16px rgba(145, 31, 38, 0.14);
+}
+
+.site-section-nav a.is-node-red:hover {
+  background: linear-gradient(135deg, #e16c70, #c83c44);
+  color: #fff;
+}
+
 /* Salinas telemetry workspace inherits the operations system while keeping data legible. */
 .salinas-dashboard {
   --sd-ink: #10211b;
@@ -12373,6 +12397,10 @@ h4 {
   .location-equipment-specs-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .location-equipment-controller {
+    width: 100%;
   }
 
   .location-equipment-status-grid,

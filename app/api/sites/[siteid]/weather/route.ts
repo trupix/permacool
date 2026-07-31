@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
+import { hasDatabaseUrl } from '@/lib/env';
+import { parseSiteAddressInput } from '@/server/provisioning-input';
 import { getSite } from '@/server/repositories/sites';
 import type { Site } from '@/types/domain';
 
@@ -362,7 +364,7 @@ async function fetchBestObservation(
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ siteid: string }> }
 ) {
   const { siteid } = await params;
@@ -379,7 +381,19 @@ export async function GET(
   }
 
   try {
-    const location = await resolveWeatherLocation(site);
+    const requestUrl = new URL(request.url);
+    const browserDraftAddress = !hasDatabaseUrl()
+      ? parseSiteAddressInput({
+          addressLine1: requestUrl.searchParams.get('addressLine1'),
+          city: requestUrl.searchParams.get('city'),
+          state: requestUrl.searchParams.get('state'),
+          postalCode: requestUrl.searchParams.get('postalCode'),
+          country: requestUrl.searchParams.get('country')
+        })
+      : null;
+    const location = await resolveWeatherLocation(
+      browserDraftAddress ? { ...site, ...browserDraftAddress } : site
+    );
     const headers = {
       Accept: 'application/geo+json',
       'User-Agent': NWS_USER_AGENT

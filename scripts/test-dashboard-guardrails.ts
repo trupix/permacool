@@ -15,6 +15,8 @@ const equipmentRoute = read('app/api/sites/[siteid]/equipment/route.ts');
 const telemetryRoute = read('app/api/sites/[siteid]/telemetry/route.ts');
 const eventsRoute = read('app/api/sites/[siteid]/events/route.ts');
 const cannonMigration = read('prisma/migrations/20260729143000_add_cannon_falls_site/migration.sql');
+const weatherHero = read('components/location-weather-hero.tsx');
+const addressEditor = read('components/facility-address-editor.tsx');
 
 for (const source of [genericTelemetry, salinasTelemetry]) {
   assert.match(source, /-50/);
@@ -29,6 +31,12 @@ assert.match(weatherRoute, /fetchBestObservation/);
 assert.match(weatherRoute, /observedTemperatureF !== null/);
 assert.match(weatherRoute, /observationIsCurrent[\s\S]*observedTemperatureF !== null/);
 assert.match(weatherRoute, /temperatureF: observationIsCurrent && observedTemperatureF !== null/);
+assert.match(weatherRoute, /!hasDatabaseUrl\(\)[\s\S]*parseSiteAddressInput/);
+assert.match(addressEditor, /!storageReady[\s\S]*localStorage\.setItem/);
+assert.match(addressEditor, /FACILITY_ADDRESS_UPDATED_EVENT/);
+assert.match(weatherHero, /allowBrowserDraft[\s\S]*URLSearchParams\(resolvedAddress\)/);
+assert.match(weatherHero, /addEventListener\(FACILITY_ADDRESS_UPDATED_EVENT/);
+assert.match(weatherHero, /detail\?\.siteId !== siteId/);
 
 assert.match(equipmentRoute, /getSite\(user, siteid\)/);
 assert.match(equipmentRoute, /canManageSiteEquipment\(user, site\.organizationId\)/);
@@ -43,5 +51,5 @@ assert.match(cannonMigration, /organizationId" <> 'org-permacool'/);
 assert.match(cannonMigration, /device ID belongs to another site/);
 assert.match(cannonMigration, /VPN identity or tunnel IP belongs to another device/);
 
-console.log('Dashboard guardrails passed for telemetry ranges, NWS fallback readiness, organization gates, and Cannon Falls migration safety.');
+console.log('Dashboard guardrails passed for telemetry ranges, NWS fallback readiness, scoped address drafts, organization gates, and Cannon Falls migration safety.');
 }

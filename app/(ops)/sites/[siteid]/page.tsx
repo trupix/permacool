@@ -9,6 +9,7 @@ import { SiteSectionNav } from '@/components/site-section-nav';
 import { StatusBadge } from '@/components/status-badge';
 import { SiteTelemetryPanel } from '@/components/site-telemetry-panel';
 import { requireUser } from '@/lib/auth';
+import { groovManageUrlForDevices, nodeRedUrlForDevices } from '@/lib/controller-links';
 import { canManageSiteEquipment } from '@/lib/workspace-access';
 import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
 import { getDeviceTelemetry, getDevicesBySite } from '@/server/repositories/devices';
@@ -30,6 +31,8 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
     getEquipmentConfiguration(site.id)
   ]);
   const canEditEquipment = canManageSiteEquipment(user, site.organizationId);
+  const controllerManageUrl = groovManageUrlForDevices(siteDevices);
+  const nodeRedUrl = nodeRedUrlForDevices(siteDevices);
   const equipmentRecord = getSiteEquipmentRecord(site.id);
   const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
   const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
@@ -45,7 +48,13 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
 
   return (
     <main className="page-stack">
-      <SiteSectionNav siteId={site.id} siteName={site.name} active="overview" />
+      <SiteSectionNav
+        siteId={site.id}
+        siteName={site.name}
+        active="overview"
+        controllerManageUrl={controllerManageUrl}
+        nodeRedUrl={nodeRedUrl}
+      />
 
       <header className="site-detail-heading">
         <p className="eyebrow">Site detail</p>

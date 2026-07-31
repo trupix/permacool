@@ -529,7 +529,12 @@ export function LocationEquipmentWorkspace({
           <article><span><Network size={17} /></span><div><small>VPN address</small><strong>{controller.tunnelIp}</strong></div></article>
         </section>
 
-        <LocationWeatherHero siteId={siteId} siteName={siteName} address={initialAddress} />
+        <LocationWeatherHero
+          siteId={siteId}
+          siteName={siteName}
+          address={initialAddress}
+          allowBrowserDraft={canEdit && !equipmentStorageReady}
+        />
 
         <div className="location-equipment-unit-grid">
           {draft.units.map((unit, index) => (
@@ -622,7 +627,12 @@ export function LocationEquipmentWorkspace({
         }</span>
       </section>
 
-      <FacilityAddressEditor siteId={siteId} initialAddress={initialAddress} canEdit={canEdit} />
+      <FacilityAddressEditor
+        siteId={siteId}
+        initialAddress={initialAddress}
+        canEdit={canEdit}
+        storageReady={equipmentStorageReady}
+      />
 
       <fieldset className="location-equipment-edit-fieldset" disabled={!canEdit}>
       <section className="panel location-equipment-system-form">

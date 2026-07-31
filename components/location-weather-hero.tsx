@@ -16,8 +16,11 @@ import {
   Wind
 } from 'lucide-react';
 import {
+  FACILITY_ADDRESS_UPDATED_EVENT,
+  facilityAddressDraftKey,
   formatFacilityAddress,
   hasCompleteFacilityAddress,
+  parseFacilityAddressDraft,
   type FacilityAddress
 } from '@/lib/site-location';
 import type { SiteWeatherData } from '@/lib/site-weather';
@@ -62,19 +65,55 @@ function formatObservationAge(minutes: number | null) {
 export function LocationWeatherHero({
   siteId,
   siteName,
-  address
+  address,
+  allowBrowserDraft = false
 }: {
   siteId: string;
   siteName: string;
   address: FacilityAddress;
+  allowBrowserDraft?: boolean;
 }) {
-  const addressReady = hasCompleteFacilityAddress(address);
-  const addressLabel = formatFacilityAddress(address);
+  const [resolvedAddress, setResolvedAddress] = useState(address);
+  const addressReady = hasCompleteFacilityAddress(resolvedAddress);
+  const addressLabel = formatFacilityAddress(resolvedAddress);
   const [weather, setWeather] = useState<WeatherState>({
     status: 'loading',
     data: null,
     error: null
   });
+
+  useEffect(() => {
+    if (!allowBrowserDraft) {
+      setResolvedAddress(address);
+      return;
+    }
+
+    setResolvedAddress(address);
+    const storageKey = facilityAddressDraftKey(siteId);
+
+    try {
+      const saved = window.localStorage.getItem(storageKey);
+      const parsed = saved ? parseFacilityAddressDraft(JSON.parse(saved)) : null;
+      if (parsed) setResolvedAddress(parsed);
+    } catch {
+      // Ignore a damaged browser draft and keep the server/default address.
+    }
+
+    function handleAddressUpdate(event: Event) {
+      const detail = (event as CustomEvent<{
+        siteId?: unknown;
+        address?: unknown;
+      }>).detail;
+      if (detail?.siteId !== siteId) return;
+      const parsed = parseFacilityAddressDraft(detail.address);
+      if (parsed) setResolvedAddress(parsed);
+    }
+
+    window.addEventListener(FACILITY_ADDRESS_UPDATED_EVENT, handleAddressUpdate);
+    return () => {
+      window.removeEventListener(FACILITY_ADDRESS_UPDATED_EVENT, handleAddressUpdate);
+    };
+  }, [address, allowBrowserDraft, siteId]);
 
   useEffect(() => {
     if (!addressReady) return;
@@ -83,7 +122,10 @@ export function LocationWeatherHero({
     async function loadWeather() {
       setWeather((current) => ({ ...current, status: 'loading', error: null }));
       try {
-        const response = await fetch(`/api/sites/${encodeURIComponent(siteId)}/weather`, {
+        const query = allowBrowserDraft
+          ? `?${new URLSearchParams(resolvedAddress).toString()}`
+          : '';
+        const response = await fetch(`/api/sites/${encodeURIComponent(siteId)}/weather${query}`, {
           cache: 'no-store'
         });
         const payload = (await response.json()) as SiteWeatherData & { error?: string };
@@ -106,7 +148,7 @@ export function LocationWeatherHero({
       mounted = false;
       window.clearInterval(timer);
     };
-  }, [addressReady, siteId]);
+  }, [addressReady, allowBrowserDraft, resolvedAddress, siteId]);
 
   return (
     <article className="salinas-dashboard__weather-hero location-equipment-weather-hero">
