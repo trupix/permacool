@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import {
@@ -17,7 +18,6 @@ import {
   Search,
   ServerCog,
   ShieldCheck,
-  Snowflake,
   Users,
   Wifi,
   Workflow
@@ -97,12 +97,15 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
     <div className="app-shell">
       <aside className="sidebar">
         <Link href="/dashboard" className="sidebar-brand" aria-label="Agenticly.Cool home">
-          <span className="sidebar-brand-mark" aria-hidden="true">
-            <Snowflake size={19} strokeWidth={2.4} />
-          </span>
-          <span>
-            <strong>Agenticly.Cool</strong>
-            <small>Control</small>
+          <span className="sidebar-brand-logo">
+            <Image
+              src="/images/brand/agenticly-cool-logo.png"
+              alt="Agenticly.Cool"
+              width={160}
+              height={160}
+              priority
+              sizes="160px"
+            />
           </span>
         </Link>
 
