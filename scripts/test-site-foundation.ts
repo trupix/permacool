@@ -184,6 +184,11 @@ assert.match(dashboard, /siteName: string/);
 assert.match(dashboard, /facilityAddress\?: FacilityAddress/);
 assert.match(dashboard, /formatFacilityAddress\(facilityAddress\)/);
 assert.match(dashboard, /weather\.data\?\.locationLabel \?\? facilityAddressLabel/);
+assert.match(
+  dashboard,
+  /backgroundImage: weather\.data\?\.imageryUrl[\s\S]*linear-gradient\(145deg/,
+  'Address-less sites must use a neutral hero instead of inheriting Salinas satellite imagery.'
+);
 assert.doesNotMatch(dashboard, /Salinas operating site|3558 E 8th St|22 HP Russell Next-Gen II/);
 assert.match(dashboard, /system\.condensers\.map/);
 assert.match(

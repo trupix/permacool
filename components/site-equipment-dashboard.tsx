@@ -1814,9 +1814,11 @@ export function SiteEquipmentDashboard({
             className="salinas-dashboard__weather-hero-imagery"
             role="img"
             aria-label={`Aerial satellite view centered on ${weather.data?.locationLabel ?? facilityAddressLabel ?? 'the facility address'}`}
-            style={weather.data?.imageryUrl
-              ? { backgroundImage: `url("${weather.data.imageryUrl}")` }
-              : undefined}
+            style={{
+              backgroundImage: weather.data?.imageryUrl
+                ? `url("${weather.data.imageryUrl}")`
+                : 'linear-gradient(145deg, #234b42 0%, #10251e 52%, #07130f 100%)'
+            }}
           />
           <div className="salinas-dashboard__weather-hero-shade" aria-hidden="true" />
 
