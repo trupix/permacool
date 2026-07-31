@@ -107,7 +107,7 @@ export function FacilityAddressEditor({
             <input
               value={address.addressLine1}
               onChange={(event) => updateAddress('addressLine1', event.target.value)}
-              placeholder="3558 E 8th St"
+              placeholder="123 Example St"
               autoComplete="street-address"
             />
           </label>
@@ -116,7 +116,7 @@ export function FacilityAddressEditor({
             <input
               value={address.city}
               onChange={(event) => updateAddress('city', event.target.value)}
-              placeholder="Los Angeles"
+              placeholder="City"
               autoComplete="address-level2"
             />
           </label>
@@ -125,7 +125,7 @@ export function FacilityAddressEditor({
             <input
               value={address.state}
               onChange={(event) => updateAddress('state', event.target.value)}
-              placeholder="CA"
+              placeholder="ST"
               autoComplete="address-level1"
             />
           </label>
@@ -134,7 +134,7 @@ export function FacilityAddressEditor({
             <input
               value={address.postalCode}
               onChange={(event) => updateAddress('postalCode', event.target.value)}
-              placeholder="90023"
+              placeholder="00000"
               autoComplete="postal-code"
             />
           </label>

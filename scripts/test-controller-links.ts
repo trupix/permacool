@@ -11,24 +11,24 @@ const {
 } = require(path.join(__dirname, '..', 'lib', 'controller-links.ts'));
 
 const salinas = {
-  name: 'Salinas groov EPIC',
+  name: 'Sanitized Site A groov EPIC',
   protocol: 'HTTPS / Node-RED',
-  vpnIdentity: 'salinas-groov-epic-01',
-  vpnTunnelIp: '172.28.0.10'
+  vpnIdentity: 'sanitized-site-a-epic-01',
+  vpnTunnelIp: '172.28.200.10'
 };
 const cannonFalls = {
-  name: 'Cannon Falls groov EPIC',
+  name: 'Sanitized Site B groov EPIC',
   protocol: 'HTTPS / Node-RED',
   vpnIdentity: 'cannon-falls-groov-epic-01',
-  vpnTunnelIp: '172.28.0.11'
+  vpnTunnelIp: '172.28.200.11'
 };
 
-assert.equal(groovManageUrl(salinas.name, salinas.vpnTunnelIp), 'https://172.28.0.10/manage/');
-assert.equal(groovManageUrlForDevices([salinas]), 'https://172.28.0.10/manage/');
-assert.equal(nodeRedUrlForDevices([salinas]), 'https://172.28.0.10/node-red/');
+assert.equal(groovManageUrl(salinas.name, salinas.vpnTunnelIp), 'https://172.28.200.10/manage/');
+assert.equal(groovManageUrlForDevices([salinas]), 'https://172.28.200.10/manage/');
+assert.equal(nodeRedUrlForDevices([salinas]), 'https://172.28.200.10/node-red/');
 assert.equal(
   nodeRedUrlForDevices([cannonFalls]),
-  'https://172.28.0.11/node-red/#flow/a39a54de197f6707'
+  'https://172.28.200.11/node-red/#flow/a39a54de197f6707'
 );
 
 assert.equal(groovManageUrl('Generic PLC', '172.28.0.12'), null);
@@ -59,6 +59,9 @@ const navigation = fs.readFileSync(
   'utf8'
 );
 assert.match(navigation, /rel="noopener noreferrer"/);
+assert.match(navigation, /groov Manage not configured/);
+assert.match(navigation, /Node-RED not configured/);
+assert.match(navigation, /aria-disabled="true"/);
 assert.doesNotMatch(navigation, /password|credential|certificate|private.?key|api.?token|\.ovpn/i);
 
 console.log('Controller links passed VPN-address validation, missing-data handling, and authorized site-device scoping checks.');

@@ -221,11 +221,11 @@ export function ProvisioningWorkspace({
           <header><span><MapPin size={18} /></span><div><p className="eyebrow">Step 1</p><h2>Add a site</h2></div></header>
           <fieldset disabled={!canManageSelectedOrganization || !storageReady || Boolean(saving)}>
             <label className="is-wide"><span>Organization</span><select required value={siteForm.organizationId} onChange={(event) => setSiteForm({ ...siteForm, organizationId: event.target.value })}>{editableOrganizations.map((organization) => <option key={organization.id} value={organization.id}>{organization.name}</option>)}</select></label>
-            <label className="is-wide"><span>Site name</span><input required maxLength={120} value={siteForm.name} onChange={(event) => setSiteForm({ ...siteForm, name: event.target.value })} placeholder="Los Angeles Process Campus" /></label>
-            <label className="is-wide"><span>Street address</span><input maxLength={180} value={siteForm.addressLine1} onChange={(event) => setSiteForm({ ...siteForm, addressLine1: event.target.value })} placeholder="3558 E 8th St" /></label>
-            <label><span>City</span><input maxLength={100} value={siteForm.city} onChange={(event) => setSiteForm({ ...siteForm, city: event.target.value })} placeholder="Los Angeles" /></label>
-            <label><span>State</span><input maxLength={80} value={siteForm.state} onChange={(event) => setSiteForm({ ...siteForm, state: event.target.value })} placeholder="CA" /></label>
-            <label><span>ZIP / postal code</span><input maxLength={24} value={siteForm.postalCode} onChange={(event) => setSiteForm({ ...siteForm, postalCode: event.target.value })} placeholder="90023" /></label>
+            <label className="is-wide"><span>Site name</span><input required maxLength={120} value={siteForm.name} onChange={(event) => setSiteForm({ ...siteForm, name: event.target.value })} placeholder="Example Extraction Facility" /></label>
+            <label className="is-wide"><span>Street address</span><input maxLength={180} value={siteForm.addressLine1} onChange={(event) => setSiteForm({ ...siteForm, addressLine1: event.target.value })} placeholder="123 Example St" /></label>
+            <label><span>City</span><input maxLength={100} value={siteForm.city} onChange={(event) => setSiteForm({ ...siteForm, city: event.target.value })} placeholder="City" /></label>
+            <label><span>State</span><input maxLength={80} value={siteForm.state} onChange={(event) => setSiteForm({ ...siteForm, state: event.target.value })} placeholder="ST" /></label>
+            <label><span>ZIP / postal code</span><input maxLength={24} value={siteForm.postalCode} onChange={(event) => setSiteForm({ ...siteForm, postalCode: event.target.value })} placeholder="00000" /></label>
             <label><span>Region label</span><input required maxLength={120} value={siteForm.region} onChange={(event) => setSiteForm({ ...siteForm, region: event.target.value })} placeholder="California, US" /></label>
             <label className="is-wide"><span>Time zone</span><select value={siteForm.timezone} onChange={(event) => setSiteForm({ ...siteForm, timezone: event.target.value })}>{timezones.map((timezone) => <option key={timezone}>{timezone}</option>)}</select></label>
           </fieldset>

@@ -171,11 +171,19 @@ assert.equal(
 const livePage = read('app/(ops)/sites/[siteid]/page.tsx');
 assert.match(livePage, /resolveSiteDashboardFoundation/);
 assert.match(livePage, /<SiteEquipmentDashboard/);
+assert.match(
+  livePage,
+  /facilityAddress=\{\{[\s\S]*addressLine1: site\.addressLine1[\s\S]*postalCode: site\.postalCode/,
+  'The shared Live page must pass its saved site address to the weather hero.'
+);
 assert.doesNotMatch(livePage, /LocationEquipmentWorkspace|SiteTelemetryPanel|hasEquipmentDashboard/);
 assert.match(livePage, /canEdit=\{false\}/, 'The shared Live view must stay read-only.');
 
 const dashboard = read('components/site-equipment-dashboard.tsx');
 assert.match(dashboard, /siteName: string/);
+assert.match(dashboard, /facilityAddress\?: FacilityAddress/);
+assert.match(dashboard, /formatFacilityAddress\(facilityAddress\)/);
+assert.match(dashboard, /weather\.data\?\.locationLabel \?\? facilityAddressLabel/);
 assert.doesNotMatch(dashboard, /Salinas operating site|3558 E 8th St|22 HP Russell Next-Gen II/);
 assert.match(dashboard, /system\.condensers\.map/);
 assert.match(
@@ -193,6 +201,20 @@ assert.match(dashboard, /Manufacturer source pending/);
 assert.match(dashboard, /catalogByRecordId\.get\(asset\.catalogRecordId\)/);
 assert.match(dashboard, /analysis\.catalog\.source\.publicationNumber/);
 assert.doesNotMatch(dashboard, /14\.5/);
+
+const addressEditor = read('components/facility-address-editor.tsx');
+const provisioningWorkspace = read('components/provisioning-workspace.tsx');
+for (const source of [addressEditor, provisioningWorkspace]) {
+  assert.doesNotMatch(
+    source,
+    /placeholder="(?:3558 E 8th St|Los Angeles|CA|90023)"/,
+    'Blank and future sites must not inherit Salinas-specific address examples.'
+  );
+}
+assert.match(addressEditor, /placeholder="123 Example St"/);
+assert.match(addressEditor, /placeholder="City"/);
+assert.match(addressEditor, /placeholder="ST"/);
+assert.match(addressEditor, /placeholder="00000"/);
 
 console.log('Reusable site foundation checks passed for Salinas, Cannon Falls, and a blank future extraction site.');
 }
