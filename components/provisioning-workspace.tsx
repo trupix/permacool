@@ -54,6 +54,7 @@ function canManageRole(role: UserRole | undefined) {
 
 function profileStatusLabel(status: ProvisioningSite['devices'][number]['vpnProfileStatus']) {
   if (status === 'external') return 'Externally issued';
+  if (status === 'issuing') return 'Issuance locked';
   const label = status.replaceAll('_', ' ');
   return `${label.charAt(0).toUpperCase()}${label.slice(1)}`;
 }
@@ -293,7 +294,8 @@ export function ProvisioningWorkspace({
                   const issuing = generatingId === device.id;
                   const issued = device.vpnProfileStatus === 'issued';
                   const external = device.vpnProfileStatus === 'external';
-                  const credentialRecorded = issued || external;
+                  const issuanceLocked = device.vpnProfileStatus === 'issuing';
+                  const credentialRecorded = issued || external || issuanceLocked;
                   const registering = registeringId === device.id;
                   const canIssueForSite = roleByOrganization.get(site.organizationId) === 'owner';
                   return (
@@ -310,7 +312,7 @@ export function ProvisioningWorkspace({
                           disabled={!managed || credentialRecorded || !canIssueForSite || !vpnConfigured || Boolean(generatingId) || Boolean(registeringId)}
                           title={!canIssueForSite ? 'Owner role required for this organization' : credentialRecorded ? 'This PLC already has a recorded VPN credential' : !vpnConfigured ? 'Connect the OpenVPN provisioning bridge first' : !managed ? 'No managed VPN identity is assigned' : 'Generate a new unique profile'}
                         >
-                          {issuing ? <LoaderCircle className="is-spinning" size={14} /> : credentialRecorded ? <Check size={14} /> : <Download size={14} />} {credentialRecorded ? 'Profile recorded' : 'Generate .ovpn'}
+                          {issuing || issuanceLocked ? <LoaderCircle className="is-spinning" size={14} /> : credentialRecorded ? <Check size={14} /> : <Download size={14} />} {issuanceLocked ? 'Inspection required' : credentialRecorded ? 'Profile recorded' : 'Generate .ovpn'}
                         </button>
                         <button
                           className="is-secondary"

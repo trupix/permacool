@@ -86,8 +86,7 @@ const repository = read('server/repositories/provisioning.ts');
 const registrationBody = repository.slice(repository.indexOf('export async function registerExternalVpnProfile'));
 assert.match(registrationBody, /deviceWhere\(actor\)/);
 assert.match(registrationBody, /canRegisterExternalVpnProfile\(actor, device\.site\.organizationId\)/);
-assert.match(registrationBody, /profileStatus: 'external'/);
-assert.match(registrationBody, /tunnelIp: null/);
+assert.match(registrationBody, /claimExternalVpnProfile\(transaction, device\.id, identity/);
 assert.match(registrationBody, /Registered externally issued OpenVPN profile/);
 assert.match(registrationBody, /issuance: 'external_manual'/);
 assert.match(registrationBody, /tunnelAssignment: 'dynamic'/);
@@ -96,8 +95,22 @@ assert.doesNotMatch(registrationBody, /generateOpenVpnProfile|profileContents|pr
 const generationRoute = read('app/api/provisioning/devices/[deviceid]/vpn-profile/route.ts');
 assert.match(
   generationRoute,
-  /profileStatus === 'issued' \|\| device\.vpnEnrollment\.profileStatus === 'external'/
+  /device\.vpnEnrollment\.profileStatus === 'issuing'/
 );
+assert.ok(
+  generationRoute.indexOf('await reserveVpnProfileGeneration') < generationRoute.indexOf('await generateOpenVpnProfile'),
+  'The database reservation must succeed before OpenVPN is contacted.'
+);
+assert.match(generationRoute, /do not retry automatically/);
+assert.doesNotMatch(generationRoute, /releaseVpnProfileGeneration|profileStatus:\s*'not_generated'/);
+
+const operationState = read('server/vpn-operation-state.ts');
+assert.match(operationState, /profileStatus: \{ in: GENERATION_ELIGIBLE_STATUSES \}/);
+assert.match(operationState, /profileStatus: VPN_PROFILE_ISSUING_STATUS/);
+assert.match(operationState, /profileStatus: 'external'/);
+assert.match(operationState, /tunnelIp: null/);
+assert.match(operationState, /identity: current\.identity/);
+assert.match(operationState, /claimed\.count !== 1/);
 
 const workspace = read('components/provisioning-workspace.tsx');
 assert.match(workspace, /Register existing/);

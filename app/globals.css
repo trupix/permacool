@@ -609,6 +609,11 @@
   color: var(--provisioning-blue);
 }
 
+.provisioning-profile-status.is-issuing {
+  background: #fff2d8;
+  color: #9b6c15;
+}
+
 .provisioning-profile-status.is-not_generated {
   background: #fff2d8;
   color: #9b6c15;
