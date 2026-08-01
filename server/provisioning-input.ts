@@ -29,6 +29,10 @@ export type SiteAddressInput = {
   country: string;
 };
 
+export type ExternalVpnProfileInput = {
+  identity: string;
+};
+
 function text(value: unknown, maximum: number) {
   if (typeof value !== 'string') return null;
   const result = value.trim();
@@ -108,4 +112,12 @@ export function parseSiteAddressInput(value: unknown): SiteAddressInput | null {
 
   if (!addressLine1 || !city || !state || !postalCode) return null;
   return { addressLine1, city, state, postalCode, country };
+}
+
+export function parseExternalVpnProfileInput(value: unknown): ExternalVpnProfileInput | null {
+  if (!value || typeof value !== 'object') return null;
+  const input = value as Record<string, unknown>;
+  const identity = text(input.identity, 100);
+  if (!identity || !/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(identity)) return null;
+  return { identity };
 }

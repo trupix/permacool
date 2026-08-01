@@ -23,9 +23,9 @@ export async function POST(_request: Request, { params }: { params: Promise<{ de
   if (!device.vpnEnrollment) {
     return NextResponse.json({ error: 'This PLC was added outside the provisioning workflow.' }, { status: 409 });
   }
-  if (device.vpnEnrollment.profileStatus === 'issued') {
+  if (device.vpnEnrollment.profileStatus === 'issued' || device.vpnEnrollment.profileStatus === 'external') {
     return NextResponse.json(
-      { error: 'A VPN profile has already been issued for this PLC. Revoke it before creating a replacement.' },
+      { error: 'A VPN profile has already been recorded for this PLC. Revoke it before creating a replacement.' },
       { status: 409 }
     );
   }

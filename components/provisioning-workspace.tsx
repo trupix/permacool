@@ -9,6 +9,7 @@ import {
   Download,
   HardDrive,
   KeyRound,
+  Link2,
   LoaderCircle,
   LockKeyhole,
   MapPin,
@@ -52,6 +53,7 @@ function canManageRole(role: UserRole | undefined) {
 }
 
 function profileStatusLabel(status: ProvisioningSite['devices'][number]['vpnProfileStatus']) {
+  if (status === 'external') return 'Externally issued';
   const label = status.replaceAll('_', ' ');
   return `${label.charAt(0).toUpperCase()}${label.slice(1)}`;
 }
@@ -76,6 +78,7 @@ export function ProvisioningWorkspace({
   const [notice, setNotice] = useState<Notice>(null);
   const [saving, setSaving] = useState<'site' | 'device' | null>(null);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
+  const [registeringId, setRegisteringId] = useState<string | null>(null);
   const [siteForm, setSiteForm] = useState({
     organizationId: editableOrganizations[0]?.id ?? '',
     name: '',
@@ -191,6 +194,34 @@ export function ProvisioningWorkspace({
     }
   }
 
+  async function registerExternalProfile(deviceId: string, currentIdentity: string | null, organizationId: string) {
+    if (roleByOrganization.get(organizationId) !== 'owner' || registeringId) return;
+    const identity = window.prompt(
+      'Enter the exact OpenVPN identity already used to generate this PLC profile.',
+      currentIdentity || ''
+    )?.trim();
+    if (!identity) return;
+    if (!window.confirm(`Register ${identity} as already issued outside Agenticly.Cool? This will not generate or download a profile.`)) return;
+
+    setRegisteringId(deviceId);
+    setNotice(null);
+    try {
+      const response = await fetch(`/api/provisioning/devices/${encodeURIComponent(deviceId)}/external-profile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identity })
+      });
+      const payload = await response.json().catch(() => ({})) as { error?: string };
+      if (!response.ok) throw new Error(payload.error || 'The existing VPN profile could not be registered.');
+      setNotice({ tone: 'success', text: `${identity} is now recorded as externally issued. No new profile was generated.` });
+      router.refresh();
+    } catch (error) {
+      setNotice({ tone: 'error', text: error instanceof Error ? error.message : 'The existing VPN profile could not be registered.' });
+    } finally {
+      setRegisteringId(null);
+    }
+  }
+
   return (
     <>
       <section className="provisioning-summary" aria-label="Provisioning summary">
@@ -261,6 +292,9 @@ export function ProvisioningWorkspace({
                   const managed = Boolean(device.vpnIdentity);
                   const issuing = generatingId === device.id;
                   const issued = device.vpnProfileStatus === 'issued';
+                  const external = device.vpnProfileStatus === 'external';
+                  const credentialRecorded = issued || external;
+                  const registering = registeringId === device.id;
                   const canIssueForSite = roleByOrganization.get(site.organizationId) === 'owner';
                   return (
                     <div className="provisioning-device-row" key={device.id}>
@@ -269,14 +303,25 @@ export function ProvisioningWorkspace({
                       <div><span>VPN identity</span><code>{device.vpnIdentity || 'Not assigned'}</code></div>
                       <div><span>Tunnel IP</span><strong>{device.tunnelIp || (managed ? 'Dynamic' : 'Not assigned')}</strong></div>
                       <span className={`provisioning-profile-status is-${device.vpnProfileStatus}`}>{profileStatusLabel(device.vpnProfileStatus)}</span>
-                      <button
-                        type="button"
-                        onClick={() => managed && generateProfile(device.id, device.vpnIdentity as string, site.organizationId)}
-                        disabled={!managed || issued || !canIssueForSite || !vpnConfigured || Boolean(generatingId)}
-                        title={!canIssueForSite ? 'Owner role required for this organization' : !vpnConfigured ? 'Connect the OpenVPN provisioning bridge first' : !managed ? 'Existing PLC profile is managed outside this workspace' : issued ? 'This one-time profile has already been issued' : 'Generate a new unique profile'}
-                      >
-                        {issuing ? <LoaderCircle className="is-spinning" size={14} /> : issued ? <Check size={14} /> : <Download size={14} />} {issued ? 'Profile issued' : 'Generate .ovpn'}
-                      </button>
+                      <div className="provisioning-device-actions">
+                        <button
+                          type="button"
+                          onClick={() => managed && generateProfile(device.id, device.vpnIdentity as string, site.organizationId)}
+                          disabled={!managed || credentialRecorded || !canIssueForSite || !vpnConfigured || Boolean(generatingId) || Boolean(registeringId)}
+                          title={!canIssueForSite ? 'Owner role required for this organization' : credentialRecorded ? 'This PLC already has a recorded VPN credential' : !vpnConfigured ? 'Connect the OpenVPN provisioning bridge first' : !managed ? 'No managed VPN identity is assigned' : 'Generate a new unique profile'}
+                        >
+                          {issuing ? <LoaderCircle className="is-spinning" size={14} /> : credentialRecorded ? <Check size={14} /> : <Download size={14} />} {credentialRecorded ? 'Profile recorded' : 'Generate .ovpn'}
+                        </button>
+                        <button
+                          className="is-secondary"
+                          type="button"
+                          onClick={() => registerExternalProfile(device.id, device.vpnIdentity, site.organizationId)}
+                          disabled={credentialRecorded || !canIssueForSite || Boolean(generatingId) || Boolean(registeringId)}
+                          title={!canIssueForSite ? 'Owner role required for this organization' : credentialRecorded ? 'This PLC already has a recorded VPN credential' : 'Record a profile that was issued directly on OpenVPN without generating another one'}
+                        >
+                          {registering ? <LoaderCircle className="is-spinning" size={14} /> : <Link2 size={14} />} Register existing
+                        </button>
+                      </div>
                     </div>
                   );
                 })}

@@ -15,6 +15,7 @@
     "workspace:access:test": "node scripts/test-workspace-access.ts",
     "organization:isolation:test": "node scripts/test-organization-isolation.ts",
     "provisioning:read-only:test": "node scripts/test-provisioning-read-only.ts",
+    "vpn:external-registration:test": "node scripts/test-external-vpn-registration.ts",
     "dashboard:guardrails:test": "node scripts/test-dashboard-guardrails.ts",
     "controller:links:test": "node scripts/test-controller-links.ts",
     "prisma:generate": "prisma generate",
