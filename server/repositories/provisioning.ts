@@ -2,9 +2,19 @@ import { db } from '@/lib/db';
 import { deviceWhere, siteWhere } from '@/lib/access';
 import { devices as fallbackDevices, sites as fallbackSites } from '@/lib/mock-data';
 import { scopeProvisioningFallback } from '@/lib/provisioning-scope';
-import { canManageSiteEquipment } from '@/lib/workspace-access';
+import {
+  canIssueVpnProfile,
+  canManageSiteEquipment,
+  canRegisterExternalVpnProfile
+} from '@/lib/workspace-access';
 import { ensureProvisioningStorage } from '@/server/provisioning-storage';
 import type { NewPlcInput, NewSiteInput, SiteAddressInput } from '@/server/provisioning-input';
+import {
+  claimExternalVpnProfile,
+  claimVpnProfileGeneration,
+  completeVpnProfileGeneration,
+  VpnOperationStateConflict
+} from '@/server/vpn-operation-state';
 import type { AppUser, VpnProfileStatus } from '@/types/domain';
 import { shouldUseDatabase } from './shared';
 
@@ -262,10 +272,7 @@ export async function getDeviceForVpnIssue(deviceId: string, actor: AppUser) {
 export async function markVpnProfileIssued(deviceId: string, serverHost: string, actor: AppUser) {
   if (!(await ensureProvisioningStorage())) return;
   await db.$transaction(async (transaction) => {
-    await transaction.vpnEnrollment.update({
-      where: { deviceId },
-      data: { profileStatus: 'issued', vpnServerHost: serverHost, lastProfileIssuedAt: new Date() }
-    });
+    await completeVpnProfileGeneration(transaction, deviceId, serverHost, new Date());
     await transaction.auditLog.create({
       data: {
         actorUserId: actor.id,
@@ -275,5 +282,68 @@ export async function markVpnProfileIssued(deviceId: string, serverHost: string,
         metadata: { serverHost }
       }
     });
+  });
+}
+
+export async function reserveVpnProfileGeneration(deviceId: string, actor: AppUser) {
+  if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return null;
+
+  return db.$transaction(async (transaction) => {
+    const device = await transaction.device.findFirst({
+      where: { AND: [{ id: deviceId }, deviceWhere(actor)] },
+      include: { site: true, vpnEnrollment: true }
+    });
+    if (!device || !canIssueVpnProfile(actor, device.site.organizationId) || !device.vpnEnrollment) {
+      return null;
+    }
+
+    const enrollment = await claimVpnProfileGeneration(transaction, device.id);
+    return { device, enrollment };
+  });
+}
+
+export class ExternalVpnRegistrationConflict extends Error {}
+
+export async function registerExternalVpnProfile(deviceId: string, identity: string, actor: AppUser) {
+  if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return null;
+
+  return db.$transaction(async (transaction) => {
+    const device = await transaction.device.findFirst({
+      where: { AND: [{ id: deviceId }, deviceWhere(actor)] },
+      include: { site: true, vpnEnrollment: true }
+    });
+    if (!device || !canRegisterExternalVpnProfile(actor, device.site.organizationId)) return null;
+
+    let claimed;
+    try {
+      claimed = await claimExternalVpnProfile(transaction, device.id, identity, new Date());
+    } catch (error) {
+      if (error instanceof VpnOperationStateConflict) {
+        throw new ExternalVpnRegistrationConflict(error.message);
+      }
+      throw error;
+    }
+
+    if (!claimed.changed) {
+      return { device, enrollment: claimed.enrollment, changed: false };
+    }
+
+    await transaction.auditLog.create({
+      data: {
+        actorUserId: actor.id,
+        entityType: 'vpnProfile',
+        entityId: device.id,
+        action: 'Registered externally issued OpenVPN profile',
+        metadata: {
+          identity,
+          issuance: 'external_manual',
+          tunnelAssignment: 'dynamic',
+          siteId: device.siteId,
+          organizationId: device.site.organizationId
+        }
+      }
+    });
+
+    return { device, enrollment: claimed.enrollment, changed: true };
   });
 }

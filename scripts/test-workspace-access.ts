@@ -6,6 +6,7 @@ const path = require('node:path');
 const {
   canAccessProvisioning,
   canIssueVpnProfile,
+  canRegisterExternalVpnProfile,
   canManageLogicDefinitions,
   canManageSiteEquipment,
   roleForOrganization
@@ -74,6 +75,8 @@ assert.equal(canManageSiteEquipment(mixedRoleUser, 'org-permacool'), true);
 assert.equal(canManageSiteEquipment(mixedRoleUser, 'org-customer'), false);
 assert.equal(canIssueVpnProfile(mixedRoleUser, 'org-permacool'), true);
 assert.equal(canIssueVpnProfile(mixedRoleUser, 'org-customer'), false);
+assert.equal(canRegisterExternalVpnProfile(mixedRoleUser, 'org-permacool'), true);
+assert.equal(canRegisterExternalVpnProfile(mixedRoleUser, 'org-customer'), false);
 
 const mixedOperatorUser = user({
   role: 'owner',
@@ -89,6 +92,7 @@ assert.equal(canManageLogicDefinitions(mixedOperatorUser), false);
 assert.equal(canManageSiteEquipment(mixedOperatorUser, 'org-permacool'), false);
 assert.equal(canManageSiteEquipment(mixedOperatorUser, 'org-customer'), true);
 assert.equal(canIssueVpnProfile(mixedOperatorUser, 'org-customer'), false);
+assert.equal(canRegisterExternalVpnProfile(mixedOperatorUser, 'org-customer'), false);
 
 console.log('Workspace access policy tests passed.');
 }

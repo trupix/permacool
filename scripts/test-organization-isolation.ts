@@ -14,6 +14,7 @@ const { scopeProvisioningFallback } = require(
 const {
   canAccessProvisioning,
   canIssueVpnProfile,
+  canRegisterExternalVpnProfile,
   canManageLogicDefinitions,
   canManageSiteEquipment,
   roleForOrganization
@@ -152,6 +153,14 @@ assert.equal(canIssueVpnProfile(mixedRoleOwner, 'org-permacool'), true);
 assert.equal(canIssueVpnProfile(mixedRoleOwner, 'org-other'), false);
 assert.equal(canIssueVpnProfile(mixedRoleOperator, 'org-permacool'), false);
 assert.equal(canIssueVpnProfile(mixedRoleOperator, 'org-other'), false);
+assert.equal(canRegisterExternalVpnProfile(permaOwner, 'org-permacool'), true);
+assert.equal(canRegisterExternalVpnProfile(permaOperator, 'org-permacool'), false);
+assert.equal(canRegisterExternalVpnProfile(permaViewer, 'org-permacool'), false);
+assert.equal(canRegisterExternalVpnProfile(otherOwner, 'org-permacool'), false);
+assert.equal(canRegisterExternalVpnProfile(mixedRoleOwner, 'org-permacool'), true);
+assert.equal(canRegisterExternalVpnProfile(mixedRoleOwner, 'org-other'), false);
+assert.equal(canRegisterExternalVpnProfile(mixedRoleOperator, 'org-permacool'), false);
+assert.equal(canRegisterExternalVpnProfile(mixedRoleOperator, 'org-other'), false);
 
 assert.equal(canAccessProvisioning(permaOwner), true);
 assert.equal(canAccessProvisioning(permaOperator), true);

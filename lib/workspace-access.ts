@@ -43,3 +43,7 @@ export function canManageSiteEquipment(user: AppUser, organizationId: string) {
 export function canIssueVpnProfile(user: AppUser, organizationId: string) {
   return roleForOrganization(user, organizationId) === 'owner';
 }
+
+export function canRegisterExternalVpnProfile(user: AppUser, organizationId: string) {
+  return roleForOrganization(user, organizationId) === 'owner';
+}

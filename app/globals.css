@@ -477,6 +477,23 @@
   opacity: 0.45;
 }
 
+.provisioning-device-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.provisioning-device-row .provisioning-device-actions .is-secondary {
+  border-color: var(--ops-line-strong);
+  background: #fff;
+  color: var(--ops-deep);
+}
+
+.provisioning-device-row .provisioning-device-actions .is-secondary:hover:not(:disabled) {
+  background: var(--ops-lime-soft);
+}
+
 .provisioning-inventory__heading {
   padding: 1rem 1.1rem;
   border-bottom: 1px solid var(--ops-line);
@@ -610,6 +627,16 @@
   color: #4c813f;
 }
 
+.provisioning-profile-status.is-external {
+  background: #e8f2f3;
+  color: var(--provisioning-blue);
+}
+
+.provisioning-profile-status.is-issuing {
+  background: #fff2d8;
+  color: #9b6c15;
+}
+
 .provisioning-profile-status.is-not_generated {
   background: #fff2d8;
   color: #9b6c15;
@@ -659,7 +686,8 @@
 
   .provisioning-device-row > div,
   .provisioning-device-row > span,
-  .provisioning-device-row > button {
+  .provisioning-device-row > button,
+  .provisioning-device-actions {
     grid-column: 2;
   }
 
@@ -670,6 +698,10 @@
 
   .provisioning-device-row button {
     justify-self: start;
+  }
+
+  .provisioning-device-actions {
+    justify-content: flex-start;
   }
 }
 
