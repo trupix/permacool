@@ -8,6 +8,7 @@ import {
   Wifi,
   Workflow
 } from 'lucide-react';
+import styles from './site-section-nav.module.css';
 
 type SiteSection = 'overview' | 'connectivity' | 'specs' | 'events';
 
@@ -61,7 +62,17 @@ export function SiteSectionNav({
           <span>groov Manage</span>
           <ExternalLink size={12} aria-hidden="true" />
         </a>
-      ) : null}
+      ) : (
+        <span
+          className={styles.unconfigured}
+          aria-label={`${siteName} groov Manage not configured`}
+          aria-disabled="true"
+        >
+          <RadioTower size={15} aria-hidden="true" />
+          <span>groov Manage</span>
+          <small>Not configured</small>
+        </span>
+      )}
       {nodeRedUrl ? (
         <a
           className="is-node-red"
@@ -74,7 +85,17 @@ export function SiteSectionNav({
           <span>Node-RED</span>
           <ExternalLink size={12} aria-hidden="true" />
         </a>
-      ) : null}
+      ) : (
+        <span
+          className={styles.unconfigured}
+          aria-label={`${siteName} Node-RED not configured`}
+          aria-disabled="true"
+        >
+          <Workflow size={15} aria-hidden="true" />
+          <span>Node-RED</span>
+          <small>Not configured</small>
+        </span>
+      )}
     </nav>
   );
 }

@@ -19,6 +19,8 @@
     "vpn:operation-concurrency:test": "node scripts/test-vpn-operation-concurrency.ts",
     "dashboard:guardrails:test": "node scripts/test-dashboard-guardrails.ts",
     "controller:links:test": "node scripts/test-controller-links.ts",
+    "site:foundation:test": "node scripts/test-site-foundation.ts",
+    "auth:password:test": "node scripts/test-password-auth.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:preflight:cannon-falls": "node scripts/preflight-cannon-falls-migration.ts",
