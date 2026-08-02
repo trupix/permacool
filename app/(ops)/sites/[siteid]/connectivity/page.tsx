@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { LocationEquipmentWorkspace } from '@/components/location-equipment-workspace';
-import { SalinasEquipmentDashboard } from '@/components/salinas-equipment-dashboard';
+import { SiteEquipmentDashboard } from '@/components/site-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { StatusBadge } from '@/components/status-badge';
@@ -88,8 +88,9 @@ export default async function SiteConnectivityPage({
       </div>
 
       {equipmentRecord && equipmentCatalog ? (
-        <SalinasEquipmentDashboard
+        <SiteEquipmentDashboard
           siteId={site.id}
+          siteName={site.name}
           equipmentRecord={equipmentRecord}
           catalog={equipmentCatalog}
           view="connectivity"
