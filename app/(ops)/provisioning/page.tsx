@@ -20,7 +20,7 @@ export default async function ProvisioningPage() {
 
   const [snapshot, vpn, organizations] = await Promise.all([
     getProvisioningSnapshot(user),
-    Promise.resolve(getOpenVpnProvisioningStatus()),
+    getOpenVpnProvisioningStatus(),
     getOrganizations(user)
   ]);
 
@@ -42,7 +42,7 @@ export default async function ProvisioningPage() {
           role: roleForOrganization(user, id) ?? 'viewer'
         }))}
         storageReady={snapshot.storageReady}
-        vpnConfigured={vpn.configured}
+        vpnConfigured={vpn.healthy}
         vpnHost={vpn.host}
       />
     </main>

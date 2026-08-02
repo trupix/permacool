@@ -98,6 +98,12 @@ assert.match(
   /device\.vpnEnrollment\.profileStatus === 'issuing'/
 );
 assert.ok(
+  generationRoute.indexOf('await getOpenVpnProvisioningStatus()') <
+    generationRoute.indexOf('await reserveVpnProfileGeneration'),
+  'A real read-only bridge health check must pass before the database operation is reserved.'
+);
+assert.match(generationRoute, /if \(!bridge\.healthy\)/);
+assert.ok(
   generationRoute.indexOf('await reserveVpnProfileGeneration') < generationRoute.indexOf('await generateOpenVpnProfile'),
   'The database reservation must succeed before OpenVPN is contacted.'
 );

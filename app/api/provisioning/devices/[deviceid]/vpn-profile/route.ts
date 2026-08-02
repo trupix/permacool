@@ -2,7 +2,7 @@ import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { canIssueVpnProfile } from '@/lib/workspace-access';
-import { generateOpenVpnProfile } from '@/server/openvpn-access-server';
+import { generateOpenVpnProfile, getOpenVpnProvisioningStatus } from '@/server/openvpn-access-server';
 import {
   getDeviceForVpnIssue,
   markVpnProfileIssued,
@@ -36,6 +36,14 @@ export async function POST(_request: Request, { params }: { params: Promise<{ de
     return NextResponse.json(
       { error: 'A VPN profile has already been recorded for this PLC. Revoke it before creating a replacement.' },
       { status: 409 }
+    );
+  }
+
+  const bridge = await getOpenVpnProvisioningStatus();
+  if (!bridge.healthy) {
+    return NextResponse.json(
+      { error: 'The OpenVPN provisioning bridge is not healthy. No VPN operation was started.' },
+      { status: 503 }
     );
   }
 
