@@ -48,7 +48,7 @@ gcloud run deploy $Service `
   --cpu=1 `
   --memory=256Mi `
   --min=0 `
-  --max=2 `
+  --max-instances=2 `
   --concurrency=10 `
   --timeout=60 `
   --set-env-vars=$runtimeVariables `
