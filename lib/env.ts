@@ -6,9 +6,11 @@ export const env = {
   supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
   defaultOrganizationId: process.env.DEFAULT_ORGANIZATION_ID ?? 'org-permacool',
-  openVpnAccessServerUrl: process.env.OPENVPN_ACCESS_SERVER_URL ?? '',
-  openVpnAccessServerUsername: process.env.OPENVPN_ACCESS_SERVER_USERNAME ?? '',
-  openVpnAccessServerPassword: process.env.OPENVPN_ACCESS_SERVER_PASSWORD ?? ''
+  openVpnProvisioningRelayUrl: process.env.OPENVPN_PROVISIONING_RELAY_URL ?? '',
+  gcpProvisioningWorkloadIdentityAudience:
+    process.env.GCP_PROVISIONING_WORKLOAD_IDENTITY_AUDIENCE ?? '',
+  gcpProvisioningServiceAccountEmail:
+    process.env.GCP_PROVISIONING_SERVICE_ACCOUNT_EMAIL ?? ''
 };
 
 export function hasDatabaseUrl() {

@@ -1,6 +1,8 @@
+import { createHash } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
+import { getVercelOidcToken } from '@/lib/vercel-oidc';
 import { canIssueVpnProfile } from '@/lib/workspace-access';
 import { generateOpenVpnProfile, getOpenVpnProvisioningStatus } from '@/server/openvpn-access-server';
 import {
@@ -16,7 +18,7 @@ function safeFilename(identity: string) {
   return `${identity.toLowerCase().replaceAll(/[^a-z0-9-]+/g, '-').slice(0, 72)}.ovpn`;
 }
 
-export async function POST(_request: Request, { params }: { params: Promise<{ deviceid: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ deviceid: string }> }) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
   const { deviceid } = await params;
@@ -39,7 +41,8 @@ export async function POST(_request: Request, { params }: { params: Promise<{ de
     );
   }
 
-  const bridge = await getOpenVpnProvisioningStatus();
+  const oidcToken = getVercelOidcToken(request.headers);
+  const bridge = await getOpenVpnProvisioningStatus(oidcToken);
   if (!bridge.healthy) {
     return NextResponse.json(
       { error: 'The OpenVPN provisioning bridge is not healthy. No VPN operation was started.' },
@@ -63,10 +66,13 @@ export async function POST(_request: Request, { params }: { params: Promise<{ de
 
   let result;
   try {
+    const idempotencyKey = createHash('sha256')
+      .update(`${device.id}:${reservation.enrollment.updatedAt.toISOString()}`)
+      .digest('hex');
     result = await generateOpenVpnProfile({
       identity: reservation.enrollment.identity,
       tunnelIp: reservation.enrollment.tunnelIp
-    });
+    }, oidcToken, idempotencyKey);
   } catch (error) {
     console.error('OpenVPN profile generation failed after the operation was reserved.', error);
     return NextResponse.json(

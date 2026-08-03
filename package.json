@@ -17,6 +17,7 @@
     "provisioning:read-only:test": "node scripts/test-provisioning-read-only.ts",
     "vpn:external-registration:test": "node scripts/test-external-vpn-registration.ts",
     "vpn:bridge:test": "node scripts/test-openvpn-access-server.ts",
+    "vpn:relay-service:test": "node --test infrastructure/openvpn-provisioning-relay/test/*.test.mjs",
     "vpn:operation-concurrency:test": "node scripts/test-vpn-operation-concurrency.ts",
     "dashboard:guardrails:test": "node scripts/test-dashboard-guardrails.ts",
     "controller:links:test": "node scripts/test-controller-links.ts",

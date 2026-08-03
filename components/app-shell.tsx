@@ -76,7 +76,7 @@ function initials(name: string) {
 }
 
 export function AppShell({ user, children }: { user: AppUser; children: ReactNode }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   const isStaff = isPlatformStaff(user);
   const navItems = [
     ...sharedNavItems.map((item) =>
