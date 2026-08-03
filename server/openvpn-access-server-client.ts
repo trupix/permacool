@@ -5,8 +5,8 @@ export type OpenVpnProfileRequest = {
 
 export type OpenVpnConfig = {
   url: string;
-  username: string;
-  password: string;
+  workloadIdentityAudience: string;
+  serviceAccountEmail: string;
 };
 
 export type OpenVpnClientOptions = {
@@ -20,24 +20,30 @@ export type OpenVpnProvisioningStatus = {
   host: string | null;
 };
 
-const HEALTH_TIMEOUT_MS = 5_000;
-const OPERATION_TIMEOUT_MS = 30_000;
-const HEALTH_PROBE_IDENTITY = '__permacool_health_probe__';
+const HEALTH_TIMEOUT_MS = 8_000;
+const OPERATION_TIMEOUT_MS = 45_000;
+const STS_ENDPOINT = 'https://sts.googleapis.com/v1/token';
+const IAM_CREDENTIALS_ENDPOINT = 'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts';
 
-function baseUrl(config: OpenVpnConfig) {
-  return config.url.replace(/\/+$/, '');
-}
-
-function configuredStatus(config: OpenVpnConfig): OpenVpnProvisioningStatus {
-  const hasCredentials = Boolean(config.url && config.username && config.password);
+function configuredStatus(config: OpenVpnConfig, oidcToken: string): OpenVpnProvisioningStatus {
   let host: string | null = null;
   try {
-    host = config.url ? new URL(config.url).host : null;
+    const url = new URL(config.url);
+    if (url.protocol === 'https:') host = 'Secure Google Cloud relay';
   } catch {
     host = null;
   }
-  const configured = hasCredentials && Boolean(host);
-  return { configured, healthy: false, host };
+
+  return {
+    configured: Boolean(
+      host &&
+      oidcToken &&
+      config.workloadIdentityAudience &&
+      config.serviceAccountEmail
+    ),
+    healthy: false,
+    host
+  };
 }
 
 async function withTimeout<T>(timeoutMs: number, operation: (signal: AbortSignal) => Promise<T>) {
@@ -50,72 +56,102 @@ async function withTimeout<T>(timeoutMs: number, operation: (signal: AbortSignal
   }
 }
 
-async function login(config: OpenVpnConfig, fetchImpl: typeof fetch, signal: AbortSignal) {
-  const response = await fetchImpl(`${baseUrl(config)}/api/auth/login/userpassword`, {
-    method: 'POST',
-    cache: 'no-store',
-    signal,
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      request_admin: true,
-      username: config.username,
-      password: config.password
-    })
-  });
-  if (!response.ok) throw new Error(`OpenVPN admin authentication failed (${response.status}).`);
-  const payload = await response.json() as { auth_token?: string };
-  if (!payload.auth_token) throw new Error('OpenVPN Access Server did not return an admin token.');
-  return payload.auth_token;
-}
-
-async function apiRequest(
+async function exchangeVercelOidcToken(
   config: OpenVpnConfig,
-  path: string,
-  token: string,
-  body: unknown,
+  oidcToken: string,
   fetchImpl: typeof fetch,
   signal: AbortSignal
 ) {
-  return fetchImpl(`${baseUrl(config)}${path}`, {
+  const response = await fetchImpl(STS_ENDPOINT, {
     method: 'POST',
     cache: 'no-store',
     signal,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      audience: config.workloadIdentityAudience,
+      grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
+      requested_token_type: 'urn:ietf:params:oauth:token-type:access_token',
+      scope: 'https://www.googleapis.com/auth/cloud-platform',
+      subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+      subject_token: oidcToken
+    })
+  });
+  if (!response.ok) throw new Error('Google workload identity exchange failed.');
+  const payload = await response.json() as { access_token?: string };
+  if (!payload.access_token) throw new Error('Google workload identity exchange returned no token.');
+  return payload.access_token;
+}
+
+async function generateRelayIdentityToken(
+  config: OpenVpnConfig,
+  accessToken: string,
+  fetchImpl: typeof fetch,
+  signal: AbortSignal
+) {
+  const serviceAccount = encodeURIComponent(config.serviceAccountEmail);
+  const response = await fetchImpl(
+    `${IAM_CREDENTIALS_ENDPOINT}/${serviceAccount}:generateIdToken`,
+    {
+      method: 'POST',
+      cache: 'no-store',
+      signal,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ audience: config.url, includeEmail: true })
+    }
+  );
+  if (!response.ok) throw new Error('Google relay identity token generation failed.');
+  const payload = await response.json() as { token?: string };
+  if (!payload.token) throw new Error('Google relay identity token generation returned no token.');
+  return payload.token;
+}
+
+async function authenticatedRelayRequest(
+  config: OpenVpnConfig,
+  oidcToken: string,
+  path: string,
+  init: RequestInit,
+  fetchImpl: typeof fetch,
+  signal: AbortSignal
+) {
+  const accessToken = await exchangeVercelOidcToken(config, oidcToken, fetchImpl, signal);
+  const identityToken = await generateRelayIdentityToken(config, accessToken, fetchImpl, signal);
+  return fetchImpl(`${config.url.replace(/\/+$/, '')}${path}`, {
+    ...init,
+    cache: 'no-store',
+    signal,
     headers: {
-      Accept: '*/*',
-      'Content-Type': 'application/json',
-      'X-OpenVPN-As-AuthToken': token
-    },
-    body: JSON.stringify(body)
+      ...init.headers,
+      Authorization: `Bearer ${identityToken}`
+    }
   });
 }
 
 export async function getOpenVpnProvisioningStatusFor(
   config: OpenVpnConfig,
+  oidcToken: string,
   options: OpenVpnClientOptions = {}
 ): Promise<OpenVpnProvisioningStatus> {
-  const status = configuredStatus(config);
-  if (!status.configured || !status.host) return status;
-
-  const url = new URL(config.url);
-  if (url.protocol !== 'https:') return status;
+  const status = configuredStatus(config, oidcToken);
+  if (!status.configured) return status;
 
   const fetchImpl = options.fetchImpl ?? fetch;
   try {
-    await withTimeout(options.timeoutMs ?? HEALTH_TIMEOUT_MS, async (signal) => {
-      const token = await login(config, fetchImpl, signal);
-      const response = await apiRequest(
+    const response = await withTimeout(options.timeoutMs ?? HEALTH_TIMEOUT_MS, (signal) =>
+      authenticatedRelayRequest(
         config,
-        '/api/users/list',
-        token,
-        { users: [HEALTH_PROBE_IDENTITY] },
+        oidcToken,
+        '/health',
+        { method: 'GET', headers: { Accept: 'application/json' } },
         fetchImpl,
         signal
-      );
-      if (!response.ok) {
-        throw new Error(`OpenVPN read-only health probe failed (${response.status}).`);
-      }
-    });
-    return { ...status, healthy: true };
+      )
+    );
+    if (!response.ok) return status;
+    const payload = await response.json() as { healthy?: boolean };
+    return payload.healthy ? { ...status, healthy: true } : status;
   } catch {
     return status;
   }
@@ -124,94 +160,47 @@ export async function getOpenVpnProvisioningStatusFor(
 export async function generateOpenVpnProfileFor(
   config: OpenVpnConfig,
   request: OpenVpnProfileRequest,
+  oidcToken: string,
+  idempotencyKey: string,
   options: OpenVpnClientOptions = {}
 ) {
-  const status = configuredStatus(config);
-  if (!status.configured || !status.host) {
-    throw new Error('OpenVPN profile generation is not connected yet.');
+  const status = configuredStatus(config, oidcToken);
+  if (!status.configured) throw new Error('OpenVPN profile generation is not connected yet.');
+  if (!/^[a-f0-9]{64}$/.test(idempotencyKey)) {
+    throw new Error('A valid VPN operation idempotency key is required.');
   }
-  const serverHost = status.host;
-
-  const url = new URL(config.url);
-  if (url.protocol !== 'https:') throw new Error('OpenVPN provisioning requires HTTPS.');
 
   const fetchImpl = options.fetchImpl ?? fetch;
   return withTimeout(options.timeoutMs ?? OPERATION_TIMEOUT_MS, async (signal) => {
-    const token = await login(config, fetchImpl, signal);
-    const listResponse = await apiRequest(
+    const response = await authenticatedRelayRequest(
       config,
-      '/api/users/list',
-      token,
-      { users: [request.identity] },
+      oidcToken,
+      '/v1/profiles',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/x-openvpn-profile',
+          'Content-Type': 'application/json',
+          'Idempotency-Key': idempotencyKey
+        },
+        body: JSON.stringify(request)
+      },
       fetchImpl,
       signal
     );
-    if (!listResponse.ok) {
-      throw new Error(`OpenVPN user lookup failed (${listResponse.status}).`);
-    }
-    const listBody = await listResponse.text();
-
-    if (listBody.includes(request.identity)) {
+    if (!response.ok) {
       throw new Error(
-        'The OpenVPN identity already exists. Generation is locked until it is reconciled manually.'
+        response.status === 409
+          ? 'The VPN operation is already reserved and requires manual reconciliation.'
+          : 'The secure OpenVPN relay did not complete profile generation.'
       );
     }
 
-    const createResponse = await apiRequest(
-      config,
-      '/api/users/create',
-      token,
-      { name: request.identity },
-      fetchImpl,
-      signal
-    );
-    if (!createResponse.ok) {
-      throw new Error(`OpenVPN user creation failed (${createResponse.status}).`);
-    }
-
-    const properties: Record<string, string> = {
-      name: request.identity,
-      autologin: 'true',
-      allow_generate_profiles: 'true'
-    };
-    if (request.tunnelIp) properties.static_ipv4 = request.tunnelIp;
-
-    const permissionResponse = await apiRequest(
-      config,
-      '/api/userprop/set',
-      token,
-      [properties],
-      fetchImpl,
-      signal
-    );
-    if (!permissionResponse.ok) {
-      throw new Error(`OpenVPN device permissions failed (${permissionResponse.status}).`);
-    }
-
-    const profileResponse = await apiRequest(
-      config,
-      '/api/profiles/create',
-      token,
-      { profile_type: 'autologin', user: request.identity },
-      fetchImpl,
-      signal
-    );
-    if (!profileResponse.ok) {
-      throw new Error(`OpenVPN profile generation failed (${profileResponse.status}).`);
-    }
-
-    let profile = await profileResponse.text();
-    if (profile.startsWith('"') && profile.endsWith('"')) {
-      try {
-        profile = JSON.parse(profile) as string;
-      } catch {
-        // The raw response may legitimately begin with a quote in a comment; validate below.
-      }
-    }
+    const profile = await response.text();
     if (!profile.includes('<key>') || !profile.includes('<cert>') || !profile.includes('remote ')) {
-      throw new Error('OpenVPN Access Server returned an invalid connection profile.');
+      throw new Error('The secure OpenVPN relay returned an invalid connection profile.');
     }
 
-    return { profile, serverHost };
+    return { profile, serverHost: 'secure-google-cloud-relay' };
   });
 }

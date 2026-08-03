@@ -98,7 +98,7 @@ assert.match(
   /device\.vpnEnrollment\.profileStatus === 'issuing'/
 );
 assert.ok(
-  generationRoute.indexOf('await getOpenVpnProvisioningStatus()') <
+  generationRoute.indexOf('await getOpenVpnProvisioningStatus(oidcToken)') <
     generationRoute.indexOf('await reserveVpnProfileGeneration'),
   'A real read-only bridge health check must pass before the database operation is reserved.'
 );

@@ -9,23 +9,26 @@ import {
 
 function config() {
   return {
-    url: env.openVpnAccessServerUrl,
-    username: env.openVpnAccessServerUsername,
-    password: env.openVpnAccessServerPassword
+    url: env.openVpnProvisioningRelayUrl,
+    workloadIdentityAudience: env.gcpProvisioningWorkloadIdentityAudience,
+    serviceAccountEmail: env.gcpProvisioningServiceAccountEmail
   };
 }
 
 export type { OpenVpnProvisioningStatus };
 
 export function getOpenVpnProvisioningStatus(
+  oidcToken: string,
   options: OpenVpnClientOptions = {}
 ): Promise<OpenVpnProvisioningStatus> {
-  return getOpenVpnProvisioningStatusFor(config(), options);
+  return getOpenVpnProvisioningStatusFor(config(), oidcToken, options);
 }
 
 export function generateOpenVpnProfile(
   request: OpenVpnProfileRequest,
+  oidcToken: string,
+  idempotencyKey: string,
   options: OpenVpnClientOptions = {}
 ) {
-  return generateOpenVpnProfileFor(config(), request, options);
+  return generateOpenVpnProfileFor(config(), request, oidcToken, idempotencyKey, options);
 }
