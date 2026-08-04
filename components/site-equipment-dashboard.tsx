@@ -321,6 +321,7 @@ type AssetSignals = {
   highPressure: NumericSignal | null;
   lowPressure: NumericSignal | null;
   compressorAmps: NumericSignal | null;
+  pumpAmps: NumericSignal | null;
   compressorRuntimeMinutes: NumericSignal | null;
   setpoint: NumericSignal | null;
   inletAir: NumericSignal | null;
@@ -430,14 +431,20 @@ function signalsForChannel(
   const scopedPoints = telemetryDeviceId
     ? points.filter((point) => point.deviceId === telemetryDeviceId)
     : points;
-  const temperature = resolveTelemetryPoint(scopedPoints, [`${prefix}_temperature_f`, `${prefix}_temperature_c`, `${prefix}_temperature`]);
-  const highPressure = resolveTelemetryPoint(scopedPoints, [`${prefix}_high_pressure`, `${prefix}_high_pressure_psi`, `${prefix}_highside_pressure`]);
-  const lowPressure = resolveTelemetryPoint(scopedPoints, [`${prefix}_low_pressure`, `${prefix}_low_pressure_psi`, `${prefix}_lowside_pressure`]);
+  const temperature = resolveTelemetryPoint(scopedPoints, [`${prefix}_temperature_f`, `${prefix}_temperature_c`, `${prefix}_temperature`, `${prefix}_ai_temperature`]);
+  const highPressure = resolveTelemetryPoint(scopedPoints, [`${prefix}_high_pressure`, `${prefix}_high_pressure_psi`, `${prefix}_highside_pressure`, `${prefix}_ai_high_pressure`]);
+  const lowPressure = resolveTelemetryPoint(scopedPoints, [`${prefix}_low_pressure`, `${prefix}_low_pressure_psi`, `${prefix}_lowside_pressure`, `${prefix}_ai_low_pressure`]);
   const compressorAmps = resolveTelemetryPoint(scopedPoints, [
     `${prefix}compressoramps`,
     `${prefix}_compressor_amps`,
     `${prefix}_compressoramps`,
+    `${prefix}_ai_compressor_amps`,
     `${prefix}_amps`
+  ]);
+  const pumpAmps = resolveTelemetryPoint(scopedPoints, [
+    `${prefix}_pump_amps`,
+    `${prefix}_pumpamps`,
+    `${prefix}_ai_pump_amps`
   ]);
   const inletAir = resolveTelemetryPoint(scopedPoints, [
     `${prefix}_condenser_inlet_air_f`,
@@ -463,6 +470,7 @@ function signalsForChannel(
     highPressure,
     lowPressure,
     compressorAmps,
+    pumpAmps,
     compressorRuntimeMinutes,
     setpoint,
     inletAir,
@@ -479,6 +487,7 @@ function signalsForChannel(
     highPressure: pointNumber(highPressure.point, referenceTimestamp),
     lowPressure: pointNumber(lowPressure.point, referenceTimestamp),
     compressorAmps: pointNumber(compressorAmps.point, referenceTimestamp),
+    pumpAmps: pointNumber(pumpAmps.point, referenceTimestamp),
     compressorRuntimeMinutes: pointNumber(compressorRuntimeMinutes.point, referenceTimestamp),
     setpoint: pointNumber(setpoint.point, referenceTimestamp),
     inletAir: pointNumber(inletAir.point, referenceTimestamp),
@@ -666,6 +675,7 @@ function unitHasCurrentTelemetry(signals: AssetSignals): boolean {
     signals.highPressure,
     signals.lowPressure,
     signals.compressorAmps,
+    signals.pumpAmps,
     signals.running,
     signals.systemOn
   ].some((signal) => signal?.isFresh === true);
@@ -1090,7 +1100,7 @@ export function SiteEquipmentDashboard({
       const freshSuctionSaturation = signals.suctionSaturation?.isFresh ? signals.suctionSaturation : null;
       const freshProcessTemperature = signals.temperature?.isFresh ? signals.temperature : null;
       const processTemperatureFallback =
-        draft.solvent === 'ethanol' ? freshProcessTemperature : null;
+        draft.solvent === 'ethanol' && asset.equipmentDuty !== 'freezer' ? freshProcessTemperature : null;
       const usedProcessTemperatureFallback =
         freshSuctionSaturation ? null : processTemperatureFallback;
       const observedAmbient = finiteOrNull(weather.data?.ambientFallback.temperatureF);
@@ -1152,7 +1162,9 @@ export function SiteEquipmentDashboard({
             : confirmedFrequency === null
               ? 'Confirm installed frequency from this unit nameplate'
               : !hasUsableSuctionInput
-                ? 'Waiting for suction temperature, ethanol temperature, or a validated manual fallback'
+                ? asset.equipmentDuty === 'freezer'
+                  ? 'Waiting for freezer suction temperature or a validated manual fallback'
+                  : 'Waiting for suction temperature, ethanol temperature, or a validated manual fallback'
                 : null;
       const evaluations =
         capacityBlockedReason === null && selectedVariant && confirmedFrequency !== null
@@ -1272,6 +1284,7 @@ export function SiteEquipmentDashboard({
       { label: 'High-side pressure', available: allFresh((signals) => signals.highPressure), unlocks: 'Head-pressure context' },
       { label: 'Low-side pressure', available: allFresh((signals) => signals.lowPressure), unlocks: 'Evaporator-side context' },
       { label: 'Compressor amps', available: allFresh((signals) => signals.compressorAmps), unlocks: 'Electrical loading' },
+      { label: 'Pump amps', available: allFresh((signals) => signals.pumpAmps), unlocks: 'Pump loading' },
       { label: 'Condenser inlet air', available: allFresh((signals) => signals.inletAir), unlocks: 'True entering-air correction' },
       {
         label: 'Suction-temperature input',
@@ -1294,7 +1307,8 @@ export function SiteEquipmentDashboard({
     temperature: analyses.length > 0 && analyses.every((analysis) => analysis.signals.temperature?.isFresh === true),
     highPressure: analyses.length > 0 && analyses.every((analysis) => analysis.signals.highPressure?.isFresh === true),
     lowPressure: analyses.length > 0 && analyses.every((analysis) => analysis.signals.lowPressure?.isFresh === true),
-    compressorAmps: analyses.length > 0 && analyses.every((analysis) => analysis.signals.compressorAmps?.isFresh === true)
+    compressorAmps: analyses.length > 0 && analyses.every((analysis) => analysis.signals.compressorAmps?.isFresh === true),
+    pumpAmps: analyses.length > 0 && analyses.every((analysis) => analysis.signals.pumpAmps?.isFresh === true)
   };
   const immediateSignalAvailability = {
     running: analyses.length > 0 && analyses.every((analysis) => Boolean(analysis.signals.running)),
@@ -1320,6 +1334,7 @@ export function SiteEquipmentDashboard({
       analysis.signals.highPressure,
       analysis.signals.lowPressure,
       analysis.signals.compressorAmps,
+      analysis.signals.pumpAmps,
       analysis.signals.compressorRuntimeMinutes,
       analysis.signals.setpoint,
       analysis.signals.running,
@@ -1704,6 +1719,9 @@ export function SiteEquipmentDashboard({
                 <span className={fastSignalAvailability.compressorAmps ? 'is-ready' : 'is-pending'}>
                   <Zap size={13} /> Compressor amps
                 </span>
+                <span className={fastSignalAvailability.pumpAmps ? 'is-ready' : 'is-pending'}>
+                  <Zap size={13} /> Pump amps
+                </span>
               </div>
               <small className="salinas-dashboard__cadence-checked">
                 {fastTelemetry.status === 'error'
@@ -2066,7 +2084,7 @@ export function SiteEquipmentDashboard({
               title={
                 liveTelemetryActive
                   ? 'Facility live telemetry is on and will turn off automatically within one hour.'
-                  : 'Check pressure, process temperature and compressor amps every 2 seconds.'
+                  : 'Check the dashboard for new pressure, temperature, compressor-amp and pump-amp values every 2 seconds.'
               }
             >
               <small>Facility</small>
@@ -2086,8 +2104,8 @@ export function SiteEquipmentDashboard({
             <Zap size={15} />
           </span>
           <div>
-            <strong>{liveTelemetryActive ? 'Live readings every 2 seconds' : 'Standard readings every 15 seconds'}</strong>
-            <small>Pressure, process temperature and compressor amps</small>
+            <strong>{liveTelemetryActive ? 'Live dashboard checks every 2 seconds' : 'Standard dashboard check every 15 seconds'}</strong>
+            <small>Latest PLC pressure, process temperature, compressor amps and pump amps</small>
           </div>
           <span className={`salinas-dashboard__overview-heartbeat${heartbeatIsCurrent ? ' is-current' : ''}`}>
             <Cpu size={14} />
@@ -2137,6 +2155,7 @@ export function SiteEquipmentDashboard({
               (suctionIsDemo ? 34 + Math.sin(demoPhase + 1.6) * 7 + index * 2 : null);
             const currentValue = signals.compressorAmps?.value ??
               (currentIsDemo ? 47 + Math.sin(demoPhase + 2.3) * 6 + index * 4 : null);
+            const pumpCurrentValue = signals.pumpAmps?.value ?? null;
             const runStateText = highPressureStop
               ? 'High pressure stop'
               : status === true
@@ -2156,7 +2175,14 @@ export function SiteEquipmentDashboard({
                   <div>
                     <p className="eyebrow">{asset.manufacturer} {asset.productFamily}</p>
                     <h3>{asset.displayName}</h3>
-                    <span>{asset.nominalHorsepower} HP air-cooled condensing unit</span>
+                    <span>
+                      {asset.nominalHorsepower} HP air-cooled condensing unit
+                      {asset.cascadePairId
+                        ? ` · Cascade pair ${asset.cascadePairId.match(/(\d+)$/)?.[1] ?? ''} · ${asset.cascadeStageRole === 'process_stage' ? 'Process stage' : 'Cascade stage'}`
+                        : asset.equipmentDuty === 'freezer'
+                          ? ' · Independent freezer duty'
+                        : ''}
+                    </span>
                   </div>
                   <span className={`salinas-dashboard__run-state ${highPressureStop ? 'is-alarm' : status === true ? 'is-running' : status === false ? 'is-stopped' : ''}`}>
                     {runStateText}
@@ -2168,6 +2194,7 @@ export function SiteEquipmentDashboard({
                   <TelemetryDial3D label="Discharge pressure" value={dischargeValue} unit="PSI" minimum={0} maximum={500} detail={dischargeIsDemo ? 'Local demo signal' : signalDetail(signals.highPressure, 'Discharge range', telemetry.status === 'error')} accent="gold" demo={dischargeIsDemo} zones={DISCHARGE_PRESSURE_ZONES} scale={DISCHARGE_PRESSURE_SCALE} renderer="glossy-svg" />
                   <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.7} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} zones={SUCTION_PRESSURE_ZONES} scale={SUCTION_PRESSURE_SCALE} renderer="glossy-svg" />
                   <TelemetryDial3D label="Compressor current" value={currentValue} unit="A" minimum={0} maximum={120} detail={currentIsDemo ? 'Local demo signal' : signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Current range', telemetry.status === 'error')} accent="lime" demo={currentIsDemo} renderer="glossy-svg" />
+                  <TelemetryDial3D label="Pump current" value={pumpCurrentValue} unit="A" minimum={0} maximum={120} detail={signalDetail(signals.pumpAmps, 'Awaiting sensor', telemetry.status === 'error')} accent="cyan" renderer="glossy-svg" />
                 </div>
 
                 <div className="salinas-dashboard__unit-analysis">

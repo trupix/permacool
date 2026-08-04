@@ -5,7 +5,7 @@ export type TelemetryPointIdentity = {
 };
 
 const FAST_TELEMETRY_KEY_PATTERN =
-  /^ch[12](temperature[fc]?|highpressure(psi)?|highsidepressure|lowpressure(psi)?|lowsidepressure|compressoramps|amps)$/;
+  /^ch[1-5](?:ai)?(temperature[fc]?|highpressure(psi)?|highsidepressure|lowpressure(psi)?|lowsidepressure|compressoramps|pumpamps|amps)$/;
 
 function normalizeTelemetryKey(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9]/g, '');

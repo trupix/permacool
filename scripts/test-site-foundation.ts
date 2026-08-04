@@ -125,6 +125,49 @@ assert.deepEqual(
   'Each condenser must retain its own manufacturer catalog selection.'
 );
 
+const muhameds = resolveSiteDashboardFoundation({
+  siteId: 'site-muhameds-los-angeles',
+  siteName: 'MuhaMeds - Los Angeles',
+  storedConfiguration: {
+    kind: 'location',
+    draft: {
+      condenserCount: 5,
+      arrangement: 'two_independent_cascade_pairs_plus_freezer',
+      processSolvent: 'ethanol',
+      units: Array.from({ length: 5 }, (_, index) => ({
+        ...cannonConfiguration.draft.units[index % 2],
+        label: index === 4 ? 'Freezer Condenser' : `Condenser ${index + 1}`,
+        channel: `CH${index + 1}`
+      }))
+    }
+  },
+  catalogRecords
+});
+const muhamedsSystem = muhameds.equipmentRecord.processSystems[0];
+assert.equal(muhamedsSystem.condensers.length, 5);
+assert.deepEqual(muhamedsSystem.condensers.map((unit) => unit.dashboardChannel), ['CH1', 'CH2', 'CH3', 'CH4', 'CH5']);
+assert.equal(muhamedsSystem.condenserArrangement.selection, 'two_independent_cascade_pairs_plus_freezer');
+assert.deepEqual(
+  muhamedsSystem.condensers.map((unit) => unit.cascadePairId),
+  [
+    'site-muhameds-los-angeles-cascade-pair-1',
+    'site-muhameds-los-angeles-cascade-pair-1',
+    'site-muhameds-los-angeles-cascade-pair-2',
+    'site-muhameds-los-angeles-cascade-pair-2',
+    null
+  ]
+);
+assert.deepEqual(
+  muhamedsSystem.condensers.map((unit) => unit.cascadeStageRole),
+  ['process_stage', 'cascade_stage', 'process_stage', 'cascade_stage', null]
+);
+assert.deepEqual(
+  muhamedsSystem.condensers.map((unit) => unit.equipmentDuty),
+  ['process', 'process', 'process', 'process', 'freezer']
+);
+assert.equal(muhamedsSystem.condensers[4].displayName, 'Freezer Condenser');
+assert.equal(muhamedsSystem.refrigerationCircuits.length, 5);
+
 const salinasRecord = readJson('docs/equipment-data/site-salinas-equipment.json');
 const salinas = resolveSiteDashboardFoundation({
   siteId: 'site-salinas',
@@ -193,13 +236,15 @@ assert.doesNotMatch(dashboard, /Salinas operating site|3558 E 8th St|22 HP Russe
 assert.match(dashboard, /system\.condensers\.map/);
 assert.match(
   dashboard,
-  /system\.condensers\.map[\s\S]*<TelemetryDial3D label="Process temperature"[\s\S]*<TelemetryDial3D label="Discharge pressure"[\s\S]*<TelemetryDial3D label="Suction pressure"[\s\S]*<TelemetryDial3D label="Compressor current"/,
-  'Every configured condenser must render the same four-gauge Live foundation.'
+  /system\.condensers\.map[\s\S]*<TelemetryDial3D label="Process temperature"[\s\S]*<TelemetryDial3D label="Discharge pressure"[\s\S]*<TelemetryDial3D label="Suction pressure"[\s\S]*<TelemetryDial3D label="Compressor current"[\s\S]*<TelemetryDial3D label="Pump current"/,
+  'Every configured condenser must render the same five-gauge Live foundation.'
 );
 assert.match(dashboard, /signals\.temperature\?\.value \?\?[\s\S]*: null\)/);
 assert.match(dashboard, /signals\.highPressure\?\.value \?\?[\s\S]*: null\)/);
 assert.match(dashboard, /signals\.lowPressure\?\.value \?\?[\s\S]*: null\)/);
 assert.match(dashboard, /signals\.compressorAmps\?\.value \?\?[\s\S]*: null\)/);
+assert.match(dashboard, /signals\.pumpAmps\?\.value \?\? null/);
+assert.match(dashboard, /signalDetail\(signals\.pumpAmps, 'Awaiting sensor'/);
 assert.match(dashboard, /Waiting for PLC/, 'Missing telemetry must keep the gauges visible and label the unit clearly.');
 assert.match(dashboard, /Equipment selections pending/);
 assert.match(dashboard, /Manufacturer source pending/);

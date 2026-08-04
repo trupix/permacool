@@ -243,6 +243,14 @@ function validateCondenserAsset(value: unknown, path: string): void {
   if (record.highSideRole !== undefined && record.highSideRole !== null) {
     expectOneOf(record.highSideRole, ['primary', 'subcooler'] as const, `${path}.highSideRole`);
   }
+  expectOptionalNullableString(record.cascadePairId, `${path}.cascadePairId`);
+  expectOptionalNullableString(record.cascadeStageRole, `${path}.cascadeStageRole`);
+  if (record.cascadeStageRole !== undefined && record.cascadeStageRole !== null) {
+    expectOneOf(record.cascadeStageRole, ['process_stage', 'cascade_stage'] as const, `${path}.cascadeStageRole`);
+  }
+  if (record.equipmentDuty !== undefined) {
+    expectOneOf(record.equipmentDuty, ['process', 'freezer'] as const, `${path}.equipmentDuty`);
+  }
   expectNullableString(record.catalogVariantId, `${path}.catalogVariantId`);
   const candidates = expectStringArray(record.catalogVariantCandidates, `${path}.catalogVariantCandidates`, true);
   ensureUnique(candidates, `${path}.catalogVariantCandidates`);
@@ -391,6 +399,57 @@ function validateProcessSystem(value: unknown, path: string): void {
     const roles = condensers.map((condenser) => condenser.highSideRole);
     if (!roles.includes('primary') || !roles.includes('subcooler')) {
       fail(`${path}.condensers.highSideRole`, 'requires both primary and subcooler roles');
+    }
+  }
+  if (selection === 'two_independent_cascade_pairs') {
+    if (condensers.length !== 4) {
+      fail(`${path}.condensers`, 'two independent cascade pairs require exactly four condensers');
+    }
+    if (sharedCircuit) {
+      fail(`${path}.condenserArrangement.sharedRefrigerationCircuit`, 'must be false for independent cascade pairs');
+    }
+    if (new Set(assignedCircuitIds).size !== 4) {
+      fail(`${path}.condensers`, 'each cascade stage requires its own refrigeration circuit');
+    }
+    const pairIds = condensers.map((condenser) => condenser.cascadePairId);
+    const uniquePairIds = [...new Set(pairIds.filter(Boolean))];
+    if (uniquePairIds.length !== 2 || pairIds.some((pairId) => !pairId)) {
+      fail(`${path}.condensers.cascadePairId`, 'requires exactly two assigned cascade pairs');
+    }
+    for (const pairId of uniquePairIds) {
+      const pair = condensers.filter((condenser) => condenser.cascadePairId === pairId);
+      const roles = pair.map((condenser) => condenser.cascadeStageRole);
+      if (pair.length !== 2 || !roles.includes('process_stage') || !roles.includes('cascade_stage')) {
+        fail(`${path}.condensers.cascadeStageRole`, `cascade pair ${pairId} requires one process stage and one cascade stage`);
+      }
+    }
+  }
+  if (selection === 'two_independent_cascade_pairs_plus_freezer') {
+    if (condensers.length !== 5) {
+      fail(`${path}.condensers`, 'two cascade pairs plus freezer requires exactly five condensers');
+    }
+    if (sharedCircuit || new Set(assignedCircuitIds).size !== 5) {
+      fail(`${path}.condensers`, 'cascade stages and the freezer require five separate refrigeration circuits');
+    }
+    const processCondensers = condensers.filter((condenser) => condenser.equipmentDuty !== 'freezer');
+    const freezerCondensers = condensers.filter((condenser) => condenser.equipmentDuty === 'freezer');
+    if (processCondensers.length !== 4 || freezerCondensers.length !== 1) {
+      fail(`${path}.condensers.equipmentDuty`, 'requires four process condensers and one freezer condenser');
+    }
+    const pairIds = processCondensers.map((condenser) => condenser.cascadePairId);
+    const uniquePairIds = [...new Set(pairIds.filter(Boolean))];
+    if (uniquePairIds.length !== 2 || pairIds.some((pairId) => !pairId)) {
+      fail(`${path}.condensers.cascadePairId`, 'requires exactly two process cascade pairs');
+    }
+    for (const pairId of uniquePairIds) {
+      const pair = processCondensers.filter((condenser) => condenser.cascadePairId === pairId);
+      const roles = pair.map((condenser) => condenser.cascadeStageRole);
+      if (pair.length !== 2 || !roles.includes('process_stage') || !roles.includes('cascade_stage')) {
+        fail(`${path}.condensers.cascadeStageRole`, `cascade pair ${pairId} requires one process stage and one cascade stage`);
+      }
+    }
+    if (freezerCondensers[0].cascadePairId || freezerCondensers[0].cascadeStageRole) {
+      fail(`${path}.condensers`, 'the independent freezer condenser cannot belong to a cascade pair');
     }
   }
 }
