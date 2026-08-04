@@ -594,10 +594,10 @@ export function LocationEquipmentWorkspace({
 
   if (view === 'connectivity') {
     const requiredSignals = [
-      'High pressure · CH1/CH2',
-      'Low pressure · CH1/CH2',
-      'Process-fluid temperature · CH1/CH2',
-      'Compressor amperage · CH1/CH2',
+      'High pressure · CH1-CH5',
+      'Low pressure · CH1-CH5',
+      'Process-fluid temperature · CH1-CH5',
+      'Compressor and pump amperage · CH1-CH5',
       'Run state and system enabled',
       'High-pressure stop and controller heartbeat'
     ];
@@ -793,7 +793,14 @@ export function LocationEquipmentWorkspace({
 
             <FormSection icon={<Settings2 size={16} />} title="Equipment selection">
               <label><span>Display name</span><input value={unit.label} onChange={(event) => updateUnit(index, { label: event.target.value })} /></label>
-              <label><span>Dashboard channel</span><select value={unit.channel} onChange={(event) => updateUnit(index, { channel: event.target.value })}><option>CH1</option><option>CH2</option></select></label>
+              <label>
+                <span>Dashboard channel</span>
+                <select value={unit.channel} onChange={(event) => updateUnit(index, { channel: event.target.value })}>
+                  {Array.from({ length: draft.condenserCount }, (_, channelIndex) => (
+                    <option key={channelIndex} value={`CH${channelIndex + 1}`}>CH{channelIndex + 1}</option>
+                  ))}
+                </select>
+              </label>
               <label>
                 <span>Manufacturer</span>
                 <select
