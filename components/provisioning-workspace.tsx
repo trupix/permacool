@@ -29,6 +29,7 @@ type Notice = { tone: 'success' | 'error'; text: string } | null;
 type DeviceEditForm = {
   name: string;
   plcModel: string;
+  protocol: string;
   serialNumber: string;
   firmwareVersion: string;
   localIpAddress: string;
@@ -48,6 +49,16 @@ const controllerModels = [
   'Opto 22 groov EPIC PR2',
   'Opto 22 groov RIO',
   'Other PLC'
+];
+
+const controllerProtocols = [
+  'Node-RED HTTPS telemetry',
+  'Node-RED HTTP',
+  'HTTPS',
+  'OPC UA',
+  'EtherNet/IP',
+  'Modbus TCP',
+  'Other'
 ];
 
 function address(site: ProvisioningSite) {
@@ -243,6 +254,7 @@ export function ProvisioningWorkspace({
     setDeviceEditForm({
       name: device.name,
       plcModel: device.plcModel,
+      protocol: device.protocol,
       serialNumber: device.serialNumber ?? '',
       firmwareVersion: device.firmwareVersion ?? '',
       localIpAddress: device.localIpAddress ?? '',
@@ -409,9 +421,22 @@ export function ProvisioningWorkspace({
                             <div><p className="eyebrow">Edit PLC</p><strong>{device.name}</strong></div>
                             <span>VPN identity and profile remain unchanged</span>
                           </header>
+                          <div className="provisioning-device-record" aria-label="Saved PLC record">
+                            <div><span>Facility</span><strong>{site.name}</strong></div>
+                            <div><span>Connection status</span><strong>{device.status}</strong></div>
+                            <div><span>PLC model</span><strong>{device.plcModel}</strong></div>
+                            <div><span>Protocol</span><strong>{device.protocol}</strong></div>
+                            <div><span>VPN identity</span><code>{device.vpnIdentity || 'Not assigned'}</code></div>
+                            <div><span>Profile status</span><strong>{profileStatusLabel(device.vpnProfileStatus)}</strong></div>
+                            <div><span>Serial number</span><strong>{device.serialNumber || 'Not entered'}</strong></div>
+                            <div><span>Firmware</span><strong>{device.firmwareVersion || 'Not entered'}</strong></div>
+                            <div><span>PLC local IP</span><strong>{device.localIpAddress || 'Not entered'}</strong></div>
+                            <div><span>Reserved VPN IP</span><strong>{device.tunnelIp || (device.vpnIdentity ? 'Dynamic' : 'Not assigned')}</strong></div>
+                          </div>
                           <fieldset disabled={updating}>
                             <label className="is-wide"><span>Controller name</span><input required maxLength={120} value={deviceEditForm.name} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, name: event.target.value })} /></label>
                             <label className="is-wide"><span>PLC model</span><select value={deviceEditForm.plcModel} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, plcModel: event.target.value })}>{controllerModels.map((model) => <option key={model}>{model}</option>)}</select></label>
+                            <label className="is-wide"><span>Connection / telemetry protocol</span><select value={deviceEditForm.protocol} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, protocol: event.target.value })}>{controllerProtocols.includes(deviceEditForm.protocol) ? null : <option>{deviceEditForm.protocol}</option>}{controllerProtocols.map((protocol) => <option key={protocol}>{protocol}</option>)}</select></label>
                             <label><span>Serial number</span><input maxLength={100} value={deviceEditForm.serialNumber} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, serialNumber: event.target.value })} placeholder="Optional" /></label>
                             <label><span>Firmware</span><input maxLength={100} value={deviceEditForm.firmwareVersion} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, firmwareVersion: event.target.value })} placeholder="Optional" /></label>
                             <label><span>PLC local IP</span><input inputMode="decimal" value={deviceEditForm.localIpAddress} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, localIpAddress: event.target.value })} placeholder="Optional" /></label>

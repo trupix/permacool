@@ -524,6 +524,45 @@
   font-weight: 750;
 }
 
+.provisioning-device-record {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.provisioning-device-record > div {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid rgba(17, 44, 34, 0.09);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.provisioning-device-record span {
+  color: var(--ops-muted);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.provisioning-device-record strong,
+.provisioning-device-record code {
+  overflow: hidden;
+  color: var(--ops-ink);
+  font-size: 0.68rem;
+  font-weight: 760;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.provisioning-device-record code {
+  text-transform: none;
+}
+
 .provisioning-device-editor fieldset {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -764,6 +803,10 @@
     grid-template-columns: 1fr;
   }
 
+  .provisioning-device-record {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .provisioning-device-row {
     grid-template-columns: auto 1fr;
   }
@@ -796,6 +839,10 @@
 
   .provisioning-device-editor fieldset {
     grid-template-columns: 1fr;
+  }
+
+  .provisioning-device-record {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .provisioning-form label.is-wide {

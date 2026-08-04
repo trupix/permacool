@@ -23,6 +23,7 @@ export type ProvisioningDevice = {
   siteId: string;
   name: string;
   plcModel: string;
+  protocol: string;
   serialNumber: string | null;
   firmwareVersion: string | null;
   status: 'online' | 'offline' | 'degraded';
@@ -75,6 +76,7 @@ function fallbackSnapshot(user: AppUser): ProvisioningSnapshot {
         ...device,
         serialNumber: device.serialNumber ?? null,
         firmwareVersion: device.firmwareVersion || null,
+        protocol: device.protocol,
         vpnIdentity: device.vpnIdentity ?? null,
         tunnelIp: device.vpnTunnelIp ?? null,
         localIpAddress: null,
@@ -120,6 +122,7 @@ export async function getProvisioningSnapshot(user: AppUser): Promise<Provisioni
         siteId: device.siteId,
         name: device.name,
         plcModel: device.plcModel,
+        protocol: device.protocol,
         serialNumber: device.serialNumber,
         firmwareVersion: device.firmwareVersion,
         status: device.status,
@@ -252,6 +255,7 @@ export async function updateProvisionedDevice(deviceId: string, input: UpdatePlc
       data: {
         name: input.name,
         plcModel: input.plcModel,
+        protocol: input.protocol,
         serialNumber: input.serialNumber,
         firmwareVersion: input.firmwareVersion,
         vpnEnrollment: device.vpnEnrollment
@@ -276,6 +280,7 @@ export async function updateProvisionedDevice(deviceId: string, input: UpdatePlc
           siteId: device.siteId,
           organizationId: device.site.organizationId,
           plcModel: updated.plcModel,
+          protocol: updated.protocol,
           tunnelIp: updated.vpnEnrollment?.tunnelIp ?? null
         }
       }

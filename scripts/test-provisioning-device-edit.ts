@@ -32,6 +32,7 @@ assert.deepEqual(
   parseUpdatePlcInput({
     name: 'MuhaMeds groov EPIC 01',
     plcModel: 'Opto 22 groov EPIC PR1',
+    protocol: 'Node-RED HTTPS telemetry',
     serialNumber: '',
     firmwareVersion: '3.5.1-b.85',
     localIpAddress: '192.168.1.10',
@@ -40,6 +41,7 @@ assert.deepEqual(
   {
     name: 'MuhaMeds groov EPIC 01',
     plcModel: 'Opto 22 groov EPIC PR1',
+    protocol: 'Node-RED HTTPS telemetry',
     serialNumber: null,
     firmwareVersion: '3.5.1-b.85',
     localIpAddress: '192.168.1.10',
@@ -47,8 +49,9 @@ assert.deepEqual(
   }
 );
 assert.equal(parseUpdatePlcInput({ name: '', plcModel: 'Opto 22 groov EPIC PR1' }), null);
-assert.equal(parseUpdatePlcInput({ name: 'PLC', plcModel: 'PR1', tunnelIp: '172.28.0.999' }), null);
-assert.equal(parseUpdatePlcInput({ name: 'PLC', plcModel: 'PR1', localIpAddress: 'not-an-ip' }), null);
+assert.equal(parseUpdatePlcInput({ name: 'PLC', plcModel: 'PR1', protocol: '' }), null);
+assert.equal(parseUpdatePlcInput({ name: 'PLC', plcModel: 'PR1', protocol: 'HTTPS', tunnelIp: '172.28.0.999' }), null);
+assert.equal(parseUpdatePlcInput({ name: 'PLC', plcModel: 'PR1', protocol: 'HTTPS', localIpAddress: 'not-an-ip' }), null);
 
 const owner = user('owner');
 const operator = user('operator');
@@ -71,6 +74,7 @@ assert.match(updateBody, /deviceWhere\(actor\)/);
 assert.match(updateBody, /canManageSiteEquipment\(actor, device\.site\.organizationId\)/);
 assert.match(updateBody, /canIssueVpnProfile\(actor, device\.site\.organizationId\)/);
 assert.match(updateBody, /transaction\.device\.update/);
+assert.match(updateBody, /protocol: input\.protocol/);
 assert.match(updateBody, /vpnEnrollment:[\s\S]*update:[\s\S]*localIpAddress:[\s\S]*tunnelIp:/);
 assert.doesNotMatch(updateBody, /identity:\s*input/);
 assert.doesNotMatch(updateBody, /profileStatus:\s*input/);
@@ -92,6 +96,10 @@ assert.match(workspace, /onSubmit=\{\(event\) => saveDeviceEdit/);
 assert.match(workspace, /method: 'PATCH'/);
 assert.match(workspace, /disabled=\{!canIssueForSite\}/);
 assert.match(workspace, /VPN identity and profile remain unchanged/);
+assert.match(workspace, /Saved PLC record/);
+assert.match(workspace, /Connection \/ telemetry protocol/);
+assert.match(workspace, /<span>Protocol<\/span><strong>\{device\.protocol\}<\/strong>/);
+assert.match(workspace, /Not entered/);
 const effectBodies = [...workspace.matchAll(/useEffect\(\(\) => \{([\s\S]*?)\}, \[/g)].map((match) => match[1]);
 assert.equal(effectBodies.some((body) => /saveDeviceEdit|method:\s*'PATCH'/.test(body)), false);
 

@@ -24,6 +24,7 @@ export type NewPlcInput = {
 export type UpdatePlcInput = {
   name: string;
   plcModel: string;
+  protocol: string;
   serialNumber: string | null;
   firmwareVersion: string | null;
   localIpAddress: string | null;
@@ -115,16 +116,18 @@ export function parseUpdatePlcInput(value: unknown): UpdatePlcInput | null {
   const input = value as Record<string, unknown>;
   const name = text(input.name, 120);
   const plcModel = text(input.plcModel, 120);
+  const protocol = text(input.protocol, 120);
   const localIpAddress = optionalText(input.localIpAddress, 45);
   const tunnelIp = optionalText(input.tunnelIp, 45);
 
-  if (!name || !plcModel) return null;
+  if (!name || !plcModel || !protocol) return null;
   if (localIpAddress && !isIpv4(localIpAddress)) return null;
   if (tunnelIp && !isIpv4(tunnelIp)) return null;
 
   return {
     name,
     plcModel,
+    protocol,
     serialNumber: optionalText(input.serialNumber, 100),
     firmwareVersion: optionalText(input.firmwareVersion, 100),
     localIpAddress,

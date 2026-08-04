@@ -22,7 +22,7 @@ export async function PATCH(
   }
 
   const input = parseUpdatePlcInput(await request.json().catch(() => null));
-  if (!input) return NextResponse.json({ error: 'Check the controller name, model, and IP addresses.' }, { status: 400 });
+  if (!input) return NextResponse.json({ error: 'Check the controller name, model, protocol, and IP addresses.' }, { status: 400 });
 
   const { deviceid } = await params;
   try {
@@ -40,6 +40,7 @@ export async function PATCH(
         id: device.id,
         name: device.name,
         plcModel: device.plcModel,
+        protocol: device.protocol,
         tunnelIp: device.vpnEnrollment?.tunnelIp ?? null
       }
     });
