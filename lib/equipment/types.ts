@@ -2,7 +2,9 @@ export const CONDENSER_ARRANGEMENTS = [
   'single',
   'multiple_separate_systems',
   'multiple_parallel_same_system',
-  'multiple_high_side_subcooling'
+  'multiple_high_side_subcooling',
+  'two_independent_cascade_pairs',
+  'two_independent_cascade_pairs_plus_freezer'
 ] as const;
 
 export type CondenserArrangementSelection = (typeof CONDENSER_ARRANGEMENTS)[number];
@@ -12,6 +14,8 @@ export const PROCESS_SOLVENTS = ['ethanol', 'butane', 'other'] as const;
 export type ProcessSolventSelection = (typeof PROCESS_SOLVENTS)[number];
 export type EquipmentVerificationStatus = 'requires_nameplate' | 'verified';
 export type CondenserRole = 'primary' | 'subcooler';
+export type CascadeStageRole = 'process_stage' | 'cascade_stage';
+export type CondenserDuty = 'process' | 'freezer';
 export type CatalogApplicationRange =
   | 'medium_temperature'
   | 'extended_range_medium'
@@ -75,6 +79,9 @@ export interface CondenserAsset {
   refrigerant: string;
   parallelGroupId: string | null;
   highSideRole?: CondenserRole | null;
+  cascadePairId?: string | null;
+  cascadeStageRole?: CascadeStageRole | null;
+  equipmentDuty?: CondenserDuty;
   catalogRecordId: string;
   catalogVariantId: string | null;
   catalogVariantCandidates: string[];

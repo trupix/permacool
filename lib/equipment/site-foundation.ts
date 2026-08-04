@@ -14,7 +14,9 @@ const CONDENSER_ARRANGEMENTS: readonly CondenserArrangementSelection[] = [
   'single',
   'multiple_separate_systems',
   'multiple_parallel_same_system',
-  'multiple_high_side_subcooling'
+  'multiple_high_side_subcooling',
+  'two_independent_cascade_pairs',
+  'two_independent_cascade_pairs_plus_freezer'
 ];
 
 const PROCESS_SOLVENTS: readonly ProcessSolventSelection[] = ['ethanol', 'butane', 'other'];
@@ -47,7 +49,9 @@ const arrangementLabels: Record<CondenserArrangementSelection, string> = {
   single: 'Single condenser',
   multiple_separate_systems: 'Multiple - separate systems',
   multiple_parallel_same_system: 'Multiple - parallel on the same system',
-  multiple_high_side_subcooling: "Multiple - one subcools the other's high side"
+  multiple_high_side_subcooling: "Multiple - one subcools the other's high side",
+  two_independent_cascade_pairs: 'Four condensers - two independent cascade pairs',
+  two_independent_cascade_pairs_plus_freezer: 'Five condensers - two cascade pairs plus an independent freezer'
 };
 
 function asRecord(value: unknown): JsonRecord {
@@ -183,7 +187,8 @@ function buildConfiguredFoundation({
     ? asRecord(storedConfiguration.draft)
     : {};
   const sourceUnits = Array.isArray(source.units) ? source.units : [];
-  const configuredCount = source.condenserCount === 2 || sourceUnits.length >= 2 ? 2 : 1;
+  const requestedCount = asNumber(source.condenserCount) ?? sourceUnits.length;
+  const configuredCount = Math.min(5, Math.max(1, Math.trunc(requestedCount || 1)));
   const units = Array.from({ length: configuredCount }, (_, index) => readLocationUnit(sourceUnits[index], index));
   const arrangement = arrangementFrom(source.arrangement, configuredCount);
   const solvent = solventFrom(source.processSolvent);
@@ -193,6 +198,8 @@ function buildConfiguredFoundation({
     : null;
   const configuredCatalogs = units.map((unit) => catalogForUnit(unit, catalogRecords));
   const primaryCatalog = configuredCatalogs.find(Boolean) ?? fallbackCatalog;
+  const hasCascadePairs = arrangement === 'two_independent_cascade_pairs' ||
+    arrangement === 'two_independent_cascade_pairs_plus_freezer';
 
   const condensers: CondenserAsset[] = units.map((unit, index) => {
     const configuredCatalog = configuredCatalogs[index];
@@ -213,7 +220,9 @@ function buildConfiguredFoundation({
       assetId: `${siteId}-condenser-${channel.toLowerCase()}`,
       dashboardChannel: channel,
       telemetryDeviceId: null,
-      displayName: unit.label || `${channel} Condenser`,
+      displayName: unit.label || (arrangement === 'two_independent_cascade_pairs_plus_freezer' && index === 4
+        ? 'Freezer Condenser'
+        : `${channel} Condenser`),
       equipmentType: 'air_cooled_condensing_unit',
       manufacturer: unit.manufacturer || configuredCatalog?.manufacturer || 'Manufacturer pending',
       productFamily: unit.productFamily || configuredCatalog?.productFamily || 'Equipment selection pending',
@@ -224,6 +233,15 @@ function buildConfiguredFoundation({
       highSideRole: arrangement === 'multiple_high_side_subcooling'
         ? index === 0 ? 'primary' : 'subcooler'
         : null,
+      cascadePairId: hasCascadePairs && index < 4
+        ? `${siteId}-cascade-pair-${Math.floor(index / 2) + 1}`
+        : null,
+      cascadeStageRole: hasCascadePairs && index < 4
+        ? index % 2 === 0 ? 'process_stage' : 'cascade_stage'
+        : null,
+      equipmentDuty: arrangement === 'two_independent_cascade_pairs_plus_freezer' && index === 4
+        ? 'freezer'
+        : 'process',
       catalogRecordId: catalog.catalogRecordId,
       catalogVariantId: variantId,
       catalogVariantCandidates: configuredCatalog
@@ -257,11 +275,19 @@ function buildConfiguredFoundation({
       circuitId,
       displayName: arrangement === 'multiple_parallel_same_system'
         ? 'Shared refrigeration circuit'
-        : `Refrigeration circuit ${index + 1}`,
+        : hasCascadePairs && index < 4
+          ? `Cascade pair ${Math.floor(index / 2) + 1} - ${index % 2 === 0 ? 'process stage' : 'cascade stage'}`
+          : arrangement === 'two_independent_cascade_pairs_plus_freezer' && index === 4
+            ? 'Independent freezer refrigeration circuit'
+          : `Refrigeration circuit ${index + 1}`,
       refrigerant: refrigerants.join(' / ') || 'Unconfirmed',
       refrigerantChargeLb: asNumber(units[index]?.refrigerantChargeLb),
       assignment: arrangement === 'multiple_parallel_same_system'
         ? 'shared_by_parallel_condensing_units'
+        : hasCascadePairs && index < 4
+          ? `cascade_pair_${Math.floor(index / 2) + 1}_${index % 2 === 0 ? 'process_stage' : 'cascade_stage'}`
+          : arrangement === 'two_independent_cascade_pairs_plus_freezer' && index === 4
+            ? 'independent_freezer_refrigeration'
         : 'assigned_to_individual_condensing_unit'
     };
   });

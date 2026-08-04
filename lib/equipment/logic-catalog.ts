@@ -169,7 +169,7 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     category: 'operation',
     title: 'Facility live refresh',
     signalKey: null,
-    definition: 'Each facility has one Live control that checks the fast operating group every two seconds: CH1 and CH2 high pressure, low pressure, process-fluid temperature, and compressor amps.',
+    definition: 'Each facility has one Live control that checks the website for the fast operating group every two seconds: CH1 and CH2 high pressure, low pressure, process-fluid temperature, compressor amps, and pump amps.',
     behavior: 'Live mode prevents overlapping dashboard requests and automatically turns off after one hour. Slower controller values remain on the standard schedule. Dashboard-check time identifies the website request; newest-PLC-sample time identifies data actually received from the controller.',
     implementationStatus: 'deployed',
     sortOrder: 125,

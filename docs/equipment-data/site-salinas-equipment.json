@@ -120,6 +120,14 @@
       {
         "value": "multiple_high_side_subcooling",
         "label": "Multiple - one subcools the other's high side"
+      },
+      {
+        "value": "two_independent_cascade_pairs",
+        "label": "Four condensers - two independent cascade pairs"
+      },
+      {
+        "value": "two_independent_cascade_pairs_plus_freezer",
+        "label": "Five condensers - two cascade pairs plus an independent freezer"
       }
     ],
     "processSolvent": [

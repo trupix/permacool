@@ -27,13 +27,15 @@ import {
 import type { StoredEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 
 type WorkspaceView = 'overview' | 'connectivity' | 'specs';
-type CondenserCount = 1 | 2;
+type CondenserCount = 1 | 2 | 3 | 4 | 5;
 type AmbientMode = 'automatic' | 'manual';
 type Arrangement =
   | 'single'
   | 'multiple_separate_systems'
   | 'multiple_parallel_same_system'
-  | 'multiple_high_side_subcooling';
+  | 'multiple_high_side_subcooling'
+  | 'two_independent_cascade_pairs'
+  | 'two_independent_cascade_pairs_plus_freezer';
 
 type UnitDraft = {
   label: string;
@@ -153,7 +155,9 @@ const arrangementOptions: Array<{ value: Arrangement; label: string }> = [
   { value: 'single', label: 'Single condenser' },
   { value: 'multiple_separate_systems', label: 'Multiple - separate systems' },
   { value: 'multiple_parallel_same_system', label: 'Multiple - parallel on the same system' },
-  { value: 'multiple_high_side_subcooling', label: "Multiple - one subcools the other's high side" }
+  { value: 'multiple_high_side_subcooling', label: "Multiple - one subcools the other's high side" },
+  { value: 'two_independent_cascade_pairs', label: 'Four condensers - two independent cascade pairs' },
+  { value: 'two_independent_cascade_pairs_plus_freezer', label: 'Five condensers - two cascade pairs plus an independent freezer' }
 ];
 
 function blankUnit(index: number): UnitDraft {
@@ -346,7 +350,8 @@ function equipmentSourceNote(unit: UnitDraft): string {
 function normalizeDraft(value: unknown): LocationDraft {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return defaultDraft;
   const candidate = value as Partial<LocationDraft>;
-  const condenserCount: CondenserCount = candidate.condenserCount === 2 ? 2 : 1;
+  const rawCount = Number(candidate.condenserCount);
+  const condenserCount: CondenserCount = rawCount === 2 || rawCount === 3 || rawCount === 4 || rawCount === 5 ? rawCount : 1;
   const arrangements = arrangementOptions.map((option) => option.value);
   const arrangement =
     typeof candidate.arrangement === 'string' && arrangements.includes(candidate.arrangement as Arrangement)
@@ -489,10 +494,21 @@ export function LocationEquipmentWorkspace({
       arrangement:
         count === 1
           ? 'single'
-          : current.arrangement === 'single'
+          : count === 5 && current.arrangement === 'single'
+            ? 'two_independent_cascade_pairs_plus_freezer'
+            : count === 4 && current.arrangement === 'single'
+            ? 'two_independent_cascade_pairs'
+            : current.arrangement === 'single' ||
+                current.arrangement === 'two_independent_cascade_pairs' ||
+                current.arrangement === 'two_independent_cascade_pairs_plus_freezer'
             ? 'multiple_separate_systems'
             : current.arrangement,
-      units: Array.from({ length: count }, (_, index) => current.units[index] ?? blankUnit(index))
+      units: Array.from({ length: count }, (_, index) => {
+        const unit = current.units[index] ?? blankUnit(index);
+        return count === 5 && index === 4 && unit.label === 'Condenser 5'
+          ? { ...unit, label: 'Freezer Condenser' }
+          : unit;
+      })
     }));
   }
 
@@ -664,16 +680,25 @@ export function LocationEquipmentWorkspace({
         <div className="location-equipment-form-grid">
           <label>
             <span>Number of condensers</span>
-            <select value={draft.condenserCount} onChange={(event) => setCondenserCount(Number(event.target.value) === 2 ? 2 : 1)}>
+            <select value={draft.condenserCount} onChange={(event) => setCondenserCount(Number(event.target.value) as CondenserCount)}>
               <option value={1}>One condenser</option>
               <option value={2}>Two condensers</option>
+              <option value={3}>Three condensers</option>
+              <option value={4}>Four condensers</option>
+              <option value={5}>Five condensers</option>
             </select>
           </label>
           <label>
             <span>Condenser orientation</span>
             <select value={draft.arrangement} onChange={(event) => setDraft((current) => ({ ...current, arrangement: event.target.value as Arrangement }))}>
               {arrangementOptions
-                .filter((option) => draft.condenserCount === 1 ? option.value === 'single' : option.value !== 'single')
+                .filter((option) => {
+                  if (draft.condenserCount === 1) return option.value === 'single';
+                  if (option.value === 'single') return false;
+                  if (option.value === 'two_independent_cascade_pairs') return draft.condenserCount === 4;
+                  if (option.value === 'two_independent_cascade_pairs_plus_freezer') return draft.condenserCount === 5;
+                  return true;
+                })
                 .map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select>
           </label>
