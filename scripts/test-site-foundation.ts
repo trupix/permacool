@@ -223,6 +223,7 @@ assert.doesNotMatch(livePage, /LocationEquipmentWorkspace|SiteTelemetryPanel|has
 assert.match(livePage, /canEdit=\{false\}/, 'The shared Live view must stay read-only.');
 
 const dashboard = read('components/site-equipment-dashboard.tsx');
+const locationWorkspace = read('components/location-equipment-workspace.tsx');
 assert.match(dashboard, /siteName: string/);
 assert.match(dashboard, /facilityAddress\?: FacilityAddress/);
 assert.match(dashboard, /formatFacilityAddress\(facilityAddress\)/);
@@ -251,6 +252,11 @@ assert.match(dashboard, /Manufacturer source pending/);
 assert.match(dashboard, /catalogByRecordId\.get\(asset\.catalogRecordId\)/);
 assert.match(dashboard, /analysis\.catalog\.source\.publicationNumber/);
 assert.doesNotMatch(dashboard, /14\.5/);
+assert.match(
+  locationWorkspace,
+  /Array\.from\(\{ length: draft\.condenserCount \}[\s\S]*value=\{`CH\$\{channelIndex \+ 1\}`\}/,
+  'Location Specs must offer a unique dashboard channel for every configured condenser.'
+);
 
 const addressEditor = read('components/facility-address-editor.tsx');
 const provisioningWorkspace = read('components/provisioning-workspace.tsx');
