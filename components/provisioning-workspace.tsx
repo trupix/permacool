@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { Fragment, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Building2,
@@ -14,14 +14,26 @@ import {
   LockKeyhole,
   MapPin,
   Network,
+  Pencil,
   Plus,
+  Save,
   ServerCog,
-  ShieldCheck
+  ShieldCheck,
+  X
 } from 'lucide-react';
 import type { ProvisioningSite } from '@/server/repositories/provisioning';
 import type { UserRole } from '@/types/domain';
 
 type Notice = { tone: 'success' | 'error'; text: string } | null;
+
+type DeviceEditForm = {
+  name: string;
+  plcModel: string;
+  serialNumber: string;
+  firmwareVersion: string;
+  localIpAddress: string;
+  tunnelIp: string;
+};
 
 const timezones = [
   'America/Los_Angeles',
@@ -80,6 +92,9 @@ export function ProvisioningWorkspace({
   const [saving, setSaving] = useState<'site' | 'device' | null>(null);
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [registeringId, setRegisteringId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [editingDeviceId, setEditingDeviceId] = useState<string | null>(null);
+  const [deviceEditForm, setDeviceEditForm] = useState<DeviceEditForm | null>(null);
   const [siteForm, setSiteForm] = useState({
     organizationId: editableOrganizations[0]?.id ?? '',
     name: '',
@@ -223,6 +238,56 @@ export function ProvisioningWorkspace({
     }
   }
 
+  function beginDeviceEdit(device: ProvisioningSite['devices'][number]) {
+    setEditingDeviceId(device.id);
+    setDeviceEditForm({
+      name: device.name,
+      plcModel: device.plcModel,
+      serialNumber: device.serialNumber ?? '',
+      firmwareVersion: device.firmwareVersion ?? '',
+      localIpAddress: device.localIpAddress ?? '',
+      tunnelIp: device.tunnelIp ?? ''
+    });
+    setNotice(null);
+  }
+
+  function cancelDeviceEdit() {
+    setEditingDeviceId(null);
+    setDeviceEditForm(null);
+  }
+
+  async function saveDeviceEdit(
+    event: FormEvent<HTMLFormElement>,
+    deviceId: string,
+    organizationId: string
+  ) {
+    event.preventDefault();
+    if (!deviceEditForm || !canManageRole(roleByOrganization.get(organizationId)) || !storageReady || updatingId) return;
+
+    setUpdatingId(deviceId);
+    setNotice(null);
+    try {
+      const response = await fetch(`/api/provisioning/devices/${encodeURIComponent(deviceId)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(deviceEditForm)
+      });
+      const payload = await response.json().catch(() => ({})) as {
+        device?: { name: string };
+        error?: string;
+      };
+      if (!response.ok || !payload.device) throw new Error(payload.error || 'The PLC could not be updated.');
+
+      setNotice({ tone: 'success', text: `${payload.device.name} was updated. Its VPN identity and profile were not changed.` });
+      cancelDeviceEdit();
+      router.refresh();
+    } catch (error) {
+      setNotice({ tone: 'error', text: error instanceof Error ? error.message : 'The PLC could not be updated.' });
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
   return (
     <>
       <section className="provisioning-summary" aria-label="Provisioning summary">
@@ -298,33 +363,67 @@ export function ProvisioningWorkspace({
                   const credentialRecorded = issued || external || issuanceLocked;
                   const registering = registeringId === device.id;
                   const canIssueForSite = roleByOrganization.get(site.organizationId) === 'owner';
+                  const canEditForSite = canManageRole(roleByOrganization.get(site.organizationId));
+                  const editing = editingDeviceId === device.id && Boolean(deviceEditForm);
+                  const updating = updatingId === device.id;
                   return (
-                    <div className="provisioning-device-row" key={device.id}>
-                      <span className="provisioning-device-icon"><HardDrive size={17} /></span>
-                      <div className="provisioning-device-name"><strong>{device.name}</strong><small>{device.plcModel}</small></div>
-                      <div><span>VPN identity</span><code>{device.vpnIdentity || 'Not assigned'}</code></div>
-                      <div><span>Tunnel IP</span><strong>{device.tunnelIp || (managed ? 'Dynamic' : 'Not assigned')}</strong></div>
-                      <span className={`provisioning-profile-status is-${device.vpnProfileStatus}`}>{profileStatusLabel(device.vpnProfileStatus)}</span>
-                      <div className="provisioning-device-actions">
-                        <button
-                          type="button"
-                          onClick={() => managed && generateProfile(device.id, device.vpnIdentity as string, site.organizationId)}
-                          disabled={!managed || credentialRecorded || !canIssueForSite || !vpnConfigured || Boolean(generatingId) || Boolean(registeringId)}
-                          title={!canIssueForSite ? 'Owner role required for this organization' : credentialRecorded ? 'This PLC already has a recorded VPN credential' : !vpnConfigured ? 'Connect the OpenVPN provisioning bridge first' : !managed ? 'No managed VPN identity is assigned' : 'Generate a new unique profile'}
-                        >
-                          {issuing || issuanceLocked ? <LoaderCircle className="is-spinning" size={14} /> : credentialRecorded ? <Check size={14} /> : <Download size={14} />} {issuanceLocked ? 'Inspection required' : credentialRecorded ? 'Profile recorded' : 'Generate .ovpn'}
-                        </button>
-                        <button
-                          className="is-secondary"
-                          type="button"
-                          onClick={() => registerExternalProfile(device.id, device.vpnIdentity, site.organizationId)}
-                          disabled={credentialRecorded || !canIssueForSite || Boolean(generatingId) || Boolean(registeringId)}
-                          title={!canIssueForSite ? 'Owner role required for this organization' : credentialRecorded ? 'This PLC already has a recorded VPN credential' : 'Record a profile that was issued directly on OpenVPN without generating another one'}
-                        >
-                          {registering ? <LoaderCircle className="is-spinning" size={14} /> : <Link2 size={14} />} Register existing
-                        </button>
+                    <Fragment key={device.id}>
+                      <div className="provisioning-device-row">
+                        <span className="provisioning-device-icon"><HardDrive size={17} /></span>
+                        <div className="provisioning-device-name"><strong>{device.name}</strong><small>{device.plcModel}</small></div>
+                        <div><span>VPN identity</span><code>{device.vpnIdentity || 'Not assigned'}</code></div>
+                        <div><span>Tunnel IP</span><strong>{device.tunnelIp || (managed ? 'Dynamic' : 'Not assigned')}</strong></div>
+                        <span className={`provisioning-profile-status is-${device.vpnProfileStatus}`}>{profileStatusLabel(device.vpnProfileStatus)}</span>
+                        <div className="provisioning-device-actions">
+                          <button
+                            className="is-secondary"
+                            type="button"
+                            onClick={() => beginDeviceEdit(device)}
+                            disabled={!canEditForSite || editing || Boolean(generatingId) || Boolean(registeringId) || Boolean(updatingId)}
+                            title={!canEditForSite ? 'Owner or operator role required for this organization' : 'Edit PLC details without changing its VPN identity or profile'}
+                          >
+                            <Pencil size={14} /> Edit PLC
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => managed && generateProfile(device.id, device.vpnIdentity as string, site.organizationId)}
+                            disabled={!managed || credentialRecorded || !canIssueForSite || !vpnConfigured || Boolean(generatingId) || Boolean(registeringId) || Boolean(updatingId)}
+                            title={!canIssueForSite ? 'Owner role required for this organization' : credentialRecorded ? 'This PLC already has a recorded VPN credential' : !vpnConfigured ? 'Connect the OpenVPN provisioning bridge first' : !managed ? 'No managed VPN identity is assigned' : 'Generate a new unique profile'}
+                          >
+                            {issuing || issuanceLocked ? <LoaderCircle className="is-spinning" size={14} /> : credentialRecorded ? <Check size={14} /> : <Download size={14} />} {issuanceLocked ? 'Inspection required' : credentialRecorded ? 'Profile recorded' : 'Generate .ovpn'}
+                          </button>
+                          <button
+                            className="is-secondary"
+                            type="button"
+                            onClick={() => registerExternalProfile(device.id, device.vpnIdentity, site.organizationId)}
+                            disabled={credentialRecorded || !canIssueForSite || Boolean(generatingId) || Boolean(registeringId) || Boolean(updatingId)}
+                            title={!canIssueForSite ? 'Owner role required for this organization' : credentialRecorded ? 'This PLC already has a recorded VPN credential' : 'Record a profile that was issued directly on OpenVPN without generating another one'}
+                          >
+                            {registering ? <LoaderCircle className="is-spinning" size={14} /> : <Link2 size={14} />} Register existing
+                          </button>
+                        </div>
                       </div>
-                    </div>
+                      {editing && deviceEditForm ? (
+                        <form className="provisioning-device-editor" onSubmit={(event) => saveDeviceEdit(event, device.id, site.organizationId)}>
+                          <header>
+                            <div><p className="eyebrow">Edit PLC</p><strong>{device.name}</strong></div>
+                            <span>VPN identity and profile remain unchanged</span>
+                          </header>
+                          <fieldset disabled={updating}>
+                            <label className="is-wide"><span>Controller name</span><input required maxLength={120} value={deviceEditForm.name} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, name: event.target.value })} /></label>
+                            <label className="is-wide"><span>PLC model</span><select value={deviceEditForm.plcModel} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, plcModel: event.target.value })}>{controllerModels.map((model) => <option key={model}>{model}</option>)}</select></label>
+                            <label><span>Serial number</span><input maxLength={100} value={deviceEditForm.serialNumber} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, serialNumber: event.target.value })} placeholder="Optional" /></label>
+                            <label><span>Firmware</span><input maxLength={100} value={deviceEditForm.firmwareVersion} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, firmwareVersion: event.target.value })} placeholder="Optional" /></label>
+                            <label><span>PLC local IP</span><input inputMode="decimal" value={deviceEditForm.localIpAddress} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, localIpAddress: event.target.value })} placeholder="Optional" /></label>
+                            <label><span>Reserved VPN IP</span><input inputMode="decimal" value={deviceEditForm.tunnelIp} onChange={(event) => setDeviceEditForm({ ...deviceEditForm, tunnelIp: event.target.value })} placeholder="Leave blank for dynamic" disabled={!canIssueForSite} /><small>{canIssueForSite ? 'Updates the saved tunnel address only. It does not generate a profile.' : 'Owner role required to change the tunnel address.'}</small></label>
+                          </fieldset>
+                          <footer>
+                            <button className="is-secondary" type="button" onClick={cancelDeviceEdit} disabled={updating}><X size={14} /> Cancel</button>
+                            <button type="submit" disabled={updating}>{updating ? <LoaderCircle className="is-spinning" size={14} /> : <Save size={14} />} Save PLC</button>
+                          </footer>
+                        </form>
+                      ) : null}
+                    </Fragment>
                   );
                 })}
                 {!site.devices.length ? <p className="provisioning-empty">No PLCs registered at this site yet.</p> : null}

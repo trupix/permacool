@@ -8,7 +8,7 @@ import {
   canRegisterExternalVpnProfile
 } from '@/lib/workspace-access';
 import { ensureProvisioningStorage } from '@/server/provisioning-storage';
-import type { NewPlcInput, NewSiteInput, SiteAddressInput } from '@/server/provisioning-input';
+import type { NewPlcInput, NewSiteInput, SiteAddressInput, UpdatePlcInput } from '@/server/provisioning-input';
 import {
   claimExternalVpnProfile,
   claimVpnProfileGeneration,
@@ -227,6 +227,61 @@ export async function createProvisionedDevice(input: NewPlcInput, actor: AppUser
       }
     });
     return device;
+  });
+}
+
+export class ProvisioningTunnelIpPermissionError extends Error {}
+
+export async function updateProvisionedDevice(deviceId: string, input: UpdatePlcInput, actor: AppUser) {
+  if (!shouldUseDatabase() || !(await ensureProvisioningStorage())) return null;
+
+  return db.$transaction(async (transaction) => {
+    const device = await transaction.device.findFirst({
+      where: { AND: [{ id: deviceId }, deviceWhere(actor)] },
+      include: { site: true, vpnEnrollment: true }
+    });
+    if (!device || !canManageSiteEquipment(actor, device.site.organizationId)) return null;
+
+    const currentTunnelIp = device.vpnEnrollment?.tunnelIp ?? null;
+    if (input.tunnelIp !== currentTunnelIp && !canIssueVpnProfile(actor, device.site.organizationId)) {
+      throw new ProvisioningTunnelIpPermissionError('Owner role is required to change the VPN tunnel address.');
+    }
+
+    const updated = await transaction.device.update({
+      where: { id: device.id },
+      data: {
+        name: input.name,
+        plcModel: input.plcModel,
+        serialNumber: input.serialNumber,
+        firmwareVersion: input.firmwareVersion,
+        vpnEnrollment: device.vpnEnrollment
+          ? {
+              update: {
+                localIpAddress: input.localIpAddress,
+                tunnelIp: input.tunnelIp
+              }
+            }
+          : undefined
+      },
+      include: { vpnEnrollment: true }
+    });
+
+    await transaction.auditLog.create({
+      data: {
+        actorUserId: actor.id,
+        entityType: 'device',
+        entityId: device.id,
+        action: `Updated PLC: ${updated.name}`,
+        metadata: {
+          siteId: device.siteId,
+          organizationId: device.site.organizationId,
+          plcModel: updated.plcModel,
+          tunnelIp: updated.vpnEnrollment?.tunnelIp ?? null
+        }
+      }
+    });
+
+    return updated;
   });
 }
 

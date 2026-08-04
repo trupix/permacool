@@ -15,6 +15,7 @@
     "workspace:access:test": "node scripts/test-workspace-access.ts",
     "organization:isolation:test": "node scripts/test-organization-isolation.ts",
     "provisioning:read-only:test": "node scripts/test-provisioning-read-only.ts",
+    "provisioning:device-edit:test": "node scripts/test-provisioning-device-edit.ts",
     "vpn:external-registration:test": "node scripts/test-external-vpn-registration.ts",
     "vpn:bridge:test": "node scripts/test-openvpn-access-server.ts",
     "vpn:relay-service:test": "node --test infrastructure/openvpn-provisioning-relay/test/*.test.mjs",
