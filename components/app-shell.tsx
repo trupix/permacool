@@ -99,7 +99,7 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
         <Link href="/dashboard" className="sidebar-brand" aria-label="Agenticly.Cool home">
           <span className="sidebar-brand-logo">
             <Image
-              src="/images/brand/agenticly-cool-logo.png"
+              src="/images/brand/agenticly-cool-logo-3d-v2.png"
               alt="Agenticly.Cool"
               width={160}
               height={160}
