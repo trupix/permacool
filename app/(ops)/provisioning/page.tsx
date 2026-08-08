@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { ProvisioningWorkspace } from '@/components/provisioning-workspace';
 import { requireUser } from '@/lib/auth';
@@ -19,7 +18,7 @@ export const dynamic = 'force-dynamic';
 export default async function ProvisioningPage() {
   const user = await requireUser();
   if (!canAccessProvisioning(user)) redirect('/dashboard');
-  const oidcToken = getVercelOidcToken(await headers());
+  const oidcToken = await getVercelOidcToken();
 
   const [snapshot, vpn, organizations] = await Promise.all([
     getProvisioningSnapshot(user),

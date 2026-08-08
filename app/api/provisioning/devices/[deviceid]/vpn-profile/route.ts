@@ -41,7 +41,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ dev
     );
   }
 
-  const oidcToken = getVercelOidcToken(request.headers);
+  const oidcToken = await getVercelOidcToken();
   const bridge = await getOpenVpnProvisioningStatus(oidcToken);
   if (!bridge.healthy) {
     return NextResponse.json(
