@@ -152,7 +152,7 @@ After VPN access works:
 6. Confirm POSTs to:
 
 ```text
-https://www.perma.cool/api/ingest/telemetry
+https://perma.cool/api/ingest/telemetry
 ```
 
 ## Security Guardrails

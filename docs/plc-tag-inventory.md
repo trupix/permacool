@@ -57,7 +57,7 @@ Additional HMI mirrors were observed (`CH1_HMITemperature`, `CH1_HMITemperatureS
 
 ## Telemetry Destination
 
-- Endpoint: `https://www.perma.cool/api/ingest/telemetry`
+- Endpoint: `https://perma.cool/api/ingest/telemetry`
 - Method: `POST`
 - Authentication header: `x-telemetry-token`
 - Token source on the EPIC: Node-RED environment variable `TELEMETRY_INGEST_TOKEN`
