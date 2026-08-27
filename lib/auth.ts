@@ -20,12 +20,6 @@ export async function getCurrentUser(): Promise<AppUser | undefined> {
 
   const email = supabaseUser.email ?? '';
   const metadata = supabaseUser.user_metadata ?? {};
-  const name =
-    (typeof metadata.full_name === 'string' && metadata.full_name) ||
-    (typeof metadata.name === 'string' && metadata.name) ||
-    email ||
-    'PermaCool user';
-
   if (!hasDatabaseUrl() || !email) return undefined;
 
   const existingUser = await db.user.findUnique({
@@ -36,30 +30,29 @@ export async function getCurrentUser(): Promise<AppUser | undefined> {
   if (!existingUser || existingUser.status !== 'approved') return undefined;
   if (existingUser.platformRole === 'customer' && existingUser.memberships.length === 0) return undefined;
 
-  const user = await db.user.update({
-    where: { id: existingUser.id },
-    data: { name },
-    include: { memberships: true, deviceAccess: true }
-  });
+  const displayName =
+    (typeof metadata.full_name === 'string' && metadata.full_name) ||
+    (typeof metadata.name === 'string' && metadata.name) ||
+    existingUser.name;
 
   return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    platformRole: user.platformRole,
-    status: user.status,
-    organizationIds: user.memberships.map((membership) => membership.organizationId),
+    id: existingUser.id,
+    name: displayName,
+    email: existingUser.email,
+    role: existingUser.role,
+    platformRole: existingUser.platformRole,
+    status: existingUser.status,
+    organizationIds: existingUser.memberships.map((membership) => membership.organizationId),
     organizationRoles: Object.fromEntries(
-      user.memberships.map((membership) => [
+      existingUser.memberships.map((membership) => [
         membership.organizationId,
         userRoleForMembership(membership.role)
       ])
     ),
-    allDeviceOrganizationIds: user.memberships
+    allDeviceOrganizationIds: existingUser.memberships
       .filter((membership) => membership.allDevices)
       .map((membership) => membership.organizationId),
-    deviceIds: user.deviceAccess.map((assignment) => assignment.deviceId)
+    deviceIds: existingUser.deviceAccess.map((assignment) => assignment.deviceId)
   };
 }
 

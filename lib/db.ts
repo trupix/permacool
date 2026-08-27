@@ -10,6 +10,7 @@ export const db =
     log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error']
   });
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = db;
-}
+// Next.js can load server code through more than one bundle in the same runtime.
+// Keep one client per runtime in every environment so those bundles do not create
+// competing Prisma pools against the same serverless database connection.
+globalForPrisma.prisma = db;
