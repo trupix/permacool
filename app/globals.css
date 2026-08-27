@@ -941,6 +941,45 @@ h4 {
   overflow: hidden;
 }
 
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1000;
+  padding: 0.8rem 1rem;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  background: #151816;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(calc(-100% - 1.5rem));
+  transition: transform 140ms ease;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  color: #fff;
+  outline: 3px solid var(--lime);
+  outline-offset: 3px;
+  transform: translateY(0);
+}
+
+.main-content-anchor {
+  position: absolute;
+  top: 5rem;
+  left: 0;
+  display: block;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  scroll-margin-top: 5rem;
+  outline: 0;
+}
+
 .site-header {
   position: fixed;
   inset: 0 0 auto;
@@ -4924,7 +4963,6 @@ h4 {
     inset: 74px 0 0;
     z-index: 1;
     width: 100%;
-    border: 0;
     background: rgba(5, 12, 13, 0.48);
     cursor: pointer;
   }
