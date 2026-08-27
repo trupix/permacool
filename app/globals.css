@@ -12686,3 +12686,203 @@ h4 {
     min-height: 220px;
   }
 }
+
+/* Branded public 404 */
+.not-found-page {
+  min-height: 100vh;
+  background: #f4f7f3;
+}
+
+.not-found-hero {
+  position: relative;
+  display: flex;
+  min-height: 650px;
+  align-items: center;
+  overflow: hidden;
+  padding: 10rem 2rem 7rem;
+  color: #fff;
+}
+
+.not-found-hero-image {
+  object-fit: cover;
+  object-position: 66% center;
+}
+
+.not-found-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(7, 14, 14, 0.98) 0%, rgba(7, 14, 14, 0.9) 39%, rgba(7, 14, 14, 0.3) 72%),
+    linear-gradient(0deg, rgba(7, 14, 14, 0.7), transparent 48%);
+}
+
+.not-found-hero-content {
+  position: relative;
+  z-index: 1;
+  width: min(var(--max), 100%);
+  margin: 0 auto;
+}
+
+.not-found-code {
+  margin-bottom: 1rem;
+  color: var(--lime);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.not-found-hero h1 {
+  max-width: 880px;
+  margin-bottom: 1.25rem;
+  font-size: clamp(3.2rem, 6vw, 5.8rem);
+}
+
+.not-found-hero-content > p:not(.not-found-code) {
+  max-width: 690px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1.15rem;
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.not-found-guide {
+  position: relative;
+  z-index: 2;
+  width: min(var(--max), calc(100% - 2rem));
+  margin: -3rem auto 0;
+  padding: 2rem 0 6.5rem;
+}
+
+.not-found-guide-heading {
+  max-width: 760px;
+  margin-bottom: 1.6rem;
+  padding: 1.6rem 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(15, 24, 20, 0.96);
+  box-shadow: 0 24px 65px rgba(17, 38, 27, 0.22);
+}
+
+.not-found-guide-heading h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+}
+
+.not-found-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.not-found-card {
+  display: flex;
+  min-height: 290px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.not-found-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(19, 167, 199, 0.42);
+  box-shadow: 0 22px 55px rgba(16, 42, 32, 0.14);
+}
+
+.not-found-card-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1.2rem;
+  place-items: center;
+  border: 1px solid rgba(19, 167, 199, 0.24);
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(19, 167, 199, 0.14), rgba(145, 200, 62, 0.15));
+  color: var(--cyan-dark);
+}
+
+.not-found-card h3 {
+  font-size: 1.35rem;
+}
+
+.not-found-card p {
+  font-size: 0.98rem;
+}
+
+.not-found-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: auto;
+  color: var(--cyan-dark);
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+@media (max-width: 980px) {
+  .not-found-hero {
+    min-height: 620px;
+  }
+
+  .not-found-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .not-found-hero {
+    min-height: 690px;
+    align-items: flex-end;
+    padding: 8.5rem 1rem 6.5rem;
+  }
+
+  .not-found-hero-image {
+    object-position: 70% center;
+  }
+
+  .not-found-hero-overlay {
+    background:
+      linear-gradient(0deg, rgba(7, 14, 14, 0.98) 0%, rgba(7, 14, 14, 0.84) 58%, rgba(7, 14, 14, 0.4) 100%),
+      linear-gradient(90deg, rgba(7, 14, 14, 0.7), transparent);
+  }
+
+  .not-found-hero h1 {
+    font-size: clamp(2.75rem, 13vw, 4rem);
+  }
+
+  .not-found-hero-content > p:not(.not-found-code) {
+    font-size: 1rem;
+  }
+
+  .not-found-actions,
+  .not-found-actions .button {
+    width: 100%;
+  }
+
+  .not-found-guide {
+    padding-bottom: 4.5rem;
+  }
+
+  .not-found-guide-heading {
+    padding: 1.35rem;
+  }
+
+  .not-found-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .not-found-card {
+    min-height: 250px;
+  }
+}
