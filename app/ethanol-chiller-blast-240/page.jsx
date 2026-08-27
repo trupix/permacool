@@ -20,6 +20,14 @@ import LearningCenterSection from "../components/LearningCenterSection";
 import StructuredData from "../components/StructuredData";
 import { InsightsHeader } from "../insights/InsightsShell";
 import { buildProductStructuredData, buildPublicPageMetadata } from "../../lib/site";
+import { buildContactHref } from "../../lib/contact";
+
+const blast240PricingHref = buildContactHref({
+  interest: "Ethanol Chillers",
+  requestType: "Product Pricing",
+  product: "BLAST 240/45",
+  source: "ethanol-chiller-blast-240"
+});
 
 const blast240Description =
   "Perma Cool BLAST 240/45 ethanol chiller flash-chills 240 gallons to −40 °C in 45 minutes with 6.0 GPM of flash chilling, direct refrigerant architecture, and PLC/HMI visibility.";
@@ -228,7 +236,7 @@ function Hero() {
           enterprise level extraction workflows.
         </p>
         <div className="hero-actions">
-          <a className="button primary" href="/contact-us">
+          <a className="button primary" href={blast240PricingHref}>
             Request BLAST 240/45 pricing
             <ArrowRight size={18} aria-hidden="true" />
           </a>
@@ -405,7 +413,7 @@ function RelatedCta() {
         </p>
       </div>
       <div className="related-actions">
-        <a className="button primary" href="/contact-us">
+        <a className="button primary" href={blast240PricingHref}>
           Request BLAST 240/45 pricing
           <ArrowRight size={18} aria-hidden="true" />
         </a>

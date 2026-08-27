@@ -19,6 +19,7 @@ import {
   TrendingUp,
   Wrench
 } from "lucide-react";
+import { buildContactHref } from "../../lib/contact";
 
 export const insightArticles = [
   {
@@ -50,7 +51,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Need reliable −40 performance?",
       title: "Build your extraction process around a temperature target operators remember and equipment can repeat.",
-      primary: ["Talk to Perma Cool", "/contact-us"],
+      primary: ["Talk to Perma Cool", buildContactHref({ interest: "Ethanol Chillers", requestType: "General Consultation", source: "minus-40-celsius-fahrenheit" })],
       secondary: ["Explore Ethanol Chillers", "/ethanol-chilling-systems"]
     }
   },
@@ -81,7 +82,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Building a stronger extraction operation?",
       title: "Design the chilling workflow around the process discipline that makes the lab scale.",
-      primary: ["Talk to Perma Cool", "/contact-us"],
+      primary: ["Talk to Perma Cool", buildContactHref({ interest: "Ethanol Chillers", requestType: "General Consultation", source: "owning-an-extraction-lab-means-owning-the-process" })],
       secondary: ["Explore Ethanol Chillers", "/ethanol-chilling-systems"]
     }
   },
@@ -110,7 +111,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Want to increase output per gallon?",
       title: "Build an extract, re-chill, and re-run workflow around reliable ethanol chilling.",
-      primary: ["Talk to Perma Cool", "/contact-us"],
+      primary: ["Talk to Perma Cool", buildContactHref({ interest: "Ethanol Chillers", requestType: "General Consultation", source: "more-output-per-gallon" })],
       secondary: ["Read Workflow Article", "/workflow"]
     }
   },
@@ -156,7 +157,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Cutting LN2 spend this quarter?",
       title: "Request a transition plan built around your current process load.",
-      primary: ["Request a Transition Plan", "/contact-us"],
+      primary: ["Request a Transition Plan", buildContactHref({ interest: "Ethanol Chillers", coolingMethod: "LN2", requestType: "Transition Plan", source: "how-to-reduce-ln2-dependence" })],
       secondary: ["Explore Ethanol Chillers", "/ethanol-chilling-systems"]
     }
   },
@@ -272,7 +273,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Want help matching a workflow to your extraction process?",
       title: "Map your extraction rhythm to the right chilling architecture.",
-      primary: ["Talk to Perma Cool", "/contact-us"],
+      primary: ["Talk to Perma Cool", buildContactHref({ interest: "Ethanol Chillers", requestType: "General Consultation", source: "workflow" })],
       secondary: ["See BLAST lineup", "/ethanol-chilling-systems"]
     }
   },
@@ -317,7 +318,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Protecting uptime on a high-duty system?",
       title: "Use service clarity to make the equipment feel trustworthy before purchase.",
-      primary: ["Request Service Guidance", "/contact-us"],
+      primary: ["Request Service Guidance", buildContactHref({ interest: "Ethanol Chillers", requestType: "Service Guidance", source: "industrial-process-chiller-maintenance" })],
       secondary: ["See Chiller Systems", "/ethanol-chilling-systems"]
     }
   },
@@ -373,7 +374,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Need help sizing your cooling architecture?",
       title: "Turn intake answers into a better equipment recommendation.",
-      primary: ["Book a Design Call", "/contact-us"],
+      primary: ["Book a Design Call", buildContactHref({ requestType: "Design Call", source: "extraction-cooling-system-design-checklist" })],
       secondary: ["Compare Cooling Approaches", "/direct-refrigerant-vs-ln2"]
     }
   },
@@ -428,7 +429,7 @@ export const insightArticles = [
     cta: {
       eyebrow: "Need help modeling LN2 replacement economics?",
       title: "Compare annual cost, control, and install fit against your current process.",
-      primary: ["Get a Cost Comparison Call", "/contact-us"],
+      primary: ["Get a Cost Comparison Call", buildContactHref({ interest: "Ethanol Chillers", coolingMethod: "LN2", requestType: "Cost Comparison", source: "direct-refrigerant-vs-ln2" })],
       secondary: ["See BLAST 150/45", "/ethanol-chiller-blast-150"]
     }
   }

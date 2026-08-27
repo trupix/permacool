@@ -13,6 +13,21 @@ import LearningCenterSection from "../components/LearningCenterSection";
 import StructuredData from "../components/StructuredData";
 import { InsightsHeader } from "../insights/InsightsShell";
 import { buildPublicPageMetadata, buildServiceStructuredData } from "../../lib/site";
+import { buildContactHref } from "../../lib/contact";
+
+const butanePricingHref = buildContactHref({
+  interest: "Butane Recovery Systems",
+  requestType: "Product Pricing",
+  product: "Butane Recovery System",
+  source: "butane-recovery-system"
+});
+
+const butaneFitReviewHref = buildContactHref({
+  interest: "Butane Recovery Systems",
+  requestType: "System Fit Review",
+  product: "Butane Recovery System",
+  source: "butane-recovery-system"
+});
 
 const butaneRecoveryDescription =
   "Perma Cool butane recovery systems for commercial BHO extraction labs, with process-zone planning, cooling integration, PLC/HMI visibility, and production support.";
@@ -152,7 +167,7 @@ export default function ButaneRecoveryPage() {
             and facility fit so the recovery side stops becoming the bottleneck.
           </p>
           <div className="hero-actions">
-            <a className="button butane" href="/contact-us">
+            <a className="button butane" href={butanePricingHref}>
               Request Recovery System Pricing
               <ArrowRight size={18} aria-hidden="true" />
             </a>
@@ -271,7 +286,7 @@ export default function ButaneRecoveryPage() {
           <p>Send the recovery target, facility constraints, and run cadence so Perma Cool can scope the next step.</p>
         </div>
         <div className="related-actions">
-          <a className="button butane" href="/contact-us">
+          <a className="button butane" href={butaneFitReviewHref}>
             Request System Fit Review
             <ArrowRight size={18} aria-hidden="true" />
           </a>

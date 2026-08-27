@@ -1,6 +1,17 @@
 import { ArrowRight, CheckCircle2, ClipboardList, Mail, Phone } from "lucide-react";
 import { InsightsHeader } from "../insights/InsightsShell";
 import { buildPublicPageMetadata } from "../../lib/site";
+import {
+  allowedContactValue,
+  buildContactSubmissionAction,
+  contactIntentCopy,
+  CONTACT_COOLING_METHODS,
+  CONTACT_INTERESTS,
+  CONTACT_PRODUCTS,
+  CONTACT_REQUEST_TYPES,
+  firstContactParam,
+  normalizeContactField
+} from "../../lib/contact";
 
 export const metadata = buildPublicPageMetadata({
   path: "/contact-us",
@@ -12,14 +23,29 @@ export const metadata = buildPublicPageMetadata({
 
 export default async function Page({ searchParams }) {
   const params = await searchParams;
-  const hasError = params?.error === "submit_failed";
+  const errorCode = firstContactParam(params?.error);
+  const interest = allowedContactValue(params?.interest, CONTACT_INTERESTS);
+  const coolingMethod = allowedContactValue(params?.cooling_method, CONTACT_COOLING_METHODS);
+  const requestType = allowedContactValue(params?.request_type, CONTACT_REQUEST_TYPES, "Quote");
+  const product = allowedContactValue(params?.product, CONTACT_PRODUCTS);
+  const source = normalizeContactField(firstContactParam(params?.source), 120);
+  const intentCopy = contactIntentCopy({ requestType, product });
+  const formAction = buildContactSubmissionAction({ requestType, product, source });
+  const errorMessage =
+    errorCode === "invalid_submission"
+      ? "Please enter a valid name, email address, and system interest."
+      : errorCode === "too_many_requests"
+        ? "We received several requests from this connection. Please wait a few minutes or call 747.208.1001."
+        : errorCode === "submit_failed"
+          ? "Something went wrong sending the form. Please try again or call 747.208.1001."
+          : null;
 
   return (
     <main className="site-shell contact-page">
       <InsightsHeader />
       <section className="contact-hero">
         <div className="contact-hero-copy">
-          <p className="eyebrow">Request a Quote</p>
+          <p className="eyebrow">{intentCopy.eyebrow}</p>
           <h1>Tell us what your extraction cooling workflow needs to do.</h1>
           <p>
             Share your target temperature, throughput, and current cooling method. Perma Cool will use that information
@@ -37,20 +63,25 @@ export default async function Page({ searchParams }) {
           </div>
         </div>
 
-        <form className="contact-form" action="/api/contact" method="post">
+        <form className="contact-form" action={formAction} method="post">
           <div className="contact-form-head">
             <ClipboardList size={24} aria-hidden="true" />
             <div>
               <h2>Contact - Perma Cool</h2>
-              <p>We will get back to you right away - don't hesitate to call us</p>
+              <p>{product || requestType !== "Quote" ? `${intentCopy.formTitle}. We will keep this context with your request.` : "We will get back to you right away — don't hesitate to call us."}</p>
             </div>
           </div>
 
-          {hasError ? (
+          {errorMessage ? (
             <p className="form-alert" role="alert">
-              Something went wrong sending the form. Please try again or call 747.208.1001.
+              {errorMessage}
             </p>
           ) : null}
+
+          <label className="contact-honeypot" aria-hidden="true">
+            Website
+            <input type="text" name="website" tabIndex="-1" autoComplete="off" />
+          </label>
 
           <div className="form-grid">
             <label>
@@ -71,7 +102,8 @@ export default async function Page({ searchParams }) {
             </label>
             <label>
               Primary Interest
-              <select name="interest" defaultValue="Ethanol Chillers">
+              <select name="interest" defaultValue={interest} required>
+                <option value="" disabled>Select a system</option>
                 <option>Ethanol Chillers</option>
                 <option>Butane Recovery Systems</option>
                 <option>Both</option>
@@ -79,7 +111,8 @@ export default async function Page({ searchParams }) {
             </label>
             <label>
               Current Cooling Method
-              <select name="cooling_method" defaultValue="LN2">
+              <select name="cooling_method" defaultValue={coolingMethod}>
+                <option value="">Select current method</option>
                 <option>LN2</option>
                 <option>Direct Refrigerant</option>
                 <option>Hybrid</option>
@@ -106,7 +139,7 @@ export default async function Page({ searchParams }) {
           </label>
 
           <button className="button primary contact-submit" type="submit">
-            Get My Quote
+            {intentCopy.buttonLabel}
             <ArrowRight size={18} aria-hidden="true" />
           </button>
         </form>

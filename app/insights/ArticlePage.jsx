@@ -7,6 +7,13 @@ import {
   RelatedReading,
   SectionCardGrid
 } from "./InsightsShell";
+import { buildContactHref } from "../../lib/contact";
+
+const workflowConsultationHref = buildContactHref({
+  interest: "Ethanol Chillers",
+  requestType: "General Consultation",
+  source: "workflow"
+});
 
 const moreOutputSteps = [
   "Extract with properly chilled ethanol.",
@@ -303,7 +310,7 @@ function MoreOutputWorkflowSections() {
             before it moves to recovery.
           </p>
         </div>
-        <a className="button primary" href="/contact-us">
+        <a className="button primary" href={workflowConsultationHref}>
           Talk to Perma Cool
           <ArrowRight size={18} aria-hidden="true" />
         </a>

@@ -13,6 +13,9 @@ import {
 import LearningCenterSection from "./components/LearningCenterSection";
 import { InsightsHeader } from "./insights/InsightsShell";
 import { buildPublicPageMetadata } from "../lib/site";
+import { buildContactHref } from "../lib/contact";
+
+const homepageQuoteHref = buildContactHref({ requestType: "Quote", source: "homepage" });
 
 export const metadata = buildPublicPageMetadata({
   path: "/",
@@ -143,7 +146,7 @@ export default function HomePage() {
               Explore Butane Recovery
               <ArrowRight size={18} aria-hidden="true" />
             </a>
-            <a className="button secondary" href="/contact-us">
+            <a className="button secondary" href={homepageQuoteHref}>
               Request a Quote
               <ArrowRight size={18} aria-hidden="true" />
             </a>
@@ -306,7 +309,7 @@ export default function HomePage() {
           <h2>Need pricing fast? Tell us your extraction throughput.</h2>
         </div>
         <div className="related-actions">
-          <a className="button primary" href="/contact-us">
+          <a className="button primary" href={homepageQuoteHref}>
             Request a Quote
             <ArrowRight size={18} aria-hidden="true" />
           </a>

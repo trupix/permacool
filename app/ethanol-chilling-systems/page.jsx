@@ -18,6 +18,19 @@ import LearningCenterSection from "../components/LearningCenterSection";
 import StructuredData from "../components/StructuredData";
 import { InsightsHeader } from "../insights/InsightsShell";
 import { buildPublicPageMetadata, buildServiceStructuredData } from "../../lib/site";
+import { buildContactHref } from "../../lib/contact";
+
+const ethanolRecommendationHref = buildContactHref({
+  interest: "Ethanol Chillers",
+  requestType: "System Recommendation",
+  source: "ethanol-chilling-systems"
+});
+
+const ethanolPricingHref = buildContactHref({
+  interest: "Ethanol Chillers",
+  requestType: "Product Pricing",
+  source: "ethanol-chilling-systems"
+});
 
 const ethanolSystemsDescription =
   "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, −40 °C operation, reduced LN2 dependence, and commercial extraction throughput.";
@@ -262,7 +275,7 @@ export default function EthanolChillingSystemsPage() {
             ))}
           </div>
           <div className="hero-actions">
-            <a className="button primary" href="/contact-us">
+            <a className="button primary" href={ethanolRecommendationHref}>
               Request a custom recommendation
               <ArrowRight size={18} aria-hidden="true" />
             </a>
@@ -476,7 +489,7 @@ export default function EthanolChillingSystemsPage() {
           </div>
         </div>
         <div className="related-actions">
-          <a className="button primary" href="/contact-us">
+          <a className="button primary" href={ethanolPricingHref}>
             Request Chiller Pricing
             <ArrowRight size={18} aria-hidden="true" />
           </a>

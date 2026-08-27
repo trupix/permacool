@@ -15,6 +15,14 @@ import {
 } from "lucide-react";
 import LearningCenterSection from "./components/LearningCenterSection";
 import { InsightsHeader } from "./insights/InsightsShell";
+import { buildContactHref } from "../lib/contact";
+
+const blast60PricingHref = buildContactHref({
+  interest: "Ethanol Chillers",
+  requestType: "Product Pricing",
+  product: "BLAST 60/45",
+  source: "ethanol-chiller-blast-60"
+});
 
 const heroStats = [
   {
@@ -187,7 +195,7 @@ function Hero() {
         </h1>
         <p className="hero-lede">Chill 60 gallons of ethanol from room temperature to −40 °C in 45 minutes.</p>
         <div className="hero-actions">
-          <a className="button primary" href="/contact-us">
+          <a className="button primary" href={blast60PricingHref}>
             Request lead time + pricing
             <ArrowRight size={18} aria-hidden="true" />
           </a>

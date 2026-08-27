@@ -24,6 +24,7 @@
     "dashboard:guardrails:test": "node scripts/test-dashboard-guardrails.ts",
     "controller:links:test": "node scripts/test-controller-links.ts",
     "site:foundation:test": "node scripts/test-site-foundation.ts",
+    "contact:funnel:test": "node scripts/test-contact-funnel.js",
     "auth:password:test": "node scripts/test-password-auth.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",

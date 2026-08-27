@@ -11,6 +11,12 @@ import LearningCenterLibrary from "./LearningCenterLibrary";
 import { InsightsHeader } from "./InsightsShell";
 import StructuredData from "../components/StructuredData";
 import { PUBLIC_ROBOTS, SITE_URL, absoluteUrl, buildLearningCenterStructuredData } from "../../lib/site";
+import { buildContactHref } from "../../lib/contact";
+
+const learningCenterRecommendationHref = buildContactHref({
+  requestType: "System Recommendation",
+  source: "learning-center"
+});
 
 const learningCenterDescription =
   "Plain-language extraction cooling guides covering temperature science, ethanol workflow, LN2 economics, maintenance, and system planning.";
@@ -152,7 +158,7 @@ export function LearningCenterPage() {
             connect the technical guidance to the next practical step.
           </p>
         </div>
-        <a className="button primary" href="/contact-us">
+        <a className="button primary" href={learningCenterRecommendationHref}>
           Request a recommendation
           <ArrowRight size={18} aria-hidden="true" />
         </a>

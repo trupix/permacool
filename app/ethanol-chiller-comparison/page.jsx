@@ -12,6 +12,13 @@ import {
 import LearningCenterSection from "../components/LearningCenterSection";
 import { InsightsHeader } from "../insights/InsightsShell";
 import { buildPublicPageMetadata } from "../../lib/site";
+import { buildContactHref } from "../../lib/contact";
+
+const comparisonRecommendationHref = buildContactHref({
+  interest: "Ethanol Chillers",
+  requestType: "System Recommendation",
+  source: "ethanol-chiller-comparison"
+});
 
 export const metadata = buildPublicPageMetadata({
   path: "/ethanol-chiller-comparison",
@@ -126,7 +133,7 @@ export default function EthanolChillerComparisonPage() {
             throughput target.
           </p>
           <div className="hero-actions">
-            <a className="button primary" href="/contact-us">
+            <a className="button primary" href={comparisonRecommendationHref}>
               Get a System Recommendation
               <ArrowRight size={18} aria-hidden="true" />
             </a>
@@ -244,7 +251,7 @@ export default function EthanolChillerComparisonPage() {
           <p>A system recommendation can match capacity, utilities, and extraction goals instead of guessing from a chart.</p>
         </div>
         <div className="related-actions">
-          <a className="button primary" href="/contact-us">
+          <a className="button primary" href={comparisonRecommendationHref}>
             Request a Recommendation
             <ArrowRight size={18} aria-hidden="true" />
           </a>
