@@ -109,10 +109,11 @@ export default function EthanolChillerComparisonPage() {
 
       <section className="comparison-hero">
         <Image
-          src="/images/generated/ethanol-systems-hero.png"
+          src="/images/generated/ethanol-systems-hero.webp"
           alt=""
           fill
           priority
+          fetchPriority="high"
           className="comparison-hero-image"
           sizes="100vw"
         />
@@ -140,7 +141,13 @@ export default function EthanolChillerComparisonPage() {
       <section className="comparison-model-strip" aria-label="BLAST ethanol chiller summary">
         {models.map((model) => (
           <article key={model.name}>
-            <Image src={model.image} alt="" width={520} height={320} />
+            <Image
+              src={model.image}
+              alt=""
+              width={520}
+              height={320}
+              sizes="(max-width: 680px) 76px, 96px"
+            />
             <div>
               <h2>{model.name}</h2>
               <p>{model.capacity} to −40 °C in {model.time}</p>
@@ -202,7 +209,13 @@ export default function EthanolChillerComparisonPage() {
         <div className="comparison-model-grid">
           {models.map((model) => (
             <article className="comparison-model-card" key={model.name}>
-              <Image src={model.image} alt="" width={680} height={420} />
+              <Image
+                src={model.image}
+                alt=""
+                width={680}
+                height={420}
+                sizes="(max-width: 980px) calc(100vw - 2rem), 380px"
+              />
               <div>
                 <h3>{model.name}</h3>
                 <ul>

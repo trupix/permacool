@@ -175,6 +175,7 @@ function Hero() {
         alt="Industrial ethanol chilling platform in a clean production facility"
         fill
         priority
+        fetchPriority="high"
         className="hero-image"
         sizes="100vw"
       />
@@ -233,7 +234,13 @@ function Components() {
         {components.map((item) => (
           <article className="component-card" key={item.title}>
             <div className="component-media">
-              <Image src={item.image} alt={item.alt} width={720} height={520} />
+              <Image
+                src={item.image}
+                alt={item.alt}
+                width={720}
+                height={520}
+                sizes="(max-width: 980px) calc(100vw - 2rem), 580px"
+              />
             </div>
             <div className="component-copy">
               <p className="eyebrow">{item.eyebrow}</p>
@@ -272,6 +279,7 @@ function CascadeDesign() {
             alt="Photo-based refrigerant pipe flow diagram for the BLAST 60/45 cascade system"
             width={1536}
             height={1024}
+            sizes="(max-width: 980px) calc(100vw - 2rem), 540px"
           />
         </figure>
       </div>
@@ -315,6 +323,7 @@ function CentrifugePairing() {
           alt="BLAST 60/45 crystal bear ethanol chilling performance card"
           width={1600}
           height={1100}
+          sizes="(max-width: 980px) calc(100vw - 2rem), 1180px"
         />
       </figure>
       <div className="workflow-copy">
@@ -369,6 +378,7 @@ function HighlightsAndRoi() {
             alt="Visual transition from consumable cooling to electric industrial chilling"
             width={1365}
             height={1024}
+            sizes="(max-width: 980px) calc(100vw - 2rem), 540px"
           />
         </figure>
         <div className="roi-copy">

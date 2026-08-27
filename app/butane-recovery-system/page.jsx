@@ -139,6 +139,7 @@ export default function ButaneRecoveryPage() {
           alt=""
           fill
           priority
+          fetchPriority="high"
           className="hero-image"
           sizes="100vw"
         />

@@ -55,6 +55,7 @@ export default function NotFound() {
           alt=""
           fill
           priority
+          fetchPriority="high"
           sizes="100vw"
         />
         <div className="not-found-hero-overlay" />

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { AppShell } from '@/components/app-shell';
 import { requireUser } from '@/lib/auth';
+import './ops.css';
 
 export const dynamic = 'force-dynamic';
 

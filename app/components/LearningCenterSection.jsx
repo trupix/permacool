@@ -30,7 +30,13 @@ export default function LearningCenterSection() {
       <div className="learning-center-card-grid">
         {featuredArticles.map((article) => (
           <a className="learning-center-card" href={article.href} key={article.slug}>
-            <Image src={article.image} alt="" width={520} height={340} />
+            <Image
+              src={article.image}
+              alt=""
+              width={520}
+              height={340}
+              sizes="(max-width: 980px) calc(100vw - 4.3rem), 235px"
+            />
             <span>{article.category}</span>
             <strong>{article.shortTitle}</strong>
           </a>

@@ -241,10 +241,11 @@ export default function EthanolChillingSystemsPage() {
       <InsightsHeader />
       <section className="ecs-hero">
         <Image
-          src="/images/generated/ethanol-systems-hero.png"
+          src="/images/generated/ethanol-systems-hero.webp"
           alt="Perma Cool ethanol chilling system in a clean industrial facility"
           fill
           priority
+          fetchPriority="high"
           className="ecs-hero-image"
           sizes="100vw"
         />
@@ -369,6 +370,7 @@ export default function EthanolChillingSystemsPage() {
                   alt=""
                   width={720}
                   height={520}
+                  sizes="(max-width: 980px) calc(100vw - 2rem), 580px"
                   className={product.image.includes("flash-chilling") || product.image.includes("tier-badge") || product.image.includes("bear-card") ? "ecs-product-spec-image" : undefined}
                 />
               </div>

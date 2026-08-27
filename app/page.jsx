@@ -118,10 +118,11 @@ export default function HomePage() {
 
       <section className="home-hero">
         <Image
-          src="/images/generated/ethanol-systems-hero.png"
+          src="/images/generated/ethanol-systems-hero.webp"
           alt=""
           fill
           priority
+          fetchPriority="high"
           className="home-hero-image"
           sizes="100vw"
         />
@@ -176,7 +177,13 @@ export default function HomePage() {
         <div className="home-ethanol-layout">
           <article className="home-ethanol-overview">
             <a className="home-ethanol-overview-media" href={ethanolOverview.href} aria-label={ethanolOverview.title}>
-              <Image src={ethanolOverview.image} alt="" width={900} height={540} />
+              <Image
+                src={ethanolOverview.image}
+                alt=""
+                width={900}
+                height={540}
+                sizes="(max-width: 980px) calc(100vw - 2rem), 560px"
+              />
             </a>
             <div className="home-ethanol-overview-copy">
               <p className="eyebrow">Category Overview</p>
@@ -201,7 +208,13 @@ export default function HomePage() {
               {blastSystems.map((system) => (
                 <article className="home-system-card" key={system.title}>
                   <a className="home-system-media" href={system.href} aria-label={system.title}>
-                    <Image src={system.image} alt="" width={720} height={440} />
+                    <Image
+                      src={system.image}
+                      alt=""
+                      width={720}
+                      height={440}
+                      sizes="(max-width: 980px) calc(100vw - 2rem), 380px"
+                    />
                   </a>
                   <div className="home-system-copy">
                     <h3>{system.title}</h3>
@@ -221,7 +234,13 @@ export default function HomePage() {
       <section className="home-butane-section" aria-labelledby="home-butane-heading">
         <div className="home-butane-inner">
           <a className="home-butane-media" href={butaneRecovery.href} aria-label={butaneRecovery.title}>
-            <Image src={butaneRecovery.image} alt="" width={720} height={440} />
+            <Image
+              src={butaneRecovery.image}
+              alt=""
+              width={720}
+              height={440}
+              sizes="(max-width: 980px) calc(100vw - 2rem), 560px"
+            />
           </a>
           <div className="home-butane-copy">
             <p className="eyebrow">Butane Recovery</p>

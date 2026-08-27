@@ -87,7 +87,7 @@ export function LearningCenterPage() {
       <InsightsHeader />
 
       <section className="insights-hero learning-center-hero">
-        <Image src={insightHeroImage} alt="" fill priority className="insights-hero-image" sizes="100vw" />
+        <Image src={insightHeroImage} alt="" fill priority fetchPriority="high" className="insights-hero-image" sizes="100vw" />
         <div className="insights-hero-overlay" />
         <div className="insights-hero-content">
           <p className="eyebrow">Perma Cool Knowledge Hub</p>

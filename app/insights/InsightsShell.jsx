@@ -26,7 +26,7 @@ export function ArticleHero({ article }) {
     <>
       <StructuredData data={buildArticleStructuredData(article)} />
       <section className={`insight-article-hero ${article.heroClass || ""}`}>
-        <Image src={article.image} alt="" fill priority className="insight-article-hero-image" sizes="100vw" />
+        <Image src={article.image} alt="" fill priority fetchPriority="high" className="insight-article-hero-image" sizes="100vw" />
         <div className="insight-article-hero-overlay" />
         <div className="insight-article-hero-content">
           <a className="insight-back-link" href="/learning-center">
