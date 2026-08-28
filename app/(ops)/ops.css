@@ -5354,6 +5354,182 @@
   font-weight: 850;
 }
 
+.controller-connection-path {
+  display: grid;
+  gap: 1rem;
+  padding: 1.1rem;
+  border: 1px solid rgba(17, 44, 34, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 252, 0.94);
+  box-shadow: 0 14px 38px rgba(28, 49, 40, 0.06);
+}
+
+.controller-connection-path.is-fault {
+  border-color: rgba(174, 72, 57, 0.24);
+}
+
+.controller-connection-path__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.controller-connection-path__heading h2 {
+  margin: 0.12rem 0 0;
+  color: var(--ops-ink);
+  font-size: clamp(1.05rem, 2vw, 1.38rem);
+}
+
+.controller-connection-path__heading p:not(.eyebrow) {
+  max-width: 730px;
+  margin: 0.3rem 0 0;
+  color: #718179;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.controller-connection-path__summary {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 0.34rem;
+  padding: 0.4rem 0.58rem;
+  border-radius: 999px;
+  background: #eef1ed;
+  color: #67776f;
+  font-size: 0.61rem;
+  font-weight: 850;
+}
+
+.controller-connection-path__summary.is-healthy {
+  background: #e7f5df;
+  color: #47753d;
+}
+
+.controller-connection-path__summary.is-fault {
+  background: #fae6e1;
+  color: #9a4336;
+}
+
+.controller-connection-path__stages {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(155px, 1fr));
+  gap: 0.58rem;
+  overflow-x: auto;
+  padding: 0.18rem 0 0.5rem;
+}
+
+.controller-connection-path__stage-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.controller-connection-path__stage {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: start;
+  gap: 0.48rem;
+  width: 100%;
+  min-height: 150px;
+  padding: 0.72rem;
+  border: 1px solid #dce2dd;
+  border-radius: 12px;
+  background: #f5f7f4;
+  color: #65736c;
+}
+
+.controller-connection-path__stage.is-healthy {
+  border-color: #b8d7aa;
+  background: #edf8e7;
+  color: #47753d;
+}
+
+.controller-connection-path__stage.is-fault {
+  border-color: #e5aea4;
+  background: #fae6e1;
+  color: #934438;
+}
+
+.controller-connection-path__stage.is-stale {
+  border-color: #e4c574;
+  background: #fff4cc;
+  color: #7e611a;
+}
+
+.controller-connection-path__stage.is-unmonitored {
+  border-style: dashed;
+  background: transparent;
+  color: #77837d;
+}
+
+.controller-connection-path__stage.is-checking .controller-connection-path__stage-icon {
+  animation: salinas-dashboard-spin 1s linear infinite;
+}
+
+.controller-connection-path__stage-icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.controller-connection-path__stage small,
+.controller-connection-path__stage strong,
+.controller-connection-path__stage p,
+.controller-connection-path__stage time {
+  display: block;
+}
+
+.controller-connection-path__stage small {
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.controller-connection-path__stage strong {
+  margin-top: 0.13rem;
+  font-size: 0.76rem;
+}
+
+.controller-connection-path__stage p {
+  margin: 0.38rem 0 0;
+  color: currentColor;
+  font-size: 0.59rem;
+  line-height: 1.4;
+  opacity: 0.86;
+}
+
+.controller-connection-path__stage time {
+  margin-top: 0.45rem;
+  font-size: 0.54rem;
+  font-weight: 750;
+  opacity: 0.68;
+}
+
+.controller-connection-path__arrow {
+  align-self: center;
+  color: #a4afa9;
+  font-size: 0.8rem;
+}
+
+.controller-connection-path__note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.44rem;
+  padding: 0.62rem 0.7rem;
+  border-radius: 10px;
+  background: #f1f4ef;
+  color: #65736c;
+  font-size: 0.62rem;
+  line-height: 1.45;
+}
+
 .equipment-event-list {
   display: grid;
   gap: 0.55rem;
@@ -5521,6 +5697,14 @@
 
   .operating-sequence__unit-heading {
     align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .controller-connection-path {
+    padding: 0.85rem;
+  }
+
+  .controller-connection-path__heading {
     flex-direction: column;
   }
 }

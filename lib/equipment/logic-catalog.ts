@@ -176,6 +176,28 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     updatedBy: 'System catalog'
   },
   {
+    slug: 'signal-controller-connection-path',
+    category: 'signal',
+    title: 'Controller connection-path health',
+    signalKey: 'node_red_pac_read_ok / pac_strategy_running / pac_io_communication_ok / io_channel_fault_count / controller_heartbeat',
+    definition: 'Independent read-only checks identify whether the EPIC is reachable, Node-RED can read PAC Control, the strategy is running, physical I/O is communicating, and telemetry is reaching PermaCool.',
+    behavior: 'Cannon Falls displays each layer separately on Live and Connectivity. A current PAC API read may prove EPIC reachability but is explicitly labeled as an inference rather than a direct VPN-session state. Missing values remain Not monitored.',
+    implementationStatus: 'deployed',
+    sortOrder: 106,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'operation-controller-recovery-deferred',
+    category: 'operation',
+    title: 'Automatic controller recovery remains disabled',
+    signalKey: null,
+    definition: 'The website monitors the controller connection path but does not restart networking, VPN, Node-RED, PAC Control, or physical I/O.',
+    behavior: 'The proposed controller-side watchdog remains deferred until its safe-state behavior and maximum 20-minute outage window are reviewed for the installed strategy.',
+    implementationStatus: 'deployed',
+    sortOrder: 107,
+    updatedBy: 'System catalog'
+  },
+  {
     slug: 'operation-unit-state',
     category: 'operation',
     title: 'CH1 and CH2 top status',

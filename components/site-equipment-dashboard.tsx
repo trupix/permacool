@@ -33,6 +33,7 @@ import {
   type RussellUnitCapacityEvaluation,
   type SuctionTemperatureSource
 } from '@/lib/equipment/performance';
+import { resolveControllerConnectionPath } from '@/lib/equipment/controller-connection-path';
 import { deriveOperatingSequence } from '@/lib/equipment/operating-sequence';
 import { normalizeTelemetryKey, resolveTelemetryPoint } from '@/lib/equipment/telemetry';
 import {
@@ -1354,6 +1355,15 @@ export function SiteEquipmentDashboard({
   const heartbeatIsCurrent = heartbeatPoint
     ? signalIsFresh(heartbeatPoint, telemetry.fetchedAt, CONTROLLER_HEARTBEAT_STALE_MS)
     : false;
+  const controllerConnectionPath = resolveControllerConnectionPath({
+    points: telemetry.points,
+    deviceIds: system.condensers
+      .map((asset) => asset.telemetryDeviceId)
+      .filter((deviceId): deviceId is string => Boolean(deviceId)),
+    referenceTimestamp: telemetry.fetchedAt,
+    feedStatus: telemetry.status,
+    maximumAgeMs: CONTROLLER_HEARTBEAT_STALE_MS
+  });
   const mappedRelevantSignals = analyses.flatMap((analysis) =>
     [
       analysis.signals.temperature,
@@ -1529,6 +1539,55 @@ export function SiteEquipmentDashboard({
         </div>
         {renderTelemetryFeedStatusCard(true)}
       </section>
+      ) : null}
+
+      {(view === 'overview' || view === 'connectivity') && siteId === 'site-cannon-falls' ? (
+        <section className={`controller-connection-path is-${controllerConnectionPath.state}`} aria-labelledby="controller-connection-path-title">
+          <div className="controller-connection-path__heading">
+            <div>
+              <p className="eyebrow">Controller communication chain · read-only</p>
+              <h2 id="controller-connection-path-title">{controllerConnectionPath.label}</h2>
+              <p>
+                Each layer is checked independently so a running strategy cannot hide a disconnected physical I/O board.
+              </p>
+            </div>
+            <span className={`controller-connection-path__summary is-${controllerConnectionPath.state}`}>
+              {controllerConnectionPath.state === 'healthy' ? <CheckCircle2 size={15} /> : <ShieldAlert size={15} />}
+              {controllerConnectionPath.state === 'healthy' ? 'All monitored layers current' : 'Review the first non-green layer'}
+            </span>
+          </div>
+
+          <div className="controller-connection-path__stages">
+            {controllerConnectionPath.stages.map((stage, index) => (
+              <div className="controller-connection-path__stage-wrap" key={stage.id}>
+                <article className={`controller-connection-path__stage is-${stage.state}`}>
+                  <span className="controller-connection-path__stage-icon" aria-hidden="true">
+                    {stage.state === 'healthy' ? <CheckCircle2 size={16} /> : stage.state === 'checking' ? <RefreshCw size={16} /> : <ShieldAlert size={16} />}
+                  </span>
+                  <div>
+                    <small>{stage.label}</small>
+                    <strong>{stage.status}</strong>
+                    <p>{stage.detail}</p>
+                    <time dateTime={stage.observedAt ?? undefined}>
+                      {stage.observedAt ? `Observed ${formatTimestamp(stage.observedAt, true)}` : 'No signal received'}
+                    </time>
+                  </div>
+                </article>
+                {index < controllerConnectionPath.stages.length - 1 ? (
+                  <span className="controller-connection-path__arrow" aria-hidden="true">→</span>
+                ) : null}
+              </div>
+            ))}
+          </div>
+
+          <div className="controller-connection-path__note">
+            <CircleAlert size={15} aria-hidden="true" />
+            <span>
+              Monitoring only. The website does not restart the VPN, PAC strategy, Node-RED, or I/O boards.
+              The reviewed 20-minute recovery watchdog remains a future controller-side change.
+            </span>
+          </div>
+        </section>
       ) : null}
 
       {view === 'specs' ? (
