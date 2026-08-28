@@ -252,11 +252,17 @@ assert.match(
   /siteId === 'site-cannon-falls'[\s\S]*Command and physical feedback[\s\S]*deriveOperatingSequence/,
   'Cannon Falls must receive the first reusable command-to-feedback diagnostic GUI.'
 );
+assert.match(
+  dashboard,
+  /siteId === 'site-cannon-falls' \|\| siteId === 'site-salinas'[\s\S]*Command and physical feedback/,
+  'Salinas must receive the same reusable command-to-feedback diagnostic GUI.'
+);
+assert.match(dashboard, /includePump: siteId !== 'site-cannon-falls'/, 'Salinas must retain its per-channel pump layer.');
 assert.match(dashboard, /Missing signals remain “Not configured”/, 'The GUI must not guess missing PLC output states.');
 assert.match(
   dashboard,
-  /siteId === 'site-cannon-falls'[\s\S]*controller-connection-path-title/,
-  'Cannon Falls must display the independent controller connection path.'
+  /siteId === 'site-cannon-falls' \|\| siteId === 'site-salinas'[\s\S]*controller-connection-path-title/,
+  'Cannon Falls and Salinas must display the independent controller connection path.'
 );
 assert.match(dashboard, /running strategy cannot hide a disconnected physical I\/O board/);
 assert.match(dashboard, /20-minute recovery watchdog remains a future controller-side change/);

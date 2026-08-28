@@ -1,6 +1,6 @@
 # Controller connection path
 
-The Cannon Falls dashboard separates six read-only health layers so a running PAC strategy is never mistaken for healthy physical I/O:
+The Cannon Falls and Salinas dashboards separate six read-only health layers so a running PAC strategy is never mistaken for healthy physical I/O:
 
 1. VPN and EPIC reachability, inferred only from a current successful PAC API read until a direct VPN-session signal is available.
 2. PAC Control strategy running state.
