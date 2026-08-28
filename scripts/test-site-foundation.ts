@@ -247,6 +247,20 @@ assert.match(dashboard, /signals\.compressorAmps\?\.value \?\?[\s\S]*: null\)/);
 assert.match(dashboard, /signals\.pumpAmps\?\.value \?\? null/);
 assert.match(dashboard, /signalDetail\(signals\.pumpAmps, 'Awaiting sensor'/);
 assert.match(dashboard, /Waiting for PLC/, 'Missing telemetry must keep the gauges visible and label the unit clearly.');
+assert.match(
+  dashboard,
+  /siteId === 'site-cannon-falls'[\s\S]*Command and physical feedback[\s\S]*deriveOperatingSequence/,
+  'Cannon Falls must receive the first reusable command-to-feedback diagnostic GUI.'
+);
+assert.match(dashboard, /Missing signals remain “Not configured”/, 'The GUI must not guess missing PLC output states.');
+assert.match(
+  dashboard,
+  /siteId === 'site-cannon-falls'[\s\S]*controller-connection-path-title/,
+  'Cannon Falls must display the independent controller connection path.'
+);
+assert.match(dashboard, /running strategy cannot hide a disconnected physical I\/O board/);
+assert.match(dashboard, /20-minute recovery watchdog remains a future controller-side change/);
+assert.match(dashboard, /ch1|signalsForChannel/, 'The shared channel resolver must remain reusable across configured sites.');
 assert.match(dashboard, /Equipment selections pending/);
 assert.match(dashboard, /Manufacturer source pending/);
 assert.match(dashboard, /catalogByRecordId\.get\(asset\.catalogRecordId\)/);

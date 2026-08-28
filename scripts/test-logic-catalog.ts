@@ -32,7 +32,15 @@ for (const requiredSignal of [
   'ch2_temperature_c',
   'ch1_compressor_amps',
   'ch2_compressor_amps',
-  'controller_heartbeat'
+  'ch1/ch2_compressor_output',
+  'ch1/ch2_pump_output',
+  'ch1/ch2_solenoid_output',
+  'ch1/ch2_pump_amps',
+  'controller_heartbeat',
+  'node_red_pac_read_ok',
+  'pac_strategy_running',
+  'pac_io_communication_ok',
+  'io_channel_fault_count'
 ]) {
   assert.ok(searchableCatalog.includes(requiredSignal), `${requiredSignal} must be documented`);
 }

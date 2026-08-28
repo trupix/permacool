@@ -33,6 +33,8 @@ import {
   type RussellUnitCapacityEvaluation,
   type SuctionTemperatureSource
 } from '@/lib/equipment/performance';
+import { resolveControllerConnectionPath } from '@/lib/equipment/controller-connection-path';
+import { deriveOperatingSequence } from '@/lib/equipment/operating-sequence';
 import { normalizeTelemetryKey, resolveTelemetryPoint } from '@/lib/equipment/telemetry';
 import {
   formatFacilityAddress,
@@ -329,6 +331,9 @@ type AssetSignals = {
   realPowerKw: NumericSignal | null;
   running: BooleanSignal | null;
   systemOn: BooleanSignal | null;
+  compressorOutput: BooleanSignal | null;
+  pumpOutput: BooleanSignal | null;
+  solenoidOutput: BooleanSignal | null;
   highPressureStop: BooleanSignal | null;
   ambiguousAliasCount: number;
 };
@@ -464,6 +469,22 @@ function signalsForChannel(
   const setpoint = resolveTelemetryPoint(scopedPoints, [`${prefix}_setpoint_c`, `${prefix}_setpoint`]);
   const running = resolveTelemetryPoint(scopedPoints, [`${prefix}_chiller_run`, `${prefix}_compressor_run`]);
   const systemOn = resolveTelemetryPoint(scopedPoints, [`${prefix}_system_on`]);
+  const compressorOutput = resolveTelemetryPoint(scopedPoints, [
+    `${prefix}_compressor_output`,
+    `${prefix}_do_compressor`,
+    `${prefix}_doCompressor`
+  ]);
+  const pumpOutput = resolveTelemetryPoint(scopedPoints, [
+    `${prefix}_pump_output`,
+    `${prefix}_pump_run_output`,
+    `${prefix}_do_pump_run`,
+    `${prefix}_doPumpRun`
+  ]);
+  const solenoidOutput = resolveTelemetryPoint(scopedPoints, [
+    `${prefix}_solenoid_output`,
+    `${prefix}_do_solenoid`,
+    `${prefix}_doSolenoid`
+  ]);
   const highPressureStop = resolveTelemetryPoint(scopedPoints, [`${prefix}_high_pressure_stop`]);
   const matches = [
     temperature,
@@ -478,6 +499,9 @@ function signalsForChannel(
     realPowerKw,
     running,
     systemOn,
+    compressorOutput,
+    pumpOutput,
+    solenoidOutput,
     highPressureStop
   ];
 
@@ -495,6 +519,9 @@ function signalsForChannel(
     realPowerKw: pointNumber(realPowerKw.point, referenceTimestamp),
     running: pointBoolean(running.point, referenceTimestamp),
     systemOn: pointBoolean(systemOn.point, referenceTimestamp),
+    compressorOutput: pointBoolean(compressorOutput.point, referenceTimestamp),
+    pumpOutput: pointBoolean(pumpOutput.point, referenceTimestamp),
+    solenoidOutput: pointBoolean(solenoidOutput.point, referenceTimestamp),
     highPressureStop: pointBoolean(highPressureStop.point, referenceTimestamp),
     ambiguousAliasCount: matches.filter((match) => match.ambiguous).length
   };
@@ -1328,6 +1355,15 @@ export function SiteEquipmentDashboard({
   const heartbeatIsCurrent = heartbeatPoint
     ? signalIsFresh(heartbeatPoint, telemetry.fetchedAt, CONTROLLER_HEARTBEAT_STALE_MS)
     : false;
+  const controllerConnectionPath = resolveControllerConnectionPath({
+    points: telemetry.points,
+    deviceIds: system.condensers
+      .map((asset) => asset.telemetryDeviceId)
+      .filter((deviceId): deviceId is string => Boolean(deviceId)),
+    referenceTimestamp: telemetry.fetchedAt,
+    feedStatus: telemetry.status,
+    maximumAgeMs: CONTROLLER_HEARTBEAT_STALE_MS
+  });
   const mappedRelevantSignals = analyses.flatMap((analysis) =>
     [
       analysis.signals.temperature,
@@ -1503,6 +1539,55 @@ export function SiteEquipmentDashboard({
         </div>
         {renderTelemetryFeedStatusCard(true)}
       </section>
+      ) : null}
+
+      {(view === 'overview' || view === 'connectivity') && siteId === 'site-cannon-falls' ? (
+        <section className={`controller-connection-path is-${controllerConnectionPath.state}`} aria-labelledby="controller-connection-path-title">
+          <div className="controller-connection-path__heading">
+            <div>
+              <p className="eyebrow">Controller communication chain · read-only</p>
+              <h2 id="controller-connection-path-title">{controllerConnectionPath.label}</h2>
+              <p>
+                Each layer is checked independently so a running strategy cannot hide a disconnected physical I/O board.
+              </p>
+            </div>
+            <span className={`controller-connection-path__summary is-${controllerConnectionPath.state}`}>
+              {controllerConnectionPath.state === 'healthy' ? <CheckCircle2 size={15} /> : <ShieldAlert size={15} />}
+              {controllerConnectionPath.state === 'healthy' ? 'All monitored layers current' : 'Review the first non-green layer'}
+            </span>
+          </div>
+
+          <div className="controller-connection-path__stages">
+            {controllerConnectionPath.stages.map((stage, index) => (
+              <div className="controller-connection-path__stage-wrap" key={stage.id}>
+                <article className={`controller-connection-path__stage is-${stage.state}`}>
+                  <span className="controller-connection-path__stage-icon" aria-hidden="true">
+                    {stage.state === 'healthy' ? <CheckCircle2 size={16} /> : stage.state === 'checking' ? <RefreshCw size={16} /> : <ShieldAlert size={16} />}
+                  </span>
+                  <div>
+                    <small>{stage.label}</small>
+                    <strong>{stage.status}</strong>
+                    <p>{stage.detail}</p>
+                    <time dateTime={stage.observedAt ?? undefined}>
+                      {stage.observedAt ? `Observed ${formatTimestamp(stage.observedAt, true)}` : 'No signal received'}
+                    </time>
+                  </div>
+                </article>
+                {index < controllerConnectionPath.stages.length - 1 ? (
+                  <span className="controller-connection-path__arrow" aria-hidden="true">→</span>
+                ) : null}
+              </div>
+            ))}
+          </div>
+
+          <div className="controller-connection-path__note">
+            <CircleAlert size={15} aria-hidden="true" />
+            <span>
+              Monitoring only. The website does not restart the VPN, PAC strategy, Node-RED, or I/O boards.
+              The reviewed 20-minute recovery watchdog remains a future controller-side change.
+            </span>
+          </div>
+        </section>
       ) : null}
 
       {view === 'specs' ? (
@@ -2064,6 +2149,97 @@ export function SiteEquipmentDashboard({
           );
         })}
       </section>
+      ) : null}
+
+      {view === 'overview' && siteId === 'site-cannon-falls' ? (
+        <section className="operating-sequence" aria-labelledby="operating-sequence-title">
+          <div className="salinas-dashboard__section-heading">
+            <div>
+              <p className="eyebrow">PLC operating sequence · diagnostic only</p>
+              <h2 id="operating-sequence-title">Command and physical feedback</h2>
+              <p>
+                Follow each Cannon Falls circuit from strategy enable through PLC output commands to measured
+                electrical feedback. This display cannot control the equipment.
+              </p>
+            </div>
+            <span className="operating-sequence__legend-note">1.0 A confirmation threshold</span>
+          </div>
+
+          <div className="operating-sequence__grid">
+            {analyses.map((analysis) => {
+              const { signals } = analysis;
+              const unitIsCurrent = unitHasCurrentTelemetry(signals);
+              const currentDiscreteSignal = (signal: BooleanSignal | null) => signal
+                ? { ...signal, isFresh: signal.isFresh || unitIsCurrent }
+                : null;
+              const sequence = deriveOperatingSequence({
+                systemOn: currentDiscreteSignal(signals.systemOn),
+                cycleRun: currentDiscreteSignal(signals.running),
+                pumpOutput: currentDiscreteSignal(signals.pumpOutput),
+                solenoidOutput: currentDiscreteSignal(signals.solenoidOutput),
+                compressorOutput: currentDiscreteSignal(signals.compressorOutput),
+                pumpAmps: signals.pumpAmps,
+                compressorAmps: signals.compressorAmps
+              });
+
+              return (
+                <article className="operating-sequence__unit" key={analysis.asset.assetId}>
+                  <div className="operating-sequence__unit-heading">
+                    <div>
+                      <span>{analysis.asset.dashboardChannel}</span>
+                      <strong>{analysis.asset.displayName}</strong>
+                    </div>
+                    <small>
+                      {sequence.findings.length
+                        ? `${sequence.findings.length} item${sequence.findings.length === 1 ? '' : 's'} to review`
+                        : 'No mismatch detected'}
+                    </small>
+                  </div>
+
+                  <div className="operating-sequence__steps">
+                    {sequence.steps.map((step, index) => (
+                      <div className="operating-sequence__step-wrap" key={step.id}>
+                        <div className={`operating-sequence__step is-${step.state}`}>
+                          <span className="operating-sequence__step-number">{index + 1}</span>
+                          <div>
+                            <strong>{step.label}</strong>
+                            <small>{step.detail}</small>
+                          </div>
+                        </div>
+                        {index < sequence.steps.length - 1 ? (
+                          <span className="operating-sequence__connector" aria-hidden="true">→</span>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+
+                  {sequence.findings.length ? (
+                    <div className="operating-sequence__findings" role="status">
+                      <CircleAlert size={16} aria-hidden="true" />
+                      <div>
+                        <strong>Sequence needs review</strong>
+                        {sequence.findings.map((finding) => <span key={finding}>{finding}</span>)}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="operating-sequence__safe-note">
+                      Missing signals remain “Not configured”; the dashboard never guesses an output state.
+                    </p>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="operating-sequence__legend" aria-label="Operating sequence color legend">
+            <span className="is-off">Off</span>
+            <span className="is-ready">Enabled / ready</span>
+            <span className="is-commanded">PLC commanded</span>
+            <span className="is-confirmed">Measured running</span>
+            <span className="is-mismatch">Mismatch</span>
+            <span className="is-unavailable">Not configured</span>
+          </div>
+        </section>
       ) : null}
 
       {view === 'overview' ? (

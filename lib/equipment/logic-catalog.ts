@@ -132,6 +132,39 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     updatedBy: 'System catalog'
   },
   {
+    slug: 'signal-physical-output-commands',
+    category: 'signal',
+    title: 'Physical PLC output commands',
+    signalKey: 'ch1/ch2_compressor_output / ch1/ch2_pump_output / ch1/ch2_solenoid_output',
+    definition: 'Read-only states for the physical digital outputs commanded by the PLC strategy for each condenser circuit.',
+    behavior: 'The operating-sequence display distinguishes these output commands from system enable and chiller-cycle request. A missing output signal is shown as Not configured and is never inferred from another value.',
+    implementationStatus: 'deployed',
+    sortOrder: 101,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'signal-physical-current-feedback',
+    category: 'signal',
+    title: 'Physical electrical feedback',
+    signalKey: 'ch1/ch2_compressor_amps / ch1/ch2_pump_amps',
+    definition: 'Measured analog current is independent evidence that a commanded compressor or pump is electrically operating.',
+    behavior: 'The diagnostic display treats absolute current of at least 1.0 A as confirmation for Cannon Falls. The threshold is display-only and does not modify PLC logic, controls, alarms, or stored telemetry.',
+    implementationStatus: 'deployed',
+    sortOrder: 102,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'operation-command-feedback-sequence',
+    category: 'operation',
+    title: 'Command-to-feedback sequence',
+    signalKey: null,
+    definition: 'A read-only diagnostic sequence displays system enable, chiller-cycle request, pump/solenoid/compressor output commands, and pump/compressor current feedback as separate operating layers.',
+    behavior: 'Gray means off, blue means enabled, gold means commanded, green means measured running, red identifies a fresh command/feedback mismatch, and a dashed state means the required signal is not configured. Findings are not persisted as alerts or events.',
+    implementationStatus: 'deployed',
+    sortOrder: 103,
+    updatedBy: 'System catalog'
+  },
+  {
     slug: 'signal-controller-heartbeat',
     category: 'signal',
     title: 'Controller heartbeat',
@@ -140,6 +173,28 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     behavior: 'Node-RED should publish this signal every 15 seconds. The dashboard considers the dedicated heartbeat current for 45 seconds to allow for normal network delay.',
     implementationStatus: 'deployed',
     sortOrder: 105,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'signal-controller-connection-path',
+    category: 'signal',
+    title: 'Controller connection-path health',
+    signalKey: 'node_red_pac_read_ok / pac_strategy_running / pac_io_communication_ok / io_channel_fault_count / controller_heartbeat',
+    definition: 'Independent read-only checks identify whether the EPIC is reachable, Node-RED can read PAC Control, the strategy is running, physical I/O is communicating, and telemetry is reaching PermaCool.',
+    behavior: 'Cannon Falls displays each layer separately on Live and Connectivity. A current PAC API read may prove EPIC reachability but is explicitly labeled as an inference rather than a direct VPN-session state. Missing values remain Not monitored.',
+    implementationStatus: 'deployed',
+    sortOrder: 106,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'operation-controller-recovery-deferred',
+    category: 'operation',
+    title: 'Automatic controller recovery remains disabled',
+    signalKey: null,
+    definition: 'The website monitors the controller connection path but does not restart networking, VPN, Node-RED, PAC Control, or physical I/O.',
+    behavior: 'The proposed controller-side watchdog remains deferred until its safe-state behavior and maximum 20-minute outage window are reviewed for the installed strategy.',
+    implementationStatus: 'deployed',
+    sortOrder: 107,
     updatedBy: 'System catalog'
   },
   {
