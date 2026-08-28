@@ -1,7 +1,7 @@
 // @ts-nocheck
 const assert = require('node:assert/strict');
 const path = require('node:path');
-const { deriveOperatingSequence } = require(
+const { deriveOperatingSequence, deriveSharedPumpSequence } = require(
   path.join(__dirname, '..', 'lib', 'equipment', 'operating-sequence.ts')
 );
 
@@ -71,4 +71,27 @@ const staleCommands = deriveOperatingSequence({
 assert.ok(staleCommands.steps.every((step) => step.state === 'unavailable'));
 assert.deepEqual(staleCommands.findings, []);
 
-console.log('Operating-sequence diagnostics passed for unavailable signals, confirmed operation, and safe mismatches.');
+const cascadeCompressor = deriveOperatingSequence({
+  systemOn: fresh(true),
+  cycleRun: fresh(true),
+  pumpOutput: fresh(true),
+  solenoidOutput: fresh(true),
+  compressorOutput: fresh(true),
+  pumpAmps: fresh(4.2),
+  compressorAmps: fresh(14.1),
+  includePump: false
+});
+assert.equal(cascadeCompressor.steps.some((step) => step.id === 'pump'), false);
+assert.equal(cascadeCompressor.steps.some((step) => step.id === 'pumpFeedback'), false);
+assert.equal(cascadeCompressor.steps.filter((step) => step.id === 'compressor').length, 1);
+
+const sharedCascadePump = deriveSharedPumpSequence({
+  systemOn: fresh(true),
+  pumpOutput: fresh(true),
+  pumpAmps: fresh(4.2)
+});
+assert.deepEqual(sharedCascadePump.steps.map((step) => step.id), ['system', 'pump', 'pumpFeedback']);
+assert.equal(sharedCascadePump.steps.find((step) => step.id === 'pumpFeedback').state, 'confirmed');
+assert.deepEqual(sharedCascadePump.findings, []);
+
+console.log('Operating-sequence diagnostics passed for unavailable signals, confirmed operation, safe mismatches, and one shared cascade pump.');

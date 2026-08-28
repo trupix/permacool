@@ -27,6 +27,14 @@ export type OperatingSequenceInput = {
   pumpAmps: OperatingSignal<number> | null;
   compressorAmps: OperatingSignal<number> | null;
   currentThresholdAmps?: number;
+  includePump?: boolean;
+};
+
+export type SharedPumpSequenceInput = {
+  systemOn: OperatingSignal<boolean> | null;
+  pumpOutput: OperatingSignal<boolean> | null;
+  pumpAmps: OperatingSignal<number> | null;
+  currentThresholdAmps?: number;
 };
 
 export type OperatingSequence = {
@@ -85,11 +93,13 @@ export function deriveOperatingSequence(input: OperatingSequenceInput): Operatin
   const compressorOutput = freshValue(input.compressorOutput);
   const pumpAmps = freshValue(input.pumpAmps);
   const compressorAmps = freshValue(input.compressorAmps);
+  const includePump = input.includePump ?? true;
   const pumpConfirmed = pumpAmps === null ? null : Math.abs(pumpAmps) >= threshold;
   const compressorConfirmed = compressorAmps === null ? null : Math.abs(compressorAmps) >= threshold;
 
   const unexpectedOutput = systemOn === false &&
-    [pumpOutput, solenoidOutput, compressorOutput].some((value) => value === true);
+    (includePump ? [pumpOutput, solenoidOutput, compressorOutput] : [solenoidOutput, compressorOutput])
+      .some((value) => value === true);
   const compressorCommandMismatch = cycleRun === true && compressorOutput === false;
   const pumpFeedbackMismatch =
     (pumpOutput === true && pumpConfirmed === false) ||
@@ -101,8 +111,8 @@ export function deriveOperatingSequence(input: OperatingSequenceInput): Operatin
   const findings: string[] = [];
   if (unexpectedOutput) findings.push('A physical output is ON while the system enable is OFF.');
   if (compressorCommandMismatch) findings.push('The chiller cycle is requested but the compressor output is OFF.');
-  if (pumpOutput === true && pumpConfirmed === false) findings.push('The pump is commanded ON but current is not detected.');
-  if (pumpOutput === false && pumpConfirmed === true) findings.push('Pump current is present while its PLC output command is OFF.');
+  if (includePump && pumpOutput === true && pumpConfirmed === false) findings.push('The pump is commanded ON but current is not detected.');
+  if (includePump && pumpOutput === false && pumpConfirmed === true) findings.push('Pump current is present while its PLC output command is OFF.');
   if (compressorOutput === true && compressorConfirmed === false) findings.push('The compressor is commanded ON but current is not detected.');
   if (compressorOutput === false && compressorConfirmed === true) findings.push('Compressor current is present while its PLC output command is OFF.');
 
@@ -117,11 +127,13 @@ export function deriveOperatingSequence(input: OperatingSequenceInput): Operatin
       ? { id: 'cycle', label: 'Chiller cycle', state: 'commanded', detail: 'Run requested' }
       : { id: 'cycle', label: 'Chiller cycle', state: 'off', detail: 'Not requested' };
 
-  return {
-    steps: [
-      systemStep,
-      cycleStep,
-      commandStep('pump', 'Pump output', input.pumpOutput, unexpectedOutput && pumpOutput === true),
+  const steps: OperatingStep[] = [systemStep, cycleStep];
+  if (includePump) {
+    steps.push(
+      commandStep('pump', 'Pump output', input.pumpOutput, unexpectedOutput && pumpOutput === true)
+    );
+  }
+  steps.push(
       commandStep('solenoid', 'Solenoid output', input.solenoidOutput, unexpectedOutput && solenoidOutput === true),
       commandStep(
         'compressor',
@@ -129,7 +141,11 @@ export function deriveOperatingSequence(input: OperatingSequenceInput): Operatin
         input.compressorOutput,
         (unexpectedOutput && compressorOutput === true) || compressorCommandMismatch
       ),
-      feedbackStep('pumpFeedback', 'Pump feedback', input.pumpAmps, pumpOutput, threshold),
+  );
+  if (includePump) {
+    steps.push(feedbackStep('pumpFeedback', 'Pump feedback', input.pumpAmps, pumpOutput, threshold));
+  }
+  steps.push(
       feedbackStep(
         'compressorFeedback',
         'Compressor feedback',
@@ -137,6 +153,35 @@ export function deriveOperatingSequence(input: OperatingSequenceInput): Operatin
         compressorOutput,
         threshold
       )
+  );
+
+  return { steps, findings };
+}
+
+export function deriveSharedPumpSequence(input: SharedPumpSequenceInput): OperatingSequence {
+  const threshold = Math.max(0, input.currentThresholdAmps ?? DEFAULT_CURRENT_THRESHOLD_AMPS);
+  const systemOn = freshValue(input.systemOn);
+  const pumpOutput = freshValue(input.pumpOutput);
+  const pumpAmps = freshValue(input.pumpAmps);
+  const pumpConfirmed = pumpAmps === null ? null : Math.abs(pumpAmps) >= threshold;
+  const unexpectedOutput = systemOn === false && pumpOutput === true;
+  const findings: string[] = [];
+
+  if (unexpectedOutput) findings.push('The shared pump output is ON while the system enable is OFF.');
+  if (pumpOutput === true && pumpConfirmed === false) findings.push('The shared pump is commanded ON but current is not detected.');
+  if (pumpOutput === false && pumpConfirmed === true) findings.push('Shared pump current is present while its PLC output command is OFF.');
+
+  const systemStep: OperatingStep = systemOn === null
+    ? { id: 'system', label: 'System enable', state: 'unavailable', detail: 'Waiting for PLC' }
+    : systemOn
+      ? { id: 'system', label: 'System enable', state: 'ready', detail: 'Enabled' }
+      : { id: 'system', label: 'System enable', state: 'off', detail: 'Disabled' };
+
+  return {
+    steps: [
+      systemStep,
+      commandStep('pump', 'Shared pump output', input.pumpOutput, unexpectedOutput),
+      feedbackStep('pumpFeedback', 'Shared pump feedback', input.pumpAmps, pumpOutput, threshold)
     ],
     findings
   };
