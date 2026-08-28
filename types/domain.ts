@@ -22,6 +22,7 @@ export interface Site {
   timezone: string;
   gatewayStatus: DeviceStatus;
   deviceIds: string[];
+  lastActiveAt?: string | null;
   addressLine1?: string | null;
   city?: string | null;
   state?: string | null;

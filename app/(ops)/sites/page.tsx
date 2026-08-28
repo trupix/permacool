@@ -4,6 +4,7 @@ import { StatusBadge } from '@/components/status-badge';
 import { getOrganizations } from '@/server/repositories/organizations';
 import { getSites } from '@/server/repositories/sites';
 import { requireUser } from '@/lib/auth';
+import { formatSiteActivity } from '@/lib/site-activity';
 
 export default async function SitesPage() {
   const user = await requireUser();
@@ -23,6 +24,9 @@ export default async function SitesPage() {
                 <strong>{site.name}</strong>
                 <p>
                   {site.region} · {site.deviceIds.length} devices
+                </p>
+                <p className="site-last-active">
+                  Last active {formatSiteActivity(site.lastActiveAt, site.timezone)}
                 </p>
               </div>
               <StatusBadge tone={site.gatewayStatus} />

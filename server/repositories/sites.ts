@@ -1,15 +1,19 @@
 import { db } from '@/lib/db';
 import { getAlertsForSite, getDevicesForSite, getSiteById, sites } from '@/lib/mock-data';
 import type { Alert, Site } from '@/types/domain';
+import { latestSiteActivity } from '@/lib/site-activity';
 import { shouldUseDatabase } from './shared';
 import { alertWhere, deviceWhere, isStaffScope, siteWhere, type AccessScope } from '@/lib/access';
 
 function filterMockSites(scope: AccessScope) {
-  if (isStaffScope(scope)) return sites;
-  return sites.filter((site) =>
+  const filtered = isStaffScope(scope) ? sites : sites.filter((site) =>
     scope.allDeviceOrganizationIds.includes(site.organizationId) ||
     getDevicesForSite(site.id).some((device) => scope.deviceIds.includes(device.id))
   );
+  return filtered.map((site) => ({
+    ...site,
+    lastActiveAt: latestSiteActivity(getDevicesForSite(site.id).map((device) => device.lastSeenAt))
+  }));
 }
 
 export async function getSites(scope: AccessScope): Promise<Site[]> {
@@ -19,7 +23,7 @@ export async function getSites(scope: AccessScope): Promise<Site[]> {
     where: siteWhere(scope),
     include: {
       provisioningDetails: true,
-      devices: { select: { id: true } }
+      devices: { select: { id: true, lastSeenAt: true } }
     },
     orderBy: { name: 'asc' }
   });
@@ -32,6 +36,7 @@ export async function getSites(scope: AccessScope): Promise<Site[]> {
     timezone: row.timezone,
     gatewayStatus: row.gatewayStatus,
     deviceIds: row.devices.map((device) => device.id),
+    lastActiveAt: latestSiteActivity(row.devices.map((device) => device.lastSeenAt)),
     addressLine1: row.provisioningDetails?.addressLine1 ?? null,
     city: row.provisioningDetails?.city ?? null,
     state: row.provisioningDetails?.state ?? null,
@@ -47,7 +52,7 @@ export async function getSite(scope: AccessScope, siteId: string): Promise<Site 
     where: { AND: [{ id: siteId }, siteWhere(scope)] },
     include: {
       provisioningDetails: true,
-      devices: { select: { id: true } }
+      devices: { select: { id: true, lastSeenAt: true } }
     }
   });
 
@@ -61,6 +66,7 @@ export async function getSite(scope: AccessScope, siteId: string): Promise<Site 
     timezone: row.timezone,
     gatewayStatus: row.gatewayStatus,
     deviceIds: row.devices.map((device) => device.id),
+    lastActiveAt: latestSiteActivity(row.devices.map((device) => device.lastSeenAt)),
     addressLine1: row.provisioningDetails?.addressLine1 ?? null,
     city: row.provisioningDetails?.city ?? null,
     state: row.provisioningDetails?.state ?? null,
