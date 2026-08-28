@@ -1390,6 +1390,7 @@ export function SiteEquipmentDashboard({
     feedStatus: telemetry.status,
     maximumAgeMs: CONTROLLER_HEARTBEAT_STALE_MS
   });
+  const controllerDiagnosticsEnabled = siteId === 'site-cannon-falls' || siteId === 'site-salinas';
   const mappedRelevantSignals = analyses.flatMap((analysis) =>
     [
       analysis.signals.temperature,
@@ -1567,7 +1568,7 @@ export function SiteEquipmentDashboard({
       </section>
       ) : null}
 
-      {(view === 'overview' || view === 'connectivity') && siteId === 'site-cannon-falls' ? (
+      {(view === 'overview' || view === 'connectivity') && controllerDiagnosticsEnabled ? (
         <section className={`controller-connection-path is-${controllerConnectionPath.state}`} aria-labelledby="controller-connection-path-title">
           <div className="controller-connection-path__heading">
             <div>
@@ -2177,16 +2178,17 @@ export function SiteEquipmentDashboard({
       </section>
       ) : null}
 
-      {view === 'overview' && siteId === 'site-cannon-falls' ? (
+      {view === 'overview' && controllerDiagnosticsEnabled ? (
         <section className="operating-sequence" aria-labelledby="operating-sequence-title">
           <div className="salinas-dashboard__section-heading">
             <div>
               <p className="eyebrow">PLC operating sequence · diagnostic only</p>
               <h2 id="operating-sequence-title">Command and physical feedback</h2>
               <p>
-                Cannon Falls has one shared process pump and one shared process-temperature sensor feeding two
-                compressor stages. The shared loop is shown once; CH1 and CH2 retain their independent commands,
-                pressures, and compressor feedback. This display cannot control the equipment.
+                {siteId === 'site-cannon-falls'
+                  ? 'Cannon Falls has one shared process pump and one shared process-temperature sensor feeding two compressor stages. The shared loop is shown once; CH1 and CH2 retain their independent commands, pressures, and compressor feedback.'
+                  : 'Each Salinas channel shows system enable, chiller-cycle request, physical output commands, and measured current as separate layers so logic and field operation can be compared safely.'}{' '}
+                This display cannot control the equipment.
               </p>
             </div>
             <span className="operating-sequence__legend-note">1.0 A confirmation threshold</span>
@@ -2263,7 +2265,7 @@ export function SiteEquipmentDashboard({
                 compressorOutput: currentDiscreteSignal(signals.compressorOutput),
                 pumpAmps: signals.pumpAmps,
                 compressorAmps: signals.compressorAmps,
-                includePump: false
+                includePump: siteId !== 'site-cannon-falls'
               });
 
               return (
