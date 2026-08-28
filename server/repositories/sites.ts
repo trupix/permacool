@@ -1,7 +1,20 @@
 import { db } from '@/lib/db';
-import { getAlertsForSite, getDevicesForSite, getSiteById, sites } from '@/lib/mock-data';
+import {
+  getAlertsForSite,
+  getDevicesForSite,
+  getEquipmentEventsForSite,
+  getSiteById,
+  getTelemetryForDevice,
+  sites
+} from '@/lib/mock-data';
 import type { Alert, Site } from '@/types/domain';
 import { latestSiteActivity } from '@/lib/site-activity';
+import {
+  deriveSiteOperatingActivity,
+  isEquipmentRunKey,
+  latestOperatingTimestamp,
+  RUNNING_NOW_FRESHNESS_MS
+} from '@/lib/site-operating-activity';
 import { shouldUseDatabase } from './shared';
 import { alertWhere, deviceWhere, isStaffScope, siteWhere, type AccessScope } from '@/lib/access';
 
@@ -10,10 +23,28 @@ function filterMockSites(scope: AccessScope) {
     scope.allDeviceOrganizationIds.includes(site.organizationId) ||
     getDevicesForSite(site.id).some((device) => scope.deviceIds.includes(device.id))
   );
-  return filtered.map((site) => ({
-    ...site,
-    lastActiveAt: latestSiteActivity(getDevicesForSite(site.id).map((device) => device.lastSeenAt))
-  }));
+  return filtered.map((site) => {
+    const runPoints = getDevicesForSite(site.id)
+      .flatMap((device) => getTelemetryForDevice(device.id))
+      .filter((point) => isEquipmentRunKey(point.key) && point.latestValue > 0.5);
+    const freshRunningSignalAt = latestOperatingTimestamp(
+      runPoints
+        .filter((point) => Date.now() - Date.parse(point.latestTimestamp) <= RUNNING_NOW_FRESHNESS_MS)
+        .map((point) => point.latestTimestamp)
+    );
+    const lastStartedAt = latestOperatingTimestamp([
+      ...runPoints.map((point) => point.latestTimestamp),
+      ...getEquipmentEventsForSite(site.id)
+        .filter((event) => event.eventType === 'compressor_started')
+        .map((event) => event.occurredAt)
+    ]);
+
+    return {
+      ...site,
+      lastActiveAt: latestSiteActivity(getDevicesForSite(site.id).map((device) => device.lastSeenAt)),
+      operatingActivity: deriveSiteOperatingActivity({ freshRunningSignalAt, lastRanAt: lastStartedAt })
+    };
+  });
 }
 
 export async function getSites(scope: AccessScope): Promise<Site[]> {
@@ -23,26 +54,72 @@ export async function getSites(scope: AccessScope): Promise<Site[]> {
     where: siteWhere(scope),
     include: {
       provisioningDetails: true,
-      devices: { select: { id: true, lastSeenAt: true } }
+      devices: {
+        select: {
+          id: true,
+          lastSeenAt: true,
+          telemetryPoints: { select: { key: true, latestValue: true, latestTimestamp: true } }
+        }
+      }
     },
     orderBy: { name: 'asc' }
   });
 
-  return rows.map((row) => ({
-    id: row.id,
-    organizationId: row.organizationId,
-    name: row.name,
-    region: row.region,
-    timezone: row.timezone,
-    gatewayStatus: row.gatewayStatus,
-    deviceIds: row.devices.map((device) => device.id),
-    lastActiveAt: latestSiteActivity(row.devices.map((device) => device.lastSeenAt)),
-    addressLine1: row.provisioningDetails?.addressLine1 ?? null,
-    city: row.provisioningDetails?.city ?? null,
-    state: row.provisioningDetails?.state ?? null,
-    postalCode: row.provisioningDetails?.postalCode ?? null,
-    country: row.provisioningDetails?.country ?? null
-  }));
+  const deviceToSite = new Map(rows.flatMap((row) => row.devices.map((device) => [device.id, row.id] as const)));
+  const deviceIds = [...deviceToSite.keys()];
+  const historicalRuns = deviceIds.length
+    ? await db.telemetrySample.groupBy({
+        by: ['deviceId', 'key'],
+        where: {
+          deviceId: { in: deviceIds },
+          value: { gt: 0.5 },
+          OR: [
+            { key: { contains: 'chiller', mode: 'insensitive' } },
+            { key: { contains: 'compressor', mode: 'insensitive' } }
+          ]
+        },
+        _max: { capturedAt: true }
+      })
+    : [];
+  const historicalRunsBySite = new Map<string, Date[]>();
+  for (const run of historicalRuns) {
+    if (!isEquipmentRunKey(run.key) || !run._max.capturedAt) continue;
+    const siteId = deviceToSite.get(run.deviceId);
+    if (!siteId) continue;
+    historicalRunsBySite.set(siteId, [...(historicalRunsBySite.get(siteId) ?? []), run._max.capturedAt]);
+  }
+
+  return rows.map((row) => {
+    const runPoints = row.devices
+      .flatMap((device) => device.telemetryPoints)
+      .filter((point) => isEquipmentRunKey(point.key) && point.latestValue > 0.5);
+    const freshRunningSignalAt = latestOperatingTimestamp(
+      runPoints
+        .filter((point) => Date.now() - point.latestTimestamp.getTime() <= RUNNING_NOW_FRESHNESS_MS)
+        .map((point) => point.latestTimestamp)
+    );
+    const lastRanAt = latestOperatingTimestamp([
+      ...runPoints.map((point) => point.latestTimestamp),
+      ...(historicalRunsBySite.get(row.id) ?? [])
+    ]);
+
+    return {
+      id: row.id,
+      organizationId: row.organizationId,
+      name: row.name,
+      region: row.region,
+      timezone: row.timezone,
+      gatewayStatus: row.gatewayStatus,
+      deviceIds: row.devices.map((device) => device.id),
+      lastActiveAt: latestSiteActivity(row.devices.map((device) => device.lastSeenAt)),
+      operatingActivity: deriveSiteOperatingActivity({ freshRunningSignalAt, lastRanAt }),
+      addressLine1: row.provisioningDetails?.addressLine1 ?? null,
+      city: row.provisioningDetails?.city ?? null,
+      state: row.provisioningDetails?.state ?? null,
+      postalCode: row.provisioningDetails?.postalCode ?? null,
+      country: row.provisioningDetails?.country ?? null
+    };
+  });
 }
 
 export async function getSite(scope: AccessScope, siteId: string): Promise<Site | undefined> {

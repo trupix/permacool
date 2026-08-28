@@ -5,6 +5,8 @@ import { getOrganizations } from '@/server/repositories/organizations';
 import { getSites } from '@/server/repositories/sites';
 import { requireUser } from '@/lib/auth';
 import { formatSiteActivity } from '@/lib/site-activity';
+import { SiteOperatingActivityIcon } from '@/components/site-operating-activity';
+import { deriveSiteOperatingActivity } from '@/lib/site-operating-activity';
 
 export default async function SitesPage() {
   const user = await requireUser();
@@ -29,7 +31,10 @@ export default async function SitesPage() {
                   Last active {formatSiteActivity(site.lastActiveAt, site.timezone)}
                 </p>
               </div>
-              <StatusBadge tone={site.gatewayStatus} />
+              <div className="site-card-indicators">
+                <SiteOperatingActivityIcon activity={site.operatingActivity ?? deriveSiteOperatingActivity({})} />
+                <StatusBadge tone={site.gatewayStatus} label={`Gateway ${site.gatewayStatus}`} />
+              </div>
             </Link>
           ))}
         </div>
