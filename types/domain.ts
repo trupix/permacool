@@ -23,6 +23,7 @@ export interface Site {
   gatewayStatus: DeviceStatus;
   deviceIds: string[];
   lastActiveAt?: string | null;
+  operatingActivity?: import('@/lib/site-operating-activity').SiteOperatingActivity;
   addressLine1?: string | null;
   city?: string | null;
   state?: string | null;

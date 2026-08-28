@@ -27,6 +27,7 @@
     "controller:links:test": "node scripts/test-controller-links.ts",
     "site:foundation:test": "node scripts/test-site-foundation.ts",
     "site:activity:test": "node scripts/test-site-activity.ts",
+    "site:operating-activity:test": "node scripts/test-site-operating-activity.ts",
     "contact:funnel:test": "node scripts/test-contact-funnel.js",
     "auth:password:test": "node scripts/test-password-auth.ts",
     "database:pool:test": "node scripts/test-database-pool-resilience.ts",
