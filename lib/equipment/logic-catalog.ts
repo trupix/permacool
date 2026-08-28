@@ -132,6 +132,39 @@ export const defaultLogicDefinitions: LogicDefinitionSeed[] = [
     updatedBy: 'System catalog'
   },
   {
+    slug: 'signal-physical-output-commands',
+    category: 'signal',
+    title: 'Physical PLC output commands',
+    signalKey: 'ch1/ch2_compressor_output / ch1/ch2_pump_output / ch1/ch2_solenoid_output',
+    definition: 'Read-only states for the physical digital outputs commanded by the PLC strategy for each condenser circuit.',
+    behavior: 'The operating-sequence display distinguishes these output commands from system enable and chiller-cycle request. A missing output signal is shown as Not configured and is never inferred from another value.',
+    implementationStatus: 'deployed',
+    sortOrder: 101,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'signal-physical-current-feedback',
+    category: 'signal',
+    title: 'Physical electrical feedback',
+    signalKey: 'ch1/ch2_compressor_amps / ch1/ch2_pump_amps',
+    definition: 'Measured analog current is independent evidence that a commanded compressor or pump is electrically operating.',
+    behavior: 'The diagnostic display treats absolute current of at least 1.0 A as confirmation for Cannon Falls. The threshold is display-only and does not modify PLC logic, controls, alarms, or stored telemetry.',
+    implementationStatus: 'deployed',
+    sortOrder: 102,
+    updatedBy: 'System catalog'
+  },
+  {
+    slug: 'operation-command-feedback-sequence',
+    category: 'operation',
+    title: 'Command-to-feedback sequence',
+    signalKey: null,
+    definition: 'A read-only diagnostic sequence displays system enable, chiller-cycle request, pump/solenoid/compressor output commands, and pump/compressor current feedback as separate operating layers.',
+    behavior: 'Gray means off, blue means enabled, gold means commanded, green means measured running, red identifies a fresh command/feedback mismatch, and a dashed state means the required signal is not configured. Findings are not persisted as alerts or events.',
+    implementationStatus: 'deployed',
+    sortOrder: 103,
+    updatedBy: 'System catalog'
+  },
+  {
     slug: 'signal-controller-heartbeat',
     category: 'signal',
     title: 'Controller heartbeat',

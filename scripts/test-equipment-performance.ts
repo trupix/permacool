@@ -1,3 +1,5 @@
+export {};
+
 const assert = require('node:assert/strict');
 const { readFileSync } = require('node:fs');
 const path = require('node:path');
