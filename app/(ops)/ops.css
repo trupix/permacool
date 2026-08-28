@@ -4307,6 +4307,11 @@
   margin: 0.18rem 0 0;
 }
 
+.list-row .site-last-active {
+  color: #919e98;
+  font-size: 0.64rem;
+}
+
 .status-badge {
   gap: 0.38rem;
   min-width: 0;
