@@ -1236,8 +1236,9 @@ export function SiteEquipmentDashboard({
     });
   }, [catalog, catalogByRecordId, draft, system.condensers, telemetry.fetchedAt, telemetry.points, variantById, weather.data]);
 
-  const cannonSharedProcess = useMemo(() => {
-    if (siteId !== 'site-cannon-falls') return null;
+  const siteUsesSharedProcessLoop = siteId === 'site-cannon-falls' || siteId === 'site-salinas';
+  const sharedProcessLoop = useMemo(() => {
+    if (!siteUsesSharedProcessLoop) return null;
     const preferred = analyses.find((analysis) => analysis.asset.dashboardChannel === 'CH1') ?? analyses[0];
     const firstSignal = <T,>(selector: (signals: AssetSignals) => T | null): T | null =>
       (preferred ? selector(preferred.signals) : null) ??
@@ -1250,7 +1251,7 @@ export function SiteEquipmentDashboard({
       pumpOutput: firstSignal((signals) => signals.pumpOutput),
       systemOn: firstSignal((signals) => signals.systemOn)
     };
-  }, [analyses, siteId]);
+  }, [analyses, siteUsesSharedProcessLoop]);
 
   const hasCurrentRunStates =
     telemetry.status === 'ready' &&
@@ -1328,9 +1329,9 @@ export function SiteEquipmentDashboard({
       { label: 'Low-side pressure', available: allFresh((signals) => signals.lowPressure), unlocks: 'Evaporator-side context' },
       { label: 'Compressor amps', available: allFresh((signals) => signals.compressorAmps), unlocks: 'Electrical loading' },
       {
-        label: siteId === 'site-cannon-falls' ? 'Shared pump amps' : 'Pump amps',
-        available: siteId === 'site-cannon-falls'
-          ? cannonSharedProcess?.pumpAmps?.isFresh === true
+        label: siteUsesSharedProcessLoop ? 'Shared pump amps' : 'Pump amps',
+        available: siteUsesSharedProcessLoop
+          ? sharedProcessLoop?.pumpAmps?.isFresh === true
           : allFresh((signals) => signals.pumpAmps),
         unlocks: 'Pump loading'
       },
@@ -1349,18 +1350,18 @@ export function SiteEquipmentDashboard({
       },
       { label: 'Three-phase real power', available: allFresh((signals) => signals.realPowerKw), unlocks: 'kW, COP and efficiency' }
     ];
-  }, [analyses, cannonSharedProcess, draft.solvent, siteId]);
+  }, [analyses, draft.solvent, sharedProcessLoop, siteUsesSharedProcessLoop]);
 
   const readyCount = readinessRows.filter((row) => row.available).length;
   const fastSignalAvailability = {
-    temperature: siteId === 'site-cannon-falls'
-      ? cannonSharedProcess?.temperature?.isFresh === true
+    temperature: siteUsesSharedProcessLoop
+      ? sharedProcessLoop?.temperature?.isFresh === true
       : analyses.length > 0 && analyses.every((analysis) => analysis.signals.temperature?.isFresh === true),
     highPressure: analyses.length > 0 && analyses.every((analysis) => analysis.signals.highPressure?.isFresh === true),
     lowPressure: analyses.length > 0 && analyses.every((analysis) => analysis.signals.lowPressure?.isFresh === true),
     compressorAmps: analyses.length > 0 && analyses.every((analysis) => analysis.signals.compressorAmps?.isFresh === true),
-    pumpAmps: siteId === 'site-cannon-falls'
-      ? cannonSharedProcess?.pumpAmps?.isFresh === true
+    pumpAmps: siteUsesSharedProcessLoop
+      ? sharedProcessLoop?.pumpAmps?.isFresh === true
       : analyses.length > 0 && analyses.every((analysis) => analysis.signals.pumpAmps?.isFresh === true)
   };
   const immediateSignalAvailability = {
@@ -2185,9 +2186,9 @@ export function SiteEquipmentDashboard({
               <p className="eyebrow">PLC operating sequence · diagnostic only</p>
               <h2 id="operating-sequence-title">Command and physical feedback</h2>
               <p>
-                {siteId === 'site-cannon-falls'
-                  ? 'Cannon Falls has one shared process pump and one shared process-temperature sensor feeding two compressor stages. The shared loop is shown once; CH1 and CH2 retain their independent commands, pressures, and compressor feedback.'
-                  : 'Each Salinas channel shows system enable, chiller-cycle request, physical output commands, and measured current as separate layers so logic and field operation can be compared safely.'}{' '}
+                {siteUsesSharedProcessLoop
+                  ? 'This cascade system has one shared process pump and one shared process-temperature sensor feeding two compressor stages. The shared loop is shown once; CH1 and CH2 retain their independent commands, pressures, solenoids, and compressor feedback.'
+                  : 'Each configured channel shows system enable, chiller-cycle request, physical output commands, and measured current as separate layers so logic and field operation can be compared safely.'}{' '}
                 This display cannot control the equipment.
               </p>
             </div>
@@ -2195,15 +2196,15 @@ export function SiteEquipmentDashboard({
           </div>
 
           <div className="operating-sequence__grid">
-            {cannonSharedProcess ? (() => {
+            {sharedProcessLoop ? (() => {
               const sharedSignalIsCurrent = currentUnitCount > 0;
               const currentDiscreteSignal = (signal: BooleanSignal | null) => signal
                 ? { ...signal, isFresh: signal.isFresh || sharedSignalIsCurrent }
                 : null;
               const sequence = deriveSharedPumpSequence({
-                systemOn: currentDiscreteSignal(cannonSharedProcess.systemOn),
-                pumpOutput: currentDiscreteSignal(cannonSharedProcess.pumpOutput),
-                pumpAmps: cannonSharedProcess.pumpAmps
+                systemOn: currentDiscreteSignal(sharedProcessLoop.systemOn),
+                pumpOutput: currentDiscreteSignal(sharedProcessLoop.pumpOutput),
+                pumpAmps: sharedProcessLoop.pumpAmps
               });
 
               return (
@@ -2214,8 +2215,8 @@ export function SiteEquipmentDashboard({
                       <strong>One pump · one temperature sensor</strong>
                     </div>
                     <small>
-                      {cannonSharedProcess.temperature?.isFresh
-                        ? `${oneDecimalFormatter.format(cannonSharedProcess.temperature.value)} °F process temperature`
+                      {sharedProcessLoop.temperature?.isFresh
+                        ? `${oneDecimalFormatter.format(sharedProcessLoop.temperature.value)} °F process temperature`
                         : 'Process temperature waiting for PLC'}
                     </small>
                   </div>
@@ -2265,7 +2266,7 @@ export function SiteEquipmentDashboard({
                 compressorOutput: currentDiscreteSignal(signals.compressorOutput),
                 pumpAmps: signals.pumpAmps,
                 compressorAmps: signals.compressorAmps,
-                includePump: siteId !== 'site-cannon-falls'
+                includePump: !siteUsesSharedProcessLoop
               });
 
               return (
@@ -2368,7 +2369,7 @@ export function SiteEquipmentDashboard({
           <div>
             <strong>{liveTelemetryActive ? 'Live dashboard checks every 2 seconds' : 'Standard dashboard check every 15 seconds'}</strong>
             <small>
-              {siteId === 'site-cannon-falls'
+              {siteUsesSharedProcessLoop
                 ? 'One shared process temperature and pump current, plus CH1 / CH2 pressure and compressor current'
                 : 'Latest PLC pressure, process temperature, compressor amps and pump amps'}
             </small>
@@ -2379,8 +2380,8 @@ export function SiteEquipmentDashboard({
           </span>
         </div>
 
-        {siteId === 'site-cannon-falls' && cannonSharedProcess ? (
-          <article className="salinas-dashboard__shared-process-card" aria-label="Cannon Falls shared process loop telemetry">
+        {siteUsesSharedProcessLoop && sharedProcessLoop ? (
+          <article className="salinas-dashboard__shared-process-card" aria-label="Shared process loop telemetry">
             <header>
               <div className="salinas-dashboard__unit-index">S</div>
               <div>
@@ -2393,11 +2394,11 @@ export function SiteEquipmentDashboard({
             <div className="salinas-dashboard__shared-gauge-grid">
               <TelemetryDial3D
                 label="Process temperature"
-                value={cannonSharedProcess.temperature?.value ?? null}
+                value={sharedProcessLoop.temperature?.value ?? null}
                 unit="°F"
                 minimum={-50}
                 maximum={100}
-                detail={signalDetail(cannonSharedProcess.temperature, 'Waiting for shared sensor', telemetry.status === 'error')}
+                detail={signalDetail(sharedProcessLoop.temperature, 'Waiting for shared sensor', telemetry.status === 'error')}
                 accent="cyan"
                 goal={PROCESS_TEMPERATURE_GOAL}
                 zones={PROCESS_TEMPERATURE_ZONES}
@@ -2406,11 +2407,11 @@ export function SiteEquipmentDashboard({
               />
               <TelemetryDial3D
                 label="Pump current"
-                value={cannonSharedProcess.pumpAmps?.value ?? null}
+                value={sharedProcessLoop.pumpAmps?.value ?? null}
                 unit="A"
                 minimum={0}
                 maximum={120}
-                detail={signalDetail(cannonSharedProcess.pumpAmps, 'Waiting for shared pump sensor', telemetry.status === 'error')}
+                detail={signalDetail(sharedProcessLoop.pumpAmps, 'Waiting for shared pump sensor', telemetry.status === 'error')}
                 accent="cyan"
                 renderer="glossy-svg"
               />
@@ -2495,13 +2496,13 @@ export function SiteEquipmentDashboard({
                 </header>
 
                 <div className="salinas-dashboard__gauge-grid">
-                  {siteId !== 'site-cannon-falls' ? (
+                  {!siteUsesSharedProcessLoop ? (
                     <TelemetryDial3D label="Process temperature" value={temperatureValue} unit="°F" minimum={-50} maximum={100} detail={temperatureIsDemo ? 'Local demo signal' : signalDetail(signals.temperature, 'Display range', telemetry.status === 'error')} accent="cyan" demo={temperatureIsDemo} goal={PROCESS_TEMPERATURE_GOAL} zones={PROCESS_TEMPERATURE_ZONES} scale={PROCESS_TEMPERATURE_SCALE} renderer="glossy-svg" />
                   ) : null}
                   <TelemetryDial3D label="Discharge pressure" value={dischargeValue} unit="PSI" minimum={0} maximum={500} detail={dischargeIsDemo ? 'Local demo signal' : signalDetail(signals.highPressure, 'Discharge range', telemetry.status === 'error')} accent="gold" demo={dischargeIsDemo} zones={DISCHARGE_PRESSURE_ZONES} scale={DISCHARGE_PRESSURE_SCALE} renderer="glossy-svg" />
                   <TelemetryDial3D label="Suction pressure" value={suctionValue} unit="PSI" minimum={-14.7} maximum={300} detail={suctionIsDemo ? 'Local demo signal' : signalDetail(signals.lowPressure, 'Suction range', telemetry.status === 'error')} accent="violet" demo={suctionIsDemo} zones={SUCTION_PRESSURE_ZONES} scale={SUCTION_PRESSURE_SCALE} renderer="glossy-svg" />
                   <TelemetryDial3D label="Compressor current" value={currentValue} unit="A" minimum={0} maximum={120} detail={currentIsDemo ? 'Local demo signal' : signalDetail(signals.compressorAmps, ampsReference.length ? `Catalog RLA ${ampsReference.join('-')} A` : 'Current range', telemetry.status === 'error')} accent="lime" demo={currentIsDemo} renderer="glossy-svg" />
-                  {siteId !== 'site-cannon-falls' ? (
+                  {!siteUsesSharedProcessLoop ? (
                     <TelemetryDial3D label="Pump current" value={pumpCurrentValue} unit="A" minimum={0} maximum={120} detail={signalDetail(signals.pumpAmps, 'Awaiting sensor', telemetry.status === 'error')} accent="cyan" renderer="glossy-svg" />
                   ) : null}
                 </div>
