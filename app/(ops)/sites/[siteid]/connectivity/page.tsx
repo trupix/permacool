@@ -91,6 +91,7 @@ export default async function SiteConnectivityPage({
         <SiteEquipmentDashboard
           siteId={site.id}
           siteName={site.name}
+          siteDeviceIds={siteDevices.map((device) => device.id)}
           equipmentRecord={equipmentRecord}
           catalog={equipmentCatalog}
           view="connectivity"

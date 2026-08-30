@@ -5,7 +5,7 @@ export type TelemetryPointIdentity = {
 };
 
 const FAST_TELEMETRY_KEY_PATTERN =
-  /^ch[1-5](?:ai)?(temperature[fc]?|highpressure(psi)?|highsidepressure|lowpressure(psi)?|lowsidepressure|compressoramps|pumpamps|amps)$/;
+  /^(?:ch[1-5](?:ai)?(?:temperature[fc]?|highpressure(?:psi)?|highsidepressure|lowpressure(?:psi)?|lowsidepressure|compressoramps|pumpamps|amps)|controllerheartbeat|epicheartbeat|heartbeat|noderedpacreadok|pacapireadok|pacstrategyrunning|controllerstrategyrunning|strategyrunning|paciocommunicationok|controlleriocommunicationok|controlleriocommunicationenabled|controllerioready|pacioready|iounitready|iochannelfaultcount|paciochannelfaultcount)$/;
 
 function normalizeTelemetryKey(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9]/g, '');

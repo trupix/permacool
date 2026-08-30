@@ -70,6 +70,7 @@ export default async function LocationSpecsPage({ params }: { params: Promise<{ 
           <SiteEquipmentDashboard
             siteId={site.id}
             siteName={site.name}
+            siteDeviceIds={siteDevices.map((device) => device.id)}
             equipmentRecord={equipmentRecord}
             catalog={equipmentCatalog}
             view="specs"
