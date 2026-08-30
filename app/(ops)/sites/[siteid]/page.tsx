@@ -59,6 +59,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
       <SiteEquipmentDashboard
         siteId={site.id}
         siteName={site.name}
+        siteDeviceIds={siteDevices.map((device) => device.id)}
         facilityAddress={{
           addressLine1: site.addressLine1 ?? '',
           city: site.city ?? '',

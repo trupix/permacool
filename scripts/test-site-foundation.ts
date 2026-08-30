@@ -216,6 +216,7 @@ assert.equal(
 );
 
 const livePage = read('app/(ops)/sites/[siteid]/page.tsx');
+const connectivityPage = read('app/(ops)/sites/[siteid]/connectivity/page.tsx');
 assert.match(livePage, /resolveSiteDashboardFoundation/);
 assert.match(livePage, /<SiteEquipmentDashboard/);
 assert.match(
@@ -285,6 +286,13 @@ assert.match(
 );
 assert.match(dashboard, /running strategy cannot hide a disconnected physical I\/O board/);
 assert.match(dashboard, /20-minute recovery watchdog remains a future controller-side change/);
+assert.match(
+  dashboard,
+  /siteDeviceIds[\s\S]*controllerConnectionPath[\s\S]*deviceIds: \[\.\.\.new Set/,
+  'Controller health must use the site-scoped registered device IDs when reusable condenser records do not carry a device ID.'
+);
+assert.match(livePage, /siteDeviceIds=\{siteDevices\.map\(\(device\) => device\.id\)\}/);
+assert.match(connectivityPage, /siteDeviceIds=\{siteDevices\.map\(\(device\) => device\.id\)\}/);
 assert.match(dashboard, /ch1|signalsForChannel/, 'The shared channel resolver must remain reusable across configured sites.');
 assert.match(dashboard, /Equipment selections pending/);
 

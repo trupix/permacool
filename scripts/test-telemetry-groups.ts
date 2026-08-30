@@ -23,7 +23,13 @@ for (const key of [
   'ch4_temperature_f',
   'CH4_aiPumpAmps',
   'ch5_high_pressure',
-  'CH5_aiCompressorAmps'
+  'CH5_aiCompressorAmps',
+  'controller_heartbeat',
+  'node_red_pac_read_ok',
+  'pac_strategy_running',
+  'pac_io_communication_ok',
+  'controller_io_ready',
+  'io_channel_fault_count'
 ]) {
   assert.equal(isFastTelemetryKey(key), true, `${key} should use the fast telemetry channel`);
 }

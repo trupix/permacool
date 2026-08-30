@@ -826,6 +826,7 @@ function TelemetryRefreshCountdown({
 export function SiteEquipmentDashboard({
   siteId,
   siteName,
+  siteDeviceIds = [],
   equipmentRecord,
   catalog,
   catalogs,
@@ -837,6 +838,7 @@ export function SiteEquipmentDashboard({
 }: {
   siteId: string;
   siteName: string;
+  siteDeviceIds?: readonly string[];
   equipmentRecord: SiteEquipmentRecord;
   catalog: CondenserCatalogRecord;
   catalogs?: readonly CondenserCatalogRecord[];
@@ -1384,9 +1386,12 @@ export function SiteEquipmentDashboard({
     : false;
   const controllerConnectionPath = resolveControllerConnectionPath({
     points: telemetry.points,
-    deviceIds: system.condensers
-      .map((asset) => asset.telemetryDeviceId)
-      .filter((deviceId): deviceId is string => Boolean(deviceId)),
+    deviceIds: [...new Set([
+      ...siteDeviceIds,
+      ...system.condensers
+        .map((asset) => asset.telemetryDeviceId)
+        .filter((deviceId): deviceId is string => Boolean(deviceId))
+    ])],
     referenceTimestamp: telemetry.fetchedAt,
     feedStatus: telemetry.status,
     maximumAgeMs: CONTROLLER_HEARTBEAT_STALE_MS
