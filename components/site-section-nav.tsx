@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import {
   Activity,
@@ -9,6 +11,7 @@ import {
   Workflow
 } from 'lucide-react';
 import styles from './site-section-nav.module.css';
+import { ActiveSiteAnnouncer } from './active-site-context';
 
 type SiteSection = 'overview' | 'connectivity' | 'specs' | 'events';
 
@@ -33,7 +36,9 @@ export function SiteSectionNav({
   nodeRedUrl?: string | null;
 }) {
   return (
-    <nav className="site-section-nav" aria-label={`${siteName} pages`}>
+    <>
+      <ActiveSiteAnnouncer siteId={siteId} siteName={siteName} />
+      <nav className="site-section-nav" aria-label={`${siteName} pages`}>
       {sections.map((section) => {
         const Icon = section.icon;
         const isActive = section.id === active;
@@ -96,6 +101,7 @@ export function SiteSectionNav({
           <small>Not configured</small>
         </span>
       )}
-    </nav>
+      </nav>
+    </>
   );
 }

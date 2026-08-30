@@ -19,6 +19,10 @@ const catalogRecords = [
   readJson('docs/equipment-data/turbo-air-ts060xr404a3a-r404a.json')
 ];
 
+const appShell = read('components/app-shell.tsx');
+const siteSectionNav = read('components/site-section-nav.tsx');
+const activeSiteContext = read('components/active-site-context.tsx');
+
 function read(relativePath) {
   return fs.readFileSync(path.join(__dirname, '..', relativePath), 'utf8');
 }
@@ -238,7 +242,7 @@ assert.match(dashboard, /system\.condensers\.map/);
 assert.match(
   dashboard,
   /system\.condensers\.map[\s\S]*<TelemetryDial3D label="Process temperature"[\s\S]*<TelemetryDial3D label="Discharge pressure"[\s\S]*<TelemetryDial3D label="Suction pressure"[\s\S]*<TelemetryDial3D label="Compressor current"[\s\S]*<TelemetryDial3D label="Pump current"/,
-  'Every configured condenser must render the same five-gauge Live foundation.'
+  'Sites without a shared process loop must retain the five-gauge Live foundation.'
 );
 assert.match(dashboard, /signals\.temperature\?\.value \?\?[\s\S]*: null\)/);
 assert.match(dashboard, /signals\.highPressure\?\.value \?\?[\s\S]*: null\)/);
@@ -257,7 +261,22 @@ assert.match(
   /siteId === 'site-cannon-falls' \|\| siteId === 'site-salinas'[\s\S]*Command and physical feedback/,
   'Salinas must receive the same reusable command-to-feedback diagnostic GUI.'
 );
-assert.match(dashboard, /includePump: siteId !== 'site-cannon-falls'/, 'Salinas must retain its per-channel pump layer.');
+assert.match(
+  dashboard,
+  /siteUsesSharedProcessLoop = siteId === 'site-cannon-falls' \|\| siteId === 'site-salinas'/,
+  'Cannon Falls and Salinas must each model one shared pump and process-temperature sensor.'
+);
+assert.match(
+  dashboard,
+  /siteUsesSharedProcessLoop && sharedProcessLoop[\s\S]*Shared pump and process temperature/,
+  'The shared pump and process temperature must render once at the system level.'
+);
+assert.match(dashboard, /includePump: !siteUsesSharedProcessLoop/, 'Shared-loop sites must omit pump steps from each condenser sequence.');
+assert.match(
+  dashboard,
+  /!siteUsesSharedProcessLoop \? \([\s\S]*label="Process temperature"[\s\S]*!siteUsesSharedProcessLoop \? \([\s\S]*label="Pump current"/,
+  'Shared-loop sites must not duplicate process-temperature or pump-current gauges inside CH1 and CH2.'
+);
 assert.match(dashboard, /Missing signals remain “Not configured”/, 'The GUI must not guess missing PLC output states.');
 assert.match(
   dashboard,
@@ -268,6 +287,13 @@ assert.match(dashboard, /running strategy cannot hide a disconnected physical I\
 assert.match(dashboard, /20-minute recovery watchdog remains a future controller-side change/);
 assert.match(dashboard, /ch1|signalsForChannel/, 'The shared channel resolver must remain reusable across configured sites.');
 assert.match(dashboard, /Equipment selections pending/);
+
+assert.match(siteSectionNav, /ActiveSiteAnnouncer siteId=\{siteId\} siteName=\{siteName\}/);
+assert.match(activeSiteContext, /setActiveSite\?\.\(\{ siteId, siteName \}\)/);
+assert.match(appShell, /pathname\.match\(\/\^\\\/sites\\\/\(\[\^\/\]\+\)\/\)/);
+assert.match(appShell, /activeSite\?\.siteId === activeSiteId/);
+assert.match(appShell, /<small>Current lab<\/small>[\s\S]*<strong>\{visibleSite\.siteName\}<\/strong>/);
+assert.match(appShell, /href=\{`\/sites\/\$\{visibleSite\.siteId\}`\}/);
 assert.match(dashboard, /Manufacturer source pending/);
 assert.match(dashboard, /catalogByRecordId\.get\(asset\.catalogRecordId\)/);
 assert.match(dashboard, /analysis\.catalog\.source\.publicationNumber/);
