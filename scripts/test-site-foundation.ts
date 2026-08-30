@@ -19,6 +19,10 @@ const catalogRecords = [
   readJson('docs/equipment-data/turbo-air-ts060xr404a3a-r404a.json')
 ];
 
+const appShell = read('components/app-shell.tsx');
+const siteSectionNav = read('components/site-section-nav.tsx');
+const activeSiteContext = read('components/active-site-context.tsx');
+
 function read(relativePath) {
   return fs.readFileSync(path.join(__dirname, '..', relativePath), 'utf8');
 }
@@ -283,6 +287,13 @@ assert.match(dashboard, /running strategy cannot hide a disconnected physical I\
 assert.match(dashboard, /20-minute recovery watchdog remains a future controller-side change/);
 assert.match(dashboard, /ch1|signalsForChannel/, 'The shared channel resolver must remain reusable across configured sites.');
 assert.match(dashboard, /Equipment selections pending/);
+
+assert.match(siteSectionNav, /ActiveSiteAnnouncer siteId=\{siteId\} siteName=\{siteName\}/);
+assert.match(activeSiteContext, /setActiveSite\?\.\(\{ siteId, siteName \}\)/);
+assert.match(appShell, /pathname\.match\(\/\^\\\/sites\\\/\(\[\^\/\]\+\)\/\)/);
+assert.match(appShell, /activeSite\?\.siteId === activeSiteId/);
+assert.match(appShell, /<small>Current lab<\/small>[\s\S]*<strong>\{visibleSite\.siteName\}<\/strong>/);
+assert.match(appShell, /href=\{`\/sites\/\$\{visibleSite\.siteId\}`\}/);
 assert.match(dashboard, /Manufacturer source pending/);
 assert.match(dashboard, /catalogByRecordId\.get\(asset\.catalogRecordId\)/);
 assert.match(dashboard, /analysis\.catalog\.source\.publicationNumber/);

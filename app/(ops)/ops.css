@@ -4089,6 +4089,62 @@
   font-size: 0.72rem;
 }
 
+.ops-active-site {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.62rem;
+  min-height: 42px;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(101, 142, 56, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(233, 246, 218, 0.94), rgba(255, 255, 252, 0.8));
+  color: var(--ops-deep);
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(17, 44, 34, 0.06);
+}
+
+.ops-active-site > svg {
+  flex: 0 0 auto;
+  color: #668f35;
+}
+
+.ops-active-site > span,
+.ops-active-site small,
+.ops-active-site strong {
+  display: block;
+  min-width: 0;
+}
+
+.ops-active-site small {
+  color: #73837b;
+  font-size: 0.55rem;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.ops-active-site strong {
+  overflow: hidden;
+  margin-top: 0.16rem;
+  max-width: min(34vw, 360px);
+  font-size: 0.82rem;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ops-active-site:hover {
+  border-color: rgba(101, 142, 56, 0.36);
+  background: linear-gradient(135deg, rgba(225, 243, 203, 0.98), rgba(255, 255, 252, 0.94));
+}
+
+.ops-active-site:focus-visible {
+  outline: 3px solid rgba(101, 142, 56, 0.22);
+  outline-offset: 2px;
+}
+
 .ops-topbar-status,
 .ops-environment,
 .ops-activity {
@@ -5114,6 +5170,17 @@
   .ops-search-hint span,
   .ops-environment {
     display: none;
+  }
+
+  .ops-active-site {
+    max-width: calc(100vw - 142px);
+    min-height: 38px;
+    padding: 0.34rem 0.58rem;
+  }
+
+  .ops-active-site strong {
+    max-width: calc(100vw - 196px);
+    font-size: 0.74rem;
   }
 
   .metric-grid,

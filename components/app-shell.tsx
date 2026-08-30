@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import {
   Activity,
@@ -29,6 +30,8 @@ import {
   isPlatformStaff
 } from '@/lib/workspace-access';
 import type { AppUser } from '@/types/domain';
+import { ActiveSiteContext } from './active-site-context';
+import type { ActiveSiteContextValue } from './active-site-context';
 
 type NavItem = { href: string; label: string; icon: LucideIcon; matches?: string[] };
 
@@ -77,6 +80,10 @@ function initials(name: string) {
 
 export function AppShell({ user, children }: { user: AppUser; children: ReactNode }) {
   const pathname = usePathname() ?? '';
+  const [activeSite, setActiveSite] = useState<ActiveSiteContextValue | null>(null);
+  const sitePathMatch = pathname.match(/^\/sites\/([^/]+)/);
+  const activeSiteId = sitePathMatch ? decodeURIComponent(sitePathMatch[1]) : null;
+  const visibleSite = activeSite?.siteId === activeSiteId ? activeSite : null;
   const isStaff = isPlatformStaff(user);
   const navItems = [
     ...sharedNavItems.map((item) =>
@@ -94,6 +101,7 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
   ];
 
   return (
+    <ActiveSiteContext.Provider value={setActiveSite}>
     <div className="app-shell">
       <aside className="sidebar">
         <Link href="/dashboard" className="sidebar-brand" aria-label="Agenticly.Cool home">
@@ -148,10 +156,20 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
 
       <div className="app-main">
         <header className="app-topbar">
-          <div className="ops-search-hint">
-            <Search size={16} aria-hidden="true" />
-            <span>Sites, controllers and telemetry</span>
-          </div>
+          {visibleSite ? (
+            <Link className="ops-active-site" href={`/sites/${visibleSite.siteId}`} aria-label={`Current lab: ${visibleSite.siteName}`}>
+              <MapPinned size={17} aria-hidden="true" />
+              <span>
+                <small>Current lab</small>
+                <strong>{visibleSite.siteName}</strong>
+              </span>
+            </Link>
+          ) : (
+            <div className="ops-search-hint">
+              <Search size={16} aria-hidden="true" />
+              <span>Sites, controllers and telemetry</span>
+            </div>
+          )}
           <div className="ops-topbar-status">
             <span className="ops-environment"><ShieldCheck size={15} aria-hidden="true" /> Secure operations</span>
             <span className="ops-activity"><Activity size={15} aria-hidden="true" /> Live monitoring</span>
@@ -162,5 +180,6 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
         <div className="app-content">{children}</div>
       </div>
     </div>
+    </ActiveSiteContext.Provider>
   );
 }
