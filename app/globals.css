@@ -1739,6 +1739,25 @@ h4 {
   margin-bottom: 0;
 }
 
+.home-independent-proof {
+  margin-top: 1rem !important;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(14, 49, 54, 0.15);
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.home-independent-proof strong {
+  color: var(--ink);
+}
+
+.home-independent-proof a {
+  color: var(--cyan-dark);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
 .ethanol-systems-page {
   background:
     radial-gradient(circle at 14% 12%, rgba(19, 167, 199, 0.16), transparent 28rem),

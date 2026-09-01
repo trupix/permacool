@@ -102,13 +102,13 @@ const performancePoints = [
 const solutionHighlights = [
   {
     tone: "cyan",
-    stat: "30% more",
+    stat: "Direct refrigerant",
     title: "Direct refrigeration horsepower",
-    body: "More applied horsepower than traditional chillers, built into the chilling architecture instead of bolted on later."
+    body: "Applied refrigeration capacity is built into the chilling architecture and sized around the specified process load."
   },
   {
     tone: "lime",
-    stat: "10x speed",
+    stat: "Rapid pull-down",
     title: "Purpose-built process side",
     body: "A process-side design built around heat exchange surface area, contact, and pull-down speed from the start."
   },
@@ -147,14 +147,14 @@ const flowStories = [
   {
     title: "Chill",
     body:
-      "FAST - Purpose built direct refrigeration for speed. Nothing compares to the Perma Cool BLAST series pulldown speed in the entire extraction industry. Fast, consistent, reliable, electric ethanol chilling without consumables makes you MORE MONEY.",
-    callout: "No consumables = MORE MONEY"
+      "Purpose-built direct refrigeration gives the BLAST series fast, repeatable pull-down without relying on a continuous supply of cryogenic consumables. Final performance is confirmed against the specified batch size, starting temperature, utilities, and operating conditions.",
+    callout: "Fast pull-down without recurring cryogenic supply"
   },
   {
     title: "Extract",
     body:
-      "Built to re-chill, re-run, the same ethanol always at temp. The BLAST series enables processors to achieve biomass-to-ethanol ratios up to 3:1. The result is a more saturated ethanol solution moving downstream, with the potential to recover up to 3x more crude for every gallon of ethanol evaporated.",
-    callout: "Ratio 3lbs biomass : 1gallon ethanol"
+      "Built to re-chill and re-run ethanol between extraction cycles. Some workflows target biomass-to-ethanol ratios up to 3:1, but achievable ratios and downstream recovery depend on material, equipment, SOP, and product requirements.",
+    callout: "Workflow target: up to 3 lb biomass per gallon"
   },
   {
     title: "Repeat",
@@ -176,7 +176,7 @@ const products = [
     href: "/ethanol-chiller-blast-60",
     cta: "View BLAST 60/45",
     copy:
-      "With over 200 original Legacy ACP-30 units in the field, the BLAST 60/45 is the updated and upgraded evolution of a proven design. Tested, trusted, and built for demanding extraction environments, it has earned its place as a true industry workhorse.",
+      "Company installation records show more than 200 Legacy ACP-30 units placed in the field. The BLAST 60/45 is the updated evolution of that platform, built for demanding extraction environments with modernized controls and serviceability.",
     meta: ["60 gallons", "45 minutes", "30-gallon centrifuge workflow"],
     bullets: [
       "Flash-chill 60 gallons of room-temperature ethanol down to −40 °C in 45 minutes. You can run less.",
@@ -380,7 +380,7 @@ export default function EthanolChillingSystemsPage() {
               <div className="ecs-product-media">
                 <Image
                   src={product.image}
-                  alt=""
+                  alt={`${product.title} ethanol chilling system`}
                   width={720}
                   height={520}
                   sizes="(max-width: 980px) calc(100vw - 2rem), 580px"

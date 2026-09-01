@@ -12,10 +12,12 @@ import {
 } from "lucide-react";
 import LearningCenterSection from "./components/LearningCenterSection";
 import { InsightsHeader } from "./insights/InsightsShell";
+import { externalLearningResources } from "./insights/insights-data";
 import { buildPublicPageMetadata } from "../lib/site";
 import { buildContactHref } from "../lib/contact";
 
 const homepageQuoteHref = buildContactHref({ requestType: "Quote", source: "homepage" });
+const controlsCaseStudy = externalLearningResources[0];
 
 export const metadata = buildPublicPageMetadata({
   path: "/",
@@ -134,8 +136,8 @@ export default function HomePage() {
           <p className="eyebrow">Industrial Extraction Cooling</p>
           <h1>Purpose built chillers for botanical extraction</h1>
           <p>
-            Perma Cool systems are full turnkey chilling solutions for extraction labs looking to make more money,
-            eliminate bottlenecks and outperform the competition.
+            Perma Cool systems are full turnkey chilling solutions for extraction labs working to increase production
+            consistency, eliminate bottlenecks, and reduce dependence on consumable cooling.
           </p>
           <div className="hero-actions">
             <a className="button primary" href="/ethanol-chilling-systems">
@@ -168,7 +170,7 @@ export default function HomePage() {
         <article>
           <BadgeDollarSign size={24} aria-hidden="true" />
           <strong>LN2 + DRY ICE</strong>
-          <span>Consumable Elimination</span>
+          <span>Consumable reduction</span>
         </article>
       </section>
 
@@ -289,11 +291,21 @@ export default function HomePage() {
           ))}
         </div>
         <div className="home-ln2-card">
-          <p>
-            For many extraction teams, the buying decision is not just about getting cold. It is about replacing
-            recurring LN2 spend, missed delivery risk, and inconsistent improvised workflows with a dedicated chilling
-            platform.
-          </p>
+          <div>
+            <p>
+              For many extraction teams, the buying decision is not just about getting cold. It is about replacing
+              recurring LN2 spend, missed delivery risk, and inconsistent improvised workflows with a dedicated chilling
+              platform. Actual operating savings depend on run schedule, local utility and consumable pricing, freight,
+              and the existing process.
+            </p>
+            <p className="home-independent-proof">
+              <strong>Independent engineering perspective:</strong> Opto 22 documents how Perma Cool brought its
+              industrial controls in-house to improve scalability, remote diagnostics, and service response.{" "}
+              <a href={controlsCaseStudy.articleUrl} target="_blank" rel="noreferrer">
+                Read the Opto 22 case study
+              </a>.
+            </p>
+          </div>
           <a className="button primary" href="/direct-refrigerant-vs-ln2">
             Compare Direct Refrigerant vs LN2
             <ArrowRight size={18} aria-hidden="true" />
