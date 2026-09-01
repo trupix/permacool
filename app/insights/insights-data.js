@@ -232,7 +232,7 @@ export const insightArticles = [
         title: "Cost Savings",
         bullets: [
           "Electricity is significantly more economical than LN2, eliminating ongoing consumable costs.",
-          "The Perma Cool units often pay for themselves within the first one to two months through LN2 savings alone-before factoring in the cost of LN2 chillers themselves."
+          "Facilities with high LN2 consumption may see a short payback period, but actual savings depend on usage, local LN2 and electricity pricing, freight, labor, and the existing process. Perma Cool can model those inputs before a purchase decision."
         ]
       },
       {

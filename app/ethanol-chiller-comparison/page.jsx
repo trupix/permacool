@@ -150,7 +150,7 @@ export default function EthanolChillerComparisonPage() {
           <article key={model.name}>
             <Image
               src={model.image}
-              alt=""
+              alt={`${model.name} ethanol chiller`}
               width={520}
               height={320}
               sizes="(max-width: 680px) 76px, 96px"
@@ -218,7 +218,7 @@ export default function EthanolChillerComparisonPage() {
             <article className="comparison-model-card" key={model.name}>
               <Image
                 src={model.image}
-                alt=""
+                alt={`${model.name} ethanol chiller product rendering`}
                 width={680}
                 height={420}
                 sizes="(max-width: 980px) calc(100vw - 2rem), 380px"
