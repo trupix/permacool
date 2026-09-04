@@ -32,6 +32,8 @@ import {
 import type { AppUser } from '@/types/domain';
 import { ActiveSiteContext } from './active-site-context';
 import type { ActiveSiteContextValue } from './active-site-context';
+import { ConnectionHealthContext, type ConnectionHealthSnapshot } from './connection-health-context';
+import { ConnectionHealthNav } from './connection-health-nav';
 
 type NavItem = { href: string; label: string; icon: LucideIcon; matches?: string[] };
 
@@ -81,6 +83,7 @@ function initials(name: string) {
 export function AppShell({ user, children }: { user: AppUser; children: ReactNode }) {
   const pathname = usePathname() ?? '';
   const [activeSite, setActiveSite] = useState<ActiveSiteContextValue | null>(null);
+  const [connectionHealth, setConnectionHealth] = useState<ConnectionHealthSnapshot | null>(null);
   const sitePathMatch = pathname.match(/^\/sites\/([^/]+)/);
   const activeSiteId = sitePathMatch ? decodeURIComponent(sitePathMatch[1]) : null;
   const visibleSite = activeSite?.siteId === activeSiteId ? activeSite : null;
@@ -102,6 +105,7 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
 
   return (
     <ActiveSiteContext.Provider value={setActiveSite}>
+    <ConnectionHealthContext.Provider value={setConnectionHealth}>
     <div className="app-shell">
       <aside className="sidebar">
         <Link href="/dashboard" className="sidebar-brand" aria-label="Agenticly.Cool home">
@@ -170,7 +174,8 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
               <span>Sites, controllers and telemetry</span>
             </div>
           )}
-          <div className="ops-topbar-status">
+          {activeSiteId === 'site-cannon-falls' && connectionHealth?.siteId === activeSiteId ? <ConnectionHealthNav stages={connectionHealth.stages} /> : null}
+          <div className={`ops-topbar-status${activeSiteId === 'site-cannon-falls' && connectionHealth?.siteId === activeSiteId ? ' has-connection-health' : ''}`}>
             <span className="ops-environment"><ShieldCheck size={15} aria-hidden="true" /> Secure operations</span>
             <span className="ops-activity"><Activity size={15} aria-hidden="true" /> Live monitoring</span>
             <span className="user-avatar user-avatar--small" aria-label={user.name}>{initials(user.name)}</span>
@@ -180,6 +185,7 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
         <div className="app-content">{children}</div>
       </div>
     </div>
+    </ConnectionHealthContext.Provider>
     </ActiveSiteContext.Provider>
   );
 }

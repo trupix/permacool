@@ -34,6 +34,7 @@ import {
   type SuctionTemperatureSource
 } from '@/lib/equipment/performance';
 import { resolveControllerConnectionPath } from '@/lib/equipment/controller-connection-path';
+import { ConnectionHealthAnnouncer } from '@/components/connection-health-context';
 import { deriveOperatingSequence, deriveSharedPumpSequence } from '@/lib/equipment/operating-sequence';
 import { normalizeTelemetryKey, resolveTelemetryPoint } from '@/lib/equipment/telemetry';
 import {
@@ -1531,6 +1532,7 @@ export function SiteEquipmentDashboard({
 
   return (
     <div className="salinas-dashboard">
+      {siteId === 'site-cannon-falls' && (view === 'overview' || view === 'connectivity') ? <ConnectionHealthAnnouncer siteId={siteId} stages={controllerConnectionPath.stages} /> : null}
       {view === 'overview' ? (
         <>
       <section className="salinas-dashboard__hero">

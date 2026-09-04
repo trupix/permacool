@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 72"><defs><mask id="astra-vpn-wordmark-cut"><rect width="150" height="72" fill="white"/><rect x="5" y="31" width="101" height="2.5" fill="black"/></mask></defs>
+        <text x="7" y="43" font-family="Arial Black,Arial Narrow,Arial,sans-serif" font-size="42" font-weight="900" font-style="italic" letter-spacing="-4" fill="#cc282e" mask="url(#astra-vpn-wordmark-cut)">VPN</text>
+        <text x="66" y="61" font-family="Arial Black,Arial Narrow,Arial,sans-serif" font-size="19" font-weight="900" font-style="italic" letter-spacing="-.8" fill="#252a2d">EPIC</text>
+        <path d="M123 15l-12 20h11l-7 15 25-25h-12l8-10z" fill="#cc282e"/>
+      </svg>

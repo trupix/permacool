@@ -4075,6 +4075,25 @@
   backdrop-filter: blur(18px);
 }
 
+.connection-health-nav { display: flex; align-items: center; justify-content: center; gap: 10px; min-width: 0; }
+.connection-health-nav__item { --health-glow: #7d838c; position: relative; display: flex; flex-direction: column; align-items: center; color: #263b32; text-decoration: none; width: 72px; min-height: 54px; }
+.connection-health-nav__item.is-connected { --health-glow: #009e3d; }
+.connection-health-nav__item.is-disconnected { --health-glow: #df2638; }
+.connection-health-nav__art { position: relative; display: grid; place-items: center; width: 72px; height: 36px; isolation: isolate; }
+.connection-health-nav__art::before { content: ''; position: absolute; inset: -7px -10px; z-index: -1; background: radial-gradient(ellipse, color-mix(in srgb, var(--health-glow) 55%, transparent), transparent 72%); filter: blur(5px); animation: connection-nav-glow 3.4s ease-in-out infinite; }
+.connection-health-nav__art img { width: 68px; height: 33px; object-fit: contain; filter: drop-shadow(0 0 5px color-mix(in srgb, var(--health-glow) 72%, transparent)); }
+.connection-health-nav__item.is-checking .connection-health-nav__art::before { opacity: .5; }
+.connection-health-nav__item.is-disconnected .connection-health-nav__art::before { animation-duration: 2.6s; }
+.connection-health-nav__name { position: relative; font-size: 10px; font-weight: 700; white-space: nowrap; }
+.connection-health-nav__detail { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 230px; padding: 12px; border: 1px solid #dbe2dd; border-radius: 10px; background: #fff; box-shadow: 0 6px 24px #112c2226; color: #263b32; font-size: 12px; line-height: 1.4; z-index: 20; }
+.connection-health-nav__detail span, .connection-health-nav__detail small { display: block; margin-top: 5px; }
+.connection-health-nav__item:hover .connection-health-nav__detail, .connection-health-nav__item:focus .connection-health-nav__detail { display: block; }
+.ops-topbar-status.has-connection-health .ops-environment, .ops-topbar-status.has-connection-health .ops-activity { display: none; }
+#controller-connection-path-title { scroll-margin-top: 150px; }
+@keyframes connection-nav-glow { 0%,100% { transform: scale(.92); } 50% { transform: scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .connection-health-nav__art::before { animation: none; } }
+@media (max-width: 1100px) { .app-topbar:has(.connection-health-nav) { flex-wrap: wrap; } .connection-health-nav { order: 3; width: 100%; justify-content: space-between; gap: 0; } .connection-health-nav__item { width: 15%; } .connection-health-nav__art { width: 100%; } .connection-health-nav__art img { max-width: 100%; } .connection-health-nav__item:first-child .connection-health-nav__detail { left: 0; transform: none; } .connection-health-nav__item:last-child .connection-health-nav__detail { left: auto; right: 0; transform: none; } }
+
 .ops-search-hint {
   display: flex;
   align-items: center;
