@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 
@@ -246,19 +246,32 @@ function HeatMirage() {
 }
 
 export default function Blast15030Experience({ pricingHref }) {
+  const [activeSection, setActiveSection] = useState("top");
+  useEffect(() => {
+    const ids = ["top", "system", "mirage", "regeneration", "layout"];
+    let frame = 0;
+    const update = () => {
+      let active = "top";
+      for (const id of ids) {
+        if ((document.getElementById(id)?.getBoundingClientRect().top ?? Infinity) <= 165) active = id;
+      }
+      setActiveSection(active);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(frame); };
+  }, []);
   return (
     <div className="blast-original desert-page">
-      <nav className="site-nav" aria-label="Primary navigation">
-        <a className="brand" href="/" aria-label="Perma Cool home">
-          <img src="/images/generated/blast15030/permacool-wordmark.png" alt="Perma Cool" />
-        </a>
-        <div className="nav-links">
-          <a href="#system">System</a>
-          <a href="#mirage">Mirage</a>
-          <a href="#regeneration">Regeneration</a>
-          <a href="#layout">Layout</a>
-        </div>
-        <a className="nav-cta version-link" href={pricingHref}>Request pricing</a>
+      <nav className="blast-floating-nav" aria-label="BLAST 150/30 sections">
+        {[["top", "150/30"], ["system", "System"], ["mirage", "Mirage"], ["regeneration", "Regeneration"], ["layout", "Layout"]].map(([id, label]) => (
+          <a key={id} href={`#${id}`} className={activeSection === id ? "is-active" : undefined} aria-current={activeSection === id ? "location" : undefined}>{label}</a>
+        ))}
+        <a className="floating-pricing" href={pricingHref}>Request pricing ↗</a>
       </nav>
 
       <section className="hero" id="top">
