@@ -22,9 +22,9 @@ const comparisonRecommendationHref = buildContactHref({
 
 export const metadata = buildPublicPageMetadata({
   path: "/ethanol-chiller-comparison",
-  title: "Compare BLAST™ Ethanol Chillers | 60/45 vs 150/45 vs 240/45 | Perma Cool",
+  title: "Compare BLAST™ Ethanol Chillers | 60/45, 150/45, 150/30 & 240/45 | Perma Cool",
   description:
-    "Compare Perma Cool BLAST 60/45, BLAST 150/45, and BLAST 240/45 ethanol chillers by capacity, pull-down target, workflow fit, controls, and production scale.",
+    "Compare Perma Cool BLAST 60/45, BLAST 150/45, BLAST 150/30, and BLAST 240/45 ethanol chillers by capacity, pull-down target, workflow fit, controls, and production scale.",
   image: "/images/generated/ethanol-systems-hero.png"
 });
 
@@ -60,6 +60,21 @@ const models = [
     cta: "View BLAST 150/45"
   },
   {
+    name: "BLAST 150/30",
+    href: "/ethanol-chiller-blast-150-30",
+    image: "/images/generated/blast15030/desert-system-hero.png",
+    capacity: "150 gallons",
+    time: "30 minutes",
+    rate: "5 GPM",
+    fit: "High-speed 150-gallon commercial extraction",
+    architecture: "22 HP + 6 HP cascade with regenerative chilling",
+    controls: "Mirage 1.0 PLC/HMI visibility",
+    condenser: "Two aligned outdoor condenser units",
+    bestFor:
+      "Teams that need 150-gallon capacity with faster pull-down, cascade subcooling, regenerative chilling, and coordinated control across all three equipment zones.",
+    cta: "View BLAST 150/30"
+  },
+  {
     name: "BLAST 240/45",
     href: "/ethanol-chiller-blast-240",
     image: "/images/generated/blast240-flash-chilling.png",
@@ -77,15 +92,15 @@ const models = [
 ];
 
 const comparisonRows = [
-  ["Ethanol capacity", "60 gallons", "150 gallons", "240 gallons"],
-  ["Pull-down target", "Room temperature to −40 °C", "Room temperature to −40 °C", "Room temperature to −40 °C"],
-  ["Target timing", "45 minutes", "45 minutes", "45 minutes"],
-  ["Flash-chilling rate", "1.33 GPM", "3.33 GPM", "6.0 GPM"],
-  ["Best production fit", "Compact production", "Mid-scale production", "Large process class"],
-  ["Workflow match", "30-gallon centrifuge or 2x 15-gallon workflow", "Growing commercial extraction schedules", "Higher-volume extraction schedules"],
-  ["System architecture", "Dual-stage cascade design", "Direct refrigerant chilling", "Direct refrigerant chilling"],
-  ["Controls", "PLC/HMI visibility", "PLC/HMI visibility", "PLC/HMI visibility"],
-  ["Facility integration", "Outdoor condenser units", "HVAC condenser integration", "HVAC condenser integration"]
+  ["Ethanol capacity", "60 gallons", "150 gallons", "150 gallons", "240 gallons"],
+  ["Pull-down target", "Room temperature to −40 °C", "Room temperature to −40 °C", "Room temperature to −40 °C", "Room temperature to −40 °C"],
+  ["Target timing", "45 minutes", "45 minutes", "30 minutes", "45 minutes"],
+  ["Flash-chilling rate", "1.33 GPM", "3.33 GPM", "5 GPM", "6.0 GPM"],
+  ["Best production fit", "Compact production", "Mid-scale production", "High-speed mid-scale production", "Large process class"],
+  ["Workflow match", "30-gallon centrifuge or 2x 15-gallon workflow", "Growing commercial extraction schedules", "Faster 150-gallon repeat cycles", "Higher-volume extraction schedules"],
+  ["System architecture", "Dual-stage cascade design", "Direct refrigerant chilling", "22 HP + 6 HP cascade with regeneration", "Direct refrigerant chilling"],
+  ["Controls", "PLC/HMI visibility", "PLC/HMI visibility", "Mirage 1.0 PLC/HMI", "PLC/HMI visibility"],
+  ["Facility integration", "Outdoor condenser units", "HVAC condenser integration", "Three-zone coordinated installation", "HVAC condenser integration"]
 ];
 
 const decisionCards = [
@@ -100,6 +115,12 @@ const decisionCards = [
     title: "Choose 150/45 for the middle lane",
     body:
       "Best when production has moved past pilot scale and needs more chilling capacity without stepping into the largest process class."
+  },
+  {
+    icon: Gauge,
+    title: "Choose 150/30 for faster 150-gallon cycles",
+    body:
+      "Best when the operation needs 150-gallon capacity with five-gallon-per-minute chilling, cascade subcooling, and regenerative heat transfer."
   },
   {
     icon: TrendingUp,
@@ -127,7 +148,7 @@ export default function EthanolChillerComparisonPage() {
         <div className="comparison-hero-overlay" />
         <div className="comparison-hero-content">
           <p className="eyebrow">BLAST Ethanol Chiller Comparison</p>
-          <h1>Compare BLAST™ 60/45, 150/45, and 240/45 ethanol chillers.</h1>
+          <h1>Compare BLAST™ 60/45, 150/45, 150/30, and 240/45 ethanol chillers.</h1>
           <p>
             Pick the production class that matches your ethanol volume, centrifuge workflow, facility utilities, and
             throughput target.
@@ -166,7 +187,7 @@ export default function EthanolChillerComparisonPage() {
       <section className="section comparison-chart-section">
         <div className="section-heading">
           <p className="eyebrow">Comparison Chart</p>
-          <h2>Three ethanol chillers, one production-class decision.</h2>
+          <h2>Four ethanol chillers, one production-class decision.</h2>
         </div>
         <div className="comparison-table-wrap">
           <table className="comparison-table">
@@ -179,12 +200,10 @@ export default function EthanolChillerComparisonPage() {
               </tr>
             </thead>
             <tbody>
-              {comparisonRows.map(([label, blast60, blast150, blast240]) => (
+              {comparisonRows.map(([label, ...values]) => (
                 <tr key={label}>
                   <th scope="row">{label}</th>
-                  <td>{blast60}</td>
-                  <td>{blast150}</td>
-                  <td>{blast240}</td>
+                  {values.map((value, index) => <td key={`${label}-${models[index].name}`}>{value}</td>)}
                 </tr>
               ))}
             </tbody>

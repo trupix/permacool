@@ -7,6 +7,7 @@ const publicPages = [
   { path: "/ethanol-chiller-comparison", updatedAt: "2026-09-01", changeFrequency: "monthly", priority: 0.8 },
   { path: "/ethanol-chiller-blast-60", updatedAt: "2026-08-27T06:34:15-07:00", changeFrequency: "monthly", priority: 0.8 },
   { path: "/ethanol-chiller-blast-150", updatedAt: "2026-08-27T06:34:15-07:00", changeFrequency: "monthly", priority: 0.8 },
+  { path: "/ethanol-chiller-blast-150-30", updatedAt: "2026-09-05", changeFrequency: "monthly", priority: 0.85 },
   { path: "/ethanol-chiller-blast-240", updatedAt: "2026-08-27T06:34:15-07:00", changeFrequency: "monthly", priority: 0.8 },
   { path: "/butane-recovery-system", updatedAt: "2026-08-27T06:34:15-07:00", changeFrequency: "monthly", priority: 0.8 },
   { path: "/learning-center", updatedAt: "2026-08-27T06:34:15-07:00", changeFrequency: "weekly", priority: 0.9 },
