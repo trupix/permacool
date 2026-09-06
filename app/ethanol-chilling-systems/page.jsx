@@ -53,6 +53,7 @@ const ethanolSystemsStructuredData = buildServiceStructuredData({
 const seriesLinks = [
   ["BLAST 60/45", "/ethanol-chiller-blast-60"],
   ["BLAST 150/45", "/ethanol-chiller-blast-150"],
+  ["BLAST 150/30", "/ethanol-chiller-blast-150-30"],
   ["BLAST 240/45", "/ethanol-chiller-blast-240"]
 ];
 
@@ -197,6 +198,21 @@ const products = [
       "Designed for high-throughput ethanol extraction.",
       "Fast pull-down to target low-temp process windows.",
       "Designed with readily available parts to keep repairs fast and affordable."
+    ]
+  },
+  {
+    eyebrow: "High-Speed Mid-Scale",
+    title: "BLAST 150/30",
+    image: "/images/generated/blast15030/desert-system-hero.png",
+    href: "/ethanol-chiller-blast-150-30",
+    cta: "View BLAST 150/30",
+    copy:
+      "A high-speed 150-gallon cascade system designed for five gallons per minute of flash chilling and reliable operation in demanding ambient conditions.",
+    meta: ["150 gallons", "30 minutes", "5 GPM cascade system"],
+    bullets: [
+      "22 HP primary refrigeration with a dedicated 6 HP cascade subcooling stage.",
+      "Regenerative chilling increases useful heat-transfer surface.",
+      "Mirage 1.0 PLC control connects the outdoor, control, and process zones."
     ]
   },
   {

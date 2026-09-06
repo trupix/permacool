@@ -2621,7 +2621,7 @@ h4 {
   width: min(var(--max), calc(100% - 2rem));
   margin: -4rem auto 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -2707,7 +2707,7 @@ h4 {
 .comparison-decision-grid,
 .comparison-model-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 
