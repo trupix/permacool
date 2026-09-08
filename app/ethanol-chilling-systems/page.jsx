@@ -371,7 +371,7 @@ export default function EthanolChillingSystemsPage() {
           <p className="eyebrow">Why BLAST Changes Extraction Flow</p>
           <h2>Chill, Extract, Repeat</h2>
           <a className="button primary ecs-heading-cta" href="/workflow">
-            Workflow Breakdown
+            Workflow Breakdown Article
             <ArrowRight size={18} aria-hidden="true" />
           </a>
         </div>
