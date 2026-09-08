@@ -188,7 +188,7 @@ const highlights = [
 const fitPoints = [
   "Customers who want a true 150-gallon ethanol chilling platform.",
   "Teams that need more capacity than the BLAST 60/45 but are not ready for the 240-gallon class.",
-  "Operators who want a standard production unit instead of the faster 150/25 model.",
+  "Operators who want a standard production unit instead of the faster BLAST 150/30 cascade model.",
   "Labs moving away from LN2, dry ice, or freezer-based chilling.",
   "Facilities that need repeatable re-chill performance for daily extraction scheduling."
 ];
@@ -468,7 +468,7 @@ function RelatedCta() {
         <p className="eyebrow">Need lead time + pricing?</p>
         <h2>Match the BLAST 150/45 to your ethanol volume, batch schedule, and facility utilities.</h2>
         <p>
-          Perma Cool can help compare the 60/45, standard 150/45, faster 150/25, and 240/45 against your current process
+          Perma Cool can help compare the 60/45, standard 150/45, faster 150/30, and 240/45 against your current process
           instead of guessing from capacity alone.
         </p>
       </div>
