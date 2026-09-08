@@ -122,29 +122,6 @@ const solutionHighlights = [
   }
 ];
 
-const metrics = [
-  {
-    label: "Series 01",
-    title: "BLAST 60/45",
-    body: "Compact unit sized for 30-gallon centrifuge workflows and rapid pull-down from room temperature to −40 °C."
-  },
-  {
-    label: "Series 02",
-    title: "BLAST 150/45",
-    body: "Production-ready configuration for high-throughput ethanol extraction."
-  },
-  {
-    label: "Series 03",
-    title: "BLAST 240/45",
-    body: "Large process-class option with the same direct refrigerant control philosophy."
-  },
-  {
-    label: "Commercial Value",
-    title: "Less Consumable Drag",
-    body: "Replace recurring cryogenic supply complexity with electricity and planned maintenance."
-  }
-];
-
 const flowStories = [
   {
     title: "Chill",
@@ -386,18 +363,6 @@ export default function EthanolChillingSystemsPage() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="ecs-metric-band">
-        <div className="ecs-metrics">
-          {metrics.map((item) => (
-            <article className="ecs-metric" key={item.title}>
-              <span>{item.label}</span>
-              <strong>{item.title}</strong>
-              <p>{item.body}</p>
-            </article>
-          ))}
         </div>
       </section>
 
