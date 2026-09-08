@@ -22,6 +22,13 @@ assert.equal(
 
 assert.equal(buildContactHref({ interest: 'Untrusted value' }), '/contact-us');
 assert.equal(
+  buildContactHref({ interest: 'Ethanol Chillers', requestType: 'Product Pricing', product: 'BLAST 150/30', source: 'ethanol-chiller-blast-150-30' }),
+  '/contact-us?interest=Ethanol+Chillers&request_type=Product+Pricing&product=BLAST+150%2F30&source=ethanol-chiller-blast-150-30'
+);
+const cascadeInquiry = new FormData();
+cascadeInquiry.set('product', 'BLAST 150/30');
+assert.equal(normalizeContactPayload(cascadeInquiry).product, 'BLAST 150/30');
+assert.equal(
   buildContactSubmissionAction({
     requestType: 'System Fit Review',
     product: 'Butane Recovery System',

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
+const sectionLinks = [["top", "150/30"], ["system", "System"], ["mirage", "Mirage"], ["regeneration", "Regeneration"], ["layout", "Layout"]];
 
 const components = [
   {
@@ -40,13 +41,19 @@ function HeatMirage() {
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount) return;
+    if (!mount || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 100);
     camera.position.z = 9;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    } catch {
+      // The static desert artwork remains usable when WebGL is unavailable.
+      return;
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
@@ -182,7 +189,9 @@ function HeatMirage() {
     observer.observe(mount);
     resize();
 
+    let isVisible = false;
     const render = () => {
+      if (!isVisible || document.hidden) { frame = 0; return; }
       const points = geometry.attributes.position.array;
       for (let i = 0; i < count; i += 1) {
         points[i * 3 + 1] += speeds[i];
@@ -221,12 +230,24 @@ function HeatMirage() {
       renderer.render(scene, camera);
       frame = requestAnimationFrame(render);
     };
-    render();
+    const syncAnimation = () => {
+      cancelAnimationFrame(frame);
+      frame = isVisible && !document.hidden ? requestAnimationFrame(render) : 0;
+    };
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      syncAnimation();
+    });
+    visibilityObserver.observe(mount);
+    document.addEventListener("visibilitychange", syncAnimation);
 
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      visibilityObserver.disconnect();
+      document.removeEventListener("visibilitychange", syncAnimation);
       geometry.dispose();
+      dust.material.dispose();
       flareGroup.children.forEach((child) => {
         const flare = child;
         (flare.material).dispose();
@@ -268,7 +289,14 @@ export default function Blast15030Experience({ pricingHref }) {
   return (
     <div className="blast-original desert-page">
       <nav className="blast-floating-nav" aria-label="BLAST 150/30 sections">
-        {[["top", "150/30"], ["system", "System"], ["mirage", "Mirage"], ["regeneration", "Regeneration"], ["layout", "Layout"]].map(([id, label]) => (
+        <select className="blast-mobile-section-picker" aria-label="Jump to page section" value={activeSection} onChange={(event) => {
+          const id = event.target.value;
+          window.location.hash = id;
+          document.getElementById(id)?.scrollIntoView({ block: "start" });
+        }}>
+          {sectionLinks.map(([id, label]) => <option key={id} value={id}>{id === "top" ? "150/30 Overview" : label}</option>)}
+        </select>
+        {sectionLinks.map(([id, label]) => (
           <a key={id} href={`#${id}`} className={activeSection === id ? "is-active" : undefined} aria-current={activeSection === id ? "location" : undefined}>{label}</a>
         ))}
         <a className="floating-pricing" href={pricingHref}>Request pricing ↗</a>
@@ -320,7 +348,7 @@ export default function Blast15030Experience({ pricingHref }) {
           {components.map((component) => (
             <article className={`component-card ${component.className}`} key={component.title}>
               <div className="component-image">
-                <img src={component.image} alt={component.title} />
+                <img loading="lazy" decoding="async" src={component.image} alt={component.title} />
               </div>
               <div className="component-copy">
                 <span className="component-number">{component.number}</span>
@@ -339,7 +367,7 @@ export default function Blast15030Experience({ pricingHref }) {
           <div className="mirage-brand-stage">
             <div className="mirage-sun" aria-hidden="true" />
             <div className="mirage-logo-wrap">
-              <img src="/images/generated/blast15030/mirage-1-logo.png" alt="Mirage 1.0" />
+              <img loading="lazy" decoding="async" src="/images/generated/blast15030/mirage-1-logo.png" alt="Mirage 1.0" />
               <p>by <strong>Agenticly Cool</strong></p>
             </div>
             <div className="mirage-status"><i /> Available now</div>
@@ -348,7 +376,7 @@ export default function Blast15030Experience({ pricingHref }) {
           <div className="mirage-intro-grid">
             <div className="mirage-bear-stage">
               <div className="bear-orbit" aria-hidden="true"><i /><i /><i /></div>
-              <img src="/images/generated/blast15030/agenticly-cool-bear-3d.png" alt="Agenticly Cool gold bear mascot" />
+              <img loading="lazy" decoding="async" src="/images/generated/blast15030/agenticly-cool-bear-3d.png" alt="Agenticly Cool gold bear mascot" />
             </div>
 
             <div className="mirage-message">
@@ -412,7 +440,7 @@ export default function Blast15030Experience({ pricingHref }) {
               </div>
             </div>
             <figure className="regen-visual">
-              <img src="/images/generated/blast15030/regeneration.png" alt="Regenerative chilling flow diagram showing the direction through the process tank, pump, and plate heat exchangers" />
+              <img loading="lazy" decoding="async" src="/images/generated/blast15030/regeneration.png" alt="Regenerative chilling flow diagram showing the direction through the process tank, pump, and plate heat exchangers" />
               <figcaption><span className="pulse-dot" /> Regeneration energy exchange</figcaption>
             </figure>
           </div>
@@ -429,7 +457,7 @@ export default function Blast15030Experience({ pricingHref }) {
         </div>
         <div className="airflow-stage">
           <div className="flow-lines" aria-hidden="true"><i /><i /><i /><i /></div>
-          <img className="airflow-premium" src="/images/generated/blast15030/desert-system-hero.png" alt="Desert visualization of separate 22 horsepower and 6 horsepower units aligned side by side" />
+          <img loading="lazy" decoding="async" className="airflow-premium" src="/images/generated/blast15030/desert-system-hero.png" alt="Desert visualization of separate 22 horsepower and 6 horsepower units aligned side by side" />
           <div className="direction-label">Aligned airflow <b>→</b></div>
         </div>
       </section>
@@ -448,7 +476,7 @@ export default function Blast15030Experience({ pricingHref }) {
           <div className="location-diagram" role="group" aria-label="Mirage 1.0 equipment location plan connecting Zone 1 outdoor condensers, Zone 2 FluxBox and PLC, and the Zone 3 ethanol skid">
             <div className="zone-network">
               <div className="zone-network-brand">
-                <img src="/images/generated/blast15030/agenticly-cool-bear-3d.png" alt="" />
+                <img loading="lazy" decoding="async" src="/images/generated/blast15030/agenticly-cool-bear-3d.png" alt="" />
                 <span><b>Mirage 1.0</b><small>by Agenticly Cool</small></span>
               </div>
               <p>One intelligent control system across all three zones</p>
@@ -464,8 +492,8 @@ export default function Blast15030Experience({ pricingHref }) {
             <div className="location-band roof-band">
               <div className="band-label"><span>Zone 1</span><small>Outdoor / rooftop · aligned airflow →</small></div>
               <div className="roof-equipment">
-                <div className="mini-machine large"><img src="/images/generated/blast15030/desert-22hp.png" alt="" /><b>22 HP</b></div>
-                <div className="mini-machine small"><img src="/images/generated/blast15030/desert-6hp.png" alt="" /><b>6 HP</b></div>
+                <div className="mini-machine large"><img loading="lazy" decoding="async" src="/images/generated/blast15030/desert-22hp.png" alt="" /><b>22 HP</b></div>
+                <div className="mini-machine small"><img loading="lazy" decoding="async" src="/images/generated/blast15030/desert-6hp.png" alt="" /><b>6 HP</b></div>
               </div>
             </div>
 
@@ -474,9 +502,9 @@ export default function Blast15030Experience({ pricingHref }) {
             <div className="location-band zone2-band">
               <div className="band-label"><span>Zone 2</span><small>Wall-mounted equipment</small></div>
               <div className="wall-equipment">
-                <div className="wall-card"><img src="/images/generated/blast15030/desert-fluxbox.png" alt="" /><span><b>FluxBox</b><small>Nearest practical point to Zone 3</small></span></div>
+                <div className="wall-card"><img loading="lazy" decoding="async" src="/images/generated/blast15030/desert-fluxbox.png" alt="" /><span><b>FluxBox</b><small>Nearest practical point to Zone 3</small></span></div>
                 <div className="distance-marker"><i /> Within 40 ft <i /></div>
-                <div className="wall-card plc-card"><img src="/images/generated/blast15030/desert-plc.png" alt="" /><span><b>PLC</b><small>Flexible Zone 2 location</small></span></div>
+                <div className="wall-card plc-card"><img loading="lazy" decoding="async" src="/images/generated/blast15030/desert-plc.png" alt="" /><span><b>PLC</b><small>Flexible Zone 2 location</small></span></div>
               </div>
             </div>
 
@@ -485,10 +513,10 @@ export default function Blast15030Experience({ pricingHref }) {
             <div className="location-band zone3-band">
               <div className="band-label"><span>Zone 3</span><small>Process area</small></div>
               <div className="skid-symbol">
-                <div className="zone3-equipment-model"><img src="/images/generated/blast15030/regeneration-unit-isolated.png" alt="Stainless steel regenerative chilling equipment" /></div>
+                <div className="zone3-equipment-model"><img loading="lazy" decoding="async" src="/images/generated/blast15030/regeneration-unit-isolated.png" alt="Stainless steel regenerative chilling equipment" /></div>
                 <div className="zone3-process-column">
                   <div className="zone3-touchscreen">
-                    <img src="/images/generated/blast15030/zone3-touchscreen.png" alt="Zone 3 touchscreen displaying minus 40 degrees Fahrenheit" />
+                    <img loading="lazy" decoding="async" src="/images/generated/blast15030/zone3-touchscreen.png" alt="Zone 3 touchscreen displaying minus 40 degrees Fahrenheit" />
                     <span><b>Touchscreen control</b><small>Local Zone 3 process interface</small></span>
                   </div>
                   <span className="zone3-skid-caption"><b>Ethanol regeneration skid</b><small>Actual stainless equipment in the Zone 3 process area</small></span>
@@ -503,7 +531,7 @@ export default function Blast15030Experience({ pricingHref }) {
         <HeatMirage />
         <div className="mirage-band" aria-hidden="true" />
         <div className="closing-copy">
-          <img src="/images/generated/blast15030/permacool-icon.png" alt="Perma Cool icon" />
+          <img loading="lazy" decoding="async" src="/images/generated/blast15030/permacool-icon.png" alt="Perma Cool icon" />
           <p className="eyebrow"><span /> Built for the unforgiving</p>
           <h2>The hotter it gets,<br /><em>the colder we think.</em></h2>
             <p>A desert ready system design from Perma Cool.</p>
