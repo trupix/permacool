@@ -131,9 +131,9 @@
   .ecs-redesign .brand-mark { width: 36px; height: 36px; }
   .ecs-redesign .brand-wordmark { width: clamp(76px, 28vw, 142px); min-width: 0; }
   .ecs-redesign .section { padding-block: 65px; }
-  .ecs-redesign .ecs-hero { min-height: 0; display: block; padding: 112px 24px calc(56.25vw + 44px); }
-  .ecs-redesign .ecs-hero-image { object-fit: contain; object-position: center bottom; }
-  .ecs-redesign .ecs-hero-overlay { background: linear-gradient(180deg, #0c151c 0%, #0c151c 52%, rgba(12, 21, 28, .1) 77%, #0c151c 100%); }
+  .ecs-redesign .ecs-hero { min-height: 90svh; display: block; padding: 112px 24px 64px; }
+  .ecs-redesign .ecs-hero-image { object-fit: cover; object-position: 68% center; }
+  .ecs-redesign .ecs-hero-overlay { background: linear-gradient(90deg, rgba(12, 21, 28, .85), rgba(12, 21, 28, .45)), linear-gradient(180deg, rgba(12, 21, 28, .2) 65%, #0c151c 100%); }
   .ecs-redesign .ecs-hero h1 { font-size: clamp(36px, 10vw, 58px); }
   .ecs-redesign .ecs-series-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ecs-redesign .ecs-series-links a { display: flex; justify-content: center; align-items: center; min-height: 44px; padding: 10px 8px; }
