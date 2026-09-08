@@ -439,7 +439,7 @@ export default function EthanolChillingSystemsPage() {
           <p className="eyebrow">Frequently Asked Questions</p>
           <h2>QUESTIONS?</h2>
           <a className="button primary ecs-heading-cta" href={ethanolQuestionHref}>
-            Ask a Question
+            Contact Us — Ask a Question
             <ArrowRight size={18} aria-hidden="true" />
           </a>
         </div>
