@@ -466,7 +466,7 @@ export default function EthanolChillingSystemsPage() {
       <section className="section ecs-faq-section">
         <div className="section-heading">
           <p className="eyebrow">Frequently Asked Questions</p>
-          <h2>Answers buyers need before they request pricing.</h2>
+          <h2>Temperature targets, cooling methods, and lead times.</h2>
         </div>
         <div className="ecs-faq-grid">
           {faqs.map((faq) => (
