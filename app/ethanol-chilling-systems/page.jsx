@@ -240,11 +240,23 @@ const faqs = [
   }
 ];
 
-const quoteConfidence = [
-  "Process-fit recommendations based on throughput, temperature target, and utility constraints.",
-  "No generic one-size quote sheets.",
-  "Sized for present demand plus near-term growth.",
-  "Commissioning sequence guidance included."
+const systemDecisions = [
+  {
+    title: "System size",
+    body: "Match chilling capacity to your ethanol volume and production schedule. The limitation will be the number and size of your centrifuges."
+  },
+  {
+    title: "Chilling cycle",
+    body: "Match chilling speed to your production schedule and centrifuge capacity, with room to support future expansion."
+  },
+  {
+    title: "Installation needs",
+    body: "Identify available power and where the equipment will go."
+  },
+  {
+    title: "Complete scope",
+    body: "Make clear what Perma Cool supplies and what the facility needs to provide."
+  }
 ];
 
 export default function EthanolChillingSystemsPage() {
@@ -455,14 +467,14 @@ export default function EthanolChillingSystemsPage() {
 
       <section className="ecs-quote-band">
         <div>
-          <p className="eyebrow">Quote Confidence</p>
-          <h2>Process-fit recommendations based on your throughput, temp target, and utility constraints.</h2>
+          <p className="eyebrow">Your system, your process</p>
+          <h2>We’ll help you work through these four key decisions.</h2>
         </div>
         <ul>
-          {quoteConfidence.map((item) => (
-            <li key={item}>
+          {systemDecisions.map((item) => (
+            <li key={item.title}>
               <CheckCircle2 size={18} aria-hidden="true" />
-              <span>{item}</span>
+              <span><strong>{item.title}</strong>{item.body}</span>
             </li>
           ))}
         </ul>

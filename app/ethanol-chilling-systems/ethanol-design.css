@@ -104,6 +104,8 @@
 .ecs-redesign .ecs-quote-band { width: min(1380px, calc(100% - 100px)); padding: 45px; gap: 7%; background: #dcebf0; border: 0; border-radius: 12px; box-shadow: none; }
 .ecs-redesign .ecs-quote-band h2 { font-size: clamp(28px, 3vw, 40px); color: #173845; }
 .ecs-redesign .ecs-quote-band li { color: #385967; line-height: 1.7; }
+.ecs-redesign .ecs-quote-band li strong { display: block; margin-bottom: 5px; color: #173845; font-size: 16px; }
+.ecs-redesign .ecs-quote-band li svg { flex-shrink: 0; margin-top: 4px; }
 .ecs-redesign .ecs-related { padding: 90px max(50px, calc((100% - 1380px) / 2)); background: radial-gradient(ellipse at right, #1a465a, transparent 65%), #0c1c25; gap: 8%; }
 .ecs-redesign .ecs-related h2 { color: #eefbff; }
 .ecs-redesign .ecs-related p { color: #adc8d6; }
