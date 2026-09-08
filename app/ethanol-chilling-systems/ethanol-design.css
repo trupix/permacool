@@ -126,11 +126,20 @@
   .ecs-redesign .ecs-related { padding-inline: 24px; }
 }
 @media (max-width: 640px) {
+  .ecs-redesign .site-header { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
+  .ecs-redesign .brand { min-height: 44px; }
+  .ecs-redesign .brand-mark { width: 36px; height: 36px; }
+  .ecs-redesign .brand-wordmark { width: clamp(76px, 28vw, 142px); min-width: 0; }
   .ecs-redesign .section { padding-block: 65px; }
-  .ecs-redesign .ecs-hero { min-height: 920px; display: block; padding: 120px 24px 330px; }
+  .ecs-redesign .ecs-hero { min-height: 0; display: block; padding: 112px 24px calc(56.25vw + 44px); }
   .ecs-redesign .ecs-hero-image { object-fit: contain; object-position: center bottom; }
   .ecs-redesign .ecs-hero-overlay { background: linear-gradient(180deg, #0c151c 0%, #0c151c 52%, rgba(12, 21, 28, .1) 77%, #0c151c 100%); }
-  .ecs-redesign .ecs-hero h1 { font-size: clamp(40px, 10vw, 58px); }
+  .ecs-redesign .ecs-hero h1 { font-size: clamp(36px, 10vw, 58px); }
+  .ecs-redesign .ecs-series-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ecs-redesign .ecs-series-links a { display: flex; justify-content: center; align-items: center; min-height: 44px; padding: 10px 8px; }
+  .ecs-redesign .button { min-height: 48px; max-width: 100%; text-align: center; justify-content: center; }
+  .ecs-redesign .button svg { flex-shrink: 0; }
+  .ecs-redesign .ecs-related-reading a { display: inline-flex; align-items: center; min-height: 44px; }
   .ecs-redesign .ecs-series-title { font-size: 10px; }
   .ecs-redesign .hero-actions { align-items: stretch; }
   .ecs-redesign .hero-actions a { justify-content: center; width: 100%; }
@@ -146,4 +155,12 @@
   .ecs-redesign .ecs-metrics, .ecs-redesign .ecs-flow-grid, .ecs-redesign .ecs-fit-grid { grid-template-columns: 1fr; }
   .ecs-redesign .ecs-quote-band { padding: 26px; }
   .ecs-redesign .ecs-related { padding-block: 65px; }
+}
+
+@media (max-width: 359px) {
+  .ecs-redesign .site-header { padding-inline: 12px; gap: 8px; }
+  .ecs-redesign .brand { min-width: 0; gap: 5px; }
+  .ecs-redesign .brand-mark { width: 30px; height: 36px; }
+  .ecs-redesign .brand-wordmark { width: 76px; }
+  .ecs-redesign .header-actions { gap: 5px; }
 }
