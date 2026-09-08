@@ -1,4 +1,5 @@
 import Image from "next/image";
+import "./ethanol-design.css";
 import {
   ArrowRight,
   Beaker,
@@ -265,7 +266,7 @@ const quoteConfidence = [
 
 export default function EthanolChillingSystemsPage() {
   return (
-    <main className="site-shell ethanol-systems-page">
+    <main className="site-shell ethanol-systems-page ecs-redesign">
       <StructuredData data={ethanolSystemsStructuredData} />
       <InsightsHeader />
       <section className="ecs-hero">
@@ -302,6 +303,58 @@ export default function EthanolChillingSystemsPage() {
           </div>
         </div>
       </section>
+      <section className="section ecs-lineup">
+        <div className="section-heading">
+          <p className="eyebrow">BLAST Product Lineup</p>
+          <h2>Not just a chiller, full turnkey chilling solutions.</h2>
+          <p>One system, 3 dimensional solution.</p>
+          <div className="ecs-solution-chips" aria-label="Turnkey solution areas">
+            <span>Process side</span>
+            <span>Refrigeration side</span>
+            <span>Control side</span>
+          </div>
+        </div>
+
+        <div className="ecs-product-grid">
+          {products.map((product) => (
+            <article className="ecs-product-card" key={product.title}>
+              <div className="ecs-product-media">
+                <Image
+                  src={product.image}
+                  alt={`${product.title} ethanol chilling system`}
+                  width={product.href === "/ethanol-chiller-blast-150-30" ? 1858 : 1440}
+                  height={product.href === "/ethanol-chiller-blast-150-30" ? 846 : 1040}
+                  sizes="(max-width: 980px) calc(100vw - 40px), 720px"
+                  className={product.image.includes("flash-chilling") || product.image.includes("tier-badge") || product.image.includes("bear-card") ? "ecs-product-spec-image" : undefined}
+                />
+              </div>
+              <div className="ecs-product-copy">
+                <p className="pill">{product.eyebrow}</p>
+                <h3>{product.title}</h3>
+                <p>{product.copy}</p>
+                <div className="ecs-product-meta">
+                  {product.meta.map((item) => (
+                    <span key={item}>{item}</span>
+                  ))}
+                </div>
+                <ul>
+                  {product.bullets.map((bullet) => (
+                    <li key={bullet}>
+                      <CheckCircle2 size={17} aria-hidden="true" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a className="inline-link" href={product.href}>
+                  {product.cta}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="ecs-profile">
         <div className="ecs-profile-card">
           <span className="micro-label">Core Performance Profile</span>
@@ -373,58 +426,6 @@ export default function EthanolChillingSystemsPage() {
                   ))}
                 </ul>
               ) : null}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section ecs-lineup">
-        <div className="section-heading">
-          <p className="eyebrow">BLAST Product Lineup</p>
-          <h2>Not just a chiller, full turnkey chilling solutions.</h2>
-          <p>One system, 3 dimensional solution.</p>
-          <div className="ecs-solution-chips" aria-label="Turnkey solution areas">
-            <span>Process side</span>
-            <span>Refrigeration side</span>
-            <span>Control side</span>
-          </div>
-        </div>
-
-        <div className="ecs-product-grid">
-          {products.map((product) => (
-            <article className="ecs-product-card" key={product.title}>
-              <div className="ecs-product-media">
-                <Image
-                  src={product.image}
-                  alt={`${product.title} ethanol chilling system`}
-                  width={720}
-                  height={520}
-                  sizes="(max-width: 980px) calc(100vw - 2rem), 580px"
-                  className={product.image.includes("flash-chilling") || product.image.includes("tier-badge") || product.image.includes("bear-card") ? "ecs-product-spec-image" : undefined}
-                />
-              </div>
-              <div className="ecs-product-copy">
-                <p className="pill">{product.eyebrow}</p>
-                <h3>{product.title}</h3>
-                <p>{product.copy}</p>
-                <div className="ecs-product-meta">
-                  {product.meta.map((item) => (
-                    <span key={item}>{item}</span>
-                  ))}
-                </div>
-                <ul>
-                  {product.bullets.map((bullet) => (
-                    <li key={bullet}>
-                      <CheckCircle2 size={17} aria-hidden="true" />
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a className="inline-link" href={product.href}>
-                  {product.cta}
-                  <ArrowRight size={16} aria-hidden="true" />
-                </a>
-              </div>
             </article>
           ))}
         </div>
