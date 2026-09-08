@@ -36,12 +36,13 @@ const components = [
   },
 ];
 
-function HeatMirage() {
+function HeatMirage({ continuation = false }) {
   const mountRef = useRef(null);
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!mount) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 100);
@@ -163,6 +164,7 @@ function HeatMirage() {
     scene.add(rayGroup);
 
     let frame = 0;
+    let flareScale = 1;
     const resize = () => {
       renderer.setSize(mount.clientWidth, mount.clientHeight, false);
       camera.aspect = mount.clientWidth / Math.max(mount.clientHeight, 1);
@@ -170,8 +172,10 @@ function HeatMirage() {
 
       const visibleHeight = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
       const visibleWidth = visibleHeight * camera.aspect;
-      sunOrigin.set((0.15 - 0.5) * visibleWidth, (0.5 - 0.14) * visibleHeight, -1);
-      earthTarget.set((0.47 - 0.5) * visibleWidth, (0.5 - 0.84) * visibleHeight, -1);
+      // Below the hero, carry the beam in from above instead of adding another sun.
+      sunOrigin.set(((continuation ? 0.4 : 0.15) - 0.5) * visibleWidth, (0.5 - (continuation ? -0.18 : 0.14)) * visibleHeight, -1);
+      earthTarget.set(((continuation ? 0.88 : 0.47) - 0.5) * visibleWidth, (0.5 - (continuation ? 0.95 : 0.84)) * visibleHeight, -1);
+      flareScale = continuation ? Math.min(1, visibleWidth / 5) : 1;
 
       rayGroup.children.forEach((child) => {
         const ray = child;
@@ -184,10 +188,8 @@ function HeatMirage() {
         rayPositions[5] = earthTarget.z;
         ray.geometry.attributes.position.needsUpdate = true;
       });
+      if (reducedMotion) syncAnimation();
     };
-    const observer = new ResizeObserver(resize);
-    observer.observe(mount);
-    resize();
 
     let isVisible = false;
     const render = () => {
@@ -200,7 +202,7 @@ function HeatMirage() {
       }
       geometry.attributes.position.needsUpdate = true;
 
-      const elapsed = performance.now() * 0.001;
+      const elapsed = reducedMotion ? 0 : performance.now() * 0.001;
       flareGroup.children.forEach((child) => {
         const flare = child;
         const material = flare.material;
@@ -211,7 +213,9 @@ function HeatMirage() {
         const pathPosition = THREE.MathUtils.clamp(distance + travel, 0, 1);
         // Keep the flares compact at the sun, then open them up dramatically
         // as the beam reaches the desert floor.
-        const baseSize = 0.12 + Math.pow(distance, 2.15) * 3.05;
+        const baseSize = continuation
+          ? (1.1 + Math.pow(distance, 1.5) * 3.1) * flareScale
+          : 0.12 + Math.pow(distance, 2.15) * 3.05;
         const size = baseSize * (0.9 + pulse * (0.1 + variant * 0.018));
 
         flare.position.lerpVectors(sunOrigin, earthTarget, pathPosition);
@@ -228,12 +232,15 @@ function HeatMirage() {
       });
 
       renderer.render(scene, camera);
-      frame = requestAnimationFrame(render);
+      frame = reducedMotion ? 0 : requestAnimationFrame(render);
     };
     const syncAnimation = () => {
       cancelAnimationFrame(frame);
       frame = isVisible && !document.hidden ? requestAnimationFrame(render) : 0;
     };
+    const observer = new ResizeObserver(resize);
+    observer.observe(mount);
+    resize();
     const visibilityObserver = new IntersectionObserver(([entry]) => {
       isVisible = entry.isIntersecting;
       syncAnimation();
@@ -261,7 +268,7 @@ function HeatMirage() {
       renderer.dispose();
       renderer.domElement.remove();
     };
-  }, []);
+  }, [continuation]);
 
   return <div className="heat-mirage" ref={mountRef} aria-hidden="true" />;
 }
@@ -333,6 +340,7 @@ export default function Blast15030Experience({ pricingHref }) {
       </section>
 
       <section className="intro section-shell" id="system">
+        <HeatMirage continuation />
         <div className="section-label">The system <span>01</span></div>
         <div className="intro-grid">
           <div>
