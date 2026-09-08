@@ -337,6 +337,14 @@
   opacity: .1;
   background-image: url('/images/generated/blast15030/desert-system-hero.png');
 }
+.blast-original.desert-page .intro { isolation: isolate; overflow: hidden; }
+.blast-original.desert-page .intro > .heat-mirage {
+  position: absolute;
+  z-index: 0;
+  opacity: .8;
+  mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+}
+.blast-original.desert-page .intro > .heat-mirage canvas { display: block; width: 100%; height: 100%; }
 .blast-original.desert-page .section-label{ color: #b59c84; border-color: rgba(255, 222, 182, .16); }
 .blast-original.desert-page .section-label span{ color: #61e6ff; }
 .blast-original.desert-page .section-lead, .blast-original.desert-page .component-copy p, .blast-original.desert-page .regen-copy > p:not(.eyebrow), .blast-original.desert-page .airflow-content p:not(.eyebrow), .blast-original.desert-page .layout-heading p:last-child{ color: #ac9680; }
