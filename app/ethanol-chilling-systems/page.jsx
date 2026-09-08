@@ -33,6 +33,12 @@ const ethanolPricingHref = buildContactHref({
   source: "ethanol-chilling-systems"
 });
 
+const ethanolQuestionHref = buildContactHref({
+  interest: "Ethanol Chillers",
+  requestType: "General Consultation",
+  source: "ethanol-chilling-systems-faq"
+});
+
 const ethanolSystemsDescription =
   "Explore Perma Cool BLAST ethanol pre-chiller systems for direct refrigerant chilling, −40 °C operation, reduced LN2 dependence, and commercial extraction throughput.";
 
@@ -432,6 +438,10 @@ export default function EthanolChillingSystemsPage() {
         <div className="section-heading">
           <p className="eyebrow">Frequently Asked Questions</p>
           <h2>QUESTIONS?</h2>
+          <a className="button primary ecs-heading-cta" href={ethanolQuestionHref}>
+            Ask a Question
+            <ArrowRight size={18} aria-hidden="true" />
+          </a>
         </div>
         <div className="ecs-faq-grid">
           {faqs.map((faq) => (
