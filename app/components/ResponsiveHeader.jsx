@@ -9,6 +9,7 @@ const mobileProductItems = [
   ["Ethanol Chillers", "/ethanol-chilling-systems"],
   ["BLAST 60/45", "/ethanol-chiller-blast-60"],
   ["BLAST 150/45", "/ethanol-chiller-blast-150"],
+  ["BLAST 150/30", "/ethanol-chiller-blast-150-30"],
   ["BLAST 240/45", "/ethanol-chiller-blast-240"],
   ["Butane Recovery", "/butane-recovery-system"]
 ];

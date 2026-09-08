@@ -1,4 +1,5 @@
 import Image from "next/image";
+import "./ethanol-design.css";
 import {
   ArrowRight,
   Beaker,
@@ -30,6 +31,12 @@ const ethanolPricingHref = buildContactHref({
   interest: "Ethanol Chillers",
   requestType: "Product Pricing",
   source: "ethanol-chilling-systems"
+});
+
+const ethanolQuestionHref = buildContactHref({
+  interest: "Ethanol Chillers",
+  requestType: "General Consultation",
+  source: "ethanol-chilling-systems-faq"
 });
 
 const ethanolSystemsDescription =
@@ -118,29 +125,6 @@ const solutionHighlights = [
     stat: "PLC + HMI",
     title: "Integrated control side",
     body: "On-screen monitoring, compressor protection, and clearer system visibility built into the chilling package."
-  }
-];
-
-const metrics = [
-  {
-    label: "Series 01",
-    title: "BLAST 60/45",
-    body: "Compact unit sized for 30-gallon centrifuge workflows and rapid pull-down from room temperature to −40 °C."
-  },
-  {
-    label: "Series 02",
-    title: "BLAST 150/45",
-    body: "Production-ready configuration for high-throughput ethanol extraction."
-  },
-  {
-    label: "Series 03",
-    title: "BLAST 240/45",
-    body: "Large process-class option with the same direct refrigerant control philosophy."
-  },
-  {
-    label: "Commercial Value",
-    title: "Less Consumable Drag",
-    body: "Replace recurring cryogenic supply complexity with electricity and planned maintenance."
   }
 ];
 
@@ -265,7 +249,7 @@ const quoteConfidence = [
 
 export default function EthanolChillingSystemsPage() {
   return (
-    <main className="site-shell ethanol-systems-page">
+    <main className="site-shell ethanol-systems-page ecs-redesign">
       <StructuredData data={ethanolSystemsStructuredData} />
       <InsightsHeader />
       <section className="ecs-hero">
@@ -302,6 +286,58 @@ export default function EthanolChillingSystemsPage() {
           </div>
         </div>
       </section>
+      <section className="section ecs-lineup">
+        <div className="section-heading">
+          <p className="eyebrow">BLAST Product Lineup</p>
+          <h2>Not just a chiller, full turnkey chilling solutions.</h2>
+          <p>One system, 3 dimensional solution.</p>
+          <div className="ecs-solution-chips" aria-label="Turnkey solution areas">
+            <span>Process side</span>
+            <span>Refrigeration side</span>
+            <span>Control side</span>
+          </div>
+        </div>
+
+        <div className="ecs-product-grid">
+          {products.map((product) => (
+            <article className="ecs-product-card" key={product.title}>
+              <div className="ecs-product-media">
+                <Image
+                  src={product.image}
+                  alt={`${product.title} ethanol chilling system`}
+                  width={product.href === "/ethanol-chiller-blast-150-30" ? 1858 : 1440}
+                  height={product.href === "/ethanol-chiller-blast-150-30" ? 846 : 1040}
+                  sizes="(max-width: 980px) calc(100vw - 40px), 720px"
+                  className={product.image.includes("flash-chilling") || product.image.includes("tier-badge") || product.image.includes("bear-card") ? "ecs-product-spec-image" : undefined}
+                />
+              </div>
+              <div className="ecs-product-copy">
+                <p className="pill">{product.eyebrow}</p>
+                <h3>{product.title}</h3>
+                <p>{product.copy}</p>
+                <div className="ecs-product-meta">
+                  {product.meta.map((item) => (
+                    <span key={item}>{item}</span>
+                  ))}
+                </div>
+                <ul>
+                  {product.bullets.map((bullet) => (
+                    <li key={bullet}>
+                      <CheckCircle2 size={17} aria-hidden="true" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a className="inline-link" href={product.href}>
+                  {product.cta}
+                  <ArrowRight size={16} aria-hidden="true" />
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="ecs-profile">
         <div className="ecs-profile-card">
           <span className="micro-label">Core Performance Profile</span>
@@ -336,24 +372,12 @@ export default function EthanolChillingSystemsPage() {
         </div>
       </section>
 
-      <section className="ecs-metric-band">
-        <div className="ecs-metrics">
-          {metrics.map((item) => (
-            <article className="ecs-metric" key={item.title}>
-              <span>{item.label}</span>
-              <strong>{item.title}</strong>
-              <p>{item.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <section className="section ecs-flow-section">
         <div className="section-heading">
           <p className="eyebrow">Why BLAST Changes Extraction Flow</p>
           <h2>Chill, Extract, Repeat</h2>
           <a className="button primary ecs-heading-cta" href="/workflow">
-            Workflow Breakdown
+            Workflow Breakdown Article
             <ArrowRight size={18} aria-hidden="true" />
           </a>
         </div>
@@ -373,58 +397,6 @@ export default function EthanolChillingSystemsPage() {
                   ))}
                 </ul>
               ) : null}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section ecs-lineup">
-        <div className="section-heading">
-          <p className="eyebrow">BLAST Product Lineup</p>
-          <h2>Not just a chiller, full turnkey chilling solutions.</h2>
-          <p>One system, 3 dimensional solution.</p>
-          <div className="ecs-solution-chips" aria-label="Turnkey solution areas">
-            <span>Process side</span>
-            <span>Refrigeration side</span>
-            <span>Control side</span>
-          </div>
-        </div>
-
-        <div className="ecs-product-grid">
-          {products.map((product) => (
-            <article className="ecs-product-card" key={product.title}>
-              <div className="ecs-product-media">
-                <Image
-                  src={product.image}
-                  alt={`${product.title} ethanol chilling system`}
-                  width={720}
-                  height={520}
-                  sizes="(max-width: 980px) calc(100vw - 2rem), 580px"
-                  className={product.image.includes("flash-chilling") || product.image.includes("tier-badge") || product.image.includes("bear-card") ? "ecs-product-spec-image" : undefined}
-                />
-              </div>
-              <div className="ecs-product-copy">
-                <p className="pill">{product.eyebrow}</p>
-                <h3>{product.title}</h3>
-                <p>{product.copy}</p>
-                <div className="ecs-product-meta">
-                  {product.meta.map((item) => (
-                    <span key={item}>{item}</span>
-                  ))}
-                </div>
-                <ul>
-                  {product.bullets.map((bullet) => (
-                    <li key={bullet}>
-                      <CheckCircle2 size={17} aria-hidden="true" />
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a className="inline-link" href={product.href}>
-                  {product.cta}
-                  <ArrowRight size={16} aria-hidden="true" />
-                </a>
-              </div>
             </article>
           ))}
         </div>
@@ -465,7 +437,11 @@ export default function EthanolChillingSystemsPage() {
       <section className="section ecs-faq-section">
         <div className="section-heading">
           <p className="eyebrow">Frequently Asked Questions</p>
-          <h2>Answers buyers need before they request pricing.</h2>
+          <h2>QUESTIONS?</h2>
+          <a className="button primary ecs-heading-cta" href={ethanolQuestionHref}>
+            Contact Us — Ask a Question
+            <ArrowRight size={18} aria-hidden="true" />
+          </a>
         </div>
         <div className="ecs-faq-grid">
           {faqs.map((faq) => (
