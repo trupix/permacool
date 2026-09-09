@@ -16,6 +16,7 @@ for (const model of chillerModels) {
 for (const path of [chillerOverview, "/ethanol-chiller-comparison"]) {
   const context = getChillerNavigation(path);
   assert.ok(context);
+  assert.equal(context.selectedHref, "");
   assert.equal(context.contact.product, undefined);
   assert.equal(context.contact.interest, "Ethanol Chillers");
 }
