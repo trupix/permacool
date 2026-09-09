@@ -157,7 +157,10 @@ const products = [
   {
     eyebrow: "Compact Production",
     title: "BLAST 60/45",
-    image: "/images/generated/blast60-bear-card.png",
+    image: "/images/generated/blast60-mountain-system-lineup.png",
+    imageWidth: 1536,
+    imageHeight: 1024,
+    imageAlt: "Perma Cool BLAST 60/45 chilling tank assembly with two separate small condensers against snow-covered mountains",
     href: "/ethanol-chiller-blast-60",
     cta: "View BLAST 60/45",
     copy:
@@ -316,9 +319,9 @@ export default function EthanolChillingSystemsPage() {
               <div className="ecs-product-media">
                 <Image
                   src={product.image}
-                  alt={`${product.title} ethanol chilling system`}
-                  width={product.href === "/ethanol-chiller-blast-150-30" ? 1858 : 1440}
-                  height={product.href === "/ethanol-chiller-blast-150-30" ? 846 : 1040}
+                  alt={product.imageAlt || `${product.title} ethanol chilling system`}
+                  width={product.imageWidth || (product.href === "/ethanol-chiller-blast-150-30" ? 1858 : 1440)}
+                  height={product.imageHeight || (product.href === "/ethanol-chiller-blast-150-30" ? 846 : 1040)}
                   sizes="(max-width: 980px) calc(100vw - 40px), 720px"
                   className={product.image.includes("flash-chilling") || product.image.includes("tier-badge") || product.image.includes("bear-card") ? "ecs-product-spec-image" : undefined}
                 />
