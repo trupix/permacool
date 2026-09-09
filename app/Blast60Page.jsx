@@ -159,11 +159,23 @@ export default function Blast60Page() {
             <figcaption>Primary and cascade refrigeration circuits <span>Open image to view flow details <ArrowUpRight size={14} /></span></figcaption>
           </figure>
           <div className="b60-field-benefits">
-            <h3>Why that matters in the field</h3>
+            <h3><span>Why that matters</span>{" "}<span>in the field</span></h3>
             <div className="b60-principles">
-              <div><Snowflake aria-hidden="true" /><h3>Better low-temperature performance</h3><p>Cascade refrigeration supports colder operation than a comparable single-stage setup, with the secondary stage cooling the primary circuit through the FluxBox.</p></div>
-              <div><Wrench aria-hidden="true" /><h3>Common parts, easier service</h3><p>Standard component sizing simplifies diagnosis, repair, and parts sourcing, helping reduce service costs without relying on rare, oversized hardware.</p></div>
-              <div><RefreshCw aria-hidden="true" /><h3>Built for long-term maintenance</h3><p>Repairable, common-sized components make the machine easier to maintain over its working life and avoid dependence on exotic, hard-to-source parts.</p></div>
+              <div>
+                <span className="b60-principle-icon"><Snowflake aria-hidden="true" /></span>
+                <h4><span>Better low-temperature</span>{" "}<span>performance</span></h4>
+                <p>Cascade refrigeration supports colder operation than a comparable single-stage setup, with the secondary stage cooling the primary circuit through the FluxBox.</p>
+              </div>
+              <div>
+                <span className="b60-principle-icon"><Wrench aria-hidden="true" /></span>
+                <h4><span>Common parts,</span>{" "}<span>easier service</span></h4>
+                <p>Standard component sizing simplifies diagnosis, repair, and parts sourcing, helping reduce service costs without relying on rare, oversized hardware.</p>
+              </div>
+              <div>
+                <span className="b60-principle-icon"><RefreshCw aria-hidden="true" /></span>
+                <h4><span>Built for</span>{" "}<span>long-term maintenance</span></h4>
+                <p>Repairable, common-sized components make the machine easier to maintain over its working life and avoid dependence on exotic, hard-to-source parts.</p>
+              </div>
             </div>
           </div>
         </div>
