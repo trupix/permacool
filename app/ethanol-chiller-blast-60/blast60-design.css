@@ -84,8 +84,15 @@
 .b60-page .b60-field-benefits > h3 { margin: 0; padding-left: 22px; border-left: 2px solid var(--b60-accent); font-size: clamp(2rem, 3.2vw, 2.8rem); font-weight: 650; line-height: 1.12; letter-spacing: -.04em; text-wrap: initial; }
 .b60-page .b60-field-benefits > h3 span { display: block; }
 .b60-page .b60-field-benefits > h3 span:last-child { color: var(--b60-accent); }
-.b60-page .b60-workflow-history { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding: 36px; border-block: 1px solid #d3e0e2; }
-.b60-page .b60-workflow-history p:not(.b60-kicker) { color: var(--b60-muted); font-size: .94rem; }
+.b60-page .b60-workflow-history { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.b60-page .b60-workflow-history > div { min-width: 0; padding: clamp(28px, 3vw, 42px); border: 1px solid #d3e0e2; border-top: 3px solid #297989; border-radius: 12px; background: #fff; }
+.b60-page .b60-workflow-history > div:last-child { border-top-color: #11232d; }
+.b60-page .b60-workflow-history .b60-kicker { margin: 0 0 22px; font-size: .7rem; letter-spacing: .1em; line-height: 1.6; }
+.b60-page .b60-workflow-history h3 { margin: 0 0 28px; padding-bottom: 28px; border-bottom: 1px solid #e0e8ea; font-size: clamp(1.65rem, 2.6vw, 2.3rem); font-weight: 650; line-height: 1.15; letter-spacing: -.035em; text-wrap: initial; }
+.b60-page .b60-workflow-history h3 span { display: block; }
+.b60-page .b60-workflow-history h3 span:last-child { color: #08758a; }
+.b60-page .b60-workflow-history p:not(.b60-kicker) { margin: 0; color: var(--b60-muted); font-size: 1rem; line-height: 1.8; }
+.b60-page .b60-workflow-history p:not(.b60-kicker) + p { margin-top: 20px; }
 .b60-page .b60-performance-image { grid-column: 1 / -1; width: min(100%, 1000px); margin-inline: auto; }
 .b60-page .b60-ownership-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; }
 .b60-page .b60-ownership-copy p { color: var(--b60-muted); font-size: .94rem; }
@@ -153,7 +160,9 @@
   .b60-page .b60-cascade-explanation { max-width: 620px; padding-left: 0; border-left: 0; }
   .b60-page .b60-cascade-explanation p:first-child { font-size: 1.05rem; }
   .b60-page .b60-workflow-history, .b60-page .b60-ownership-layout { grid-template-columns: 1fr; gap: 28px; }
-  .b60-page .b60-workflow-history { padding: 28px 0; }
+  .b60-page .b60-workflow-history { gap: 20px; }
+  .b60-page .b60-workflow-history > div { padding: 26px 24px; }
+  .b60-page .b60-workflow-history h3 { margin-bottom: 24px; padding-bottom: 24px; }
   .b60-page .learning-center-section { width: calc(100% - 40px); padding: 24px; }
   .b60-page .learning-center-card-grid { grid-template-columns: 1fr; }
   .b60-page .b60-production-grid { grid-template-columns: 1fr; }

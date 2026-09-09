@@ -211,14 +211,15 @@ export default function Blast60Page() {
         <div className="b60-workflow-history">
           <div>
             <p className="b60-kicker">From ACP-30 to BLAST 60/45</p>
-            <h3>More reserve for repeat cycles.</h3>
+            <h3><span>More reserve</span>{" "}<span>for repeat cycles.</span></h3>
             <p>Perma Cool’s legacy ACP-30 put more than 200 units into the field and demonstrated the value of dedicated ethanol pre-chilling. At roughly 40 gallons, it was sized for basic single-pass centrifuge support.</p>
             <p>The BLAST 60/45 expands that reserve to 60 gallons, supporting a 30-gallon centrifuge through repeated extraction and re-chill cycles.</p>
           </div>
           <div>
             <p className="b60-kicker">Extraction → Re-chill → Repeat</p>
-            <h3>Keep the ethanol in the workflow.</h3>
-            <p>Returning ethanol mixes into the already-cold reserve instead of resetting the whole tank. Repeated extraction and re-chill cycles continue until the ethanol reaches roughly 2 to 3 lb of material per gallon, before moving to filtration and evaporation.</p>
+            <h3><span>Keep the ethanol</span>{" "}<span>in the workflow.</span></h3>
+            <p>Returning ethanol mixes into the already-cold reserve instead of resetting the whole tank.</p>
+            <p>Repeated extraction and re-chill cycles continue until the ethanol reaches roughly 2 to 3 lb of material per gallon, before moving to filtration and evaporation.</p>
           </div>
         </div>
         <figure className="b60-restored-image b60-performance-image">
