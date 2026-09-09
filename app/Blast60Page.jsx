@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowRight, ArrowUpRight, Check, RefreshCw, Snowflake, Wrench } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, Gauge, RefreshCw, Snowflake, Wrench } from "lucide-react";
 import { InsightsHeader } from "./insights/InsightsShell";
 import { buildContactHref } from "../lib/contact";
 import "./ethanol-chiller-blast-60/blast60-design.css";
@@ -8,6 +8,23 @@ const pricingHref = buildContactHref({
   interest: "Ethanol Chillers", requestType: "Product Pricing",
   product: "BLAST 60/45", source: "ethanol-chiller-blast-60"
 });
+
+const productionFit = [
+  {
+    title: "Built smart, cascade design", icon: Snowflake,
+    body: "The BLAST 60/45 is the most compact unit in the BLAST lineup and the only model built around Perma Cool’s cascade-style architecture, combining strong low-temperature performance with long-term serviceability.",
+    link: "More →", href: "#cascade"
+  },
+  {
+    title: "Production-ready workflow", icon: RefreshCw,
+    body: "It replaces consumables and slower legacy chilling methods with a production-ready system sized for the ideal 30-gallon centrifuge workflow.",
+    link: "workflow explained →", href: "/workflow"
+  },
+  {
+    title: "Fast return on value", icon: Gauge,
+    body: "For many operators, the 60/45 hits the sweet spot, real production capacity, smarter workflow, and a system that can often pay for itself within the first few months of operation."
+  }
+];
 
 const components = [
   {
@@ -68,6 +85,23 @@ export default function Blast60Page() {
           <div><strong>−40 <small>°C</small></strong><span>Chilling target</span></div>
           <div><strong>45 <small>min</small></strong><span>Room-temperature pull-down</span></div>
           <div><strong>30 <small>gal</small></strong><span>Centrifuge pairing</span></div>
+        </div>
+      </section>
+
+      <section className="b60-section b60-wrap b60-production-fit" id="production-fit" aria-labelledby="b60-production-title">
+        <div className="b60-production-heading">
+          <p className="b60-kicker">Production Fit</p>
+          <h2 id="b60-production-title">Compact capacity with a real extraction workflow behind it.</h2>
+        </div>
+        <div className="b60-production-grid">
+          {productionFit.map(({ title, icon: Icon, body, link, href }) => (
+            <article className="b60-production-card" key={title}>
+              <Icon size={28} aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{body}</p>
+              {href && <a className="b60-text-link" href={href}>{link}</a>}
+            </article>
+          ))}
         </div>
       </section>
 
