@@ -69,7 +69,12 @@
 .b60-page .b60-restored-image img { display: block; width: 100%; height: auto; object-fit: contain; }
 .b60-page .b60-restored-image figcaption { padding: 16px 24px; color: #d5e6eb; font-size: .8rem; line-height: 1.6; }
 .b60-page .b60-system-gallery .b60-restored-image { border: 0; border-radius: 0 0 12px 12px; }
-.b60-page .b60-cascade-explanation p { color: #beced6; margin: 0 0 18px; }
+.b60-page .b60-cascade-heading { max-width: 850px; margin-bottom: 44px; }
+.b60-page .b60-cascade-heading .b60-kicker { margin-bottom: 14px; }
+.b60-page .b60-cascade-heading h2 { max-width: none; }
+.b60-page .b60-cascade-explanation { margin-top: 26px; max-width: 780px; }
+.b60-page .b60-cascade-explanation p { color: #beced6; margin: 0 0 20px; font-size: 1rem; line-height: 1.75; }
+.b60-page .b60-cascade-explanation p:first-child { color: #e0edf1; font-size: 1.15rem; line-height: 1.65; }
 .b60-page .b60-cascade-explanation p:last-child { margin-bottom: 0; }
 .b60-page .b60-field-benefits { margin-top: 44px; }
 .b60-page .b60-field-benefits > h3 { font-size: 1rem; color: #8ce8ed; letter-spacing: 0; }
@@ -131,6 +136,9 @@
   .b60-page .b60-heading, .b60-page .b60-workflow, .b60-page .b60-spec-layout { gap: 36px; }
 }
 @media (max-width: 800px) {
+  .b60-page .b60-cascade-heading { margin-bottom: 32px; }
+  .b60-page .b60-cascade-explanation { margin-top: 22px; }
+  .b60-page .b60-cascade-explanation p:first-child { font-size: 1.05rem; }
   .b60-page .b60-workflow-history, .b60-page .b60-ownership-layout { grid-template-columns: 1fr; gap: 28px; }
   .b60-page .b60-workflow-history { padding: 28px 0; }
   .b60-page .learning-center-section { width: calc(100% - 40px); padding: 24px; }
