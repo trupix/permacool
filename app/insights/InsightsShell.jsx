@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import ResponsiveHeader from "../components/ResponsiveHeader";
+import ChillerModelNav from "../components/ChillerModelNav";
 import StructuredData from "../components/StructuredData";
 import { buildArticleStructuredData } from "../../lib/site";
 import { navItems } from "./insights-data";
@@ -16,7 +17,7 @@ function formatArticleDate(value) {
 }
 
 export function InsightsHeader() {
-  return <ResponsiveHeader navItems={navItems} />;
+  return <><ResponsiveHeader navItems={navItems} /><ChillerModelNav /></>;
 }
 
 export function ArticleHero({ article }) {

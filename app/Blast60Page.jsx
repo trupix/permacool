@@ -70,9 +70,6 @@ export default function Blast60Page() {
           <div><strong>30 <small>gal</small></strong><span>Centrifuge pairing</span></div>
         </div>
       </section>
-      <nav className="b60-nav" aria-label="BLAST 60/45 page sections">
-        <a href="#components">Components</a><a href="#cascade">Cascade</a><a href="#workflow">Workflow</a><a href="#specifications">Specs</a>
-      </nav>
 
       <section className="b60-section b60-wrap" id="components">
         <div className="b60-heading">

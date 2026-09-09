@@ -32,9 +32,6 @@
 .b60-page .b60-stats strong { display: block; font-size: clamp(2rem, 3vw, 3rem); font-weight: 600; line-height: 1.2; letter-spacing: -.04em; }
 .b60-page .b60-stats strong small { color: var(--b60-accent); font-size: .44em; letter-spacing: 0; }
 .b60-page .b60-stats span { display: block; margin-top: 9px; color: #b3c5cd; font-size: .8rem; line-height: 1.4; }
-.b60-page .b60-nav { position: sticky; top: 88px; z-index: 8; display: flex; width: fit-content; max-width: calc(100% - 32px); margin: 20px auto 0; padding: 6px; border: 1px solid #d3e0e2; border-radius: 50px; background: rgba(251,254,254,.96); box-shadow: 0 8px 28px #15344312; }
-.b60-page .b60-nav a { display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 24px; border-radius: 40px; color: #354e5b; font-size: .83rem; font-weight: 750; }
-.b60-page .b60-nav a:hover, .b60-page .b60-nav a:focus-visible { color: #075566; background: #def5f6; }
 .b60-page .b60-heading { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 60px; margin-bottom: 48px; }
 .b60-page .b60-heading > p { max-width: 460px; margin: 0; color: var(--b60-muted); }
 .b60-page .b60-components { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
@@ -107,8 +104,6 @@
   .b60-page .b60-stats-grid > div { padding-inline: 20px; }
   .b60-page .b60-stats-grid > div:nth-child(odd) { padding-left: 0; }
   .b60-page .b60-stats-grid > div:nth-child(even) { border: 0; }
-  .b60-page .b60-nav { top: 78px; }
-  .b60-page .b60-nav a { padding-inline: 16px; }
   .b60-page .b60-heading { grid-template-columns: 1fr; gap: 24px; margin-bottom: 32px; }
   .b60-page .b60-components, .b60-page .b60-component-01 { grid-template-columns: 1fr; }
   .b60-page .b60-component-01 .b60-component-copy, .b60-page .b60-component-copy { padding: 28px; }
@@ -128,8 +123,6 @@
   .b60-page .site-header .brand-mark { width: 32px; height: 32px; }
   .b60-page .site-header .brand-wordmark { width: 110px; height: auto; }
   .b60-page .site-header .header-actions { gap: 5px; }
-  .b60-page .b60-nav { max-width: calc(100% - 20px); padding: 4px; }
-  .b60-page .b60-nav a { padding-inline: 10px; font-size: .72rem; }
   .b60-page .b60-hero { min-height: 780px; padding-top: 118px; }
   .b60-page .b60-actions { gap: 12px 20px; }
   .b60-page .b60-hero .b60-kicker { font-size: .65rem; }
@@ -141,5 +134,4 @@
 @media (max-width: 359px) {
   .b60-page .site-header .brand-wordmark { width: 78px; }
   .b60-page .site-header .brand { gap: 4px; }
-  .b60-page .b60-nav a { padding-inline: 8px; }
 }
