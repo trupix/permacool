@@ -176,7 +176,7 @@ export default function Blast60Page() {
         </div>
         <figure className="b60-ratio-image">
           <Image
-            src="/images/generated/blast60-capacity-framed.png"
+            src="/images/generated/blast60-capacity-neutral.png"
             alt="Illustrative capacity comparison: chilling tank, 60 gallons; centrifuge, 30 gallons. 2:1 tank-to-centrifuge capacity."
             width={1536}
             height={1024}
