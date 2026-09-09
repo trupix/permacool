@@ -9,8 +9,8 @@ assert.equal((page.match(/<ExpandableImage\b/g) || []).length, 5, "Four componen
 assert.ok(!page.includes('target="_blank"'), "Expandable images must not navigate to raw-image tabs");
 const viewer = readFileSync("app/components/ExpandableImage.jsx", "utf8");
 assert.ok(viewer.includes("Back to page") && viewer.includes("showModal()") && viewer.includes("onClose="), "Viewer must provide a modal with a working return control");
-assert.ok(page.includes('/images/generated/blast60-tank-centrifuge-ratio-actual-tank.png'), "Capacity comparison graphic must remain on the page");
-assert.ok(existsSync("public/images/generated/blast60-tank-centrifuge-ratio-actual-tank.png"), "Capacity comparison asset must exist");
+assert.ok(page.includes('/images/generated/blast60-capacity-framed.png'), "Capacity comparison graphic must remain on the page");
+assert.ok(existsSync("public/images/generated/blast60-capacity-framed.png"), "Capacity comparison asset must exist");
 assert.ok(page.includes("chilling tank, 60 gallons; centrifuge, 30 gallons. 2:1 tank-to-centrifuge capacity."), "Keep capacity data accessible in image alt text");
 const oldImages = new Set([...baseline.matchAll(/["'](\/images\/[^"']+\.(?:png|jpg|webp))["']/g)].map((match) => match[1]));
 assert.equal(oldImages.size, 8, "Review the baseline asset inventory if it changes");
