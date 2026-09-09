@@ -181,6 +181,17 @@ export default function Blast60Page() {
         </div>
       </section>
 
+      <section className="b60-wrap b60-section b60-cascade-design" id="cascade-design" aria-labelledby="b60-cascade-design-title">
+        <div>
+          <p className="b60-kicker">Cascade Refrigeration Design</p>
+          <h2 id="b60-cascade-design-title">Dual-stage architecture designed around lower temperatures and better serviceability.</h2>
+        </div>
+        <div className="b60-cascade-design-copy">
+          <p>The BLAST 60/45 is built around Perma Cool’s dual-stage cascade architecture, using two smaller, more common-sized refrigeration stages instead of one oversized unit. The primary refrigeration circuit directly chills the ethanol, while the cascade refrigeration circuit cools the primary circuit so the system can reach lower temperatures with efficient, consistent pull-down.</p>
+          <p>That two-stage design gives the BLAST 60/45 strong low-temperature performance while keeping the system built around more serviceable, widely available components. The result is easier parts sourcing, lower service cost, and a machine that is simpler to maintain in real production use.</p>
+        </div>
+      </section>
+
       <section className="b60-wrap b60-section b60-workflow" id="workflow">
         <div>
           <p className="b60-kicker">Centrifuge pairing</p><h2>A cold reserve<br />for the next cycle.</h2>

@@ -19,6 +19,10 @@ for (const path of oldImages) {
   assert.ok(existsSync(`public${path}`), `Missing asset file: ${path}`);
 }
 for (const phrase of [
+  "Cascade Refrigeration Design",
+  "Dual-stage architecture designed around lower temperatures and better serviceability.",
+  "The BLAST 60/45 is built around Perma Cool’s dual-stage cascade architecture, using two smaller, more common-sized refrigeration stages instead of one oversized unit. The primary refrigeration circuit directly chills the ethanol, while the cascade refrigeration circuit cools the primary circuit so the system can reach lower temperatures with efficient, consistent pull-down.",
+  "That two-stage design gives the BLAST 60/45 strong low-temperature performance while keeping the system built around more serviceable, widely available components. The result is easier parts sourcing, lower service cost, and a machine that is simpler to maintain in real production use.",
   "Production Fit", "Built smart, cascade design", "Production-ready workflow", "Fast return on value",
   "Two smaller, common-sized refrigeration stages", "diagnosis, repair", "long-term maintenance",
   "more than 200 units", "roughly 40 gallons", "2 to 3 lb", "filtration and evaporation",

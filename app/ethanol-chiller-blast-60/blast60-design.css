@@ -114,6 +114,11 @@
 .b60-page .b60-principles h4 { margin: 0 0 20px; color: #f2f7f9; font-size: clamp(1.25rem, 1.7vw, 1.5rem); font-weight: 600; line-height: 1.25; letter-spacing: -.025em; text-wrap: balance; }
 .b60-page .b60-principles h4 span { display: block; text-wrap: initial; }
 .b60-page .b60-principles p { padding-top: 20px; border-top: 1px solid #344b58; color: #bdcfd7; font-size: .95rem; line-height: 1.75; margin: 0; }
+.b60-page .b60-cascade-design { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(32px, 5vw, 72px); align-items: start; border-bottom: 1px solid #d3e0e2; }
+.b60-page .b60-cascade-design h2 { max-width: 510px; font-size: clamp(1.8rem, 2.6vw, 2.6rem); line-height: 1.18; text-wrap: initial; }
+.b60-page .b60-cascade-design-copy { padding-left: 28px; border-left: 2px solid #cee3e6; }
+.b60-page .b60-cascade-design-copy p { margin: 0; color: var(--b60-muted); font-size: 1rem; line-height: 1.8; }
+.b60-page .b60-cascade-design-copy p + p { margin-top: 24px; }
 .b60-page .b60-workflow { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
 .b60-page .b60-workflow > div > p:not(.b60-kicker) { color: var(--b60-muted); margin: 24px 0 12px; }
 .b60-page .b60-ratio-image { width: 100%; min-width: 0; margin: 0; }
@@ -140,6 +145,8 @@
   .b60-page .b60-heading, .b60-page .b60-workflow, .b60-page .b60-spec-layout { gap: 36px; }
 }
 @media (max-width: 800px) {
+  .b60-page .b60-cascade-design { grid-template-columns: 1fr; gap: 28px; }
+  .b60-page .b60-cascade-design-copy { padding-left: 0; border-left: 0; }
   .b60-page .b60-cascade-heading { grid-template-columns: 1fr; gap: 28px; margin-bottom: 28px; padding-bottom: 32px; }
   .b60-page .b60-cascade-heading .b60-kicker { margin-bottom: 20px; }
   .b60-page .b60-cascade-heading h2 { font-size: clamp(2rem, 8vw, 3.75rem); }
