@@ -1,0 +1,28 @@
+import assert from "node:assert/strict";
+import { readFileSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { basename } from "node:path";
+
+const baseline = execFileSync("git", ["show", "a98dc9ccf2f79062ca3f706228a1c1c624808217:app/Blast60Page.jsx"], { encoding: "utf8" });
+const page = readFileSync("app/Blast60Page.jsx", "utf8");
+const oldImages = new Set([...baseline.matchAll(/["'](\/images\/[^"']+\.(?:png|jpg|webp))["']/g)].map((match) => match[1]));
+assert.equal(oldImages.size, 8, "Review the baseline asset inventory if it changes");
+for (const path of oldImages) {
+  assert.ok(page.includes(basename(path)), `Missing original image: ${path}`);
+  assert.ok(existsSync(`public${path}`), `Missing asset file: ${path}`);
+}
+for (const phrase of [
+  "Production Fit", "Built smart, cascade design", "Production-ready workflow", "Fast return on value",
+  "Two smaller, common-sized refrigeration stages", "diagnosis, repair", "long-term maintenance",
+  "more than 200 units", "roughly 40 gallons", "2 to 3 lb", "filtration and evaporation",
+  "1.33 GPM", "HVAC condenser integration", "PLC/HMI", "compressor protection logic",
+  "ROI / Replacement", "ownership cost", "<LearningCenterSection />"
+]) assert.ok(page.includes(phrase), `Missing content coverage: ${phrase}`);
+for (const href of ["/workflow", "/direct-refrigerant-vs-ln2", "/industrial-process-chiller-maintenance"]) {
+  assert.ok(page.includes(`href="${href}"`), `Missing resource link: ${href}`);
+}
+const learning = readFileSync("app/components/LearningCenterSection.jsx", "utf8");
+for (const slug of ["minus-40-celsius-fahrenheit", "direct-refrigerant-vs-ln2", "how-to-reduce-ln2-dependence"]) {
+  assert.ok(learning.includes(slug));
+}
+console.log(`BLAST 60 content coverage passed: ${oldImages.size} original images, restored details, and resource links.`);
