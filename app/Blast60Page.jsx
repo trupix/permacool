@@ -143,8 +143,10 @@ export default function Blast60Page() {
       <section className="b60-cascade" id="cascade">
         <div className="b60-wrap b60-section">
           <div className="b60-cascade-heading">
-            <p className="b60-kicker">How cascade works</p>
-            <h2>A chiller for the chiller.</h2>
+            <div className="b60-cascade-title">
+              <p className="b60-kicker">How cascade works</p>
+              <h2><span>A chiller</span>{" "}<span>for the chiller.</span></h2>
+            </div>
             <div className="b60-cascade-explanation">
               <p>The primary circuit directly chills your ethanol. The cascade circuit cools the primary circuit so the system can reach lower temperatures with efficient, consistent pull-down.</p>
               <p>Two smaller, common-sized refrigeration stages replace one oversized unit. That architecture supports low-temperature performance while making parts easier to source and the system simpler to maintain in production.</p>
