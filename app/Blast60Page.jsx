@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ArrowRight, ArrowUpRight, Check, Gauge, RefreshCw, Snowflake, Wrench } from "lucide-react";
 import { InsightsHeader } from "./insights/InsightsShell";
 import LearningCenterSection from "./components/LearningCenterSection";
+import ExpandableImage from "./components/ExpandableImage";
 import { buildContactHref } from "../lib/contact";
 import "./ethanol-chiller-blast-60/blast60-design.css";
 
@@ -116,11 +117,11 @@ export default function Blast60Page() {
         <div className="b60-components">
           {components.map((item) => (
             <article className={`b60-component b60-component-${item.number}`} key={item.number}>
-              <a className="b60-component-image" href={`/images/generated/${item.image}`} target="_blank" rel="noreferrer" aria-label={`Open full-size image: ${item.title}`}>
+              <ExpandableImage className="b60-component-image" src={`/images/generated/${item.image}`} alt={item.alt} label={`Open full-size image: ${item.title}`}>
                 <Image src={`/images/generated/${item.image}`} alt={item.alt} width={item.width} height={item.height}
                   sizes={item.number === "01" ? "(max-width: 800px) 100vw, 760px" : "(max-width: 800px) 100vw, 410px"} />
                 <span className="b60-expand" aria-hidden="true"><ArrowUpRight size={18} /></span>
-              </a>
+              </ExpandableImage>
               <div className="b60-component-copy">
                 <p className="b60-kicker"><span>{item.number}</span> {item.role}</p>
                 <h3>{item.title}</h3><p>{item.body}</p>
@@ -132,9 +133,9 @@ export default function Blast60Page() {
         <details className="b60-system-gallery">
           <summary>View the original BLAST 60/45 system illustration</summary>
           <figure className="b60-restored-image">
-            <a href="/images/generated/blast60-hero-crystal-bear.png" target="_blank" rel="noreferrer" aria-label="Open full-size original BLAST 60/45 system illustration">
+            <ExpandableImage src="/images/generated/blast60-hero-crystal-bear.png" alt="Original BLAST 60/45 system illustration with the crystal bear, process platform, controls, and outdoor condensers" label="Open full-size original BLAST 60/45 system illustration">
               <Image src="/images/generated/blast60-hero-crystal-bear.png" alt="Original BLAST 60/45 system illustration with the crystal bear, process platform, controls, and outdoor condensers" width={1672} height={941} sizes="(max-width: 800px) 100vw, 1240px" />
-            </a>
+            </ExpandableImage>
           </figure>
         </details>
       </section>
@@ -150,9 +151,9 @@ export default function Blast60Page() {
             </div>
           </div>
           <figure className="b60-diagram">
-            <a href="/images/generated/cascade-refrigerant-flow-ethanol-labels.png" target="_blank" rel="noreferrer" aria-label="Open full-size cascade flow diagram">
+            <ExpandableImage src="/images/generated/cascade-refrigerant-flow-ethanol-labels.png" alt="BLAST 60/45 refrigerant flow diagram showing the primary and cascade circuits and ethanol connections" label="Open full-size cascade flow diagram">
               <Image src="/images/generated/cascade-refrigerant-flow-ethanol-labels.png" alt="BLAST 60/45 refrigerant flow diagram showing the primary and cascade circuits and ethanol connections" width={1536} height={1024} sizes="(max-width: 800px) 100vw, 1240px" />
-            </a>
+            </ExpandableImage>
             <figcaption>Primary and cascade refrigeration circuits <span>Open image to view flow details <ArrowUpRight size={14} /></span></figcaption>
           </figure>
           <div className="b60-field-benefits">
@@ -196,9 +197,9 @@ export default function Blast60Page() {
           </div>
         </div>
         <figure className="b60-restored-image b60-performance-image">
-          <a href="/images/generated/blast60-bear-card.png" target="_blank" rel="noreferrer" aria-label="Open full-size BLAST 60/45 performance graphic">
+          <ExpandableImage src="/images/generated/blast60-bear-card.png" alt="BLAST 60/45 performance graphic: 60 gallons to −40 °C in 45 minutes, 1.33 GPM flash chilling, direct refrigeration" label="Open full-size BLAST 60/45 performance graphic">
             <Image src="/images/generated/blast60-bear-card.png" alt="BLAST 60/45 performance graphic: 60 gallons to −40 °C in 45 minutes, 1.33 GPM flash chilling, direct refrigeration" width={1440} height={1040} sizes="(max-width: 800px) 100vw, 1000px" />
-          </a>
+          </ExpandableImage>
           <figcaption>BLAST 60/45 · 60 gallons · −40 °C · 45 minutes · 1.33 GPM average</figcaption>
         </figure>
       </section>
@@ -216,9 +217,9 @@ export default function Blast60Page() {
         </div>
         <div className="b60-ownership-layout">
           <figure className="b60-restored-image">
-            <a href="/images/generated/roi-replacement.png" target="_blank" rel="noreferrer" aria-label="Open full-size electric chilling illustration">
+            <ExpandableImage src="/images/generated/roi-replacement.png" alt="Illustration of the transition from consumable cooling to electric industrial chilling" label="Open full-size electric chilling illustration">
               <Image src="/images/generated/roi-replacement.png" alt="Illustration of the transition from consumable cooling to electric industrial chilling" width={1448} height={1086} sizes="(max-width: 800px) 100vw, 680px" />
-            </a>
+            </ExpandableImage>
           </figure>
           <div className="b60-ownership-copy">
             <h3>Replace recurring consumable spend with a serviceable system.</h3>

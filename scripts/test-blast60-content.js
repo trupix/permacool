@@ -5,6 +5,10 @@ import { basename } from "node:path";
 
 const baseline = execFileSync("git", ["show", "a98dc9ccf2f79062ca3f706228a1c1c624808217:app/Blast60Page.jsx"], { encoding: "utf8" });
 const page = readFileSync("app/Blast60Page.jsx", "utf8");
+assert.equal((page.match(/<ExpandableImage\b/g) || []).length, 5, "Four component images plus four standalone images must use the shared viewer");
+assert.ok(!page.includes('target="_blank"'), "Expandable images must not navigate to raw-image tabs");
+const viewer = readFileSync("app/components/ExpandableImage.jsx", "utf8");
+assert.ok(viewer.includes("Back to page") && viewer.includes("showModal()") && viewer.includes("onClose="), "Viewer must provide a modal with a working return control");
 assert.ok(page.includes('/images/generated/blast60-tank-centrifuge-ratio-actual-tank.png'), "Capacity comparison graphic must remain on the page");
 assert.ok(existsSync("public/images/generated/blast60-tank-centrifuge-ratio-actual-tank.png"), "Capacity comparison asset must exist");
 assert.ok(page.includes("chilling tank, 60 gallons; centrifuge, 30 gallons. 2:1 tank-to-centrifuge capacity."), "Keep capacity data accessible in image alt text");
