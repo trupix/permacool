@@ -5,6 +5,9 @@ import { basename } from "node:path";
 
 const baseline = execFileSync("git", ["show", "a98dc9ccf2f79062ca3f706228a1c1c624808217:app/Blast60Page.jsx"], { encoding: "utf8" });
 const page = readFileSync("app/Blast60Page.jsx", "utf8");
+assert.ok(page.includes('/images/generated/blast60-tank-centrifuge-ratio.png'), "Capacity comparison graphic must remain on the page");
+assert.ok(existsSync("public/images/generated/blast60-tank-centrifuge-ratio.png"), "Capacity comparison asset must exist");
+assert.ok(page.includes("chilling tank, 60 gallons; centrifuge, 30 gallons. 2:1 tank-to-centrifuge capacity."), "Keep capacity data accessible in image alt text");
 const oldImages = new Set([...baseline.matchAll(/["'](\/images\/[^"']+\.(?:png|jpg|webp))["']/g)].map((match) => match[1]));
 assert.equal(oldImages.size, 8, "Review the baseline asset inventory if it changes");
 for (const path of oldImages) {

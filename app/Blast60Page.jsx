@@ -173,12 +173,15 @@ export default function Blast60Page() {
           <p>The tank-to-centrifuge ratio is about 2:1. With more cold ethanol in reserve, the tank sees a smaller temperature shift, recovers to −40 °C faster, and is ready for the next extraction cycle sooner.</p>
           <a className="b60-text-link" href="/workflow">Read the workflow breakdown article <ArrowUpRight size={17} /></a>
         </div>
-        <div className="b60-ratio" aria-label="60-gallon ethanol tank paired with a 30-gallon centrifuge">
-          <div><span>Chilling tank</span><strong>60<small>gallons</small></strong></div>
-          <RefreshCw className="b60-ratio-arrow" size={30} aria-hidden="true" />
-          <div><span>Centrifuge</span><strong>30<small>gallons</small></strong></div>
-          <p>2:1 tank-to-centrifuge capacity</p>
-        </div>
+        <figure className="b60-ratio-image">
+          <Image
+            src="/images/generated/blast60-tank-centrifuge-ratio.png"
+            alt="Illustrative capacity comparison: chilling tank, 60 gallons; centrifuge, 30 gallons. 2:1 tank-to-centrifuge capacity."
+            width={1536}
+            height={1024}
+            sizes="(max-width: 800px) 100vw, 620px"
+          />
+        </figure>
         <div className="b60-workflow-history">
           <div>
             <p className="b60-kicker">From ACP-30 to BLAST 60/45</p>
