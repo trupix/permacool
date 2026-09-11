@@ -1,9 +1,16 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { chillerModels, chillerOverview, getChillerNavigation } from "../lib/chiller-navigation.js";
 import { buildContactHref } from "../lib/contact.js";
 
 assert.equal(chillerModels.length, 4);
 assert.equal(new Set(chillerModels.map((model) => model.href)).size, 4);
+const homepage = readFileSync(new URL("../app/page.jsx", import.meta.url), "utf8");
+for (const model of chillerModels) {
+  assert.ok(homepage.includes(`title: "${model.label}"`), `Homepage missing ${model.label}`);
+  assert.ok(homepage.includes(`href: "${model.href}"`), `Homepage missing ${model.href}`);
+}
+assert.ok(!homepage.includes("Compare all three BLAST chillers"));
 for (const model of chillerModels) {
   const context = getChillerNavigation(model.href);
   assert.equal(context.selectedHref, model.href);

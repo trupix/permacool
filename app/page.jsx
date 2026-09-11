@@ -50,7 +50,8 @@ const blastSystems = [
     body:
       "A compact cascade ethanol chiller built around the 30-gallon centrifuge workflow, 60 gallons of ethanol capacity, and fast recovery back toward −40 °C.",
     href: "/ethanol-chiller-blast-60",
-    image: "/images/generated/blast60-bear-card.png",
+    image: "/images/generated/blast60-mountain-system-lineup.png",
+    imageAlt: "BLAST 60/45 chilling tank with two separate condensers against snow-covered mountains",
     cta: "View BLAST 60/45"
   },
   {
@@ -60,6 +61,15 @@ const blastSystems = [
     href: "/ethanol-chiller-blast-150",
     image: "/images/generated/blast150-bear-card-purple.png",
     cta: "View BLAST 150/45"
+  },
+  {
+    title: "BLAST 150/30",
+    body:
+      "A high-speed 150-gallon cascade system designed for five gallons per minute of flash chilling and reliable operation in demanding ambient conditions.",
+    href: "/ethanol-chiller-blast-150-30",
+    image: "/images/generated/blast15030/desert-system-hero.png",
+    imageAlt: "BLAST 150/30 with separate 22 HP and 6 HP condenser units in a desert setting",
+    cta: "View BLAST 150/30"
   },
   {
     title: "BLAST 240/45",
@@ -205,7 +215,7 @@ export default function HomePage() {
               <p className="eyebrow">BLAST™ Lineup</p>
               <h3>Choose the production class that matches your extraction volume.</h3>
               <a className="inline-link home-blast-compare-link" href="/ethanol-chiller-comparison">
-                Compare all three BLAST chillers
+                Compare BLAST chillers
                 <ArrowRight size={16} aria-hidden="true" />
               </a>
             </div>
@@ -215,10 +225,10 @@ export default function HomePage() {
                   <a className="home-system-media" href={system.href} aria-label={system.title}>
                     <Image
                       src={system.image}
-                      alt=""
+                      alt={system.imageAlt || ""}
                       width={720}
                       height={440}
-                      sizes="(max-width: 980px) calc(100vw - 2rem), 380px"
+                      sizes="(max-width: 680px) calc(100vw - 2rem), (max-width: 1100px) calc((100vw - 3rem) / 2), 300px"
                     />
                   </a>
                   <div className="home-system-copy">
