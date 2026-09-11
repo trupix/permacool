@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
-
-const sectionLinks = [["top", "150/30"], ["system", "System"], ["mirage", "Mirage"], ["regeneration", "Regeneration"], ["layout", "Layout"]];
 
 const components = [
   {
@@ -274,41 +272,8 @@ function HeatMirage({ continuation = false }) {
 }
 
 export default function Blast15030Experience({ pricingHref }) {
-  const [activeSection, setActiveSection] = useState("top");
-  useEffect(() => {
-    const ids = ["top", "system", "mirage", "regeneration", "layout"];
-    let frame = 0;
-    const update = () => {
-      let active = "top";
-      for (const id of ids) {
-        if ((document.getElementById(id)?.getBoundingClientRect().top ?? Infinity) <= 165) active = id;
-      }
-      setActiveSection(active);
-    };
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(frame); };
-  }, []);
   return (
     <div className="blast-original desert-page">
-      <nav className="blast-floating-nav" aria-label="BLAST 150/30 sections">
-        <select className="blast-mobile-section-picker" aria-label="Jump to page section" value={activeSection} onChange={(event) => {
-          const id = event.target.value;
-          window.location.hash = id;
-          document.getElementById(id)?.scrollIntoView({ block: "start" });
-        }}>
-          {sectionLinks.map(([id, label]) => <option key={id} value={id}>{id === "top" ? "150/30 Overview" : label}</option>)}
-        </select>
-        {sectionLinks.map(([id, label]) => (
-          <a key={id} href={`#${id}`} className={activeSection === id ? "is-active" : undefined} aria-current={activeSection === id ? "location" : undefined}>{label}</a>
-        ))}
-        <a className="floating-pricing" href={pricingHref}>Request pricing ↗</a>
-      </nav>
-
       <section className="hero" id="top">
         <HeatMirage />
         <div className="mirage-band" aria-hidden="true" />

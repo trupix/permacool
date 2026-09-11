@@ -1,438 +1,277 @@
 import Image from "next/image";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  Cpu,
-  Droplets,
-  Fan,
-  Gauge,
-  RefreshCw,
-  ShieldCheck,
-  Snowflake,
-  Wrench,
-  Zap
-} from "lucide-react";
-import LearningCenterSection from "./components/LearningCenterSection";
+import { ArrowRight, ArrowUpRight, Check, Gauge, RefreshCw, Snowflake, Wrench } from "lucide-react";
 import { InsightsHeader } from "./insights/InsightsShell";
+import LearningCenterSection from "./components/LearningCenterSection";
+import ExpandableImage from "./components/ExpandableImage";
 import { buildContactHref } from "../lib/contact";
+import "./ethanol-chiller-blast-60/blast60-design.css";
 
-const blast60PricingHref = buildContactHref({
-  interest: "Ethanol Chillers",
-  requestType: "Product Pricing",
-  product: "BLAST 60/45",
-  source: "ethanol-chiller-blast-60"
+const pricingHref = buildContactHref({
+  interest: "Ethanol Chillers", requestType: "Product Pricing",
+  product: "BLAST 60/45", source: "ethanol-chiller-blast-60"
 });
 
-const heroStats = [
+const productionFit = [
   {
-    label: "30",
-    unit: "gallon",
-    text: "30-gallon centrifuge workflow pairing",
-    icon: RefreshCw,
-    tone: "workflow"
+    title: "Built smart, cascade design", icon: Snowflake,
+    body: "The BLAST 60/45 is the most compact unit in the BLAST lineup and the only model built around Perma Cool’s cascade-style architecture, combining strong low-temperature performance with long-term serviceability.",
+    link: "More →", href: "#cascade"
   },
   {
-    label: "60",
-    unit: "gallons",
-    text: "Commercial scale operating capacity",
-    icon: Droplets,
-    tone: "capacity"
+    title: "Production-ready workflow", icon: RefreshCw,
+    body: "It replaces consumables and slower legacy chilling methods with a production-ready system sized for the ideal 30-gallon centrifuge workflow.",
+    link: "workflow explained →", href: "/workflow"
   },
   {
-    label: "45",
-    unit: "minutes",
-    text: "Room temperature to −40 °C flash chilling",
-    icon: Clock,
-    tone: "pull-down"
-  }
-];
-
-const valueProps = [
-  {
-    title: "Built smart, cascade design",
-    icon: Snowflake,
-    body:
-      "The BLAST 60/45 is the most compact unit in the BLAST lineup and the only model built around Perma Cool’s cascade-style architecture, combining strong low-temperature performance with long-term serviceability.",
-    link: "More →"
-  },
-  {
-    title: "Production-ready workflow",
-    icon: RefreshCw,
-    body:
-      "It replaces consumables and slower legacy chilling methods with a production-ready system sized for the ideal 30-gallon centrifuge workflow.",
-    link: "workflow explained →"
-  },
-  {
-    title: "Fast return on value",
-    icon: Gauge,
-    body:
-      "For many operators, the 60/45 hits the sweet spot, real production capacity, smarter workflow, and a system that can often pay for itself within the first few months of operation."
+    title: "Fast return on value", icon: Gauge,
+    body: "For many operators, the 60/45 hits the sweet spot, real production capacity, smarter workflow, and a system that can often pay for itself within the first few months of operation."
   }
 ];
 
 const components = [
   {
-    eyebrow: "Component 01",
-    title: "Ethanol Chilling Platform",
-    image: "/images/generated/blast60-component-01-temperature-sensor.png",
-    alt: "Labeled Perma Cool BLAST 60/45 ethanol chilling platform diagram",
-    body:
-      "This is the main process-side assembly of the BLAST 60/45, combining the tank, circulation hardware, and heat-transfer components into the core chilling package."
+    number: "01", title: "Ethanol chilling platform", role: "At the process",
+    image: "blast60-component-01-temperature-sensor.png", width: 1453, height: 1082,
+    alt: "BLAST 60/45 platform with labeled tank, heat exchanger, pump, sensor, sight glass, and ethanol outlets",
+    body: "The chilling tank, circulation pump, and plate heat exchanger bring storage and heat transfer together in one process-side assembly.",
+    details: ["Vacuum-jacketed tank", "Level sight glass", "Temperature sensor", "Ethanol outlet ports"]
   },
   {
-    eyebrow: "Component 02",
-    title: "Flux Box",
-    image: "/images/generated/blast60-component-02-flux-box-wall.png",
-    alt: "Wall-mounted Perma Cool BLAST 60/45 flux box heat exchanger",
-    body:
-      "The flux box is part of the cascade side of the chiller and is specific to the BLAST 60/45. This component allows the secondary chiller to cascade the primary chiller, supporting the two-stage refrigeration design that gives the 60/45 its stronger low-temperature performance."
+    number: "02", title: "FluxBox", role: "Between refrigeration stages",
+    image: "blast60-component-02-flux-box-wall.png", width: 1475, height: 1066, alt: "Wall-mounted FluxBox heat exchanger",
+    body: "The FluxBox is the wall-mounted heat exchanger on the BLAST 60/45’s cascade side. It allows the secondary refrigeration circuit to cool the primary circuit, supporting the system’s two-stage, low-temperature performance."
   },
   {
-    eyebrow: "Component 03",
-    title: "PLC Control System",
-    image: "/images/generated/blast60-component-03-plc-control-system.png",
-    alt: "Wall-mounted Perma Cool BLAST 60/45 PLC control system cabinet",
-    body:
-      "This is the PLC control system for the BLAST 60/45, giving operators centralized control and visibility over chiller operation. It supports the system’s monitoring, logic, and control functions so operators can manage process performance with clearer feedback and more consistent operation."
+    number: "03", title: "PLC control system", role: "System control",
+    image: "blast60-component-03-plc-control-system.png", width: 1600, height: 1100, alt: "BLAST 60/45 wall-mounted PLC control cabinet",
+    body: "Centralized monitoring, logic, and control give operators visibility into the chilling process. PLC/HMI feedback helps operators manage process performance and consistent operation, with compressor protection logic built into the system."
   },
   {
-    eyebrow: "Component 04",
-    title: "Condensers",
-    image: "/images/generated/blast60-component-04-condensers.png",
-    alt: "Two outdoor Perma Cool BLAST 60/45 condenser units",
-    body:
-      "These are the two condensers that come with the BLAST 60/45 system. Each condenser is rated at six horsepower, giving the unit the condenser capacity needed to support the cascade refrigeration design."
+    number: "04", title: "Two 6 HP condensers", role: "Outdoors",
+    image: "blast60-component-04-condensers.png", width: 1600, height: 1100, alt: "Two separate six-horsepower outdoor condenser units for the BLAST 60/45",
+    body: "Two separate six-horsepower condenser units support the primary and cascade refrigeration stages."
   }
 ];
 
-const cascadeBenefits = [
-  {
-    title: "Better low-temp performance",
-    body:
-      "The cascade setup allows the machine to push colder and work harder than a simple single-stage setup in the same class."
-  },
-  {
-    title: "Common parts, easier service",
-    body: "Because it relies on more standard component sizing instead of rare oversized hardware, it is:",
-    bullets: ["easier to diagnose", "easier to repair", "cheaper to repair", "easier to keep running long-term"]
-  },
-  {
-    title: "Long life / maintainability",
-    body: "This is huge. It is easy to keep these going forever.",
-    bullets: [
-      "built for long-term serviceability",
-      "designed around repairable common components",
-      "easier to maintain over the life of the machine",
-      "avoids dependence on exotic hard-to-source oversized parts"
-    ]
-  }
-];
-
-const highlights = [
-  "Designed for up to 60-gallon process class applications",
-  "Target low-temp operation around −40 °C (config/facility dependent)",
-  "Direct refrigerant architecture with HVAC condenser integration",
-  "PLC/HMI operational visibility and compressor protection logic"
-];
-
-const roiBullets = [
-  "Reduces dependence on recurring consumables",
-  "Supports faster re-chill and repeat-cycle extraction",
-  "Built around serviceable, common-sized components for lower long-term ownership cost"
+const specifications = [
+  ["Model", "BLAST 60/45"], ["Ethanol capacity", "60 gallons"],
+  ["Pull-down target", "Room temperature to −40 °C in 45 minutes"],
+  ["Flash chilling average", "1.33 GPM"],
+  ["Centrifuge pairing", "30 gallons"], ["Refrigeration", "Dual-stage cascade · direct refrigerant"],
+  ["Condensers", "2 × 6 HP"], ["Integration", "HVAC condenser integration"],
+  ["Controls", "PLC/HMI with compressor protection logic"]
 ];
 
 export default function Blast60Page() {
   return (
-    <main className="site-shell">
+    <main className="site-shell b60-page">
       <InsightsHeader />
-      <Hero />
-      <section className="stat-rail blast60-stat-rail" aria-label="BLAST 60/45 quick specifications">
-        {heroStats.map((item) => {
-          const Icon = item.icon;
+      <section className="b60-hero" id="overview" aria-labelledby="b60-title">
+        <Image src="/images/generated/blast60-hero-original-photo-valves-corrected.png"
+          alt="BLAST 60/45 chilling platform and wall-mounted controls, with two separate condensers outside"
+          fill priority fetchPriority="high" sizes="100vw" className="b60-hero-image" />
+        <div className="b60-hero-shade" />
+        <div className="b60-wrap b60-hero-content">
+          <a className="b60-back" href="/ethanol-chilling-systems">Ethanol chilling systems <ArrowUpRight size={14} /></a>
+          <p className="b60-kicker">Perma Cool / Dual-stage cascade</p>
+          <h1 id="b60-title">BLAST™ <span>60/45</span><small>Ethanol Chiller</small></h1>
+          <p className="b60-lede">Chill 60 gallons of ethanol from room temperature to −40 °C in 45 minutes.</p>
+          <div className="b60-actions">
+            <a className="b60-button" href={pricingHref}>Get pricing & lead time <ArrowRight size={18} /></a>
+            <a className="b60-text-link" href="#components">Explore the system <ArrowRight size={17} /></a>
+          </div>
+        </div>
+      </section>
 
-          return (
-            <article className={`stat-card blast60-stat-card blast60-stat-card--${item.tone}`} key={item.text}>
-              <span className="blast60-stat-icon" aria-hidden="true">
-                <Icon size={34} strokeWidth={2.4} />
-              </span>
-              <div>
-                <strong>{item.label}</strong>
-                <span>{item.unit}</span>
-                <p>{item.text}</p>
+      <section className="b60-stats" aria-label="BLAST 60/45 quick specifications">
+        <div className="b60-wrap b60-stats-grid">
+          <div><strong>60 <small>gal</small></strong><span>Ethanol capacity</span></div>
+          <div><strong>−40 <small>°C</small></strong><span>Chilling target</span></div>
+          <div><strong>45 <small>min</small></strong><span>Room-temperature pull-down</span></div>
+          <div><strong>30 <small>gal</small></strong><span>Centrifuge pairing</span></div>
+        </div>
+      </section>
+
+      <section className="b60-section b60-wrap b60-production-fit" id="production-fit" aria-labelledby="b60-production-title">
+        <div className="b60-production-heading">
+          <p className="b60-kicker">Production Fit</p>
+          <h2 id="b60-production-title">Compact capacity with a real extraction workflow behind it.</h2>
+        </div>
+        <div className="b60-production-grid">
+          {productionFit.map(({ title, icon: Icon, body, link, href }) => (
+            <article className="b60-production-card" key={title}>
+              <Icon size={28} aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{body}</p>
+              {href && <a className="b60-text-link" href={href}>{link}</a>}
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="b60-section b60-wrap" id="components">
+        <div className="b60-heading">
+          <div><p className="b60-kicker">The equipment</p><h2>One system.<br />Four working parts.</h2></div>
+          <p>Process-side chilling, wall-mounted heat exchange and controls, and two outdoor condensers.</p>
+        </div>
+        <div className="b60-components">
+          {components.map((item) => (
+            <article className={`b60-component b60-component-${item.number}`} key={item.number}>
+              <ExpandableImage className="b60-component-image" src={`/images/generated/${item.image}`} alt={item.alt} label={`Open full-size image: ${item.title}`}>
+                <Image src={`/images/generated/${item.image}`} alt={item.alt} width={item.width} height={item.height}
+                  sizes={item.number === "01" ? "(max-width: 800px) 100vw, 760px" : "(max-width: 800px) 100vw, 410px"} />
+                <span className="b60-expand" aria-hidden="true"><ArrowUpRight size={18} /></span>
+              </ExpandableImage>
+              <div className="b60-component-copy">
+                <p className="b60-kicker"><span>{item.number}</span> {item.role}</p>
+                <h3>{item.title}</h3><p>{item.body}</p>
+                {item.details && <ul className="b60-details">{item.details.map((detail) => <li key={detail}><Check size={16} aria-hidden="true" />{detail}</li>)}</ul>}
               </div>
             </article>
-          );
-        })}
+          ))}
+        </div>
+        <details className="b60-system-gallery">
+          <summary>View the original BLAST 60/45 system illustration</summary>
+          <figure className="b60-restored-image">
+            <ExpandableImage src="/images/generated/blast60-hero-crystal-bear.png" alt="Original BLAST 60/45 system illustration with the crystal bear, process platform, controls, and outdoor condensers" label="Open full-size original BLAST 60/45 system illustration">
+              <Image src="/images/generated/blast60-hero-crystal-bear.png" alt="Original BLAST 60/45 system illustration with the crystal bear, process platform, controls, and outdoor condensers" width={1672} height={941} sizes="(max-width: 800px) 100vw, 1240px" />
+            </ExpandableImage>
+          </figure>
+        </details>
       </section>
-      <ValueProps />
-      <Components />
-      <CascadeDesign />
-      <CentrifugePairing />
-      <HighlightsAndRoi />
-      <LearningCenterSection />
-      <RelatedCta />
-    </main>
-  );
-}
-function Hero() {
-  return (
-    <section className="hero blast60-product-hero">
-      <Image
-        src="/images/generated/blast60-hero-crystal-bear.png"
-        alt="Industrial ethanol chilling platform in a clean production facility"
-        fill
-        priority
-        fetchPriority="high"
-        className="hero-image"
-        sizes="100vw"
-      />
-      <div className="hero-overlay" />
-      <div className="hero-content">
-        <p className="eyebrow">BLAST Product Line</p>
-        <h1>
-          <span className="blast60-hero-title-accent">BLAST™ 60/45</span> Ethanol Chiller
-        </h1>
-        <p className="hero-lede">Chill 60 gallons of ethanol from room temperature to −40 °C in 45 minutes.</p>
-        <div className="hero-actions">
-          <a className="button primary" href={blast60PricingHref}>
-            Request lead time + pricing
-            <ArrowRight size={18} aria-hidden="true" />
-          </a>
-          <a className="button secondary" href="#components">
-            View components
-            <ArrowRight size={18} aria-hidden="true" />
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
 
-function ValueProps() {
-  return (
-    <section className="section value-section">
-      <div className="section-heading">
-        <p className="eyebrow">Production Fit</p>
-        <h2>Compact capacity with a real extraction workflow behind it.</h2>
-      </div>
-      <div className="value-grid">
-        {valueProps.map(({ title, icon: Icon, body, link }) => (
-          <article className="value-card" key={title}>
-            <Icon aria-hidden="true" size={26} />
-            <h3>{title}</h3>
-            <p>{body}</p>
-            {link ? <span className="inline-link">{link}</span> : null}
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Components() {
-  return (
-    <section className="section component-section" id="components">
-      <div className="section-heading narrow">
-        <p className="eyebrow">Component Overview</p>
-        <h2>BLAST 60/45 Component Walkthrough</h2>
-        <p>A quick visual walkthrough of the major BLAST 60/45 components.</p>
-      </div>
-      <div className="component-grid">
-        {components.map((item) => (
-          <article className="component-card" key={item.title}>
-            <div className="component-media">
-              <Image
-                src={item.image}
-                alt={item.alt}
-                width={720}
-                height={520}
-                sizes="(max-width: 980px) calc(100vw - 2rem), 580px"
-              />
+      <section className="b60-cascade" id="cascade">
+        <div className="b60-wrap b60-section">
+          <div className="b60-cascade-heading">
+            <div className="b60-cascade-title">
+              <p className="b60-kicker">How cascade works</p>
+              <h2><span>A chiller</span>{" "}<span>for the chiller.</span></h2>
             </div>
-            <div className="component-copy">
-              <p className="eyebrow">{item.eyebrow}</p>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
+            <div className="b60-cascade-explanation">
+              <p>The primary circuit directly chills your ethanol. The cascade circuit cools the primary circuit so the system can reach lower temperatures with efficient, consistent pull-down.</p>
+              <p>Two smaller, common-sized refrigeration stages replace one oversized unit. That architecture supports low-temperature performance while making parts easier to source and the system simpler to maintain in production.</p>
             </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function CascadeDesign() {
-  return (
-    <section className="section cascade-section">
-      <div className="cascade-layout">
-        <div className="cascade-copy">
-          <p className="eyebrow">Cascade Refrigeration Design</p>
-          <h2>Dual-stage architecture designed around lower temperatures and better serviceability.</h2>
-          <p>
-            The BLAST 60/45 is built around Perma Cool’s dual-stage cascade architecture, using two smaller,
-            more common-sized refrigeration stages instead of one oversized unit. The primary refrigeration
-            circuit directly chills the ethanol, while the cascade refrigeration circuit cools the primary
-            circuit so the system can reach lower temperatures with efficient, consistent pull-down.
-          </p>
-          <p>
-            That two-stage design gives the BLAST 60/45 strong low-temperature performance while keeping the
-            system built around more serviceable, widely available components. The result is easier parts
-            sourcing, lower service cost, and a machine that is simpler to maintain in real production use.
-          </p>
+          </div>
+          <figure className="b60-diagram">
+            <ExpandableImage src="/images/generated/cascade-refrigerant-flow-ethanol-labels.png" alt="BLAST 60/45 refrigerant flow diagram showing the primary and cascade circuits and ethanol connections" label="Open full-size cascade flow diagram">
+              <Image src="/images/generated/cascade-refrigerant-flow-ethanol-labels.png" alt="BLAST 60/45 refrigerant flow diagram showing the primary and cascade circuits and ethanol connections" width={1536} height={1024} sizes="(max-width: 800px) 100vw, 1240px" />
+            </ExpandableImage>
+            <figcaption>Primary and cascade refrigeration circuits <span>Open image to view flow details <ArrowUpRight size={14} /></span></figcaption>
+          </figure>
+          <div className="b60-field-benefits">
+            <h3><span>Why that matters</span>{" "}<span>in the field</span></h3>
+            <div className="b60-principles">
+              <div>
+                <span className="b60-principle-icon"><Snowflake aria-hidden="true" /></span>
+                <h4><span>Better low-temperature</span>{" "}<span>performance</span></h4>
+                <p>Cascade refrigeration supports colder operation than a comparable single-stage setup, with the secondary stage cooling the primary circuit through the FluxBox.</p>
+              </div>
+              <div>
+                <span className="b60-principle-icon"><Wrench aria-hidden="true" /></span>
+                <h4><span>Common parts,</span>{" "}<span>easier service</span></h4>
+                <p>Standard component sizing simplifies diagnosis, repair, and parts sourcing, helping reduce service costs without relying on rare, oversized hardware.</p>
+              </div>
+              <div>
+                <span className="b60-principle-icon"><RefreshCw aria-hidden="true" /></span>
+                <h4><span>Built for</span>{" "}<span>long-term maintenance</span></h4>
+                <p>Repairable, common-sized components make the machine easier to maintain over its working life and avoid dependence on exotic, hard-to-source parts.</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <figure className="diagram-frame">
+      </section>
+
+      <section className="b60-wrap b60-section b60-cascade-design" id="cascade-design" aria-labelledby="b60-cascade-design-title">
+        <div>
+          <p className="b60-kicker">Cascade Refrigeration Design</p>
+          <h2 id="b60-cascade-design-title">Dual-stage architecture designed around lower temperatures and better serviceability.</h2>
+        </div>
+        <div className="b60-cascade-design-copy">
+          <p>The BLAST 60/45 is built around Perma Cool’s dual-stage cascade architecture, using two smaller, more common-sized refrigeration stages instead of one oversized unit. The primary refrigeration circuit directly chills the ethanol, while the cascade refrigeration circuit cools the primary circuit so the system can reach lower temperatures with efficient, consistent pull-down.</p>
+          <p>That two-stage design gives the BLAST 60/45 strong low-temperature performance while keeping the system built around more serviceable, widely available components. The result is easier parts sourcing, lower service cost, and a machine that is simpler to maintain in real production use.</p>
+        </div>
+      </section>
+
+      <section className="b60-wrap b60-section b60-workflow" id="workflow">
+        <div>
+          <p className="b60-kicker">Centrifuge pairing</p><h2>A cold reserve<br />for the next cycle.</h2>
+          <p>A 60-gallon tank pairs with a 30-gallon centrifuge. Returning ethanol mixes into a reserve of already-cold ethanol, limiting the temperature rise and supporting re-chilling between extraction cycles.</p>
+          <p>The tank-to-centrifuge ratio is about 2:1. With more cold ethanol in reserve, the tank sees a smaller temperature shift, recovers to −40 °C faster, and is ready for the next extraction cycle sooner.</p>
+          <a className="b60-text-link" href="/workflow">Read the workflow breakdown article <ArrowUpRight size={17} /></a>
+        </div>
+        <figure className="b60-ratio-image">
           <Image
-            src="/images/generated/cascade-refrigerant-flow-ethanol-labels.png"
-            alt="Photo-based refrigerant pipe flow diagram for the BLAST 60/45 cascade system"
+            src="/images/generated/blast60-capacity-neutral.png"
+            alt="Illustrative capacity comparison: chilling tank, 60 gallons; centrifuge, 30 gallons. 2:1 tank-to-centrifuge capacity."
             width={1536}
             height={1024}
-            sizes="(max-width: 980px) calc(100vw - 2rem), 540px"
+            sizes="(max-width: 800px) 100vw, 620px"
           />
         </figure>
-      </div>
-
-      <div className="benefit-row">
-        <h3>Why that matters in the field</h3>
-        <div className="benefit-grid">
-          {cascadeBenefits.map((item, index) => (
-            <article className="benefit-card" key={item.title}>
-              <span>{index + 1}.</span>
-              <h4>{item.title}</h4>
-              <p>{item.body}</p>
-              {item.bullets ? (
-                <ul>
-                  {item.bullets.map((bullet) => (
-                    <li key={bullet}>
-                      <CheckCircle2 size={17} aria-hidden="true" />
-                      {bullet}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </article>
-          ))}
+        <div className="b60-workflow-history">
+          <div>
+            <p className="b60-kicker">From ACP-30 to BLAST 60/45</p>
+            <h3><span>More reserve</span>{" "}<span>for repeat cycles.</span></h3>
+            <p>Perma Cool’s legacy ACP-30 put more than 200 units into the field and demonstrated the value of dedicated ethanol pre-chilling. At roughly 40 gallons, it was sized for basic single-pass centrifuge support.</p>
+            <p>The BLAST 60/45 expands that reserve to 60 gallons, supporting a 30-gallon centrifuge through repeated extraction and re-chill cycles.</p>
+          </div>
+          <div>
+            <p className="b60-kicker">Extraction → Re-chill → Repeat</p>
+            <h3><span>Keep the ethanol</span>{" "}<span>in the workflow.</span></h3>
+            <p>Returning ethanol mixes into the already-cold reserve instead of resetting the whole tank.</p>
+            <p>Repeated extraction and re-chill cycles continue until the ethanol reaches roughly 2 to 3 lb of material per gallon, before moving to filtration and evaporation.</p>
+          </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function CentrifugePairing() {
-  return (
-    <section className="section workflow-section">
-      <div className="section-heading narrow">
-        <p className="eyebrow">Built for better centrifuge pairing</p>
-        <h2>60 gallons gives a 30-gallon centrifuge the reserve it needs.</h2>
-      </div>
-      <figure className="workflow-visual">
-        <Image
-          src="/images/generated/blast60-bear-card.png"
-          alt="BLAST 60/45 crystal bear ethanol chilling performance card"
-          width={1600}
-          height={1100}
-          sizes="(max-width: 980px) calc(100vw - 2rem), 1180px"
-        />
-      </figure>
-      <div className="workflow-copy">
-        <p>
-          Perma Cool’s legacy ACP-30 put more than 200 units into the field and proved the value of dedicated
-          ethanol pre-chilling. But at roughly 40 gallons, it was sized more for basic single-pass centrifuge
-          support than for the most efficient repeat-cycle workflow.
-        </p>
-        <p>The ideal approach is to pair your ethanol tank at about 2x the capacity of your centrifuge.</p>
-        <div className="ratio-callout">
-          <RefreshCw aria-hidden="true" size={28} />
-          <strong>30-gallon centrifuge = 60-gallon tank</strong>
-        </div>
-        <p>
-          With that ratio, returning ethanol mixes back into a substantial reserve of already cold ethanol
-          instead of resetting the whole tank. The temperature shift stays much smaller, recovery back to −40 is
-          faster, and operators can move back into extraction sooner.
-        </p>
-        <p>
-          This allows repeated extraction and re-chill cycles until the ethanol reaches roughly 2 to 3 lb of
-          material per gallon, at which point it is ready to move to filtration and evaporation.
-        </p>
-        <p>The BLAST 60/45 is built around that more efficient real-world workflow.</p>
-      </div>
-    </section>
-  );
-}
-
-function HighlightsAndRoi() {
-  return (
-    <section className="section roi-section">
-      <div className="highlight-panel">
-        <p className="eyebrow">Highlights</p>
-        <h2>Spec points buyers can scan fast.</h2>
-        <ul className="icon-list">
-          {highlights.map((item, index) => (
-            <li key={item}>
-              {index === 0 ? <Zap size={19} /> : null}
-              {index === 1 ? <Snowflake size={19} /> : null}
-              {index === 2 ? <Fan size={19} /> : null}
-              {index === 3 ? <Cpu size={19} /> : null}
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="roi-layout">
-        <figure className="roi-image">
-          <Image
-            src="/images/generated/roi-replacement.png"
-            alt="Visual transition from consumable cooling to electric industrial chilling"
-            width={1365}
-            height={1024}
-            sizes="(max-width: 980px) calc(100vw - 2rem), 540px"
-          />
+        <figure className="b60-restored-image b60-performance-image">
+          <ExpandableImage src="/images/generated/blast60-bear-card.png" alt="BLAST 60/45 performance graphic: 60 gallons to −40 °C in 45 minutes, 1.33 GPM flash chilling, direct refrigeration" label="Open full-size BLAST 60/45 performance graphic">
+            <Image src="/images/generated/blast60-bear-card.png" alt="BLAST 60/45 performance graphic: 60 gallons to −40 °C in 45 minutes, 1.33 GPM flash chilling, direct refrigeration" width={1440} height={1040} sizes="(max-width: 800px) 100vw, 1000px" />
+          </ExpandableImage>
+          <figcaption>BLAST 60/45 · 60 gallons · −40 °C · 45 minutes · 1.33 GPM average</figcaption>
         </figure>
-        <div className="roi-copy">
-          <p className="eyebrow">ROI / Replacement</p>
-          <h2>A cleaner production path for operators replacing consumables or slower legacy chilling.</h2>
-          <p>
-            For operators still relying on consumables, slower legacy chilling methods, or improvised
-            cold-ethanol workflows, the BLAST 60/45 offers a cleaner production path. Instead of ongoing
-            consumable spend and workflow drag, you get dedicated electric chilling built for repeatable
-            low-temperature performance, faster recovery between cycles, and simpler day-to-day operation.
-          </p>
-          <ul className="icon-list">
-            {roiBullets.map((item) => (
-              <li key={item}>
-                <ShieldCheck size={19} aria-hidden="true" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-          <p>
-            For many operators, that makes the BLAST 60/45 more than a replacement. It is a move toward
-            lower operating cost, better throughput, and a more reliable production workflow.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-function RelatedCta() {
-  return (
-    <section className="related-section">
-      <div>
-        <p className="eyebrow">Related reading</p>
-        <h2>Direct Refrigerant vs LN2 • Maintenance Guide</h2>
-      </div>
-      <div className="related-actions">
-        <a className="button primary" href="/direct-refrigerant-vs-ln2">
-          Compare cooling methods
-          <ArrowRight size={18} aria-hidden="true" />
-        </a>
-        <a className="button secondary light" href="/industrial-process-chiller-maintenance">
-          Maintenance guide
-          <Wrench size={18} aria-hidden="true" />
-        </a>
-      </div>
-    </section>
+      <section className="b60-spec-section" id="specifications">
+        <div className="b60-wrap b60-section b60-spec-layout">
+          <div><p className="b60-kicker">BLAST 60/45</p><h2>The specifications.</h2><p>Temperature performance depends on system configuration and facility conditions. Final specifications are subject to engineering review.</p></div>
+          <dl className="b60-specs">{specifications.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+        </div>
+      </section>
+      <section className="b60-wrap b60-section b60-ownership" id="ownership" aria-labelledby="b60-ownership-title">
+        <div className="b60-heading">
+          <div><p className="b60-kicker">ROI / Replacement</p><h2 id="b60-ownership-title">Electric chilling.<br />Less reliance on consumables.</h2></div>
+          <p>A dedicated chilling system for operators moving away from consumables, slower legacy methods, or improvised cold-ethanol workflows.</p>
+        </div>
+        <div className="b60-ownership-layout">
+          <figure className="b60-restored-image">
+            <ExpandableImage src="/images/generated/roi-replacement.png" alt="Illustration of the transition from consumable cooling to electric industrial chilling" label="Open full-size electric chilling illustration">
+              <Image src="/images/generated/roi-replacement.png" alt="Illustration of the transition from consumable cooling to electric industrial chilling" width={1448} height={1086} sizes="(max-width: 800px) 100vw, 680px" />
+            </ExpandableImage>
+          </figure>
+          <div className="b60-ownership-copy">
+            <h3>Replace recurring consumable spend with a serviceable system.</h3>
+            <p>The BLAST 60/45 provides dedicated electric chilling for repeatable low-temperature performance, faster recovery between cycles, and simpler day-to-day operation.</p>
+            <ul>
+              <li><Check size={18} aria-hidden="true" /><span>Reduce dependence on recurring consumables.</span></li>
+              <li><Check size={18} aria-hidden="true" /><span>Support faster re-chilling and repeat-cycle extraction.</span></li>
+              <li><Check size={18} aria-hidden="true" /><span>Use serviceable, common-sized components to help lower long-term ownership cost.</span></li>
+            </ul>
+            <p>For operators replacing legacy cooling, the goal is lower operating cost, better throughput, and a more reliable production workflow.</p>
+            <a className="b60-text-link" href="/direct-refrigerant-vs-ln2">Compare cooling methods <ArrowUpRight size={17} /></a>
+          </div>
+        </div>
+      </section>
+      <LearningCenterSection />
+      <section className="b60-wrap b60-resources" aria-labelledby="b60-resources-title">
+        <h2 id="b60-resources-title">Related articles</h2>
+        <a href="/direct-refrigerant-vs-ln2">Direct refrigerant vs. LN2 <ArrowUpRight size={19} /></a>
+        <a href="/industrial-process-chiller-maintenance">Chiller maintenance guide <ArrowUpRight size={19} /></a>
+      </section>
+      <section className="b60-contact">
+        <div className="b60-wrap">
+          <div><p className="b60-kicker">Plan your BLAST 60/45</p><h2>Let’s match the system<br />to your production.</h2><p>Tell us your centrifuge size, cycle schedule, and available power. We’ll help confirm system fit, pricing, and lead time.</p></div>
+          <a className="b60-button" href={pricingHref}>Contact us for pricing <ArrowRight size={18} /></a>
+        </div>
+      </section>
+    </main>
   );
 }

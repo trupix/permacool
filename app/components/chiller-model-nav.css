@@ -1,0 +1,76 @@
+/* Shared navigation for the ethanol product family only. */
+.chiller-model-nav {
+  position: fixed;
+  top: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 6px;
+  border: 1px solid #d3e0e2;
+  border-radius: 50px;
+  background: rgba(251, 254, 254, .97);
+  box-shadow: 0 8px 28px #15344324;
+  color: #17333f;
+}
+.chiller-model-nav-links { display: flex; align-items: center; gap: 2px; }
+.chiller-model-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 17px;
+  border-radius: 40px;
+  color: #354e5b;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.chiller-model-nav a:hover { color: #075566; background: #e7f4f5; }
+.chiller-model-nav a[aria-current="page"] { color: #075566; background: #c9f1f2; }
+.chiller-model-nav a.chiller-model-pricing { flex-shrink: 0; color: #fff; background: #173844; }
+.chiller-model-nav a.chiller-model-pricing:hover { background: #075566; }
+.chiller-model-nav a:focus-visible, .chiller-model-picker:focus-visible { outline: 3px solid #08758a; outline-offset: 2px; }
+.chiller-model-picker { display: none; }
+.site-shell:has(.chiller-model-nav) section[id] { scroll-margin-top: 158px; }
+@media (max-width: 900px) {
+  .chiller-model-nav { top: 82px; width: min(480px, calc(100% - 24px)); max-width: none; border-radius: 16px; gap: 8px; }
+  .chiller-model-nav-links { display: none; }
+  .chiller-model-picker {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    width: 0;
+    min-height: 44px;
+    padding: 0 8px;
+    border: 1px solid #c1d7db;
+    border-radius: 10px;
+    background: #eaf7f7;
+    color: #123441;
+    font: 600 16px Arial, sans-serif;
+    color-scheme: light;
+  }
+  .chiller-model-nav a.chiller-model-pricing { padding-inline: 12px; border-radius: 10px; font-size: 12px; }
+  .site-shell.b60-page .b60-hero { padding-top: 180px; }
+  .site-shell.ecs-redesign .ecs-hero { padding-top: 180px; }
+}
+@media (max-width: 640px) {
+  .site-shell:has(.chiller-model-nav) .site-header { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding-inline: 12px; }
+  .site-shell:has(.chiller-model-nav) .brand { gap: 6px; min-width: 0; }
+  .site-shell:has(.chiller-model-nav) .brand-mark { width: 32px; height: 32px; }
+  .site-shell:has(.chiller-model-nav) .brand-wordmark { width: clamp(78px, 28vw, 142px); min-width: 0; height: auto; }
+  .site-shell:has(.chiller-model-nav) .header-actions { gap: 5px; }
+}
+@media (max-width: 359px) {
+  .site-shell:has(.chiller-model-nav) .brand-wordmark { width: 78px; }
+  .site-shell:has(.chiller-model-nav) .brand { gap: 4px; }
+  .chiller-model-nav { gap: 5px; }
+  .chiller-model-nav a.chiller-model-pricing { padding-inline: 10px; gap: 4px; }
+}
