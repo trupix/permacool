@@ -52,6 +52,7 @@ const blastSystems = [
     href: "/ethanol-chiller-blast-60",
     image: "/images/generated/blast60-mountain-system-lineup.png",
     imageAlt: "BLAST 60/45 chilling tank with two separate condensers against snow-covered mountains",
+    imagePosition: "center",
     cta: "View BLAST 60/45"
   },
   {
@@ -69,6 +70,7 @@ const blastSystems = [
     href: "/ethanol-chiller-blast-150-30",
     image: "/images/generated/blast15030/desert-system-hero.png",
     imageAlt: "BLAST 150/30 with separate 22 HP and 6 HP condenser units in a desert setting",
+    imagePosition: "90% center",
     cta: "View BLAST 150/30"
   },
   {
@@ -222,13 +224,16 @@ export default function HomePage() {
             <div className="home-system-grid">
               {blastSystems.map((system) => (
                 <article className="home-system-card" key={system.title}>
-                  <a className="home-system-media" href={system.href} aria-label={system.title}>
+                  <a className={`home-system-media${system.imagePosition ? " home-system-media--equipment" : ""}`} href={system.href} aria-label={system.title}>
                     <Image
                       src={system.image}
                       alt={system.imageAlt || ""}
+                      style={system.imagePosition ? { objectPosition: system.imagePosition } : undefined}
                       width={720}
                       height={440}
-                      sizes="(max-width: 680px) calc(100vw - 2rem), (max-width: 1100px) calc((100vw - 3rem) / 2), 300px"
+                      sizes={system.imagePosition
+                        ? "(max-width: 680px) 140vw, (max-width: 1100px) 70vw, 420px"
+                        : "(max-width: 680px) calc(100vw - 2rem), (max-width: 1100px) calc((100vw - 3rem) / 2), 300px"}
                     />
                   </a>
                   <div className="home-system-copy">
