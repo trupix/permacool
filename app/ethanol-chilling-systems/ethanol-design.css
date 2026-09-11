@@ -97,9 +97,11 @@
 .ecs-redesign .ecs-fit-card svg { box-sizing: content-box; display: block; width: 22px; height: 22px; margin: 0; padding: 12px; color: #08758a; background: #eff7f7; border: 1px solid #d6e7e9; border-radius: 10px; }
 .ecs-redesign .ecs-fit-card p { margin: 0; color: #365764; font-size: 17px; font-weight: 550; line-height: 1.65; text-align: left; }
 .ecs-redesign .ecs-workflow { background: #132b37; padding: 85px 50px; }
-.ecs-redesign .ecs-workflow-inner { width: min(1380px, 100%); gap: 8%; align-items: center; }
-.ecs-redesign .ecs-workflow h2 { color: #effaff; }
-.ecs-redesign .ecs-workflow-copy p { color: #b9d0dc; line-height: 1.85; }
+.ecs-redesign .ecs-workflow-inner { width: min(1380px, 100%); margin-inline: auto; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); column-gap: clamp(32px, 6vw, 96px); row-gap: 20px; align-items: start; }
+.ecs-redesign .ecs-workflow-inner > .eyebrow { grid-column: 1 / -1; margin: 0; color: #83e2f2; }
+.ecs-redesign .ecs-workflow h2 { margin: 0; color: #effaff; text-align: left; }
+.ecs-redesign .ecs-workflow-copy { min-width: 0; }
+.ecs-redesign .ecs-workflow-copy p { margin: 0; color: #b9d0dc; line-height: 1.8; }
 .ecs-redesign .ecs-faq-section { display: grid; grid-template-columns: .85fr 1.15fr; gap: 8%; }
 .ecs-redesign .ecs-faq-grid { display: block; }
 .ecs-redesign .ecs-faq-card { padding: 28px 0; background: none; box-shadow: none; border: 0; border-top: 1px solid #b8ced7; border-radius: 0; }
@@ -129,6 +131,9 @@
   .ecs-redesign .ecs-product-copy { max-width: 780px; margin: auto; width: 100%; }
   .ecs-redesign .ecs-faq-section { display: block; }
   .ecs-redesign .ecs-workflow { padding-inline: 24px; }
+  .ecs-redesign .ecs-workflow-inner { grid-template-columns: 1fr; row-gap: 24px; }
+  .ecs-redesign .ecs-quote-band, .ecs-redesign .ecs-related { row-gap: 32px; }
+  .ecs-redesign .ecs-quote-band h2 { margin-bottom: 0; }
   .ecs-redesign .ecs-related { padding-inline: 24px; }
 }
 @media (max-width: 640px) {
@@ -164,6 +169,9 @@
 }
 
 @media (max-width: 359px) {
+  .ecs-redesign .chiller-model-picker { padding-inline: 4px; }
+  .ecs-redesign .chiller-model-nav a.chiller-model-pricing { padding-inline: 8px; }
+  .ecs-redesign .chiller-model-pricing svg { display: none; }
   .ecs-redesign .site-header { padding-inline: 12px; gap: 8px; }
   .ecs-redesign .brand { min-width: 0; gap: 5px; }
   .ecs-redesign .brand-mark { width: 30px; height: 36px; }

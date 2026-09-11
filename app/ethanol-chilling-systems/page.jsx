@@ -432,12 +432,10 @@ export default function EthanolChillingSystemsPage() {
         </div>
       </section>
 
-      <section className="ecs-workflow">
+      <section className="ecs-workflow" id="operational-advantage" aria-labelledby="operational-advantage-title">
         <div className="ecs-workflow-inner">
-          <div>
-            <p className="eyebrow">Operational Advantage</p>
-            <h2>Turn reliable process cooling into higher extraction throughput.</h2>
-          </div>
+          <p className="eyebrow">Operational Advantage</p>
+          <h2 id="operational-advantage-title">Turn reliable process cooling into higher extraction throughput.</h2>
           <div className="ecs-workflow-copy">
             <p>
               The Perma Cool BLAST Ethanol Pre-Chiller Series is purpose-built for ethanol extraction labs that need
