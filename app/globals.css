@@ -1589,6 +1589,9 @@ h4 {
   object-fit: contain;
 }
 
+.home-system-media--equipment { overflow: hidden; }
+.home-system-media--equipment img { object-fit: cover; }
+
 .home-system-copy {
   display: flex;
   flex: 1;
