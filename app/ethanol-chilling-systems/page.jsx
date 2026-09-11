@@ -417,10 +417,10 @@ export default function EthanolChillingSystemsPage() {
         </div>
       </section>
 
-      <section className="section ecs-advantage">
+      <section className="section ecs-advantage" id="application-fit" aria-labelledby="application-fit-title">
         <div className="section-heading narrow">
           <p className="eyebrow">Application Fit</p>
-          <h2>Built for teams scaling ethanol extraction capacity.</h2>
+          <h2 id="application-fit-title">Built for teams scaling ethanol extraction capacity.</h2>
         </div>
         <div className="ecs-fit-grid">
           {applicationFit.map((item) => (

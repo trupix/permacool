@@ -88,10 +88,14 @@
 .ecs-redesign .ecs-flow-card h3 { font-size: 30px; letter-spacing: -.03em; }
 .ecs-redesign .ecs-flow-card p, .ecs-redesign .ecs-flow-card li { font-size: 14px; color: #526872; line-height: 1.8; }
 .ecs-redesign .ecs-flow-callout { background: #dcebf0; color: #205c6b; border-radius: 6px; padding: 15px; font-size: 12px; }
-.ecs-redesign .ecs-fit-grid { gap: 30px; }
-.ecs-redesign .ecs-advantage { background: none; }
-.ecs-redesign .ecs-fit-card { padding: 28px; background: #fff; border: 1px solid #d2e1e6; box-shadow: none; border-radius: 10px; }
-.ecs-redesign .ecs-fit-card p { color: #365764; font-size: 15px; line-height: 1.65; }
+.ecs-redesign .ecs-fit-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: stretch; }
+/* Cancel legacy full-bleed padding inside the redesigned, width-constrained section. */
+.ecs-redesign .ecs-advantage { padding-inline: 0; background: none; scroll-margin-top: 160px; }
+.ecs-redesign .ecs-advantage .section-heading { max-width: 820px; margin-bottom: 36px; }
+.ecs-redesign .ecs-advantage h2 { text-align: left; }
+.ecs-redesign .ecs-fit-card { display: grid; grid-template-rows: auto 1fr; align-content: start; gap: 22px; min-width: 0; min-height: 0; padding: clamp(24px, 2.5vw, 36px); background: #fff; border: 1px solid #d2e1e6; border-top: 3px solid #297989; box-shadow: none; border-radius: 10px; }
+.ecs-redesign .ecs-fit-card svg { box-sizing: content-box; display: block; width: 22px; height: 22px; margin: 0; padding: 12px; color: #08758a; background: #eff7f7; border: 1px solid #d6e7e9; border-radius: 10px; }
+.ecs-redesign .ecs-fit-card p { margin: 0; color: #365764; font-size: 17px; font-weight: 550; line-height: 1.65; text-align: left; }
 .ecs-redesign .ecs-workflow { background: #132b37; padding: 85px 50px; }
 .ecs-redesign .ecs-workflow-inner { width: min(1380px, 100%); gap: 8%; align-items: center; }
 .ecs-redesign .ecs-workflow h2 { color: #effaff; }
