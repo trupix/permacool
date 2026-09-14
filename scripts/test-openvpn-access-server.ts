@@ -4,7 +4,8 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const {
   generateOpenVpnProfileFor,
-  getOpenVpnProvisioningStatusFor
+  getOpenVpnProvisioningStatusFor,
+  getOpenVpnSessionsFor
 } = require(path.join(__dirname, '..', 'server', 'openvpn-access-server-client.ts'));
 
 const config = {
@@ -39,6 +40,24 @@ function successfulFederation(calls, relayResponse) {
 }
 
 async function main() {
+  const sessionCalls = [];
+  const sessions = await getOpenVpnSessionsFor(config, ['muha-epic'], oidcToken, {
+    fetchImpl: successfulFederation(sessionCalls, async () => response(JSON.stringify({
+      source: 'openvpn-session', observedAt: new Date().toISOString(), sessions: [{identity:'muha-epic',connected:true}]
+    })))
+  });
+  assert.equal(sessions.sessions[0].connected,true);
+  assert.equal(sessionCalls[2].url,'https://relay-staging.invalid/v1/vpn-status');
+  assert.deepEqual(JSON.parse(sessionCalls[2].init.body),{identities:['muha-epic']});
+  for (const payload of [
+    {source:'openvpn-session',observedAt:new Date().toISOString(),sessions:[{identity:'other-org',connected:true}]},
+    {source:'openvpn-session',observedAt:new Date().toISOString(),sessions:[]}
+  ]) await assert.rejects(getOpenVpnSessionsFor(config,['muha-epic'],oidcToken,{
+    fetchImpl:successfulFederation([],async()=>response(JSON.stringify(payload)))
+  }));
+  await assert.rejects(getOpenVpnSessionsFor(config,['muha-epic'],oidcToken,{
+    fetchImpl:successfulFederation([],async()=>response('forbidden',403))
+  }));
   const healthCalls = [];
   const healthy = await getOpenVpnProvisioningStatusFor(config, oidcToken, {
     fetchImpl: successfulFederation(healthCalls, async () =>

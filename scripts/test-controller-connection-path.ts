@@ -13,6 +13,7 @@ const point = (key, value, latestTimestamp = '2026-08-28T19:00:20.000Z', deviceI
 });
 
 const healthy = resolveControllerConnectionPath({
+  vpnStatus: { source: 'openvpn-session', state: 'connected', observedAt: NOW },
   points: [
     point('controller_heartbeat', 88),
     point('node_red_pac_read_ok', 1),
@@ -26,7 +27,7 @@ const healthy = resolveControllerConnectionPath({
 });
 assert.equal(healthy.state, 'healthy');
 assert.equal(healthy.stages.find((stage) => stage.id === 'io').status, 'Communicating');
-assert.match(healthy.stages.find((stage) => stage.id === 'vpn').detail, /inferred/i);
+assert.match(healthy.stages.find((stage) => stage.id === 'vpn').detail, /OpenVPN confirms/i);
 
 const splitBrain = resolveControllerConnectionPath({
   points: [
@@ -84,6 +85,7 @@ const scoped = resolveControllerConnectionPath({
   feedStatus: 'ready'
 });
 assert.equal(scoped.stages.find((stage) => stage.id === 'io').state, 'healthy');
+assert.equal(scoped.stages.find((stage) => stage.id === 'vpn').state, 'unmonitored');
 
 const pending = resolveControllerConnectionPath({
   points: [], deviceIds: [DEVICE], referenceTimestamp: NOW, feedStatus: 'ready'

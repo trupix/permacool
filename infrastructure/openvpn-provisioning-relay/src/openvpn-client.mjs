@@ -23,13 +23,13 @@ export function openVpnConfigFromEnv(environment = process.env) {
 }
 
 function productionTransport(config) {
-  return ({ path, body, token, signal }) => new Promise((resolve, reject) => {
-    const payload = JSON.stringify(body);
+  return ({ path, body, token, signal, method = 'POST' }) => new Promise((resolve, reject) => {
+    const payload = method === 'GET' ? '' : JSON.stringify(body);
     const request = https.request({
       protocol: 'https:',
       hostname: config.connectHost,
       port: config.url.port || 443,
-      method: 'POST',
+      method,
       path,
       ca: config.caPem,
       rejectUnauthorized: true,
@@ -130,6 +130,22 @@ export function createOpenVpnClient(config, options = {}) {
   }
 
   return {
+    async sessions(signal) {
+      const token = await login(signal);
+      const response = await transport({ path: '/api/vpn/status', method: 'GET', token, signal });
+      if (response.status !== 200) throw new Error('VPN_STATUS_UNAVAILABLE');
+      const payload = JSON.parse(response.body);
+      // Never turn an incomplete/error response into a list of disconnected users.
+      if (!Array.isArray(payload.vpn_clients) || !payload.vpn_daemons ||
+          typeof payload.vpn_daemons !== 'object' || Array.isArray(payload.vpn_daemons) ||
+          !Object.keys(payload.vpn_daemons).length) throw new Error('VPN_STATUS_INVALID');
+      if (payload.vpn_clients.some(client => !client || typeof client.username !== 'string' ||
+          !client.username || typeof client.daemon_id !== 'string' ||
+          !Object.hasOwn(payload.vpn_daemons, client.daemon_id))) throw new Error('VPN_STATUS_INVALID');
+      // Discard addresses, certificate names and traffic details at the relay boundary.
+      return [...new Set(payload.vpn_clients.map(client => client.username))];
+    },
+
     async health(signal) {
       const token = await login(signal);
       await call('/api/users/list', { users: [HEALTH_PROBE_IDENTITY] }, token, signal);

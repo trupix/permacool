@@ -2,6 +2,7 @@
 
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { useVpnSessionStatus } from './use-vpn-session-status';
 import {
   BookOpen,
   CheckCircle2,
@@ -1386,7 +1387,9 @@ export function SiteEquipmentDashboard({
   const heartbeatIsCurrent = heartbeatPoint
     ? signalIsFresh(heartbeatPoint, telemetry.fetchedAt, CONTROLLER_HEARTBEAT_STALE_MS)
     : false;
+  const vpnStatus = useVpnSessionStatus(siteId, hasConnectionHealthPanel(siteId) && (view === 'overview' || view === 'connectivity'));
   const controllerConnectionPath = resolveControllerConnectionPath({
+    vpnStatus,
     points: telemetry.points,
     deviceIds: [...new Set([
       ...siteDeviceIds,
