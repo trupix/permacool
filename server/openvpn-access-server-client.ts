@@ -157,6 +157,27 @@ export async function getOpenVpnProvisioningStatusFor(
   }
 }
 
+export async function getOpenVpnSessionsFor(
+  config: OpenVpnConfig, identities: string[], oidcToken: string, options: OpenVpnClientOptions = {}
+): Promise<{ source: 'openvpn-session'; observedAt: string; sessions: { identity: string; connected: boolean }[] }> {
+  if (!configuredStatus(config, oidcToken).configured || !identities.length || identities.length > 32 ||
+      identities.some(identity => !/^[a-z0-9][a-z0-9-]{2,71}$/.test(identity))) throw new Error('VPN_STATUS_UNAVAILABLE');
+  return withTimeout(options.timeoutMs ?? HEALTH_TIMEOUT_MS, async signal => {
+    const response = await authenticatedRelayRequest(config, oidcToken, '/v1/vpn-status', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identities })
+    }, options.fetchImpl ?? fetch, signal);
+    if (response.status !== 200) throw new Error('VPN_STATUS_UNAVAILABLE');
+    const body = await response.json();
+    if (body.source !== 'openvpn-session' || typeof body.observedAt !== 'string' ||
+        !Number.isFinite(Date.parse(body.observedAt)) || !Array.isArray(body.sessions) ||
+        body.sessions.length !== identities.length || new Set(body.sessions.map((s: {identity: string}) => s.identity)).size !== identities.length ||
+        body.sessions.some((s: {identity: string; connected: boolean}) => !s || !identities.includes(s.identity) || typeof s.connected !== 'boolean')) {
+      throw new Error('VPN_STATUS_INVALID');
+    }
+    return body;
+  });
+}
+
 export async function generateOpenVpnProfileFor(
   config: OpenVpnConfig,
   request: OpenVpnProfileRequest,

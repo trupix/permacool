@@ -8,6 +8,7 @@ export type ConnectionTelemetryPoint = {
 export type ConnectionStageState = 'healthy' | 'fault' | 'stale' | 'unmonitored' | 'checking';
 
 export type ConnectionStage = {
+  source?: 'openvpn-session';
   id: 'vpn' | 'strategy' | 'io' | 'pacRead' | 'delivery' | 'website';
   label: string;
   state: ConnectionStageState;
@@ -109,13 +110,15 @@ export function resolveControllerConnectionPath({
   deviceIds,
   referenceTimestamp,
   feedStatus,
-  maximumAgeMs = DEFAULT_MAXIMUM_AGE_MS
+  maximumAgeMs = DEFAULT_MAXIMUM_AGE_MS,
+  vpnStatus
 }: {
   points: ConnectionTelemetryPoint[];
   deviceIds: string[];
   referenceTimestamp: string | null;
   feedStatus: 'loading' | 'ready' | 'error';
   maximumAgeMs?: number;
+  vpnStatus?: { source: 'openvpn-session'; state: 'connected' | 'disconnected' | 'unknown'; observedAt: string | null };
 }): ControllerConnectionPath {
   const scopedDeviceIds = [...new Set(deviceIds.filter(Boolean))];
   const heartbeat = resolveSignal(points, scopedDeviceIds, signalAliases.heartbeat, referenceTimestamp, maximumAgeMs);
@@ -125,16 +128,19 @@ export function resolveControllerConnectionPath({
   const ioReady = resolveSignal(points, scopedDeviceIds, signalAliases.ioReady, referenceTimestamp, maximumAgeMs);
   const ioChannelFaultCount = resolveSignal(points, scopedDeviceIds, signalAliases.ioChannelFaultCount, referenceTimestamp, maximumAgeMs);
 
-  const vpn = booleanStage(
-    'vpn',
-    'VPN and EPIC',
-    pacReadOk,
-    'Reachable',
-    'Unreachable',
-    'A direct VPN state is not published. A successful PAC API read can safely prove reachability.',
-    'Reachability is inferred from a current successful PAC API read; this is not a direct VPN-session signal.',
-    'Node-RED cannot currently read the PAC API through the controller network path.'
-  );
+  const vpnTime = vpnStatus?.observedAt ? Date.parse(vpnStatus.observedAt) : NaN;
+  const vpnReference = referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
+  const vpnFresh = Number.isFinite(vpnTime) && vpnReference - vpnTime <= 60_000 && vpnTime - vpnReference <= 5_000;
+  const vpnVerified = vpnStatus?.source === 'openvpn-session' && vpnFresh && ['connected', 'disconnected'].includes(vpnStatus.state);
+  const vpn: ConnectionStage = {
+    id: 'vpn', label: 'VPN and EPIC', source: 'openvpn-session',
+    state: !vpnVerified ? 'unmonitored' : vpnStatus?.state === 'connected' ? 'healthy' : 'fault',
+    status: !vpnVerified ? 'VPN session unverified' : vpnStatus?.state === 'connected' ? 'Connected' : 'Disconnected',
+    detail: !vpnVerified ? 'Direct OpenVPN status is missing, stale, or unavailable. PAC reachability is separate.' :
+      vpnStatus?.state === 'connected' ? 'OpenVPN confirms active sessions for the authorized PLC identities.' :
+      'A successful OpenVPN check found at least one authorized PLC identity disconnected.',
+    observedAt: vpnVerified ? vpnStatus!.observedAt : null
+  };
   const strategy = booleanStage(
     'strategy',
     'PAC strategy',

@@ -23,8 +23,8 @@ export function ConnectionHealthNav({ stages, siteName }: { stages: ConnectionSt
     {icons.map(({ id, label, file }) => {
       const stage = stages.find((item) => item.id === id);
       const state = stage ? connectionIconState(stage, now) : 'checking';
-      const status = id === 'vpn' ? 'VPN session unverified' : state === 'checking' ? (stage?.state === 'fault' || stage?.state === 'healthy' ? 'Stale reading' : stage?.status ?? 'Checking') : stage?.status;
-      const detail = id === 'vpn' ? 'Direct VPN session health is not published. PAC API reachability is shown under Node-RED.' : stage?.detail ?? 'Waiting for this page’s health readings.';
+      const status = state === 'checking' ? (stage?.state === 'fault' || stage?.state === 'healthy' ? 'Stale reading' : stage?.status ?? 'Checking') : stage?.status;
+      const detail = stage?.detail ?? 'Waiting for this page’s health readings.';
       return <a key={id} className={`connection-health-nav__item is-${state}`} href="#controller-connection-path-title"
         aria-label={`${label}: ${status}. ${detail}`}>
         <span className="connection-health-nav__art" aria-hidden="true">

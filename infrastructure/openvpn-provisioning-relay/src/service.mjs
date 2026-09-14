@@ -31,8 +31,40 @@ async function parseProfileRequest(request) {
 }
 
 export function createRelayHandler({ openVpn, stateStore, generationEnabled = false }) {
+  // Shared by all concurrent callers on this relay instance, never a per-viewer probe.
+  let snapshot;
+  let pending;
+  async function sessions() {
+    if (snapshot && Date.now() - snapshot.checkedAt < 30_000) return snapshot;
+    if (!pending) pending = (async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const checkedAt = Date.now();
+      try { snapshot = { identities: await openVpn.sessions(controller.signal), checkedAt }; }
+      catch { snapshot = { identities: null, checkedAt }; }
+      finally { clearTimeout(timeout); }
+      return snapshot;
+    })().finally(() => { pending = undefined; });
+    return pending;
+  }
   return async function handle(request) {
     const url = new URL(request.url);
+    if (request.method === 'POST' && url.pathname === '/v1/vpn-status') {
+      let identities;
+      try {
+        const body = await request.text();
+        if (Buffer.byteLength(body) > 4096) throw new Error();
+        identities = JSON.parse(body).identities;
+        if (!Array.isArray(identities) || !identities.length || identities.length > 32 ||
+            identities.some(identity => typeof identity !== 'string' || !IDENTITY_PATTERN.test(identity))) throw new Error();
+      } catch { return json(400, { error: 'Invalid status request.' }); }
+      const result = await sessions();
+      if (!result.identities) return json(503, { error: 'VPN_STATUS_UNAVAILABLE' });
+      return json(200, {
+        source: 'openvpn-session', observedAt: new Date(result.checkedAt).toISOString(),
+        sessions: [...new Set(identities)].map(identity => ({ identity, connected: result.identities.includes(identity) }))
+      });
+    }
     if (request.method === 'GET' && url.pathname === '/health') {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 8000);
