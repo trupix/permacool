@@ -35,6 +35,7 @@ import {
 } from '@/lib/equipment/performance';
 import { resolveControllerConnectionPath } from '@/lib/equipment/controller-connection-path';
 import { ConnectionHealthAnnouncer } from '@/components/connection-health-context';
+import { hasConnectionHealthNav, hasConnectionHealthPanel } from '@/lib/equipment/connection-health-sites';
 import { deriveOperatingSequence, deriveSharedPumpSequence } from '@/lib/equipment/operating-sequence';
 import { normalizeTelemetryKey, resolveTelemetryPoint } from '@/lib/equipment/telemetry';
 import {
@@ -1532,7 +1533,7 @@ export function SiteEquipmentDashboard({
 
   return (
     <div className="salinas-dashboard">
-      {siteId === 'site-cannon-falls' && (view === 'overview' || view === 'connectivity') ? <ConnectionHealthAnnouncer siteId={siteId} stages={controllerConnectionPath.stages} /> : null}
+      {hasConnectionHealthNav(siteId) && (view === 'overview' || view === 'connectivity') ? <ConnectionHealthAnnouncer siteId={siteId} stages={controllerConnectionPath.stages} /> : null}
       {view === 'overview' ? (
         <>
       <section className="salinas-dashboard__hero">
@@ -1576,7 +1577,7 @@ export function SiteEquipmentDashboard({
       </section>
       ) : null}
 
-      {(view === 'overview' || view === 'connectivity') && controllerDiagnosticsEnabled ? (
+      {(view === 'overview' || view === 'connectivity') && hasConnectionHealthPanel(siteId) ? (
         <section className={`controller-connection-path is-${controllerConnectionPath.state}`} aria-labelledby="controller-connection-path-title">
           <div className="controller-connection-path__heading">
             <div>
