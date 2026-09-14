@@ -34,6 +34,7 @@ import { ActiveSiteContext } from './active-site-context';
 import type { ActiveSiteContextValue } from './active-site-context';
 import { ConnectionHealthContext, type ConnectionHealthSnapshot } from './connection-health-context';
 import { ConnectionHealthNav } from './connection-health-nav';
+import { hasConnectionHealthNav } from '@/lib/equipment/connection-health-sites';
 
 type NavItem = { href: string; label: string; icon: LucideIcon; matches?: string[] };
 
@@ -174,8 +175,8 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
               <span>Sites, controllers and telemetry</span>
             </div>
           )}
-          {activeSiteId === 'site-cannon-falls' && connectionHealth?.siteId === activeSiteId ? <ConnectionHealthNav stages={connectionHealth.stages} /> : null}
-          <div className={`ops-topbar-status${activeSiteId === 'site-cannon-falls' && connectionHealth?.siteId === activeSiteId ? ' has-connection-health' : ''}`}>
+          {hasConnectionHealthNav(activeSiteId) && connectionHealth?.siteId === activeSiteId ? <ConnectionHealthNav siteName={visibleSite?.siteName ?? 'Current facility'} stages={connectionHealth.stages} /> : null}
+          <div className={`ops-topbar-status${hasConnectionHealthNav(activeSiteId) && connectionHealth?.siteId === activeSiteId ? ' has-connection-health' : ''}`}>
             <span className="ops-environment"><ShieldCheck size={15} aria-hidden="true" /> Secure operations</span>
             <span className="ops-activity"><Activity size={15} aria-hidden="true" /> Live monitoring</span>
             <span className="user-avatar user-avatar--small" aria-label={user.name}>{initials(user.name)}</span>

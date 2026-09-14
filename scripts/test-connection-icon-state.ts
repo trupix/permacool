@@ -2,6 +2,18 @@
 {
 const assert = require('node:assert/strict');
 const { connectionIconState } = require('../lib/equipment/connection-icon-state.ts');
+const { hasConnectionHealthNav, hasConnectionHealthPanel } = require('../lib/equipment/connection-health-sites.ts');
+for (const site of ['site-cannon-falls', 'site-muhameds-los-angeles']) {
+  assert.equal(hasConnectionHealthNav(site), true);
+  assert.equal(hasConnectionHealthPanel(site), true);
+}
+assert.equal(hasConnectionHealthNav('site-salinas'), false);
+assert.equal(hasConnectionHealthPanel('site-salinas'), true);
+for (const site of ['site-unrelated', 'site-muhameds']) {
+  assert.equal(hasConnectionHealthNav(site), false);
+  assert.equal(hasConnectionHealthPanel(site), false);
+}
+assert.equal(hasConnectionHealthNav(null), false);
 const now = Date.parse('2026-09-04T12:00:00Z');
 const stage = { id: 'strategy', state: 'healthy', observedAt: '2026-09-04T11:59:55Z' };
 assert.equal(connectionIconState(stage, now), 'connected');

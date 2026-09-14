@@ -13,13 +13,13 @@ const icons = [
   { id: 'website', label: 'PermaCool', file: 'website' }
 ] as const;
 
-export function ConnectionHealthNav({ stages }: { stages: ConnectionStage[] }) {
+export function ConnectionHealthNav({ stages, siteName }: { stages: ConnectionStage[]; siteName: string }) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 5_000);
     return () => window.clearInterval(timer);
   }, []);
-  return <nav className="connection-health-nav" aria-label="Cannon Falls operating connections">
+  return <nav className="connection-health-nav" aria-label={`${siteName} operating connections`}>
     {icons.map(({ id, label, file }) => {
       const stage = stages.find((item) => item.id === id);
       const state = stage ? connectionIconState(stage, now) : 'checking';
