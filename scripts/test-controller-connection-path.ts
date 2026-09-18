@@ -93,5 +93,13 @@ const pending = resolveControllerConnectionPath({
 assert.equal(pending.state, 'incomplete');
 assert.ok(pending.stages.slice(0, 5).every((stage) => stage.state === 'unmonitored'));
 
+const ioOnly = (points) => resolveControllerConnectionPath({points,deviceIds:[DEVICE],referenceTimestamp:NOW,feedStatus:'ready'}).stages.find(s=>s.id==='io');
+assert.equal(ioOnly([point('pac_io_communication_ok',1)]).state,'healthy');
+assert.match(ioOnly([point('pac_io_communication_ok',1)]).detail,/not verified/);
+assert.doesNotMatch(ioOnly([point('pac_io_communication_ok',1)]).detail,/no channel faults|zero reported/);
+assert.equal(ioOnly([point('pac_io_communication_ok',-1)]).state,'checking');
+assert.notEqual(ioOnly([point('io_channel_fault_count',0)]).state,'healthy');
+assert.equal(ioOnly([point('pac_io_communication_ok',1,'2026-08-28T19:00:00.000Z')]).state,'healthy');
+assert.equal(ioOnly([point('pac_io_communication_ok',1,'2026-08-28T18:59:00.000Z')]).state,'stale');
 console.log('Controller connection-path tests passed for healthy, split-brain, stale, missing, and site-scoped states.');
 }
