@@ -1,0 +1,22 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { buildContactHref, buildContactSubmissionAction, normalizeContactPayload } from "../lib/contact.js";
+import { getChillerNavigation } from "../lib/chiller-navigation.js";
+
+const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
+const page = read("../app/perma-lab-process/page.jsx");
+assert.equal(getChillerNavigation("/perma-lab-process"), null, "Lab line must not use the BLAST model selector");
+for (const text of ["PERMA", "Lab Process", "remote condenser", "−40", "design reference", "mid-temperature", "low-temperature"]) assert.ok(page.includes(text), `Missing ${text}`);
+for (const anchor of ["split-system", "temperature", "planning"]) assert.ok(page.includes(`id="${anchor}"`));
+assert.ok(read("../app/sitemap.js").includes('path: "/perma-lab-process"'));
+assert.ok(read("../app/components/SiteFooter.jsx").includes('href="/perma-lab-process"'));
+assert.ok(read("../app/insights/insights-data.js").includes('["Lab Process", "/perma-lab-process"]'));
+assert.ok(page.includes("<InsightsHeader/>"), "Lab page should use the shared public navigation");
+assert.ok(read("../app/llms.txt/route.js").includes('/perma-lab-process'));
+const href = new URL(buildContactHref({interest:"Lab Process Chillers",product:"PERMA Lab Process",requestType:"System Fit Review",source:"perma-lab-process"}), "https://perma.cool");
+const payload = new FormData();
+for (const [key,value] of href.searchParams) payload.set(key,value);
+assert.equal(normalizeContactPayload(payload).interest,"Lab Process Chillers");
+assert.equal(normalizeContactPayload(payload).product,"PERMA Lab Process");
+assert.ok(buildContactSubmissionAction({product:"PERMA Lab Process",requestType:"System Fit Review"}).includes("product=PERMA+Lab+Process"));
+console.log("Lab Process family separation, contact routing, and discovery checks passed.");

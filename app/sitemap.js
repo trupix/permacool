@@ -2,7 +2,8 @@ import { insightArticles } from "./insights/insights-data";
 import { SITE_URL, absoluteUrl, articleUrl } from "../lib/site";
 
 const publicPages = [
-  { path: "/", updatedAt: "2026-09-01", changeFrequency: "monthly", priority: 1 },
+  { path: "/", updatedAt: "2026-09-18", changeFrequency: "monthly", priority: 1 },
+  { path: "/perma-lab-process", updatedAt: "2026-09-18", changeFrequency: "monthly", priority: 0.9 },
   { path: "/ethanol-chilling-systems", updatedAt: "2026-09-01", changeFrequency: "monthly", priority: 0.9 },
   { path: "/ethanol-chiller-comparison", updatedAt: "2026-09-01", changeFrequency: "monthly", priority: 0.8 },
   { path: "/ethanol-chiller-blast-60", updatedAt: "2026-08-27T06:34:15-07:00", changeFrequency: "monthly", priority: 0.8 },
