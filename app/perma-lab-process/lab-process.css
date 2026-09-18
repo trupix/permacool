@@ -75,6 +75,12 @@
 .lab-location-cards .lab-kicker { font-size:9px; margin-bottom:12px; }.lab-location-cards h3 { font-size:23px; }.lab-location-cards article>p:not(.lab-kicker) { font-size:13px; color:#5b706e; }
 .lab-card-foot { display:flex; gap:8px; border-top:1px solid #dfebe4; padding-top:18px; margin-top:25px; color:#397667; font-size:10px; }.lab-card-foot svg { flex-shrink:0; }
 .lab-connection { position:absolute; bottom:0; left:0; right:0; display:flex; align-items:center; gap:15px; justify-content:center; color:#548171; font-size:10px; }.lab-connection span { width:20%; height:1px; background:#a1c2b4; }
+.lab-built-for { border-top:1px solid #cad9d0; }
+.lab-built-for ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 40px; padding-left:22px; margin:28px 0; }
+.lab-built-for li { padding-left:5px; line-height:1.7; }
+.lab-built-for li::marker { color:#168166; }
+.lab-built-for>p { color:#5b706e; font-size:14px; margin-bottom:0; }
+@media(max-width:680px) { .lab-built-for ul { grid-template-columns:1fr; gap:14px; } }
 .lab-temperature { background:#e8eee8; border-block:1px solid #d7e0d8; }
 .lab-heading-row { display:grid; grid-template-columns:1fr 1fr; gap:10%; align-items:end; margin-bottom:45px; }.lab-heading-row h2 { margin-bottom:0; }.lab-heading-row>p { max-width:450px; color:#5b706e; font-size:15px; margin:0 0 3px; }
 .lab-temperature-grid { display:grid; grid-template-columns:1fr 1fr; gap:22px; }

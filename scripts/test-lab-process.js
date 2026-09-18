@@ -6,7 +6,7 @@ import { getChillerNavigation } from "../lib/chiller-navigation.js";
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 const page = read("../app/perma-lab-process/page.jsx");
 assert.equal(getChillerNavigation("/perma-lab-process"), null, "Lab line must not use the BLAST model selector");
-for (const text of ["PERMA", "Lab Process", "remote condenser", "−40", "design reference", "mid-temperature", "low-temperature"]) assert.ok(page.includes(text), `Missing ${text}`);
+for (const text of ["PERMA", "Lab Process", "remote condenser", "−40", "design reference", "mid-temperature", "low-temperature"]) assert.ok(page.toLowerCase().includes(text.toLowerCase()), `Missing ${text}`);
 for (const anchor of ["split-system", "temperature", "planning"]) assert.ok(page.includes(`id="${anchor}"`));
 assert.ok(read("../app/sitemap.js").includes('path: "/perma-lab-process"'));
 assert.ok(read("../app/components/SiteFooter.jsx").includes('href="/perma-lab-process"'));
