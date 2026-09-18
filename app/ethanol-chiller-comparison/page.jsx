@@ -189,7 +189,8 @@ export default function EthanolChillerComparisonPage() {
           <p className="eyebrow">Comparison Chart</p>
           <h2>Four ethanol chillers, one production-class decision.</h2>
         </div>
-        <div className="comparison-table-wrap">
+        <p className="comparison-scroll-hint">Swipe across the chart to compare all four models.</p>
+        <div className="comparison-table-wrap" role="region" aria-label="BLAST model comparison chart" tabIndex={0}>
           <table className="comparison-table">
             <thead>
               <tr>

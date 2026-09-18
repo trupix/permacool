@@ -480,8 +480,8 @@ export const externalLearningResources = [
 export const insightHeroImage = "/images/generated/insights-hero.png";
 
 export const navItems = [
-  ["Ethanol Chillers", "/ethanol-chilling-systems"],
-  ["Butane Recovery", "/butane-recovery-system"],
+  ["Extraction Chillers", "/#extraction"],
+  ["Lab Process", "/perma-lab-process"],
   ["Learning Center", "/learning-center"],
   ["Contact", "/contact-us"]
 ];

@@ -3,14 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowRight, Mail, Menu, Phone, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 
-const mobileProductItems = [
+const extractionItems = [
   ["Ethanol Chillers", "/ethanol-chilling-systems"],
-  ["BLAST 60/45", "/ethanol-chiller-blast-60"],
-  ["BLAST 150/45", "/ethanol-chiller-blast-150"],
-  ["BLAST 150/30", "/ethanol-chiller-blast-150-30"],
-  ["BLAST 240/45", "/ethanol-chiller-blast-240"],
   ["Butane Recovery", "/butane-recovery-system"]
 ];
 
@@ -22,6 +18,11 @@ function isActive(pathname, href) {
 export default function ResponsiveHeader({ navItems = [] }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [extractionOpen, setExtractionOpen] = useState(false);
+  const [mobileExtractionOpen, setMobileExtractionOpen] = useState(false);
+  const extractionRef = useRef(null);
+  const extractionButtonRef = useRef(null);
+  const isExtractionActive = pathname?.startsWith("/ethanol-") || pathname === "/butane-recovery-system";
   const headerRef = useRef(null);
   const menuButtonRef = useRef(null);
   const mobilePanelRef = useRef(null);
@@ -39,7 +40,31 @@ export default function ResponsiveHeader({ navItems = [] }) {
 
   useEffect(() => {
     setIsOpen(false);
+    setExtractionOpen(false);
+    setMobileExtractionOpen(Boolean(pathname?.startsWith("/ethanol-") || pathname === "/butane-recovery-system"));
   }, [pathname]);
+
+  useEffect(() => {
+    if (!extractionOpen) return undefined;
+    const closeOutside = (event) => {
+      if (!extractionRef.current?.contains(event.target)) setExtractionOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") {
+        setExtractionOpen(false);
+        extractionButtonRef.current?.focus();
+      }
+    };
+    const closeOnResize = () => setExtractionOpen(false);
+    document.addEventListener("pointerdown", closeOutside);
+    document.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("resize", closeOnResize);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      document.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("resize", closeOnResize);
+    };
+  }, [extractionOpen]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -156,7 +181,19 @@ export default function ResponsiveHeader({ navItems = [] }) {
         </Link>
 
       <nav aria-label="Primary navigation">
-        {navItems.map(([label, href]) => (
+        {navItems.map(([label, href]) => href === "/#extraction" ? (
+          <div className="extraction-nav" ref={extractionRef} key={href} onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setExtractionOpen(false);
+          }}>
+            <button ref={extractionButtonRef} type="button" className={`extraction-nav-toggle${isExtractionActive ? " active" : ""}`} aria-expanded={extractionOpen} aria-controls="extraction-navigation" onClick={() => setExtractionOpen(!extractionOpen)}>
+              {label}<ChevronDown size={15} aria-hidden="true" />
+            </button>
+            <div className="extraction-nav-links" id="extraction-navigation" data-open={extractionOpen} aria-hidden={!extractionOpen} inert={!extractionOpen}>
+              <p>Extraction cooling systems</p>
+              {extractionItems.map(([name, path]) => <Link href={path} key={path} tabIndex={extractionOpen ? undefined : -1} aria-current={isActive(pathname, path) ? "page" : undefined} onClick={() => setExtractionOpen(false)}><span>{name}<small>{path === "/ethanol-chilling-systems" ? "Explore the BLAST ethanol chiller series" : "Commercial BHO recovery systems"}</small></span><ArrowRight size={17} aria-hidden="true" /></Link>)}
+            </div>
+          </div>
+        ) : (
           <Link className={isActive(pathname, href) ? "active" : undefined} href={href} key={label}>
             {label}
           </Link>
@@ -204,7 +241,8 @@ export default function ResponsiveHeader({ navItems = [] }) {
           >
             <div className="mobile-nav-section">
               <p className="mobile-nav-label" id="mobile-navigation-title">Systems</p>
-              {mobileProductItems.map(([label, href]) => (
+              <button className={`mobile-extraction-toggle${isExtractionActive ? " active" : ""}`} type="button" aria-expanded={mobileExtractionOpen} aria-controls="mobile-extraction-links" onClick={() => setMobileExtractionOpen(!mobileExtractionOpen)}>Extraction Chillers<ChevronDown size={18} aria-hidden="true" /></button>
+              {mobileExtractionOpen && <div className="mobile-extraction-links" id="mobile-extraction-links">{extractionItems.map(([label, href]) => (
                 <Link
                   className={isActive(pathname, href) ? "active" : undefined}
                   href={href}
@@ -214,7 +252,8 @@ export default function ResponsiveHeader({ navItems = [] }) {
                   {label}
                   <ArrowRight size={16} aria-hidden="true" />
                 </Link>
-              ))}
+              ))}</div>}
+              <Link className={isActive(pathname, "/perma-lab-process") ? "active" : undefined} href="/perma-lab-process" onClick={() => closeMenu(false)}>PERMA Lab Process<ArrowRight size={16} aria-hidden="true" /></Link>
             </div>
 
             <div className="mobile-nav-section">

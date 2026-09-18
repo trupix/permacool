@@ -21,6 +21,14 @@ assert.equal(
 );
 
 assert.equal(buildContactHref({ interest: 'Untrusted value' }), '/contact-us');
+const labHref = new URL(buildContactHref({ interest: 'Lab Process Chillers', product: 'PERMA Lab Process', requestType: 'System Fit Review', source: 'perma-lab-process' }), 'https://perma.cool');
+assert.equal(labHref.searchParams.get('interest'), 'Lab Process Chillers');
+assert.equal(labHref.searchParams.get('product'), 'PERMA Lab Process');
+const labInquiry = new FormData();
+labInquiry.set('interest', 'Lab Process Chillers');
+labInquiry.set('product', 'PERMA Lab Process');
+assert.equal(normalizeContactPayload(labInquiry).interest, 'Lab Process Chillers');
+assert.equal(normalizeContactPayload(labInquiry).product, 'PERMA Lab Process');
 assert.equal(
   buildContactHref({ interest: 'Ethanol Chillers', requestType: 'Product Pricing', product: 'BLAST 150/30', source: 'ethanol-chiller-blast-150-30' }),
   '/contact-us?interest=Ethanol+Chillers&request_type=Product+Pricing&product=BLAST+150%2F30&source=ethanol-chiller-blast-150-30'

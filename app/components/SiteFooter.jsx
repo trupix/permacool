@@ -13,13 +13,14 @@ export default function SiteFooter() {
               height="20"
             />
           </a>
-          <p>Purpose-built cooling systems for botanical extraction.</p>
+          <p>Purpose-built cooling for laboratory and extraction processes.</p>
         </div>
 
         <nav className="footer-links" aria-label="Footer navigation">
           <div>
             <span>Systems</span>
             <a href="/ethanol-chilling-systems">Ethanol Chillers</a>
+            <a href="/perma-lab-process">PERMA Lab Process™</a>
             <a href="/butane-recovery-system">Butane Recovery</a>
           </div>
           <div>

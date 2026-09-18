@@ -28,6 +28,7 @@ export default async function Page({ searchParams }) {
   const coolingMethod = allowedContactValue(params?.cooling_method, CONTACT_COOLING_METHODS);
   const requestType = allowedContactValue(params?.request_type, CONTACT_REQUEST_TYPES, "Quote");
   const product = allowedContactValue(params?.product, CONTACT_PRODUCTS);
+  const isLabProcess = interest === "Lab Process Chillers" || product === "PERMA Lab Process";
   const source = normalizeContactField(firstContactParam(params?.source), 120);
   const intentCopy = contactIntentCopy({ requestType, product });
   const formAction = buildContactSubmissionAction({ requestType, product, source });
@@ -46,10 +47,11 @@ export default async function Page({ searchParams }) {
       <section className="contact-hero">
         <div className="contact-hero-copy">
           <p className="eyebrow">{intentCopy.eyebrow}</p>
-          <h1>Tell us what your extraction cooling workflow needs to do.</h1>
+          <h1>{isLabProcess ? "Let’s plan your lab process cooling." : "Tell us what your extraction cooling workflow needs to do."}</h1>
           <p>
-            Share your target temperature, throughput, and current cooling method. Perma Cool will use that information
-            to scope the right ethanol chiller or butane recovery configuration for your operation.
+            {isLabProcess
+              ? "Share your target temperature, process heat load, available lab space, and remote condenser location. We’ll help define the right PERMA Lab Process configuration."
+              : "Share your target temperature, throughput, and current cooling method. Perma Cool will use that information to scope the right ethanol chiller or butane recovery configuration for your operation."}
           </p>
           <div className="contact-direct-links">
             <a href="tel:+17472081001">
@@ -107,6 +109,7 @@ export default async function Page({ searchParams }) {
                 <option>Ethanol Chillers</option>
                 <option>Butane Recovery Systems</option>
                 <option>Both</option>
+                <option>Lab Process Chillers</option>
               </select>
             </label>
             <label>
@@ -124,8 +127,8 @@ export default async function Page({ searchParams }) {
               <input type="text" name="target_temp" placeholder="ex: −40 °C" />
             </label>
             <label>
-              Estimated Throughput
-              <input type="text" name="throughput" placeholder="ex: 150 gallons / 45 min" />
+              {isLabProcess ? "Process load or volume" : "Estimated Throughput"}
+              <input type="text" name="throughput" placeholder={isLabProcess ? "Heat load, process volume, or equipment to be cooled" : "ex: 150 gallons / 45 min"} />
             </label>
           </div>
 

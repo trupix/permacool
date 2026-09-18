@@ -17,9 +17,10 @@ function articleIndex() {
 export function GET() {
   const content = `# Perma Cool
 
-> Perma Cool Systems Inc. builds purpose-built industrial cooling systems for botanical extraction. This file points AI assistants and retrieval systems to the canonical public pages and plain-language educational resources on perma.cool.
+> Perma Cool Systems Inc. builds purpose-built cooling systems for laboratory processes and botanical extraction. This file points AI assistants and retrieval systems to the canonical public pages and plain-language educational resources on perma.cool.
 
 Important context:
+- PERMA Lab Process is a separate line from BLAST: large-capacity general lab temperature control using a split-system process layout and remote condenser. Mid-temperature and low-temperature configurations extend down to -40 degrees Celsius, subject to process load and system selection. Existing skid and plate-system images are design references, not final Lab Process product images.
 - Perma Cool focuses on industrial ethanol chillers, direct refrigerant cooling, cold ethanol extraction workflows, and butane recovery systems.
 - The Learning Center explains the science, workflow, economics, planning, and maintenance behind extraction cooling.
 - All linked pages are public, canonical, and available without a login.
@@ -41,6 +42,7 @@ ${externalLearningResources
 
 ## Cooling Systems
 
+- [PERMA Lab Process](${SITE_URL}/perma-lab-process): Split-system lab chillers with remote condensers, planned for large cooling capacity, a smaller lab-side footprint, and remote heat rejection.
 - [Ethanol Chilling Systems](${SITE_URL}/ethanol-chilling-systems): Overview of Perma Cool direct refrigerant ethanol chillers for extraction facilities.
 - [BLAST 60/45](${SITE_URL}/ethanol-chiller-blast-60): Compact system designed to chill 60 gallons of ethanol to -40 degrees Celsius in 45 minutes.
 - [BLAST 150/45](${SITE_URL}/ethanol-chiller-blast-150): Mid-scale system designed to chill 150 gallons of ethanol to -40 degrees Celsius in 45 minutes.
@@ -50,7 +52,7 @@ ${externalLearningResources
 
 ## Company And Contact
 
-- [Perma Cool Home](${SITE_URL}/): Company, system, and extraction cooling overview.
+- [Perma Cool Home](${SITE_URL}/): Company overview with separate Extraction Chillers (ethanol and butane) and PERMA Lab Process product families.
 - [Contact Perma Cool](${SITE_URL}/contact-us): Sales and system recommendation inquiries.
 - Email: sales@perma.cool
 - Phone: +1-747-208-1001

@@ -1,352 +1,113 @@
 import Image from "next/image";
-import {
-  ArrowRight,
-  BadgeDollarSign,
-  Factory,
-  Gauge,
-  RefreshCw,
-  ShieldCheck,
-  SlidersHorizontal,
-  Snowflake,
-  ThermometerSnowflake
-} from "lucide-react";
-import LearningCenterSection from "./components/LearningCenterSection";
+import { ArrowDown, ArrowRight, FlaskConical, Snowflake, Thermometer, MoveUpRight, SlidersHorizontal, Ruler, BookOpen } from "lucide-react";
 import { InsightsHeader } from "./insights/InsightsShell";
 import { externalLearningResources } from "./insights/insights-data";
 import { buildPublicPageMetadata } from "../lib/site";
 import { buildContactHref } from "../lib/contact";
+import "./home-design.css";
 
 const homepageQuoteHref = buildContactHref({ requestType: "Quote", source: "homepage" });
-const controlsCaseStudy = externalLearningResources[0];
+const blastSystems = [
+  { title: "BLAST 60/45", href: "/ethanol-chiller-blast-60" },
+  { title: "BLAST 150/45", href: "/ethanol-chiller-blast-150" },
+  { title: "BLAST 150/30", href: "/ethanol-chiller-blast-150-30" },
+  { title: "BLAST 240/45", href: "/ethanol-chiller-blast-240" }
+];
 
 export const metadata = buildPublicPageMetadata({
   path: "/",
-  title: "Perma Cool Ethanol Chillers & Butane Recovery Systems | Industrial Extraction Cooling",
-  description:
-    "Perma Cool builds industrial ethanol chilling systems and butane recovery solutions for extraction labs.",
+  title: "Perma Cool | Extraction Chillers & Split-System Lab Process Cooling",
+  description: "Purpose-built cooling for extraction and laboratory processes. Explore BLAST ethanol chillers, butane recovery systems, and PERMA Lab Process split-system chillers with remote condensers.",
   image: "/images/brand/permacool-social-card.jpg"
 });
 
-const ethanolOverview = {
-  title: "Ethanol Chilling Systems",
-  body:
-    "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around −40 °C while reducing LN2 dependency and consumable spend.",
-  href: "/ethanol-chilling-systems",
-  image: "/images/generated/blast60-hero-most-accurate-outdoor-condensers.png",
-  cta: "Explore Ethanol Chillers"
-};
-
-const blastSystems = [
-  {
-    title: "Ethanol Chilling Systems",
-    body:
-      "Direct refrigerant process chilling with HVAC condenser integration. Reach target process temperatures around −40 °C while reducing LN2 dependency and consumable spend.",
-    href: "/ethanol-chilling-systems",
-    image: "/images/generated/blast60-hero-most-accurate-outdoor-condensers.png",
-    cta: "Explore Ethanol Chillers"
-  },
-  {
-    title: "BLAST 60/45",
-    body:
-      "A compact cascade ethanol chiller built around the 30-gallon centrifuge workflow, 60 gallons of ethanol capacity, and fast recovery back toward −40 °C.",
-    href: "/ethanol-chiller-blast-60",
-    image: "/images/generated/blast60-mountain-system-lineup.png",
-    imageAlt: "BLAST 60/45 chilling tank with two separate condensers against snow-covered mountains",
-    imagePosition: "center",
-    cta: "View BLAST 60/45"
-  },
-  {
-    title: "BLAST 150/45",
-    body:
-      "Mid-scale production chilling for up to 150-gallon process class applications, with the same direct refrigerant control philosophy and PLC/HMI visibility.",
-    href: "/ethanol-chiller-blast-150",
-    image: "/images/generated/blast150-bear-card-purple.png",
-    cta: "View BLAST 150/45"
-  },
-  {
-    title: "BLAST 150/30",
-    body:
-      "A high-speed 150-gallon cascade system designed for five gallons per minute of flash chilling and reliable operation in demanding ambient conditions.",
-    href: "/ethanol-chiller-blast-150-30",
-    image: "/images/generated/blast15030/desert-system-hero.png",
-    imageAlt: "BLAST 150/30 with separate 22 HP and 6 HP condenser units in a desert setting",
-    imagePosition: "90% center",
-    cta: "View BLAST 150/30"
-  },
-  {
-    title: "BLAST 240/45",
-    body:
-      "Large process-class chilling for facilities that need more ethanol capacity, HVAC condenser integration, and a clearer path away from consumable-heavy cooling.",
-    href: "/ethanol-chiller-blast-240",
-    image: "/images/generated/blast240-bear-card.png",
-    cta: "View BLAST 240/45"
-  }
-].filter((system) => system.title !== "Ethanol Chilling Systems");
-
-const butaneRecovery = {
-  title: "Butane Recovery",
-  body:
-    "Commercial BHO recovery systems planned around process control, cooling load, facility utilities, and production throughput.",
-  href: "/butane-recovery-system",
-  image: "/images/generated/bho-blast15-bear-card.png",
-  cta: "Explore Butane Recovery"
-};
-
-const processSteps = [
-  {
-    icon: Snowflake,
-    title: "Pull-down",
-    body: "Rapid refrigerant pull-down to hit target extraction temperature windows."
-  },
-  {
-    icon: RefreshCw,
-    title: "Stabilize",
-    body: "Repeatable chilling architecture helps operators recover between cycles instead of resetting the process."
-  },
-  {
-    icon: Factory,
-    title: "Produce",
-    body: "Purpose-built systems support commercial extraction throughput with less consumable dependency."
-  }
-];
-
-const switchReasons = [
-  {
-    icon: BadgeDollarSign,
-    title: "Lower recurring costs",
-    body: "Reduce dependence on liquid nitrogen deliveries and the operational surprises that come with consumables."
-  },
-  {
-    icon: SlidersHorizontal,
-    title: "Better process control",
-    body: "PLC/HMI-driven chilling gives operators clearer visibility into pull-down, recovery, and repeat-cycle performance."
-  },
-  {
-    icon: ShieldCheck,
-    title: "Built for scale",
-    body: "Equipment is planned around real extraction throughput instead of temporary workarounds that become bottlenecks."
-  }
-];
-
 export default function HomePage() {
   return (
-    <main className="site-shell home-page">
+    <main className="site-shell perma-home">
       <InsightsHeader />
-
-      <section className="home-hero">
-        <Image
-          src="/images/generated/ethanol-systems-hero.webp"
-          alt=""
-          fill
-          priority
-          fetchPriority="high"
-          className="home-hero-image"
-          sizes="100vw"
-        />
-        <div className="home-hero-overlay" />
-        <div className="home-hero-content">
-          <p className="eyebrow">Industrial Extraction Cooling</p>
-          <h1>Purpose built chillers for botanical extraction</h1>
-          <p>
-            Perma Cool systems are full turnkey chilling solutions for extraction labs working to increase production
-            consistency, eliminate bottlenecks, and reduce dependence on consumable cooling.
-          </p>
-          <div className="hero-actions">
-            <a className="button primary" href="/ethanol-chilling-systems">
-              Explore Ethanol Chillers
-              <ArrowRight size={18} aria-hidden="true" />
-            </a>
-            <a className="button butane" href="/butane-recovery-system">
-              Explore Butane Recovery
-              <ArrowRight size={18} aria-hidden="true" />
-            </a>
-            <a className="button secondary" href={homepageQuoteHref}>
-              Request a Quote
-              <ArrowRight size={18} aria-hidden="true" />
-            </a>
+      <section className="ph-hero" aria-labelledby="ph-title">
+        <div className="ph-hero-stage">
+          <div className="ph-hero-backdrop">
+            <Image src="/images/generated/permacool-process-studio-hero-v2.png" alt="Perma Cool equipment visualization: stainless steel chilling tank and two separate condenser units in a clean dark studio" fill priority fetchPriority="high" sizes="100vw" />
+          </div>
+          <div className="ph-hero-shade" aria-hidden="true" />
+        <div className="ph-hero-grid ph-wrap">
+          <div className="ph-hero-copy">
+            <p className="ph-kicker"><span /> Purpose-built process cooling</p>
+            <h1 id="ph-title">Cooling built<br />around <em>your<br className="ph-desktop-break" /> process.</em></h1>
+            <p className="ph-lead">From extraction production to laboratory temperature control. Find the Perma Cool system that fits your process, your space, and your next step.</p>
+            <div className="ph-actions">
+              <a className="ph-button ph-button-bright" href="#systems">Find your system <ArrowDown size={18} aria-hidden="true" /></a>
+              <a className="ph-text-link" href={homepageQuoteHref}>Request pricing <ArrowRight size={18} aria-hidden="true" /></a>
+            </div>
           </div>
         </div>
-      </section>
-
-      <section className="home-proof-strip" aria-label="Perma Cool operating highlights">
-        <article>
-          <ThermometerSnowflake size={24} aria-hidden="true" />
-          <strong>−40 °C</strong>
-          <span>target process window</span>
-        </article>
-        <article>
-          <Gauge size={24} aria-hidden="true" />
-          <strong>PLC/HMI</strong>
-          <span>operator visibility</span>
-        </article>
-        <article>
-          <BadgeDollarSign size={24} aria-hidden="true" />
-          <strong>LN2 + DRY ICE</strong>
-          <span>Consumable reduction</span>
-        </article>
-      </section>
-
-      <section className="section home-systems-section">
-        <div className="section-heading">
-          <p className="eyebrow">Ethanol Extraction Chilling Systems</p>
-          <h2>Ethanol extraction pre-chiller systems for distillate production</h2>
+          <p className="ph-hero-caption">Perma Cool <span>Equipment visualization</span></p>
         </div>
-        <div className="home-ethanol-layout">
-          <article className="home-ethanol-overview">
-            <a className="home-ethanol-overview-media" href={ethanolOverview.href} aria-label={ethanolOverview.title}>
-              <Image
-                src={ethanolOverview.image}
-                alt=""
-                width={900}
-                height={540}
-                sizes="(max-width: 980px) calc(100vw - 2rem), 560px"
-              />
-            </a>
-            <div className="home-ethanol-overview-copy">
-              <p className="eyebrow">Category Overview</p>
-              <h3>{ethanolOverview.title}</h3>
-              <p>{ethanolOverview.body}</p>
-              <a className="button primary" href={ethanolOverview.href}>
-                {ethanolOverview.cta}
-                <ArrowRight size={18} aria-hidden="true" />
-              </a>
+        <div className="ph-family-navigation">
+          <nav className="ph-family-strip ph-wrap" aria-label="Explore product families">
+            <a href="#extraction"><span><small>For extraction production</small><strong>Extraction Chillers</strong></span><ArrowDown size={22} aria-hidden="true" /></a>
+            <a href="#lab-process"><span><small>For laboratory temperature control</small><strong>PERMA Lab Process™</strong></span><ArrowDown size={22} aria-hidden="true" /></a>
+          </nav>
+        </div>
+      </section>
+
+      <section className="ph-families ph-wrap" id="systems" aria-labelledby="ph-systems-title">
+        <div className="ph-section-heading">
+          <div><p className="ph-kicker">Choose your application</p><h2 id="ph-systems-title">Different processes.<br />Dedicated cooling systems.</h2></div>
+          <p>Two distinct product families. Start with what you need to cool, then explore the right configuration.</p>
+        </div>
+        <div className="ph-family-grid">
+          <article className="ph-family-card ph-extraction" id="extraction">
+            <div className="ph-card-topline"><span>01 / Extraction</span><Snowflake size={24} aria-hidden="true" /></div>
+            <div className="ph-card-heading"><h3>Extraction Chillers</h3><p>Cooling for ethanol extraction.<br />Recovery systems for butane.</p></div>
+            <figure className="ph-family-image ph-extraction-image">
+              <Image src="/images/generated/blast15030/desert-system-hero.png" alt="BLAST 150/30 with separate 22 HP primary and 6 HP cascade condenser units in a desert setting" width={1858} height={846} sizes="(max-width: 760px) 100vw, 50vw" />
+              <figcaption>BLAST 150/30 · Cascade system design</figcaption>
+            </figure>
+            <div className="ph-family-links">
+              <a href="/ethanol-chilling-systems"><span><strong>Ethanol Chilling Systems</strong><small>Explore the BLAST series and compare system sizes.</small></span><ArrowRight size={22} aria-hidden="true" /></a>
+              <a href="/butane-recovery-system"><span><strong>Butane Recovery Systems</strong><small>Equipment for commercial BHO recovery workflows.</small></span><ArrowRight size={22} aria-hidden="true" /></a>
             </div>
           </article>
-          <div className="home-blast-lineup">
-            <div className="home-blast-heading">
-              <p className="eyebrow">BLAST™ Lineup</p>
-              <h3>Choose the production class that matches your extraction volume.</h3>
-              <a className="inline-link home-blast-compare-link" href="/ethanol-chiller-comparison">
-                Compare BLAST chillers
-                <ArrowRight size={16} aria-hidden="true" />
-              </a>
-            </div>
-            <div className="home-system-grid">
-              {blastSystems.map((system) => (
-                <article className="home-system-card" key={system.title}>
-                  <a className={`home-system-media${system.imagePosition ? " home-system-media--equipment" : ""}`} href={system.href} aria-label={system.title}>
-                    <Image
-                      src={system.image}
-                      alt={system.imageAlt || ""}
-                      style={system.imagePosition ? { objectPosition: system.imagePosition } : undefined}
-                      width={720}
-                      height={440}
-                      sizes={system.imagePosition
-                        ? "(max-width: 680px) 140vw, (max-width: 1100px) 70vw, 420px"
-                        : "(max-width: 680px) calc(100vw - 2rem), (max-width: 1100px) calc((100vw - 3rem) / 2), 300px"}
-                    />
-                  </a>
-                  <div className="home-system-copy">
-                    <h3>{system.title}</h3>
-                    <p>{system.body}</p>
-                    <a className="inline-link" href={system.href}>
-                      {system.cta}
-                      <ArrowRight size={16} aria-hidden="true" />
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
+          <article className="ph-family-card ph-lab" id="lab-process">
+            <div className="ph-card-topline"><span>02 / Laboratory</span><FlaskConical size={24} aria-hidden="true" /></div>
+            <div className="ph-card-heading"><h3>PERMA Lab Process™</h3><p>Large cooling capacity.<br />More room for your lab.</p></div>
+            <figure className="ph-family-image ph-lab-image">
+              <Image src="/images/generated/blast15030/regeneration-unit-isolated.png" alt="Stainless steel tank and plate heat exchanger skid shown as a design reference for PERMA Lab Process" width={1672} height={941} sizes="(max-width: 760px) 100vw, 50vw" />
+              <figcaption>Skid design reference · Final equipment may differ</figcaption>
+            </figure>
+            <div className="ph-lab-details"><span>Split-system process cooling</span><span>Remote condenser</span><span>Mid-temp to −40 °C*</span></div>
+            <div className="ph-family-links"><a href="/perma-lab-process"><span><strong>Explore Lab Process</strong><small>Move condenser heat out of your lab and keep the lab-side footprint compact.</small></span><ArrowRight size={22} aria-hidden="true" /></a></div>
+            <p className="ph-note">*Temperature capability depends on configuration, fluid, and process load.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="ph-lineup ph-wrap" aria-labelledby="ph-lineup-title">
+        <div><p className="ph-kicker">Already know your BLAST?</p><h2 id="ph-lineup-title">Go straight to your system.</h2><a className="ph-text-link" href="/ethanol-chiller-comparison">Compare ethanol chillers <ArrowRight size={16} aria-hidden="true" /></a></div>
+        <div className="ph-model-links">{blastSystems.map((system) => <a key={system.href} href={system.href}><span>{system.title}</span><MoveUpRight size={18} aria-hidden="true" /></a>)}</div>
+      </section>
+
+      <section className="ph-planning" aria-labelledby="ph-planning-title">
+        <div className="ph-wrap ph-planning-grid">
+          <div><p className="ph-kicker">Start with your process</p><h2 id="ph-planning-title">The right system<br />starts with the<br /><em>right questions.</em></h2><p>You don’t need a finished specification to get started. We’ll help connect your cooling requirements to a practical system layout.</p><a className="ph-button ph-button-bright" href={homepageQuoteHref}>Talk through your project <ArrowRight size={18} aria-hidden="true" /></a></div>
+          <div className="ph-planning-steps">
+            <article><span>01</span><Thermometer size={25} aria-hidden="true" /><div><h3>What needs to get cold?</h3><p>Your process, fluid, starting temperature, and target temperature.</p></div></article>
+            <article><span>02</span><SlidersHorizontal size={25} aria-hidden="true" /><div><h3>How much, and how fast?</h3><p>Your cooling load, production schedule, circulation needs, and expansion plans.</p></div></article>
+            <article><span>03</span><Ruler size={25} aria-hidden="true" /><div><h3>Where will it fit?</h3><p>Your available floor space, utilities, and options for remote condenser placement.</p></div></article>
           </div>
         </div>
       </section>
 
-      <section className="home-butane-section" aria-labelledby="home-butane-heading">
-        <div className="home-butane-inner">
-          <a className="home-butane-media" href={butaneRecovery.href} aria-label={butaneRecovery.title}>
-            <Image
-              src={butaneRecovery.image}
-              alt=""
-              width={720}
-              height={440}
-              sizes="(max-width: 980px) calc(100vw - 2rem), 560px"
-            />
-          </a>
-          <div className="home-butane-copy">
-            <p className="eyebrow">Butane Recovery</p>
-            <h2 id="home-butane-heading">Butane recovery systems for BHO production support.</h2>
-            <p>{butaneRecovery.body}</p>
-            <a className="button butane" href={butaneRecovery.href}>
-              {butaneRecovery.cta}
-              <ArrowRight size={18} aria-hidden="true" />
-            </a>
-          </div>
+      <section className="ph-resources ph-wrap" aria-labelledby="ph-resources-title">
+        <div className="ph-section-heading"><div><p className="ph-kicker">A closer look</p><h2 id="ph-resources-title">Understand the system.<br />Plan your next step.</h2></div></div>
+        <div className="ph-resource-grid">
+          <a href="/learning-center"><BookOpen size={26} aria-hidden="true" /><span className="ph-resource-type">Guides & articles</span><h3>Learn the science<br />behind the cold.</h3><p>Explore temperature, extraction workflows, chilling methods, and system planning.</p><span className="ph-text-link">Visit the Learning Center <ArrowRight size={18} aria-hidden="true" /></span></a>
+          <a href={externalLearningResources[0].articleUrl} target="_blank" rel="noreferrer"><SlidersHorizontal size={26} aria-hidden="true" /><span className="ph-resource-type">Opto 22 / Independent case study</span><h3>Inside Perma Cool’s<br />control systems.</h3><p>Read how Perma Cool brought industrial controls in-house to support diagnostics and service.</p><span className="ph-text-link">Read the case study <MoveUpRight size={18} aria-hidden="true" /><span className="ph-sr-only"> (opens in a new tab)</span></span></a>
         </div>
       </section>
-
-      <section className="home-process-section">
-        <div className="section-heading narrow">
-          <p className="eyebrow">Process Cooling Flow</p>
-          <h2>From rapid pull-down to repeat-cycle production.</h2>
-        </div>
-        <div className="home-process-grid">
-          {processSteps.map(({ icon: Icon, title, body }, index) => (
-            <article className="home-process-card" key={title}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <Icon size={25} aria-hidden="true" />
-              <h3>{title}</h3>
-              <p>{body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="home-ln2-section">
-        <div>
-          <p className="eyebrow">Why Operators Switch</p>
-          <h2>Reduce consumable costs without giving up process control.</h2>
-        </div>
-        <div className="home-switch-grid">
-          {switchReasons.map(({ icon: Icon, title, body }) => (
-            <article className="home-switch-card" key={title}>
-              <Icon size={24} aria-hidden="true" />
-              <h3>{title}</h3>
-              <p>{body}</p>
-            </article>
-          ))}
-        </div>
-        <div className="home-ln2-card">
-          <div>
-            <p>
-              For many extraction teams, the buying decision is not just about getting cold. It is about replacing
-              recurring LN2 spend, missed delivery risk, and inconsistent improvised workflows with a dedicated chilling
-              platform. Actual operating savings depend on run schedule, local utility and consumable pricing, freight,
-              and the existing process.
-            </p>
-            <p className="home-independent-proof">
-              <strong>Independent engineering perspective:</strong> Opto 22 documents how Perma Cool brought its
-              industrial controls in-house to improve scalability, remote diagnostics, and service response.{" "}
-              <a href={controlsCaseStudy.articleUrl} target="_blank" rel="noreferrer">
-                Read the Opto 22 case study
-              </a>.
-            </p>
-          </div>
-          <a className="button primary" href="/direct-refrigerant-vs-ln2">
-            Compare Direct Refrigerant vs LN2
-            <ArrowRight size={18} aria-hidden="true" />
-          </a>
-        </div>
-      </section>
-
-      <LearningCenterSection />
-
-      <section className="related-section">
-        <div>
-          <p className="eyebrow">Build-Spec Quote</p>
-          <h2>Need pricing fast? Tell us your extraction throughput.</h2>
-        </div>
-        <div className="related-actions">
-          <a className="button primary" href={homepageQuoteHref}>
-            Request a Quote
-            <ArrowRight size={18} aria-hidden="true" />
-          </a>
-          <a className="button secondary light" href="tel:+17472081001">
-            Talk to an Engineer
-            <ArrowRight size={18} aria-hidden="true" />
-          </a>
-        </div>
-      </section>
-
+      <section className="ph-contact ph-wrap"><div><p className="ph-kicker">Let’s size it up</p><h2>Tell us what<br />you need to cool.</h2></div><div><a className="ph-button ph-button-dark" href={homepageQuoteHref}>Contact us for pricing <ArrowRight size={18} aria-hidden="true" /></a><a className="ph-contact-phone" href="tel:+17472081001">Or call 747.208.1001</a></div></section>
     </main>
   );
 }
