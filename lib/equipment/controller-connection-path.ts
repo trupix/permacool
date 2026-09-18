@@ -159,7 +159,7 @@ export function resolveControllerConnectionPath({
       label: 'Physical I/O boards',
       state: 'unmonitored',
       status: 'Not monitored',
-      detail: 'Publish pac_io_communication_ok and io_channel_fault_count from the read-only health flow.',
+        detail: 'Publish verified pac_io_communication_ok from the read-only health flow. Channel diagnostics are separate.',
       observedAt: null
     };
   } else if (
@@ -175,8 +175,12 @@ export function resolveControllerConnectionPath({
       detail: 'The last physical I/O check is older than 45 seconds.',
       observedAt: ioCommunicationOk?.timestamp ?? ioReady?.timestamp ?? ioChannelFaultCount?.timestamp ?? null
     };
-  } else {
-    const communicationHealthy = ioCommunicationOk?.value !== 0;
+    } else if (ioCommunicationOk && ![0, 1].includes(ioCommunicationOk.value)) {
+      io = { id: 'io', label: 'Physical I/O boards', state: 'checking', status: 'Unverified',
+        detail: 'Waiting for a fresh, completed PAC I/O communication check. Sensor and output health are not implied.',
+        observedAt: ioCommunicationOk.timestamp };
+    } else {
+      const communicationHealthy = ioCommunicationOk?.value === 1;
     const ioUnitReady = ioReady?.value !== 0;
     const channelsHealthy = ioChannelFaultCount ? ioChannelFaultCount.value === 0 : true;
     const healthy = communicationHealthy && ioUnitReady && channelsHealthy;
@@ -186,7 +190,9 @@ export function resolveControllerConnectionPath({
       state: healthy ? 'healthy' : 'fault',
       status: healthy ? 'Communicating' : 'Disconnected / faulted',
       detail: healthy
-        ? 'PAC reports I/O communication available with no channel faults.'
+          ? (ioChannelFaultCount
+            ? 'PAC reports I/O communication available and zero reported channel faults. This does not prove physical output operation.'
+            : 'PAC reports I/O communication available. Individual sensor/channel faults and physical output operation are not verified by this check.')
         : `PAC reports ${communicationHealthy ? 'communication enabled' : 'communication unavailable'}, ${ioUnitReady ? 'I/O unit ready' : 'I/O unit not ready'}, and ${ioChannelFaultCount?.value ?? 'unknown'} channel fault(s).`,
       observedAt: ioCommunicationOk?.timestamp ?? ioReady?.timestamp ?? ioChannelFaultCount?.timestamp ?? null
     };
