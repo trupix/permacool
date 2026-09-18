@@ -16,7 +16,7 @@ const blastSystems = [
 
 export const metadata = buildPublicPageMetadata({
   path: "/",
-  title: "Perma Cool | Extraction Chillers & Split-System Lab Process Cooling",
+  title: "Perma Cool | Ethanol Extraction Chillers & Split-System Lab Process Cooling",
   description: "Purpose-built cooling for extraction and laboratory processes. Explore BLAST ethanol chillers, butane recovery systems, and PERMA Lab Process split-system chillers with remote condensers.",
   image: "/images/brand/permacool-social-card.jpg"
 });
@@ -34,8 +34,8 @@ export default function HomePage() {
         <div className="ph-hero-grid ph-wrap">
           <div className="ph-hero-copy">
             <p className="ph-kicker"><span /> Purpose-built process cooling</p>
-            <h1 id="ph-title">Cooling built<br />around <em>your<br className="ph-desktop-break" /> process.</em></h1>
-            <p className="ph-lead">From extraction production to laboratory temperature control. Find the Perma Cool system that fits your process, your space, and your next step.</p>
+            <h1 id="ph-title">Extraction chillers<br /> and lab process cooling — <em>split systems<br className="ph-desktop-break" /> sized to the job.</em></h1>
+            <p className="ph-lead">BLAST™ flash-chills ethanol for extraction. PERMA Lab Process™ cools water/glycol loops for instruments and process equipment, with the condenser outside the lab.</p>
             <div className="ph-actions">
               <a className="ph-button ph-button-bright" href="#systems">Find your system <ArrowDown size={18} aria-hidden="true" /></a>
               <a className="ph-text-link" href={homepageQuoteHref}>Request pricing <ArrowRight size={18} aria-hidden="true" /></a>
@@ -54,8 +54,8 @@ export default function HomePage() {
 
       <section className="ph-families ph-wrap" id="systems" aria-labelledby="ph-systems-title">
         <div className="ph-section-heading">
-          <div><p className="ph-kicker">Choose your application</p><h2 id="ph-systems-title">Different processes.<br />Dedicated cooling systems.</h2></div>
-          <p>Two distinct product families. Start with what you need to cool, then explore the right configuration.</p>
+          <div><p className="ph-kicker">Choose your application</p><h2 id="ph-systems-title">Two product lines.<br /> Two jobs.</h2></div>
+          <p>Extraction gets BLAST™. Labs and process equipment get PERMA Lab Process™. Pick the line that matches the fluid and temperature you actually run.</p>
         </div>
         <div className="ph-family-grid">
           <article className="ph-family-card ph-extraction" id="extraction">
@@ -72,13 +72,13 @@ export default function HomePage() {
           </article>
           <article className="ph-family-card ph-lab" id="lab-process">
             <div className="ph-card-topline"><span>02 / Laboratory</span><FlaskConical size={24} aria-hidden="true" /></div>
-            <div className="ph-card-heading"><h3>PERMA Lab Process™</h3><p>Large cooling capacity.<br />More room for your lab.</p></div>
+            <div className="ph-card-heading"><h3>PERMA Lab Process™</h3><p>High-capacity process cooling.<br /> Condenser heat stays out of the lab.</p></div>
             <figure className="ph-family-image ph-lab-image">
               <Image src="/images/generated/blast15030/regeneration-unit-isolated.png" alt="Stainless steel tank and plate heat exchanger skid shown as a design reference for PERMA Lab Process" width={1672} height={941} sizes="(max-width: 760px) 100vw, 50vw" />
               <figcaption>Skid design reference · Final equipment may differ</figcaption>
             </figure>
-            <div className="ph-lab-details"><span>Split-system process cooling</span><span>Remote condenser</span><span>Mid-temp to −40 °C*</span></div>
-            <div className="ph-family-links"><a href="/perma-lab-process"><span><strong>Explore Lab Process</strong><small>Move condenser heat out of your lab and keep the lab-side footprint compact.</small></span><ArrowRight size={22} aria-hidden="true" /></a></div>
+            <div className="ph-lab-details"><span>Water / glycol process loops</span><span>Remote outdoor condenser</span><span>Mid-temp standard · low-temp to −40 °C optional*</span></div>
+            <div className="ph-family-links"><a href="/perma-lab-process"><span><strong>Explore Lab Process</strong><small>Indoor process skid + outdoor condenser. Built for shared instrument loops, lasers, analytical gear, and wet-lab process loads — not bench recirculators.</small></span><ArrowRight size={22} aria-hidden="true" /></a></div>
             <p className="ph-note">*Temperature capability depends on configuration, fluid, and process load.</p>
           </article>
         </div>
@@ -91,11 +91,11 @@ export default function HomePage() {
 
       <section className="ph-planning" aria-labelledby="ph-planning-title">
         <div className="ph-wrap ph-planning-grid">
-          <div><p className="ph-kicker">Start with your process</p><h2 id="ph-planning-title">The right system<br />starts with the<br /><em>right questions.</em></h2><p>You don’t need a finished specification to get started. We’ll help connect your cooling requirements to a practical system layout.</p><a className="ph-button ph-button-bright" href={homepageQuoteHref}>Talk through your project <ArrowRight size={18} aria-hidden="true" /></a></div>
+          <div><p className="ph-kicker">Start with your process</p><h2 id="ph-planning-title">Send four numbers.<br /> We’ll map<br /><em> a layout.</em></h2><p>Setpoint, heat load, fluid/flow, and where the condenser can sit. That’s enough to start.</p><a className="ph-button ph-button-bright" href={homepageQuoteHref}>Talk through your project <ArrowRight size={18} aria-hidden="true" /></a></div>
           <div className="ph-planning-steps">
-            <article><span>01</span><Thermometer size={25} aria-hidden="true" /><div><h3>What needs to get cold?</h3><p>Your process, fluid, starting temperature, and target temperature.</p></div></article>
-            <article><span>02</span><SlidersHorizontal size={25} aria-hidden="true" /><div><h3>How much, and how fast?</h3><p>Your cooling load, production schedule, circulation needs, and expansion plans.</p></div></article>
-            <article><span>03</span><Ruler size={25} aria-hidden="true" /><div><h3>Where will it fit?</h3><p>Your available floor space, utilities, and options for remote condenser placement.</p></div></article>
+            <article><span>01</span><Thermometer size={25} aria-hidden="true" /><div><h3>What fluid and what setpoint?</h3><p>Water, glycol, or ethanol — starting temp and target temp.</p></div></article>
+            <article><span>02</span><SlidersHorizontal size={25} aria-hidden="true" /><div><h3>What load and what flow?</h3><p>Heat load (kW or tons), required GPM, and how often you cycle.</p></div></article>
+            <article><span>03</span><Ruler size={25} aria-hidden="true" /><div><h3>Where does the condenser go?</h3><p>Lab-side footprint, power, and outdoor or remote condenser placement.</p></div></article>
           </div>
         </div>
       </section>
