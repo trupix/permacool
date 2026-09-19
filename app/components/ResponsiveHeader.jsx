@@ -30,7 +30,7 @@ export default function ResponsiveHeader({ navItems = [] }) {
   const shouldRestoreFocusRef = useRef(false);
   const resourceItems = [
     ["Home", "/"],
-    ...(navItems || []).filter(([, href]) => href === "/learning-center" || href === "/contact-us")
+    ...(navItems || []).filter(([, href]) => href === "/learning-center" || href === "/contact-us" || href === "/service-plan")
   ];
 
   const closeMenu = useCallback((restoreFocus = true) => {

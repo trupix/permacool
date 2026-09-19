@@ -482,6 +482,7 @@ export const insightHeroImage = "/images/generated/insights-hero.png";
 export const navItems = [
   ["Extraction Chillers", "/#extraction"],
   ["Lab Process", "/perma-lab-process"],
+  ["Service Plan", "/service-plan"],
   ["Learning Center", "/learning-center"],
   ["Contact", "/contact-us"]
 ];

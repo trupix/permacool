@@ -25,6 +25,7 @@ export default function SiteFooter() {
           </div>
           <div>
             <span>Resources</span>
+            <a href="/service-plan">Service Plan</a>
             <a href="/learning-center">Learning Center</a>
             <a href="/contact-us">Request a Quote</a>
           </div>
