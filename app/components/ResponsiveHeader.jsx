@@ -7,7 +7,8 @@ import { ArrowRight, ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 
 const extractionItems = [
   ["Ethanol Chillers", "/ethanol-chilling-systems"],
-  ["Butane Recovery", "/butane-recovery-system"]
+  ["Butane Recovery", "/butane-recovery-system"],
+  ["Extraction Chiller Service Plan", "/service-plan"]
 ];
 
 function isActive(pathname, href) {
@@ -22,7 +23,7 @@ export default function ResponsiveHeader({ navItems = [] }) {
   const [mobileExtractionOpen, setMobileExtractionOpen] = useState(false);
   const extractionRef = useRef(null);
   const extractionButtonRef = useRef(null);
-  const isExtractionActive = pathname?.startsWith("/ethanol-") || pathname === "/butane-recovery-system";
+  const isExtractionActive = pathname?.startsWith("/ethanol-") || pathname === "/butane-recovery-system" || pathname === "/service-plan";
   const headerRef = useRef(null);
   const menuButtonRef = useRef(null);
   const mobilePanelRef = useRef(null);
@@ -30,7 +31,7 @@ export default function ResponsiveHeader({ navItems = [] }) {
   const shouldRestoreFocusRef = useRef(false);
   const resourceItems = [
     ["Home", "/"],
-    ...(navItems || []).filter(([, href]) => href === "/learning-center" || href === "/contact-us" || href === "/service-plan")
+    ...(navItems || []).filter(([, href]) => href === "/learning-center" || href === "/contact-us")
   ];
 
   const closeMenu = useCallback((restoreFocus = true) => {
@@ -41,7 +42,7 @@ export default function ResponsiveHeader({ navItems = [] }) {
   useEffect(() => {
     setIsOpen(false);
     setExtractionOpen(false);
-    setMobileExtractionOpen(Boolean(pathname?.startsWith("/ethanol-") || pathname === "/butane-recovery-system"));
+    setMobileExtractionOpen(Boolean(pathname?.startsWith("/ethanol-") || pathname === "/butane-recovery-system" || pathname === "/service-plan"));
   }, [pathname]);
 
   useEffect(() => {
@@ -190,7 +191,7 @@ export default function ResponsiveHeader({ navItems = [] }) {
             </button>
             <div className="extraction-nav-links" id="extraction-navigation" data-open={extractionOpen} aria-hidden={!extractionOpen} inert={!extractionOpen}>
               <p>Extraction cooling systems</p>
-              {extractionItems.map(([name, path]) => <Link href={path} key={path} tabIndex={extractionOpen ? undefined : -1} aria-current={isActive(pathname, path) ? "page" : undefined} onClick={() => setExtractionOpen(false)}><span>{name}<small>{path === "/ethanol-chilling-systems" ? "Explore the BLAST ethanol chiller series" : "Commercial BHO recovery systems"}</small></span><ArrowRight size={17} aria-hidden="true" /></Link>)}
+              {extractionItems.map(([name, path]) => <Link href={path} key={path} tabIndex={extractionOpen ? undefined : -1} aria-current={isActive(pathname, path) ? "page" : undefined} onClick={() => setExtractionOpen(false)}><span>{name}<small>{path === "/ethanol-chilling-systems" ? "Explore the BLAST ethanol chiller series" : path === "/service-plan" ? "Basic and Agentic annual service plans" : "Commercial BHO recovery systems"}</small></span><ArrowRight size={17} aria-hidden="true" /></Link>)}
             </div>
           </div>
         ) : (
