@@ -23,9 +23,8 @@ export default function ServicePlanPage() {
     <section className="sp-hero" aria-labelledby="sp-title">
       <div className="sp-hero-copy">
         <p className="sp-eyebrow">PERMA COOL / EXTRACTION CHILLER SERVICE PLAN</p>
-        <h1 id="sp-title">Your equipment.<br /><span>Your level of support.</span></h1>
-        <p className="sp-lede">Two plans. 12 hours of service per year with either choice.</p>
-        <p className="sp-intro">Choose Basic for annual service support. Choose Agentic to add real-time connected telemetry to your 12 hours of service.</p>
+        <h1 id="sp-title">Support for your<br /><span>extraction chiller.</span></h1>
+        <p className="sp-lede">Get 12 hours of service each year, with real-time connected telemetry available through the Agentic plan.</p>
         <div className="sp-actions"><a className="sp-button" href="#included">Compare the plans <ArrowDown size={18} aria-hidden="true" /></a><a className="sp-text-link" href={inquiry}>Discuss your service plan <ArrowRight size={16} aria-hidden="true" /></a></div>
       </div>
       <div className="sp-visual">
