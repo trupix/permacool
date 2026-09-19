@@ -12,7 +12,7 @@ function redirectWithError(req, errorCode, context = {}) {
   const destination = new URL('/contact-us', req.url)
   destination.searchParams.set('error', errorCode)
 
-  for (const key of ['request_type', 'product', 'source']) {
+  for (const key of ['interest', 'cooling_method', 'request_type', 'product', 'source']) {
     const value = requestUrl.searchParams.get(key)
     if (value) destination.searchParams.set(key, value)
   }

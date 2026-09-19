@@ -33,7 +33,7 @@ export default async function Page({ searchParams }) {
   const isLabProcess = interest === "Lab Process Chillers" || product === "PERMA Lab Process";
   const source = normalizeContactField(firstContactParam(params?.source), 120);
   const intentCopy = contactIntentCopy({ requestType, product });
-  const formAction = buildContactSubmissionAction({ requestType, product, source });
+  const formAction = buildContactSubmissionAction({ interest, coolingMethod, requestType, product, source });
   const errorMessage =
     errorCode === "invalid_submission"
       ? "Please enter a valid name, email address, and system interest."
