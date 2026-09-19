@@ -67,8 +67,6 @@ assert.equal(isValidContactEmail('not-an-email'), false);
 assert.equal(escapeContactHtml('<strong>Need a system</strong>'), '&lt;strong&gt;Need a system&lt;/strong&gt;');
 assert.equal(contactIntentCopy({ requestType: 'Cost Comparison' }).buttonLabel, 'Request My Cost Comparison');
 
-console.log('Contact funnel context and submission-safety checks passed.');
-
 for (const plan of ['Basic', 'Agentic']) {
   const interest = `Extraction Chiller Support - ${plan}`;
   const link = new URL(buildContactHref({ interest, requestType: 'Service Guidance', source: `service-plan-${plan.toLowerCase()}` }), 'https://perma.cool');
@@ -78,4 +76,10 @@ for (const plan of ['Basic', 'Agentic']) {
   submission.set('request_type', link.searchParams.get('request_type'));
   assert.equal(normalizeContactPayload(submission).interest, interest);
   assert.equal(normalizeContactPayload(submission).request_type, 'Service Guidance');
+  const action = new URL(buildContactSubmissionAction({ interest, requestType: 'Service Guidance' }), 'https://perma.cool');
+  assert.equal(action.searchParams.get('interest'), interest, 'Early failures must retain the preselected plan');
+  submission.set('interest', plan === 'Basic' ? 'Extraction Chiller Support - Agentic' : 'Extraction Chiller Support - Basic');
+  assert.notEqual(normalizeContactPayload(submission).interest, interest, 'The posted selection must remain editable');
 }
+assert.equal(buildContactSubmissionAction({ interest: 'Untrusted option', coolingMethod: 'Untrusted method' }), '/api/contact');
+console.log('Contact funnel context and submission-safety checks passed.');
