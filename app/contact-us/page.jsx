@@ -7,6 +7,7 @@ import {
   contactIntentCopy,
   CONTACT_COOLING_METHODS,
   CONTACT_INTERESTS,
+  CONTACT_SUPPORT_OPTIONS,
   CONTACT_PRODUCTS,
   CONTACT_REQUEST_TYPES,
   firstContactParam,
@@ -25,6 +26,7 @@ export default async function Page({ searchParams }) {
   const params = await searchParams;
   const errorCode = firstContactParam(params?.error);
   const interest = allowedContactValue(params?.interest, CONTACT_INTERESTS);
+  const isChillerSupport = CONTACT_SUPPORT_OPTIONS.includes(interest);
   const coolingMethod = allowedContactValue(params?.cooling_method, CONTACT_COOLING_METHODS);
   const requestType = allowedContactValue(params?.request_type, CONTACT_REQUEST_TYPES, "Quote");
   const product = allowedContactValue(params?.product, CONTACT_PRODUCTS);
@@ -47,9 +49,9 @@ export default async function Page({ searchParams }) {
       <section className="contact-hero">
         <div className="contact-hero-copy">
           <p className="eyebrow">{intentCopy.eyebrow}</p>
-          <h1>{isLabProcess ? "Let’s plan your lab process cooling." : "Tell us what your extraction cooling workflow needs to do."}</h1>
+          <h1>{isChillerSupport ? "Let’s plan your extraction chiller support." : isLabProcess ? "Let’s plan your lab process cooling." : "Tell us what your extraction cooling workflow needs to do."}</h1>
           <p>
-            {isLabProcess
+            {isChillerSupport ? "Tell us about your chiller, site, and service needs. Basic includes 12 hours of service per year. Agentic adds real-time connected telemetry to those 12 annual service hours." : isLabProcess
               ? "Share your target temperature, process heat load, available lab space, and remote condenser location. We’ll help define the right PERMA Lab Process configuration."
               : "Share your target temperature, throughput, and current cooling method. Perma Cool will use that information to scope the right ethanol chiller or butane recovery configuration for your operation."}
           </p>
@@ -110,6 +112,7 @@ export default async function Page({ searchParams }) {
                 <option>Butane Recovery Systems</option>
                 <option>Both</option>
                 <option>Lab Process Chillers</option>
+                {CONTACT_SUPPORT_OPTIONS.map(option => <option key={option}>{option}</option>)}
               </select>
             </label>
             <label>
@@ -137,7 +140,7 @@ export default async function Page({ searchParams }) {
             <textarea
               name="message"
               rows="6"
-              placeholder="Facility constraints, timeline, current equipment, utility needs, and project goals"
+              placeholder={isChillerSupport ? "Chiller model, site location, service questions, and the best way to reach you" : "Facility constraints, timeline, current equipment, utility needs, and project goals"}
             />
           </label>
 
@@ -151,20 +154,20 @@ export default async function Page({ searchParams }) {
       <section className="contact-trust-strip">
         <div>
           <p className="eyebrow">What happens after you submit</p>
-          <h2>A Perma Cool specialist reviews the process fit, not just the form.</h2>
+          <h2>{isChillerSupport ? "We’ll review your equipment and service needs." : "A Perma Cool specialist reviews the process fit, not just the form."}</h2>
         </div>
         <ul>
           <li>
             <CheckCircle2 size={18} aria-hidden="true" />
-            Fast qualification review by a Perma Cool specialist.
+            {isChillerSupport ? "Review of your chiller and requested support plan." : "Fast qualification review by a Perma Cool specialist."}
           </li>
           <li>
             <CheckCircle2 size={18} aria-hidden="true" />
-            Process-fit recommendation based on target temperature, capacity, and workflow.
+            {isChillerSupport ? "Confirmation of service coverage and any connectivity requirements." : "Process-fit recommendation based on target temperature, capacity, and workflow."}
           </li>
           <li>
             <CheckCircle2 size={18} aria-hidden="true" />
-            Clear recommendations and next steps for pricing and system planning.
+            {isChillerSupport ? "Plan pricing and next steps for getting started." : "Clear recommendations and next steps for pricing and system planning."}
           </li>
         </ul>
       </section>

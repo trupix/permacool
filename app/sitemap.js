@@ -2,6 +2,7 @@ import { insightArticles } from "./insights/insights-data";
 import { SITE_URL, absoluteUrl, articleUrl } from "../lib/site";
 
 const publicPages = [
+  { path: "/service-plan", updatedAt: "2026-09-19", changeFrequency: "monthly", priority: 0.8 },
   { path: "/", updatedAt: "2026-09-18", changeFrequency: "monthly", priority: 1 },
   { path: "/perma-lab-process", updatedAt: "2026-09-18", changeFrequency: "monthly", priority: 0.9 },
   { path: "/ethanol-chilling-systems", updatedAt: "2026-09-01", changeFrequency: "monthly", priority: 0.9 },

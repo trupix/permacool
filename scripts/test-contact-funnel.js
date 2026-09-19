@@ -68,3 +68,14 @@ assert.equal(escapeContactHtml('<strong>Need a system</strong>'), '&lt;strong&gt
 assert.equal(contactIntentCopy({ requestType: 'Cost Comparison' }).buttonLabel, 'Request My Cost Comparison');
 
 console.log('Contact funnel context and submission-safety checks passed.');
+
+for (const plan of ['Basic', 'Agentic']) {
+  const interest = `Extraction Chiller Support - ${plan}`;
+  const link = new URL(buildContactHref({ interest, requestType: 'Service Guidance', source: `service-plan-${plan.toLowerCase()}` }), 'https://perma.cool');
+  assert.equal(link.searchParams.get('interest'), interest);
+  const submission = new FormData();
+  submission.set('interest', link.searchParams.get('interest'));
+  submission.set('request_type', link.searchParams.get('request_type'));
+  assert.equal(normalizeContactPayload(submission).interest, interest);
+  assert.equal(normalizeContactPayload(submission).request_type, 'Service Guidance');
+}
