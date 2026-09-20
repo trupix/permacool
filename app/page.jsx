@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { ArrowDown, ArrowRight, FlaskConical, Snowflake, Thermometer, MoveUpRight, SlidersHorizontal, Ruler, BookOpen } from "lucide-react";
 import { InsightsHeader } from "./insights/InsightsShell";
-import { externalLearningResources } from "./insights/insights-data";
+import { externalLearningResources, navItems } from "./insights/insights-data";
+import HomeMobileNav from "./components/HomeMobileNav";
 import { buildPublicPageMetadata } from "../lib/site";
 import { buildContactHref } from "../lib/contact";
 import "./home-design.css";
@@ -25,14 +26,7 @@ export default function HomePage() {
   return (
     <main className="site-shell perma-home">
       <InsightsHeader />
-      <nav className="ph-mobile-nav" aria-label="Homepage quick navigation">
-        <a href="/ethanol-chilling-systems">Ethanol Chillers</a>
-        <a href="/butane-recovery-system">Butane Recovery</a>
-        <a href="/perma-lab-process">Lab Process</a>
-        <a href="/service-plan">Service Plan</a>
-        <a href="/learning-center">Learning Center</a>
-        <a href="/contact-us">Contact</a>
-      </nav>
+      <HomeMobileNav navItems={navItems} />
       <section className="ph-hero" aria-labelledby="ph-title">
         <div className="ph-hero-stage">
           <div className="ph-hero-backdrop">

@@ -5,11 +5,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 
-const extractionItems = [
-  ["Ethanol Chillers", "/ethanol-chilling-systems"],
-  ["Butane Recovery", "/butane-recovery-system"],
-  ["Extraction Chiller Service Plan", "/service-plan"]
-];
+import { extractionItems } from "./navigation-data";
 
 function isActive(pathname, href) {
   if (href === "/") return pathname === "/";
