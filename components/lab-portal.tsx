@@ -1,5 +1,6 @@
 "use client";
 import { LabPhotos } from "@/components/lab-photos";
+import { signOut } from '@/app/sign-in/actions';
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
@@ -404,7 +405,7 @@ export function LabPortal({
           <span>
             Workspace <span className="lab-slash">/</span> {section}
           </span>
-          <span className="lab-account">{author}</span>
+          <div className="lab-actions"><span className="lab-account">{author}</span>{!preview && <form action={signOut}><button type="submit">Sign out</button></form>}</div>
         </header>
         <div className="lab-content">
           <div className="lab-heading">

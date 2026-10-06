@@ -2,7 +2,8 @@
 
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
-import { isEligiblePortalUser, safeNextPath } from '@/lib/auth-forms';
+import { isEligiblePortalUser, safeNextPath, portalNextPath } from '@/lib/auth-forms';
+import { getCurrentUser } from '@/lib/auth';
 import { env, hasDatabaseUrl, isSupabaseAuthEnabled } from '@/lib/env';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -60,7 +61,12 @@ export async function signInWithPassword(formData: FormData) {
     signInRedirect('invalid-credentials', next);
   }
 
-  redirect(next);
+  const user = await getCurrentUser();
+  if (!user) {
+    await supabase.auth.signOut();
+    signInRedirect('invalid-credentials', next);
+  }
+  redirect(portalNextPath(user, process.env.LAB_ORGANIZATION_ID ?? '', next));
 }
 
 export async function sendMagicLink(formData: FormData) {

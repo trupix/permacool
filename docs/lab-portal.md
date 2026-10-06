@@ -9,6 +9,12 @@
 3. Import verified records using the portal's authenticated API with `{ revision: 0, catalog }`, or add equipment through the UI. Never commit customer inventory to this public repository. The catalog structure and validation live in `lib/lab-catalog.ts`.
 4. Visit `/lab`. Optionally map a separately configured lab subdomain through the existing hosting provider; no DNS change is included here.
 
+## Customer login destination
+
+The lab uses the existing PermaCool login and approved accounts. Approved customers belonging to the organization identified by `LAB_ORGANIZATION_ID` land in `/lab` after password login or a one-time email link. Old links into the operations workspace also send these customers to `/lab`. Password recovery is allowed to finish on `/set-password`, then returns to the lab. Other customers retain their requested operations destination; platform staff retain access to either portal. Portal selection uses stored organization membership, not email-domain matching, a customer-entered field, or a client-side preference. Lab navigation includes sign-out using the existing session action.
+
+To enable this for the intended customer, configure the exact lab Organization ID and assign its approved users using the existing administration workflow. No customer accounts or permissions are changed by this code. Before production rollout, verify password, email-link and reset flows with a lab customer, a regular customer, and staff. Local routing unit tests do not replace live Supabase sign-in verification.
+
 The database stores the catalog by organization with a revision check to prevent silent concurrent overwrites. A stale save returns 409, retaining the user's form. Service entries distinguish observations from completed repairs. States are manual dated observations, not sensor telemetry. External document links are restricted to HTTPS.
 
 ## Nameplates and pictures
