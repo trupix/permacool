@@ -1,4 +1,5 @@
 "use client";
+import { LabPhotos } from "@/components/lab-photos";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
@@ -879,21 +880,50 @@ export function LabPortal({
               asset && (
                 <>
                   <nav className="lab-tabs" aria-label="Equipment sections">
-                    {["Overview", "Work needed", "Parts", "History"].map(
-                      (name) => (
-                        <button
-                          key={name}
-                          aria-pressed={tab === name}
-                          className={tab === name ? "active" : ""}
-                          onClick={() => setTab(name)}
-                        >
-                          {name}
-                        </button>
-                      ),
-                    )}
+                    {[
+                      "Overview",
+                      "Nameplate & photos",
+                      "Work needed",
+                      "Parts",
+                      "History",
+                    ].map((name) => (
+                      <button
+                        key={name}
+                        aria-pressed={tab === name}
+                        className={tab === name ? "active" : ""}
+                        onClick={() => setTab(name)}
+                      >
+                        {name}
+                      </button>
+                    ))}
                   </nav>
                   <div className="lab-detail-body">
-                    {tab === "Overview" ? (
+                    {tab === "Nameplate & photos" ? (
+                      <LabPhotos
+                        key={asset.id}
+                        asset={asset}
+                        canEdit={canEdit && !busy}
+                        onApply={async (model, serial, photo) =>
+                          updateAsset({
+                            ...asset,
+                            model: model || asset.model,
+                            serial: serial || asset.serial,
+                            history: [
+                              {
+                                id: uid(),
+                                title: "Nameplate identification verified",
+                                status: "Observation",
+                                date: today(),
+                                author,
+                                reference: "",
+                                detail: `Model: ${asset.model || "not recorded"} → ${model || asset.model || "not recorded"}\nSerial: ${asset.serial || "not recorded"} → ${serial || asset.serial || "not recorded"}\nReviewed against nameplate photo ${photo.id}.`,
+                              },
+                              ...asset.history,
+                            ],
+                          })
+                        }
+                      />
+                    ) : tab === "Overview" ? (
                       <>
                         <div className="lab-condition">
                           <div>

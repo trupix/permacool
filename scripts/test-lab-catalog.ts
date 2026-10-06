@@ -5,6 +5,7 @@ import {
   mayAccessLab,
   safeSource,
   emptyCatalog,
+// @ts-ignore Node's native TypeScript runner requires the extension.
 } from "../lib/lab-catalog.ts";
 assert.equal(validCatalog(emptyCatalog), true);
 assert.equal(validCatalog({ ...emptyCatalog, assets: [null] }), false);

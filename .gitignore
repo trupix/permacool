@@ -17,3 +17,4 @@ node_modules/
 vpn-profiles/
 backups/
 .lab-private/
+public/lab-ocr/

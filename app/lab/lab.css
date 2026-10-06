@@ -777,3 +777,118 @@
   font-size: 12px;
   max-width: 100%;
 }
+.lab-photo-section h3 {
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+.lab-photo-section p {
+  font-size: 12px;
+  color: var(--lab-muted);
+}
+.lab-photo-upload {
+  padding: 18px;
+  background: #f4f7f5;
+  border: 1px solid var(--lab-line);
+  border-radius: 8px;
+  margin: 18px 0;
+  display: grid;
+  gap: 12px;
+}
+.lab-photo-upload label,
+.lab-nameplate-review label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+.lab-photo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.lab-photo-card {
+  margin: 0;
+  border: 1px solid var(--lab-line);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 10px;
+  min-width: 0;
+}
+.lab-photo-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  background: #f2f5f3;
+}
+.lab-photo-card figcaption {
+  font-size: 12px;
+  margin: 9px 0;
+  overflow-wrap: anywhere;
+}
+.lab-photo-card small {
+  display: block;
+  color: var(--lab-muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+.lab-photo-card button {
+  font-size: 11px;
+}
+.lab-current-identity {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 15px;
+  background: #eef5f1;
+  border-radius: 6px;
+  font-size: 10px;
+}
+.lab-current-identity strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.lab-photo-status {
+  font-size: 12px;
+  color: var(--lab-teal);
+  margin: 15px 0;
+}
+.lab-nameplate-review {
+  padding: 20px;
+  border: 1px solid #b5d7c9;
+  border-radius: 8px;
+  background: #f4faf6;
+  display: grid;
+  gap: 15px;
+}
+.lab-review-image {
+  max-width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+}
+.lab-nameplate-review pre {
+  white-space: pre-wrap;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+  max-height: 200px;
+  overflow: auto;
+}
+.lab-additional-photos {
+  border-top: 1px solid var(--lab-line);
+  margin-top: 30px;
+  padding-top: 25px;
+}
+.lab-tabs {
+  overflow-x: auto;
+}
+.lab-tabs button {
+  white-space: nowrap;
+}
+@media (max-width: 500px) {
+  .lab-photo-grid {
+    grid-template-columns: 1fr;
+  }
+  .lab-nameplate-review .lab-actions {
+    flex-wrap: wrap;
+  }
+}

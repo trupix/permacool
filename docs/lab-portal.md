@@ -11,6 +11,12 @@
 
 The database stores the catalog by organization with a revision check to prevent silent concurrent overwrites. A stale save returns 409, retaining the user's form. Service entries distinguish observations from completed repairs. States are manual dated observations, not sensor telemetry. External document links are restricted to HTTPS.
 
+## Nameplates and pictures
+
+Each equipment record has a Nameplate & photos tab with separate nameplate and additional-image uploads. JPG, PNG and WebP files up to 3 MB are normalized to JPEG with orientation corrected and metadata stripped. Images remain behind the lab's existing read/edit access checks. Apply the `LabPhoto` migration before enabling production uploads; image bytes are stored in Postgres by organization and asset. Local preview uses the ignored `.lab-private/photos` directory.
+
+Uploading a nameplate automatically reads it in the browser using Tesseract. Worker, WASM and English language assets are served from this site; photographs are not sent to an external OCR service. `prepare-lab-ocr.mjs` prepares these public engine assets at installation and build time. Label-based suggestions preserve punctuation and leading zeros. Users review or correct suggestions before explicitly applying nonblank model/serial fields; that action writes a dated history entry referring to the photo. Unreadable or unlabelled values remain blank. Pictures are stored independently of catalog revisions, and JSON catalog export does not embed image bytes.
+
 ## Local review
 
 Run the Next development server on `127.0.0.1` with `LAB_LOCAL_PREVIEW=1`. The isolated preview reads/writes `.lab-private/catalog.json` (ignored by Git). It never enables the preview bypass in production. Missing local data produces an empty catalog. Local preview data is not copied to production during builds.
