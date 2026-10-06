@@ -1,5 +1,7 @@
 # Separate lab portal
 
+The chosen customer address is **https://lab.perma.cool**. The exact host's homepage redirects to `/lab`; the main PermaCool homepage is unchanged. To activate the address, add `lab.perma.cool` to the existing Vercel project and create the DNS record specified by Vercel. Add `https://lab.perma.cool/auth/callback` to Supabase's allowed redirect URLs before testing email login or password reset. Those flows keep their callback on the lab origin so the host-local PKCE verifier is available. This does not broaden cookie scope or change account permissions. DNS, hosting attachment, and Supabase allowlist changes have not been applied from this checkout.
+
 `/lab` has its own navigation and equipment workspace, separate from the marketing site and operations dashboard. It is not linked from the public marketing navigation or sitemap. The page and API require approved lab membership or platform staff access. Missing auth/database configuration fails closed. Viewer memberships cannot save.
 
 ## Setup

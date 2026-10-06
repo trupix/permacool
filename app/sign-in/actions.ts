@@ -1,11 +1,18 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { db } from '@/lib/db';
 import { isEligiblePortalUser, safeNextPath, portalNextPath } from '@/lib/auth-forms';
 import { getCurrentUser } from '@/lib/auth';
 import { env, hasDatabaseUrl, isSupabaseAuthEnabled } from '@/lib/env';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+
+async function authCallbackUrl() {
+  // Keep the PKCE callback on the host where the sign-in flow began.
+  const origin = (await headers()).get('origin');
+  return new URL('/auth/callback', origin === 'https://lab.perma.cool' ? origin : env.appUrl);
+}
 
 function signInRedirect(status: string, next: string) {
   const params = new URLSearchParams({ status, next: safeNextPath(next) });
@@ -90,7 +97,7 @@ export async function sendMagicLink(formData: FormData) {
   }
 
   const supabase = await createSupabaseServerClient();
-  const redirectTo = new URL('/auth/callback', env.appUrl);
+  const redirectTo = await authCallbackUrl();
   redirectTo.searchParams.set('next', next);
 
   const { error } = await supabase.auth.signInWithOtp({
@@ -126,7 +133,7 @@ export async function requestPasswordReset(formData: FormData) {
 
   if (await approvedPortalUser(email)) {
     const supabase = await createSupabaseServerClient();
-    const redirectTo = new URL('/auth/callback', env.appUrl);
+    const redirectTo = await authCallbackUrl();
     redirectTo.searchParams.set('next', '/set-password');
 
     await supabase.auth.resetPasswordForEmail(email, {
