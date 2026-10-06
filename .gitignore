@@ -16,3 +16,4 @@ node_modules/
 *.tsbuildinfo
 vpn-profiles/
 backups/
+.lab-private/
