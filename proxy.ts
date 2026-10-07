@@ -4,6 +4,9 @@ import { isSupabaseAuthEnabled } from '@/lib/env';
 import { updateSession } from '@/lib/supabase/proxy';
 
 export async function proxy(request: NextRequest) {
+  if (request.headers.get('host')?.toLowerCase() === 'lab.perma.cool' && request.nextUrl.pathname === '/') {
+    return NextResponse.redirect(new URL('/lab', 'https://lab.perma.cool'));
+  }
   if (!isSupabaseAuthEnabled()) {
     return NextResponse.next({ request });
   }

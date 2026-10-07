@@ -49,8 +49,8 @@ export default async function SignInPage({ searchParams }: { searchParams: Promi
         <p className="eyebrow">PermaCool customer portal</p>
         <h1>Monitor and support your equipment.</h1>
         <p className="lede">
-          Sign in to view machine status, telemetry, alerts, support requests, documents, and invoices assigned to
-          your company.
+          Sign in with your existing account. You’ll go directly to your company’s equipment workspace,
+          including its assigned monitoring or lab service portal.
         </p>
 
         {message ? <p className="auth-callout">{message}</p> : null}

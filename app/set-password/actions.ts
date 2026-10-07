@@ -2,7 +2,8 @@
 
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
-import { isEligiblePortalUser, newPasswordError } from '@/lib/auth-forms';
+import { isEligiblePortalUser, newPasswordError, portalNextPath } from '@/lib/auth-forms';
+import { getCurrentUser } from '@/lib/auth';
 import { hasDatabaseUrl, isSupabaseAuthEnabled } from '@/lib/env';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -54,5 +55,6 @@ export async function updatePassword(formData: FormData) {
   const { error } = await supabase.auth.updateUser({ password });
   if (error) redirect('/set-password?status=password-update-error');
 
-  redirect('/dashboard?status=password-updated');
+  const destination = portalNextPath(await getCurrentUser(), process.env.LAB_ORGANIZATION_ID ?? '', '/dashboard');
+  redirect(`${destination}?status=password-updated`);
 }
