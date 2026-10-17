@@ -1,6 +1,7 @@
 import { SITE_URL } from "../lib/site";
 
 const privatePaths = [
+  "/lab",
   "/api/",
   "/auth/",
   "/admin/",

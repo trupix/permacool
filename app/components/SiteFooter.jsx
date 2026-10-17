@@ -1,4 +1,9 @@
+'use client';
+import { usePathname } from 'next/navigation';
+
 export default function SiteFooter() {
+  const pathname = usePathname();
+  if (pathname === '/lab' || pathname.startsWith('/lab/')) return null;
   return (
     <footer className="site-footer">
       <div className="footer-shell footer-main">

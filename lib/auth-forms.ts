@@ -25,6 +25,27 @@ export function safeNextPath(value: unknown, fallback = '/dashboard') {
   }
 }
 
+type PortalDestinationUser = {
+  status?: string;
+  platformRole: string;
+  organizationIds: string[];
+};
+
+export function isLabPortalCustomer(user: PortalDestinationUser | undefined, labOrganizationId: string) {
+  return Boolean(labOrganizationId && user?.status === 'approved' &&
+    user.platformRole === 'customer' && user.organizationIds.includes(labOrganizationId));
+}
+
+export function portalNextPath(user: PortalDestinationUser | undefined, labOrganizationId: string, requested: unknown) {
+  const next = safeNextPath(requested);
+  if (!isLabPortalCustomer(user, labOrganizationId)) return next;
+  const pathname = new URL(next, 'https://portal.invalid').pathname;
+  // Password recovery must finish before routing to the customer's workspace.
+  if (pathname === '/set-password') return next;
+  if (pathname === '/lab' || pathname.startsWith('/lab/')) return next;
+  return '/lab';
+}
+
 export function isEligiblePortalUser(user: PortalUserEligibility | null | undefined) {
   if (!user || user.status !== 'approved') return false;
 
