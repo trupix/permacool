@@ -34,7 +34,16 @@ assert.equal(
 assert.equal(groovManageUrl('Generic PLC', '172.28.0.12'), null);
 assert.equal(groovManageUrl('groov EPIC', null), null);
 assert.equal(groovManageUrl('groov EPIC', '35.243.46.137'), null);
-assert.equal(groovManageUrl('groov EPIC', '172.27.236.2'), null);
+assert.equal(groovManageUrl('groov EPIC', '172.27.236.2'), 'https://172.27.236.2/manage/');
+const goldDrop = { name: 'GoldDrop-EPIC-01', plcModel: 'Opto22 groov EPIC PR1', protocol: 'Node-RED HTTPS telemetry', vpnTunnelIp: '172.27.236.2' };
+assert.equal(groovManageUrlForDevices([goldDrop]), 'https://172.27.236.2/manage/');
+assert.equal(nodeRedUrlForDevices([goldDrop]), 'https://172.27.236.2/node-red/');
+assert.equal(nodeRedUrlForDevices([{ ...salinas, plcModel: 'GRV-EPIC-PR1' }]), 'https://172.28.200.10/node-red/');
+for (const address of ['127.0.0.1', '169.254.169.254', '172.15.1.1', '172.32.1.1', 'example.com', '172.27.236.2/path', '172.27.236.2:443']) {
+  assert.equal(groovManageUrl('groov EPIC', address), null);
+  assert.equal(nodeRedUrlForDevices([{ ...goldDrop, vpnTunnelIp: address }]), null);
+}
+assert.equal(groovManageUrlForDevices([{ ...goldDrop, plcModel: 'Generic PLC' }]), null);
 assert.equal(groovManageUrl('groov EPIC', '172.28.0.999'), null);
 assert.equal(nodeRedUrlForDevices([{ ...salinas, protocol: 'HTTPS' }]), null);
 assert.equal(nodeRedUrlForDevices([{ ...salinas, vpnTunnelIp: null }]), null);

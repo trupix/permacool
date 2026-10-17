@@ -287,7 +287,7 @@ export async function updateProvisionedDevice(deviceId: string, input: UpdatePlc
     });
 
     return updated;
-  });
+  }, { maxWait: 10_000 });
 }
 
 export async function updateProvisionedSiteAddress(

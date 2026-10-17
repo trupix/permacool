@@ -11,11 +11,13 @@ function isPermacoolVpnAddress(tunnelIp: string | null | undefined): tunnelIp is
   ) {
     return false;
   }
-  return octets[0] === '172' && octets[1] === '28';
+  const [first, second] = octets.map(Number);
+  return first === 10 || (first === 172 && second >= 16 && second <= 31) ||
+    (first === 192 && second === 168);
 }
 
 function isGroovEpic(controllerName: string) {
-  return controllerName.toLowerCase().includes('groov epic');
+  return /groov epic|\bgrv-epic-pr[12]\b/i.test(controllerName);
 }
 
 export function groovManageUrl(controllerName: string, tunnelIp: string | null | undefined) {
@@ -25,10 +27,10 @@ export function groovManageUrl(controllerName: string, tunnelIp: string | null |
 }
 
 export function groovManageUrlForDevices(
-  devices: Array<{ name: string; vpnTunnelIp?: string | null }>
+  devices: Array<{ name: string; plcModel?: string; vpnTunnelIp?: string | null }>
 ) {
   for (const device of devices) {
-    const url = groovManageUrl(device.name, device.vpnTunnelIp);
+    const url = groovManageUrl(device.plcModel || device.name, device.vpnTunnelIp);
     if (url) return url;
   }
   return null;
@@ -37,6 +39,7 @@ export function groovManageUrlForDevices(
 export function nodeRedUrlForDevices(
   devices: Array<{
     name: string;
+    plcModel?: string;
     protocol: string;
     vpnIdentity?: string | null;
     vpnTunnelIp?: string | null;
@@ -44,7 +47,7 @@ export function nodeRedUrlForDevices(
 ) {
   for (const device of devices) {
     if (
-      !isGroovEpic(device.name) ||
+      !isGroovEpic(device.plcModel || device.name) ||
       !device.protocol.toLowerCase().includes('node-red') ||
       !isPermacoolVpnAddress(device.vpnTunnelIp)
     ) {
