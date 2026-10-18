@@ -10,7 +10,10 @@ import { deriveSiteOperatingActivity } from '@/lib/site-operating-activity';
 
 export default async function SitesPage() {
   const user = await requireUser();
-  const [organizations, sites] = await Promise.all([getOrganizations(user), getSites(user)]);
+  const [organizations, sites] = await Promise.all([
+    getOrganizations(user),
+    getSites(user, { includeAddresses: false })
+  ]);
   return (
     <main className="page-stack">
       <header>

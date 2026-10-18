@@ -66,13 +66,13 @@ export async function getDashboardSites(
   });
 }
 
-export async function getSites(scope: AccessScope): Promise<Site[]> {
+export async function getSites(scope: AccessScope, options: { includeAddresses?: boolean } = {}): Promise<Site[]> {
   if (!shouldUseDatabase()) return filterMockSites(scope);
 
   const rows = await db.site.findMany({
     where: siteWhere(scope),
     include: {
-      provisioningDetails: true,
+      provisioningDetails: options.includeAddresses !== false,
       devices: {
         select: {
           id: true,
