@@ -7,6 +7,7 @@ import { requireUser } from '@/lib/auth';
 import { formatSiteActivity } from '@/lib/site-activity';
 import { SiteOperatingActivityIcon } from '@/components/site-operating-activity';
 import { deriveSiteOperatingActivity } from '@/lib/site-operating-activity';
+import { telemetryFreshness } from '@/lib/telemetry-freshness';
 
 export default async function SitesPage() {
   const user = await requireUser();
@@ -36,7 +37,7 @@ export default async function SitesPage() {
               </div>
               <div className="site-card-indicators">
                 <SiteOperatingActivityIcon activity={site.operatingActivity ?? deriveSiteOperatingActivity({})} />
-                <StatusBadge tone={site.gatewayStatus} label={`Gateway ${site.gatewayStatus}`} />
+                <StatusBadge {...telemetryFreshness(site.lastActiveAt)} />
               </div>
             </Link>
           ))}
