@@ -3,9 +3,8 @@ import Link from 'next/link';
 import { MetricCard } from '@/components/metric-card';
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
-import { getAlerts } from '@/server/repositories/alerts';
+import { getAlerts, getOpenAlertCount } from '@/server/repositories/alerts';
 import { getDevices } from '@/server/repositories/devices';
-import { getOverviewMetrics } from '@/server/repositories/overview';
 import { getDashboardSites } from '@/server/repositories/sites';
 import { requireUser } from '@/lib/auth';
 import { isStaffScope } from '@/lib/access';
@@ -17,12 +16,18 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const user = await requireUser();
-  const [alerts, devices, sites, dashboardSummary] = await Promise.all([
-    getAlerts(user),
+  const [alerts, devices, sites, openAlerts] = await Promise.all([
+    getAlerts(user, 10),
     getDevices(user),
     getDashboardSites(user),
-    getOverviewMetrics(user)
+    getOpenAlertCount(user)
   ]);
+  const dashboardSummary = {
+    totalSites: sites.length,
+    onlineDevices: devices.filter((device) => device.status === 'online').length,
+    openAlerts,
+    degradedSites: sites.filter((site) => site.gatewayStatus !== 'online').length
+  };
   return (
     <main className="page-stack">
       <header>
@@ -55,7 +60,7 @@ export default async function DashboardPage() {
           </div>
         </SectionCard>
 
-        <SectionCard title="Recent alerts" eyebrow="Attention">
+        <SectionCard title="Recent alerts" eyebrow="Latest 10" action={<Link href="/alerts">View all alerts</Link>}>
           <div className="list-stack">
             {alerts.map((alert) => (
               <div key={alert.id} className="list-row list-row-start">
