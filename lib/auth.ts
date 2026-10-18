@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { cache } from 'react';
 import { db } from '@/lib/db';
 import { env, isSupabaseAuthEnabled, hasDatabaseUrl } from '@/lib/env';
 import { currentUser } from '@/lib/mock-data';
@@ -6,7 +7,8 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { isPlatformStaff, userRoleForMembership } from '@/lib/workspace-access';
 import type { AppUser } from '@/types/domain';
 
-export async function getCurrentUser(): Promise<AppUser | undefined> {
+// React cache is scoped to one server render, never shared between users/requests.
+export const getCurrentUser = cache(async (): Promise<AppUser | undefined> => {
   if (!isSupabaseAuthEnabled()) {
     return currentUser;
   }
@@ -54,7 +56,7 @@ export async function getCurrentUser(): Promise<AppUser | undefined> {
       .map((membership) => membership.organizationId),
     deviceIds: existingUser.deviceAccess.map((assignment) => assignment.deviceId)
   };
-}
+});
 
 export async function requireUser() {
   const user = await getCurrentUser();
