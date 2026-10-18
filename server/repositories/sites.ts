@@ -48,6 +48,24 @@ function filterMockSites(scope: AccessScope) {
   });
 }
 
+// Dashboard cards need only these fields, not telemetry or operating history.
+export async function getDashboardSites(
+  scope: AccessScope
+): Promise<Array<Pick<Site, 'id' | 'name' | 'region' | 'gatewayStatus'>>> {
+  if (!shouldUseDatabase()) {
+    return sites.filter((site) =>
+      isStaffScope(scope) || scope.allDeviceOrganizationIds.includes(site.organizationId) ||
+      getDevicesForSite(site.id).some((device) => scope.deviceIds.includes(device.id))
+    ).map(({ id, name, region, gatewayStatus }) => ({ id, name, region, gatewayStatus }));
+  }
+
+  return db.site.findMany({
+    where: siteWhere(scope),
+    select: { id: true, name: true, region: true, gatewayStatus: true },
+    orderBy: { name: 'asc' }
+  });
+}
+
 export async function getSites(scope: AccessScope): Promise<Site[]> {
   if (!shouldUseDatabase()) return filterMockSites(scope);
 

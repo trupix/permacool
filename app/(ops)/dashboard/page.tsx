@@ -6,7 +6,7 @@ import { StatusBadge } from '@/components/status-badge';
 import { getAlerts } from '@/server/repositories/alerts';
 import { getDevices } from '@/server/repositories/devices';
 import { getOverviewMetrics } from '@/server/repositories/overview';
-import { getSites } from '@/server/repositories/sites';
+import { getDashboardSites } from '@/server/repositories/sites';
 import { requireUser } from '@/lib/auth';
 import { isStaffScope } from '@/lib/access';
 
@@ -20,7 +20,7 @@ export default async function DashboardPage() {
   const [alerts, devices, sites, dashboardSummary] = await Promise.all([
     getAlerts(user),
     getDevices(user),
-    getSites(user),
+    getDashboardSites(user),
     getOverviewMetrics(user)
   ]);
   return (
