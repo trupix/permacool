@@ -2,9 +2,8 @@ import { db } from '@/lib/db';
 import { hasDatabaseUrl } from '@/lib/env';
 import { defaultLogicDefinitions } from '@/lib/equipment/logic-catalog';
 
-let storageInitialization: Promise<boolean> | undefined;
-
-async function initializeLogicDefinitionStorage() {
+// Explicit maintenance only; browsing must not rewrite the system catalog.
+export async function initializeLogicDefinitionStorage() {
   try {
     await db.$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS "LogicDefinition" (
@@ -52,9 +51,5 @@ async function initializeLogicDefinitionStorage() {
 }
 
 export async function ensureLogicDefinitionStorage() {
-  if (!hasDatabaseUrl()) return false;
-  storageInitialization ??= initializeLogicDefinitionStorage();
-  const ready = await storageInitialization;
-  if (!ready) storageInitialization = undefined;
-  return ready;
+  return hasDatabaseUrl();
 }

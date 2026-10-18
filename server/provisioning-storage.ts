@@ -1,9 +1,8 @@
 import { db } from '@/lib/db';
 import { hasDatabaseUrl } from '@/lib/env';
 
-let setupPromise: Promise<boolean> | null = null;
-
-async function initializeProvisioningStorage() {
+// Explicit maintenance only; provisioning requests use the migrated schema.
+export async function initializeProvisioningStorage() {
   if (!hasDatabaseUrl()) return false;
 
   try {
@@ -55,6 +54,5 @@ async function initializeProvisioningStorage() {
 }
 
 export function ensureProvisioningStorage() {
-  setupPromise ??= initializeProvisioningStorage();
-  return setupPromise;
+  return Promise.resolve(hasDatabaseUrl());
 }
