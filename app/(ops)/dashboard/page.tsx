@@ -44,6 +44,10 @@ export default async function DashboardPage() {
         </p>
       </header>
 
+      <Link href="/dashboard/telemetry-flow" className="list-row link-row">
+        <div><strong>Explore the telemetry flow →</strong><p>Animated guide to sampling, resting mode, safe uploads, and Degrees Per Min. Planned system—not live status.</p></div>
+      </Link>
+
       <section className="metric-grid">
         <MetricCard label="Sites" value={dashboardSummary.totalSites} detail="Customer locations onboarded" />
         <MetricCard label="Reporting Devices" value={dashboardSummary.onlineDevices} detail="Telemetry received within five minutes" />
