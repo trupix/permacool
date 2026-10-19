@@ -1,0 +1,3 @@
+# Telemetry flow documentation
+
+Keep `/dashboard/telemetry-flow` current with every relevant telemetry, controller-health, alert, logging, cooling-rate, remote-access, or backup-workflow change. Update `components/telemetry-flow.tsx` in the same change. Distinguish proposed, implemented, and commissioned functionality; never label a plan as live. Reflect actual per-site differences, commands versus physical feedback, data freshness, timing, and failure behavior. Verify the page in the browser after publishing. Do not deploy unrelated unfinished work just to publish documentation. If publication is blocked, report that the public diagram is not yet updated.

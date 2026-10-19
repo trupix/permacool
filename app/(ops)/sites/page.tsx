@@ -7,10 +7,14 @@ import { requireUser } from '@/lib/auth';
 import { formatSiteActivity } from '@/lib/site-activity';
 import { SiteOperatingActivityIcon } from '@/components/site-operating-activity';
 import { deriveSiteOperatingActivity } from '@/lib/site-operating-activity';
+import { telemetryFreshness } from '@/lib/telemetry-freshness';
 
 export default async function SitesPage() {
   const user = await requireUser();
-  const [organizations, sites] = await Promise.all([getOrganizations(user), getSites(user)]);
+  const [organizations, sites] = await Promise.all([
+    getOrganizations(user),
+    getSites(user, { includeAddresses: false })
+  ]);
   return (
     <main className="page-stack">
       <header>
@@ -33,7 +37,7 @@ export default async function SitesPage() {
               </div>
               <div className="site-card-indicators">
                 <SiteOperatingActivityIcon activity={site.operatingActivity ?? deriveSiteOperatingActivity({})} />
-                <StatusBadge tone={site.gatewayStatus} label={`Gateway ${site.gatewayStatus}`} />
+                <StatusBadge {...telemetryFreshness(site.lastActiveAt)} />
               </div>
             </Link>
           ))}

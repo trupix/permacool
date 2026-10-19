@@ -1,9 +1,8 @@
 import { db } from '@/lib/db';
 import { hasDatabaseUrl } from '@/lib/env';
 
-let storageInitialization: Promise<boolean> | undefined;
-
-async function initializeEquipmentEventStorage() {
+// Explicit maintenance only; normal requests must not perform schema DDL.
+export async function initializeEquipmentEventStorage() {
   try {
     await db.$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS "EquipmentEvent" (
@@ -48,9 +47,5 @@ async function initializeEquipmentEventStorage() {
 }
 
 export async function ensureEquipmentEventStorage() {
-  if (!hasDatabaseUrl()) return false;
-  storageInitialization ??= initializeEquipmentEventStorage();
-  const ready = await storageInitialization;
-  if (!ready) storageInitialization = undefined;
-  return ready;
+  return hasDatabaseUrl();
 }
