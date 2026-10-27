@@ -55,8 +55,10 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
       where: { id: payload.siteId },
       data: { gatewayStatus: 'online' }
     }),
-    db.device.update({
-      where: { id: payload.deviceId },
+    // A delayed hourly diagnostic keeps its original capture time. It must not
+    // move a device's newer live-telemetry timestamp backwards.
+    db.device.updateMany({
+      where: { id: payload.deviceId, OR: [{ lastSeenAt: null }, { lastSeenAt: { lte: capturedAt } }] },
       data: { status: 'online', lastSeenAt: capturedAt }
     }),
     db.telemetrySample.createMany({
