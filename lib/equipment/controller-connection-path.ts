@@ -8,6 +8,7 @@ export type ConnectionTelemetryPoint = {
 export type ConnectionStageState = 'healthy' | 'fault' | 'stale' | 'unmonitored' | 'checking';
 
 export type ConnectionStage = {
+  validUntil?: string;
   source?: 'openvpn-session';
   id: 'vpn' | 'strategy' | 'io' | 'pacRead' | 'delivery' | 'website';
   label: string;
@@ -24,6 +25,7 @@ export type ControllerConnectionPath = {
 };
 
 type ResolvedSignal = {
+  deviceId: string;
   value: number;
   fresh: boolean;
   timestamp: string;
@@ -81,7 +83,7 @@ function resolveSignal(
   const referenceTime = referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
   const fresh = Number.isFinite(observedAt) && Number.isFinite(referenceTime) &&
     referenceTime - observedAt <= maximumAgeMs && observedAt - referenceTime <= FUTURE_TOLERANCE_MS;
-  return { value, fresh, timestamp: point.latestTimestamp };
+  return { value, fresh, timestamp: point.latestTimestamp, deviceId: point.deviceId };
 }
 
 function booleanStage(
@@ -153,7 +155,42 @@ export function resolveControllerConnectionPath({
   );
 
   let io: ConnectionStage;
-  if (!ioCommunicationOk && !ioReady && !ioChannelFaultCount) {
+  // Opt in only the commissioned GoldDrop identity and a coherent v2 report.
+  // Never stretch the freshness of other sites or use hourly I/O as delivery proof.
+  const hourlyDevice = 'epic-golddrop-golddrop-epic-01-4oic';
+  const hourlyIds = scopedDeviceIds.filter((id) => id === hourlyDevice);
+  const hourlyWindow = 3_660_000; // one hour plus one minute delivery grace
+  const hourlyResult = resolveSignal(points, hourlyIds, ['pac_io_communication_ok'], referenceTimestamp, hourlyWindow);
+  const sequence = resolveSignal(points, hourlyIds, ['pac_io_diagnostic_sequence'], referenceTimestamp, hourlyWindow);
+  const checkReason = resolveSignal(points, hourlyIds, ['pac_io_check_reason'], referenceTimestamp, hourlyWindow);
+  const checkAge = resolveSignal(points, hourlyIds, ['pac_io_last_check_age_seconds'], referenceTimestamp, hourlyWindow);
+  const hourlyReport = hourlyResult && sequence && checkReason && checkAge &&
+    Number.isFinite(Date.parse(hourlyResult.timestamp)) &&
+    Number.isInteger(sequence.value) && sequence.value > 0 && sequence.value % 2 === 0 &&
+    Number.isInteger(checkReason.value) && checkReason.value >= 1 && checkReason.value <= 31 &&
+    Number.isInteger(checkAge.value) && checkAge.value >= 0 && checkAge.value <= 3660 &&
+    [sequence, checkReason, checkAge].every((signal) => signal.timestamp === hourlyResult.timestamp);
+  if (hourlyReport) {
+    const liveSignals = [
+      resolveSignal(points, hourlyIds, signalAliases.heartbeat, referenceTimestamp, maximumAgeMs),
+      resolveSignal(points, hourlyIds, signalAliases.pacReadOk, referenceTimestamp, maximumAgeMs),
+      resolveSignal(points, hourlyIds, signalAliases.strategyRunning, referenceTimestamp, maximumAgeMs)
+    ];
+    const live = liveSignals.every((signal, index) => signal?.fresh && (index === 0 || signal.value === 1));
+    const reference = referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
+    const ageMinutes = Math.max(0, Math.floor((reference - Date.parse(hourlyResult.timestamp)) / 60_000));
+    const verified = [0, 1].includes(hourlyResult.value);
+    const expired = !hourlyResult.fresh;
+    io = {
+      id: 'io', label: 'Physical I/O boards',
+      state: expired || !live ? 'stale' : !verified ? 'checking' : hourlyResult.value === 1 ? 'healthy' : 'fault',
+      status: expired ? 'Hourly check overdue' : !live ? 'Live connection unverified' : !verified ? 'Unverified' : hourlyResult.value === 1 ? 'Last check passed' : 'Last check failed',
+      detail: `Hourly I/O diagnostic: last checked ${ageMinutes} minute(s) ago. ${expired ? 'The one-hour schedule plus one-minute delivery grace has expired.' : !live ? 'Current heartbeat, PAC reads and strategy-running evidence are required.' : 'This is the last completed check, not continuous module monitoring.'} Individual channel health and physical output operation are not proved.`,
+      observedAt: hourlyResult.timestamp,
+      validUntil: new Date(Math.min(Date.parse(hourlyResult.timestamp) + hourlyWindow,
+        ...liveSignals.map((signal) => signal && Number.isFinite(Date.parse(signal.timestamp)) ? Date.parse(signal.timestamp) + maximumAgeMs : 0))).toISOString()
+    };
+  } else if (!ioCommunicationOk && !ioReady && !ioChannelFaultCount) {
     io = {
       id: 'io',
       label: 'Physical I/O boards',

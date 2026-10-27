@@ -5,6 +5,11 @@ export function connectionIconState(stage: ConnectionStage, now: number): 'check
   if (stage.id === 'vpn' && stage.source !== 'openvpn-session') return 'checking';
   if (stage.state === 'checking' || stage.state === 'stale' || stage.state === 'unmonitored') return 'checking';
   const observed = stage.observedAt ? Date.parse(stage.observedAt) : NaN;
+  if (stage.id === 'io' && stage.validUntil) {
+    const deadline = Date.parse(stage.validUntil);
+    if (!Number.isFinite(observed) || observed - now > 60_000 || !Number.isFinite(deadline) || now > deadline) return 'checking';
+    return stage.state === 'healthy' ? 'connected' : 'disconnected';
+  }
   if (!Number.isFinite(observed) || now - observed > (stage.id === 'vpn' ? 60_000 : 45_000) || observed - now > (stage.id === 'vpn' ? 5_000 : 60_000)) return 'checking';
   return stage.state === 'healthy' ? 'connected' : 'disconnected';
 }
