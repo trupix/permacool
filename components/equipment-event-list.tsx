@@ -35,6 +35,13 @@ function EventIcon({ type }: { type: string }) {
   return <Clock3 size={17} />;
 }
 
+function formatCycleDuration(seconds: number) {
+  const total = Math.max(0, Math.round(seconds));
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  return `${hours ? `${hours}h ` : ''}${minutes}m ${total % 60}s`;
+}
+
 export function EquipmentEventList({
   events,
   timezone,
@@ -60,6 +67,16 @@ export function EquipmentEventList({
               <span>{event.channel}</span>
             </div>
             <p>{formatEventTime(event.occurredAt, timezone)} · {event.deviceName ?? event.deviceId}</p>
+            {event.offCycleSeconds != null && (
+              <p title="Recorded time from reaching temperature to the next compressor start. Approximate to the telemetry sampling interval.">
+                <strong>Off cycle: {formatCycleDuration(event.offCycleSeconds)}</strong> · reached temperature → cooling resumed
+              </p>
+            )}
+            {event.sincePreviousOffCycleSeconds != null && (
+              <p title="Recorded time between successive reached-temperature events, with cooling resumed in between.">
+                <strong>Since previous off cycle: {formatCycleDuration(event.sincePreviousOffCycleSeconds)}</strong>
+              </p>
+            )}
             <div className="equipment-event-snapshot">
               <span><Gauge size={13} /> High {formatValue(event.highPressure, 'PSI')}</span>
               <span><Gauge size={13} /> Low {formatValue(event.lowPressure, 'PSI')}</span>

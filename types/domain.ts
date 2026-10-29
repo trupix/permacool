@@ -69,6 +69,8 @@ export interface Alert {
 }
 
 export interface EquipmentEvent {
+  offCycleSeconds?: number | null;
+  sincePreviousOffCycleSeconds?: number | null;
   id: string;
   siteId: string;
   deviceId: string;
