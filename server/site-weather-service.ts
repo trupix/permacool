@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUser } from '@/lib/auth';
 import { hasDatabaseUrl } from '@/lib/env';
 import { parseSiteAddressInput } from '@/server/provisioning-input';
-import { getSite } from '@/server/repositories/sites';
 import type { Site } from '@/types/domain';
 
 const NWS_USER_AGENT = process.env.NWS_USER_AGENT ?? 'PermaCoolOps/1.0 (operations@perma.cool)';
@@ -323,7 +321,7 @@ export async function resolveWeatherLocation(site: Site): Promise<ResolvedWeathe
   };
 }
 
-async function fetchBestObservation(
+export async function fetchBestObservation(
   stations: ResolvedWeatherLocation['stations'],
   headers: Record<string, string>
 ) {
@@ -368,6 +366,8 @@ export async function GET(
   { params }: { params: Promise<{ siteid: string }> }
 ) {
   const { siteid } = await params;
+  const { getCurrentUser } = await import('@/lib/auth');
+  const { getSite } = await import('@/server/repositories/sites');
   const user = await getCurrentUser();
 
   if (!user) {

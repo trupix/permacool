@@ -3,6 +3,7 @@ import { hasDatabaseUrl } from '@/lib/env';
 import type { TelemetryIngestPayload } from '@/types/domain';
 import { evaluateEquipmentTransitions } from '@/server/equipment-events';
 import { ensureEquipmentEventStorage } from '@/server/equipment-event-storage';
+import { attachSavedEventWeather } from '@/server/saved-event-weather';
 
 function telemetryLabel(key: string) {
   return key
@@ -140,6 +141,8 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
         })),
         skipDuplicates: true
       });
+      // Weather failure must not reject telemetry or lose the equipment event.
+      await attachSavedEventWeather(payload.siteId).catch(() => console.error('Event weather attachment delayed.'));
     } catch (error) {
       eventsPersisted = false;
       console.error('Equipment event persistence failed after telemetry was saved.', error);

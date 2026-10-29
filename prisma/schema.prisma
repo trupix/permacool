@@ -112,6 +112,7 @@ model UserOrganization {
 }
 
 model Site {
+  weatherSnapshots SiteWeatherSnapshot[]
   id                     String                      @id @default(cuid())
   organizationId         String
   name                   String
@@ -242,6 +243,7 @@ model Alert {
 }
 
 model EquipmentEvent {
+  ambientWeather EventAmbientWeather?
   id                 String   @id @default(cuid())
   dedupeKey          String   @unique
   siteId             String
@@ -264,6 +266,27 @@ model EquipmentEvent {
 
   @@index([siteId, occurredAt(sort: Desc)])
   @@index([deviceId, occurredAt(sort: Desc)])
+}
+
+model SiteWeatherSnapshot {
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  siteId String
+  slotAt DateTime
+  observedAt DateTime
+  temperatureF Float
+  station String
+  fetchedAt DateTime @default(now())
+  @@id([siteId, slotAt])
+  @@index([siteId, observedAt(sort: Desc)], map: "SiteWeatherSnapshot_observed_idx")
+}
+
+model EventAmbientWeather {
+  event EquipmentEvent @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  eventId String @id
+  temperatureF Float
+  observedAt DateTime
+  station String
+  savedAt DateTime @default(now())
 }
 
 model LogicDefinition {
