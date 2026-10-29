@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
 import { getOrganizations } from '@/server/repositories/organizations';
@@ -27,6 +28,7 @@ export default async function SitesPage() {
           {sites.map((site) => (
             <Link href={`/sites/${site.id}`} key={site.id} className="list-row link-row">
               <div>
+                {site.id === 'site-golddrop' ? <Image src="/images/customers/golddrop.svg" alt="GoldDrop" width={1500} height={260} style={{ display: 'block', width: 'min(100%, 220px)', height: 'auto', marginBottom: '0.65rem' }} /> : null}
                 <strong>{site.name}</strong>
                 <p>
                   {site.region} · {site.deviceIds.length} devices
