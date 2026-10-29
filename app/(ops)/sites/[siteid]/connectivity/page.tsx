@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { SiteEquipmentDashboard } from '@/components/site-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
@@ -55,7 +56,7 @@ export default async function SiteConnectivityPage({
       />
 
       <header className="site-detail-heading">
-        <p className="eyebrow">{site.name}</p>
+        {site.id === 'site-golddrop' ? <Image src="/images/customers/golddrop.svg" alt="GoldDrop" width={1500} height={260} className="site-company-logo" priority /> : <p className="eyebrow">{site.name}</p>}
         <h1>Connectivity</h1>
         <p className="page-copy">
           Gateway availability, connected controllers, and live telemetry signal readiness.

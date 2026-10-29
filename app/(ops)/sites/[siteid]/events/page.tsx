@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Suspense } from 'react';
 import { CycleAverages } from '@/components/cycle-averages';
 import { Download } from 'lucide-react';
@@ -47,6 +48,7 @@ export default async function SiteEventsPage({
       />
 
       <header className="site-events-heading">
+        {site.id === 'site-golddrop' ? <Image src="/images/customers/golddrop.svg" alt="GoldDrop" width={1500} height={260} className="site-company-logo" priority /> : null}
         <p className="eyebrow">Permanent operating record</p>
         <div className="site-events-title-row">
           <div>
