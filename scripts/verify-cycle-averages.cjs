@@ -22,6 +22,10 @@ new Function('require','exports',source)(n=>n==='next/cache'?{unstable_cache:f=>
   assert.equal(row.hours,8);
   assert.equal(row.off,180);
   assert.equal(row.offCount,2);
+  assert.equal(row.offLow,120);
+  assert.equal(row.offHigh,240);
+  assert.equal(row.betweenLow,1200);
+  assert.equal(row.betweenHigh,1200);
   assert.equal(row.between,1200);
   assert.equal(row.betweenCount,2);
   // Freshness gaps cannot become operating time or bridge an event pair.

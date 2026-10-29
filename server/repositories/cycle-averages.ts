@@ -69,6 +69,10 @@ export const getSiteCycleAverages = unstable_cache(async (siteId: string) => {
     const mean = (values: number[]) => values.length ? values.reduce((a,b) => a+b,0)/values.length : null;
     return { id, channel, deviceName: devices.find(d => d.id === deviceId)?.name ?? deviceId,
       hours: own.reduce((n,w) => n+(w.end.getTime()-w.start.getTime())/3600000,0),
-      asOf: own.length ? own[own.length-1].end.toISOString() : null, off: mean(off), between: mean(between), offCount: off.length, betweenCount: between.length };
+      asOf: own.length ? own[own.length-1].end.toISOString() : null, off: mean(off), between: mean(between), offCount: off.length, betweenCount: between.length,
+      offLow: off.length ? Math.min(...off) : null, offHigh: off.length ? Math.max(...off) : null,
+      betweenLow: between.length ? Math.min(...between) : null, betweenHigh: between.length ? Math.max(...between) : null };
   });
-}, ['system-on-cycle-averages-v1'], { revalidate: 60 });
+}, ['system-on-cycle-averages-v2'], { revalidate: 60 });
+
+export type CycleAverageRows = Awaited<ReturnType<typeof getSiteCycleAverages>>;
