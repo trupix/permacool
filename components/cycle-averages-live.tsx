@@ -17,9 +17,13 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
   const [checked, setChecked] = useState<string | null>(null);
   useEffect(() => {
     let stopped = false, busy = false;
+    const refreshMs = 30 * 60 * 1000;
+    let lastAttempt = initialError ? 0 : Date.now();
     const controller = new AbortController();
     async function update() {
       if (stopped || busy || document.visibilityState === 'hidden') return;
+      if (Date.now() - lastAttempt < refreshMs) return;
+      lastAttempt = Date.now();
       busy = true;
       try {
         const response = await fetch('/api/sites/' + encodeURIComponent(siteId) + '/cycle-averages', { cache: 'no-store', signal: controller.signal });
@@ -30,7 +34,7 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
       } catch { if (!stopped) setError(true); }
       finally { busy = false; }
     }
-    const interval = setInterval(update, 60000);
+    const interval = setInterval(update, refreshMs);
     const visible = () => { if (document.visibilityState === 'visible') void update(); };
     document.addEventListener('visibilitychange', visible);
     if (initialError) void update();
@@ -38,8 +42,8 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
   }, [siteId, initialError]);
   return <section aria-label="Cycle averages">
     <h3>Cycle averages · Last 8 system-on hours</h3>
-    <details className="cycle-summary-details"><summary>How these numbers are calculated</summary><p>Shutdown time and telemetry gaps are excluded. Completed, uninterrupted cycles only. Uses the latest 50,000 system-state samples per unit, within 30 days. Updates automatically every minute while this page is visible; results are cached for one minute.</p></details>
-    <p role="status">{error ? 'Automatic update delayed — showing the last available results; retrying automatically.' : checked ? 'Automatically checked at ' + new Date(checked).toLocaleTimeString('en-US', { timeZone: timezone }) : 'Automatic updates enabled'}</p>
+    <details className="cycle-summary-details"><summary>How these numbers are calculated</summary><p>Shutdown time and telemetry gaps are excluded. Completed, uninterrupted cycles only. Uses the latest 50,000 system-state samples per unit, within 30 days. Average, low, and high update every 30 minutes while this page is visible; results are cached for 30 minutes. Returning to a hidden tab only checks when the interval is due.</p></details>
+    <p role="status">{error ? 'Automatic update delayed — showing the last available results; retrying at the next 30-minute interval.' : checked ? '30-minute updates · Last checked at ' + new Date(checked).toLocaleTimeString('en-US', { timeZone: timezone }) : 'Updates automatically every 30 minutes'}</p>
     {!rows.length && <p>Waiting for recorded system-on history.</p>}
     {rows.map(row => <div key={row.id}>
       <h4>{row.deviceName} · {row.channel}</h4>

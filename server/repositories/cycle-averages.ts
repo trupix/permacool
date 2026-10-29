@@ -73,6 +73,6 @@ export const getSiteCycleAverages = unstable_cache(async (siteId: string) => {
       offLow: off.length ? Math.min(...off) : null, offHigh: off.length ? Math.max(...off) : null,
       betweenLow: between.length ? Math.min(...between) : null, betweenHigh: between.length ? Math.max(...between) : null };
   });
-}, ['system-on-cycle-averages-v2'], { revalidate: 60 });
+}, ['system-on-cycle-averages-v3'], { revalidate: 1800 });
 
 export type CycleAverageRows = Awaited<ReturnType<typeof getSiteCycleAverages>>;
