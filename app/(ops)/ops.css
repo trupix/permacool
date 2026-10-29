@@ -5849,6 +5849,7 @@
   margin-top: 0.52rem;
 }
 
+.site-company-logo { display: block; width: min(100%, 340px); height: auto; margin: 0.5rem 0; }
 .cycle-summary-pair { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; align-items: flex-start; }
 .cycle-summary-section { min-width: 0; max-width: 100%; }
 .cycle-summary-boxes {

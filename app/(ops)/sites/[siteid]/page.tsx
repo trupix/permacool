@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Suspense } from 'react';
 import { CycleAverages } from '@/components/cycle-averages';
 import { ArrowRight } from 'lucide-react';
@@ -52,7 +53,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
 
       <header className="site-detail-heading">
         <p className="eyebrow">Site detail</p>
-        <h1>{site.name}</h1>
+        <h1>{site.id === 'site-golddrop' ? <Image src="/images/customers/golddrop.svg" alt="GoldDrop" width={1500} height={260} className="site-company-logo" priority /> : site.name}</h1>
         <p className="page-copy">
           {site.region} · {site.timezone}
         </p>
