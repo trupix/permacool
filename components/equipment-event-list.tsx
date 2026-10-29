@@ -1,3 +1,5 @@
+'use client';
+import { useEffect, useState } from 'react';
 import { CircleAlert, Clock3, Gauge, Power, Thermometer, Zap } from 'lucide-react';
 import { displayTelemetryText, displayTelemetryUnit } from '@/lib/telemetry-units';
 import type { EquipmentEvent } from '@/types/domain';
@@ -51,6 +53,22 @@ export function EquipmentEventList({
   timezone: string;
   emptyMessage?: string;
 }) {
+  const [weather, setWeather] = useState<Record<string, { temperatureF: number; observedAt: string; station: string } | null>>({});
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const eventIds = JSON.stringify(events.map(event => event.id));
+  const siteId = events[0]?.siteId;
+  useEffect(() => {
+    const controller = new AbortController();
+    setWeather({}); setWeatherLoading(true);
+    if (!siteId) { setWeatherLoading(false); return; }
+    fetch(`/api/sites/${encodeURIComponent(siteId)}/event-weather`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: JSON.parse(eventIds) }), signal: controller.signal
+    }).then(response => response.ok ? response.json() : Promise.reject())
+      .then(data => { if (!controller.signal.aborted) setWeather(data.readings ?? {}); })
+      .catch(() => {}).finally(() => { if (!controller.signal.aborted) setWeatherLoading(false); });
+    return () => controller.abort();
+  }, [eventIds, siteId]);
   if (!events.length) return <p className="empty-state">{emptyMessage}</p>;
 
   return (
@@ -88,6 +106,7 @@ export function EquipmentEventList({
               <span><Gauge size={13} /> High {formatValue(event.highPressure, 'PSI')}</span>
               <span><Gauge size={13} /> Low {formatValue(event.lowPressure, 'PSI')}</span>
               <span><Thermometer size={13} /> Fluid {formatValue(event.processTemperature, displayTelemetryUnit(event.temperatureUnit, { temperature: true }))}</span>
+              <span title={weather[event.id] ? `Nearby outdoor weather observation · NWS ${weather[event.id]!.station} · ${formatEventTime(weather[event.id]!.observedAt, timezone)} · at or before event, no more than 90 minutes old` : 'No matching historical outdoor weather observation available. Current weather is never substituted.'}><Thermometer size={13} /> Outdoor {weatherLoading ? 'Loading…' : weather[event.id] ? formatValue(weather[event.id]!.temperatureF, '°F') : 'unavailable'}</span>
               <span><Zap size={13} /> Current {formatValue(event.compressorAmps, 'A')}</span>
               <span><Clock3 size={13} /> Runtime {formatRuntime(event.runtimeMinutes)}</span>
             </div>
