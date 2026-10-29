@@ -5914,21 +5914,25 @@
   border: 1px solid transparent;
   border-radius: 10px;
   background: transparent;
-  color: #124e7d;
+  color: #6b369b;
   transition: background 160ms ease, box-shadow 160ms ease;
 }
 
-.cycle-summary-boxes > .equipment-off-cycle:hover { background: #eaf4ff; }
-.cycle-summary-boxes > .equipment-off-cycle--interval { color: #185b36; }
-.cycle-summary-boxes > .equipment-off-cycle--interval:hover { background: #eaf7ee; }
+.cycle-summary-boxes > .equipment-off-cycle:hover { background: #f3eafa; }
+.cycle-summary-boxes > .equipment-off-cycle--interval { color: #0f6868; }
+.cycle-summary-boxes > .equipment-off-cycle--interval:hover { background: #e5f5f3; }
 .cycle-summary-boxes > .cycle-summary-average {
-  background: #124e7d;
+  background: #6b369b;
   color: #fff;
   box-shadow: 0 8px 18px rgba(17, 44, 34, 0.13);
 }
-.cycle-summary-boxes > .cycle-summary-average:hover { background: #195f95; }
-.cycle-summary-boxes > .cycle-summary-average.equipment-off-cycle--interval { background: var(--ops-deep); color: #fff; }
-.cycle-summary-boxes > .cycle-summary-average.equipment-off-cycle--interval:hover { background: #23533f; }
+.cycle-summary-boxes > .cycle-summary-average:hover { background: #7c43ae; }
+.cycle-summary-boxes > .cycle-summary-average.equipment-off-cycle--interval { background: #0f6868; color: #fff; }
+.cycle-summary-boxes > .cycle-summary-average.equipment-off-cycle--interval:hover { background: #147c7c; }
+.cycle-summary-boxes > .pressure-summary-low { background: #175ca4; color: #fff; }
+.cycle-summary-boxes > .pressure-summary-low:hover { background: #1d6ebf; }
+.cycle-summary-boxes > .pressure-summary-high { background: #b52e38; color: #fff; }
+.cycle-summary-boxes > .pressure-summary-high:hover { background: #cb3944; }
 .cycle-summary-boxes > .equipment-off-cycle > span { display: inline-flex; align-items: center; gap: 0.42rem; font-size: 0.7rem; font-weight: 850; }
 .cycle-summary-boxes > .equipment-off-cycle strong { font-size: 0.7rem; font-weight: 850; font-variant-numeric: tabular-nums; }
 .cycle-summary-label { margin: 1rem 0 0; font-weight: 800; }

@@ -89,8 +89,8 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
       <div className="cycle-summary-section">
         <p className="cycle-summary-label">Pressure · Last 8 system-on hours</p>
         <div className="cycle-summary-boxes" role="group" aria-label="Pressure extremes">
-          <div className="equipment-off-cycle cycle-summary-average"><span><ArrowDown size={15} aria-hidden="true" /> Low-side low</span><strong>{pressure(row.pressureLow)}</strong></div>
-          <div className="equipment-off-cycle equipment-off-cycle--interval cycle-summary-average"><span><ArrowUp size={15} aria-hidden="true" /> High-side high</span><strong>{pressure(row.pressureHigh)}</strong></div>
+          <div className="equipment-off-cycle pressure-summary-low"><span><ArrowDown size={15} aria-hidden="true" /> Low-side low</span><strong>{pressure(row.pressureLow)}</strong></div>
+          <div className="equipment-off-cycle pressure-summary-high"><span><ArrowUp size={15} aria-hidden="true" /> High-side high</span><strong>{pressure(row.pressureHigh)}</strong></div>
         </div>
       </div>
       <p>{row.hours >= 7.999 ? 'Full 8-hour window' : `Partial history: ${row.hours.toFixed(2)} of 8 system-on hours`}{row.asOf ? ` · Last included on-time: ${new Date(row.asOf).toLocaleString('en-US', { timeZone: timezone })}` : ' · No observed on-time available'}</p>
