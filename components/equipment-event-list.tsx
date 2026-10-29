@@ -68,9 +68,10 @@ export function EquipmentEventList({
             </div>
             <p>{formatEventTime(event.occurredAt, timezone)} · {event.deviceName ?? event.deviceId}</p>
             {event.offCycleSeconds != null && (
-              <p title="Recorded time from reaching temperature to the next compressor start. Approximate to the telemetry sampling interval.">
-                <strong>Off cycle: {formatCycleDuration(event.offCycleSeconds)}</strong> · reached temperature → cooling resumed
-              </p>
+              <div className="equipment-off-cycle" title="Recorded time from reaching temperature to the next compressor start. Approximate to the telemetry sampling interval.">
+                <strong><Clock3 size={20} aria-hidden="true" /> Off cycle: {formatCycleDuration(event.offCycleSeconds)}</strong>
+                <span>Reached temperature → cooling resumed</span>
+              </div>
             )}
             {event.sincePreviousOffCycleSeconds != null && (
               <p title="Recorded time between successive reached-temperature events, with cooling resumed in between.">

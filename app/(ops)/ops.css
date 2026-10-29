@@ -5849,6 +5849,39 @@
   margin-top: 0.52rem;
 }
 
+.equipment-off-cycle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0.65rem 0;
+  padding: 0.75rem 1rem;
+  border: 2px solid #3984c0;
+  border-radius: 10px;
+  background: #eaf4ff;
+  color: #124e7d;
+}
+
+.equipment-off-cycle strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1.15rem;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.equipment-off-cycle svg { flex-shrink: 0; }
+
+.equipment-off-cycle > span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
 .equipment-event-snapshot span {
   display: inline-flex;
   align-items: center;
