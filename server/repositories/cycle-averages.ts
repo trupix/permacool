@@ -41,14 +41,14 @@ export const getSiteCycleAverages = unstable_cache(async (siteId: string) => {
     }
     windows.push(...own.reverse());
   }));
-  if (!windows.length) return [];
-  const earliest = new Date(Math.min(...windows.map(w => w.start.getTime())));
-  const events = await db.equipmentEvent.findMany({ where: { siteId, occurredAt: { gte: earliest } },
-    orderBy: { occurredAt: 'asc' }, select: { deviceId: true, channel: true, eventType: true, occurredAt: true } });
+  const earliest = new Date(windows.length ? Math.min(...windows.map(w => w.start.getTime())) : Date.now());
+  const events = windows.length ? await db.equipmentEvent.findMany({ where: { siteId, occurredAt: { gte: earliest } },
+    orderBy: { occurredAt: 'asc' }, select: { deviceId: true, channel: true, eventType: true, occurredAt: true } }) : [];
   const devices = await db.device.findMany({ where: { siteId }, select: { id: true, name: true } });
-  return [...new Set(windows.map(w => `${w.deviceId}|${w.channel}`))].map(id => {
+  return points.map(point => {
+    const deviceId = point.deviceId, channel = point.key.split('_')[0].toUpperCase();
+    const id = `${deviceId}|${channel}`;
     const own = windows.filter(w => `${w.deviceId}|${w.channel}` === id);
-    const { deviceId, channel } = own[0];
     const off: number[] = [], between: number[] = [];
     for (const window of own) {
       let reached: number | null = null, resumed = false;
@@ -69,6 +69,6 @@ export const getSiteCycleAverages = unstable_cache(async (siteId: string) => {
     const mean = (values: number[]) => values.length ? values.reduce((a,b) => a+b,0)/values.length : null;
     return { id, channel, deviceName: devices.find(d => d.id === deviceId)?.name ?? deviceId,
       hours: own.reduce((n,w) => n+(w.end.getTime()-w.start.getTime())/3600000,0),
-      asOf: own[own.length-1].end.toISOString(), off: mean(off), between: mean(between), offCount: off.length, betweenCount: between.length };
+      asOf: own.length ? own[own.length-1].end.toISOString() : null, off: mean(off), between: mean(between), offCount: off.length, betweenCount: between.length };
   });
 }, ['system-on-cycle-averages-v1'], { revalidate: 60 });

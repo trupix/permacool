@@ -18,7 +18,7 @@ export async function CycleAverages({ siteId, timezone }: { siteId: string; time
       <h4>{row.deviceName} · {row.channel}</h4>
       <div className="equipment-off-cycle"><strong>Average off cycle: {duration(row.off)}</strong><span>{row.offCount} completed cycles</span></div>
       <div className="equipment-off-cycle equipment-off-cycle--interval"><strong>Average between off cycles: {duration(row.between)}</strong><span>{row.betweenCount} intervals · reached temperature → next reached temperature</span></div>
-      <p>{row.hours >= 7.999 ? 'Full 8-hour window' : `Partial history: ${row.hours.toFixed(2)} of 8 system-on hours`} · Last included on-time: {new Date(row.asOf).toLocaleString('en-US', { timeZone: timezone })}</p>
+      <p>{row.hours >= 7.999 ? 'Full 8-hour window' : `Partial history: ${row.hours.toFixed(2)} of 8 system-on hours`}{row.asOf ? ` · Last included on-time: ${new Date(row.asOf).toLocaleString('en-US', { timeZone: timezone })}` : ' · No observed on-time available'}</p>
     </div>)}
   </section>;
 }
