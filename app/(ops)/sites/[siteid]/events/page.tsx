@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { CycleAverages } from '@/components/cycle-averages';
 import { Download } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { EquipmentEventList } from '@/components/equipment-event-list';
@@ -63,6 +65,7 @@ export default async function SiteEventsPage({
         </div>
       ) : null}
 
+      <Suspense fallback={<p>Loading cycle averages…</p>}><CycleAverages siteId={site.id} timezone={site.timezone} /></Suspense>
       <section className="panel event-history-panel">
         <header className="section-card-heading">
           <div>

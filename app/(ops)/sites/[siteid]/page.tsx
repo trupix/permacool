@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { CycleAverages } from '@/components/cycle-averages';
 import { ArrowRight } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { EquipmentEventList } from '@/components/equipment-event-list';
@@ -84,6 +86,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
           </Link>
         }
       >
+        <Suspense fallback={<p>Loading cycle averages…</p>}><CycleAverages siteId={site.id} timezone={site.timezone} /></Suspense>
         <EquipmentEventList events={siteEvents.events} timezone={site.timezone} />
       </SectionCard>
 
