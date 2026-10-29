@@ -5876,6 +5876,12 @@
 
 .equipment-off-cycle svg { flex-shrink: 0; }
 
+.equipment-off-cycle--interval {
+  border-color: #38825b;
+  background: #eaf7ee;
+  color: #185b36;
+}
+
 .equipment-off-cycle > span {
   font-size: 0.9rem;
   font-weight: 600;

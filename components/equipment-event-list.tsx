@@ -74,9 +74,9 @@ export function EquipmentEventList({
               </div>
             )}
             {event.sincePreviousOffCycleSeconds != null && (
-              <p title="Recorded time between successive reached-temperature events, with cooling resumed in between.">
-                <strong>Since previous off cycle: {formatCycleDuration(event.sincePreviousOffCycleSeconds)}</strong>
-              </p>
+              <div className="equipment-off-cycle equipment-off-cycle--interval" title="Recorded time between successive reached-temperature events, with cooling resumed in between.">
+                <strong><Clock3 size={20} aria-hidden="true" /> Since previous off cycle: {formatCycleDuration(event.sincePreviousOffCycleSeconds)}</strong>
+              </div>
             )}
             <div className="equipment-event-snapshot">
               <span><Gauge size={13} /> High {formatValue(event.highPressure, 'PSI')}</span>
