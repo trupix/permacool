@@ -5850,12 +5850,12 @@
 }
 
 .cycle-summary-boxes {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
   gap: 0.3rem;
   margin: 0.65rem 0;
-  width: fit-content;
+  width: min(100%, 560px);
   max-width: 100%;
   padding: 0.35rem;
   border: 1px solid rgba(17, 44, 34, 0.1);
@@ -5867,6 +5867,8 @@
 
 .cycle-summary-boxes > .equipment-off-cycle {
   margin: 0;
+  width: 100%;
+  min-width: 0;
   flex: 1 1 145px;
   display: flex;
   flex-direction: column;
@@ -5898,6 +5900,9 @@
 .cycle-summary-label span { font-size: 0.8rem; color: #65766e; font-weight: 500; }
 .cycle-summary-details { color: #65766e; font-size: 0.85rem; }
 .cycle-summary-details summary { cursor: pointer; width: fit-content; }
+@media (max-width: 540px) {
+  .cycle-summary-boxes { grid-template-columns: 1fr; }
+}
 @media (prefers-reduced-motion: reduce) {
   .cycle-summary-boxes > .equipment-off-cycle { transition: none; }
 }
