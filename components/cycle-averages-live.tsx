@@ -21,12 +21,14 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
   useEffect(() => {
     let stopped = false, busy = false;
     const refreshMs = 30 * 60 * 1000;
-    let lastAttempt = initialError ? 0 : Date.now();
+    // Fixed half-hour boundaries survive reloads, navigation, and browser tabs.
+    // The schedule is independent of when this component was mounted.
+    let lastAttempt = initialError ? 0 : Math.floor(Date.now() / refreshMs) * refreshMs;
     const controller = new AbortController();
     async function update() {
       if (stopped || busy || document.visibilityState === 'hidden') return;
       if (Date.now() - lastAttempt < refreshMs) return;
-      lastAttempt = Date.now();
+      lastAttempt = Math.floor(Date.now() / refreshMs) * refreshMs;
       busy = true;
       setUpdating(true);
       try {
@@ -46,7 +48,7 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
     const interval = setInterval(tick, 1000);
     const visible = () => { if (document.visibilityState === 'visible') tick(); };
     document.addEventListener('visibilitychange', visible);
-    if (initialError) void update();
+    tick();
     return () => { stopped = true; controller.abort(); clearInterval(interval); document.removeEventListener('visibilitychange', visible); };
   }, [siteId, initialError]);
   return <section aria-label="Cycle averages">
