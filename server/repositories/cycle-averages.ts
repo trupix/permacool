@@ -45,10 +45,21 @@ export const getSiteCycleAverages = unstable_cache(async (siteId: string) => {
   const events = windows.length ? await db.equipmentEvent.findMany({ where: { siteId, occurredAt: { gte: earliest } },
     orderBy: { occurredAt: 'asc' }, select: { deviceId: true, channel: true, eventType: true, occurredAt: true } }) : [];
   const devices = await db.device.findMany({ where: { siteId }, select: { id: true, name: true } });
-  return points.map(point => {
+  return Promise.all(points.map(async point => {
     const deviceId = point.deviceId, channel = point.key.split('_')[0].toUpperCase();
     const id = `${deviceId}|${channel}`;
     const own = windows.filter(w => `${w.deviceId}|${w.channel}` === id);
+    // Aggregate only pressure samples inside the same observed system-on windows.
+    // Empty history stays unavailable, never a fabricated zero PSI reading.
+    const pressure = own.length ? await db.telemetrySample.groupBy({
+      by: ['key'],
+      where: { deviceId, key: { in: [`${channel.toLowerCase()}_low_pressure`, `${channel.toLowerCase()}_high_pressure`] },
+        unit: { equals: 'psi', mode: 'insensitive' },
+        OR: own.map(w => ({ capturedAt: { gte: w.start, lte: w.end } })) },
+      _min: { value: true }, _max: { value: true }
+    }) : [];
+    const pressureLow = pressure.find(p => p.key.endsWith('_low_pressure'))?._min.value ?? null;
+    const pressureHigh = pressure.find(p => p.key.endsWith('_high_pressure'))?._max.value ?? null;
     const off: number[] = [], between: number[] = [];
     for (const window of own) {
       let reached: number | null = null, resumed = false;
@@ -68,11 +79,13 @@ export const getSiteCycleAverages = unstable_cache(async (siteId: string) => {
     }
     const mean = (values: number[]) => values.length ? values.reduce((a,b) => a+b,0)/values.length : null;
     return { id, channel, deviceName: devices.find(d => d.id === deviceId)?.name ?? deviceId,
+      pressureLow: pressureLow !== null && Number.isFinite(pressureLow) ? pressureLow : null,
+      pressureHigh: pressureHigh !== null && Number.isFinite(pressureHigh) ? pressureHigh : null,
       hours: own.reduce((n,w) => n+(w.end.getTime()-w.start.getTime())/3600000,0),
       asOf: own.length ? own[own.length-1].end.toISOString() : null, off: mean(off), between: mean(between), offCount: off.length, betweenCount: between.length,
       offLow: off.length ? Math.min(...off) : null, offHigh: off.length ? Math.max(...off) : null,
       betweenLow: between.length ? Math.min(...between) : null, betweenHigh: between.length ? Math.max(...between) : null };
-  });
-}, ['system-on-cycle-averages-v3'], { revalidate: 1800 });
+  }));
+}, ['system-on-cycle-averages-v4-pressure'], { revalidate: 1800 });
 
 export type CycleAverageRows = Awaited<ReturnType<typeof getSiteCycleAverages>>;

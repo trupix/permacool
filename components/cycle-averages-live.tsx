@@ -12,6 +12,10 @@ function duration(value: number | null) {
   return `${hours ? `${hours}h ` : ''}${minutes}m ${seconds % 60}s`;
 }
 
+function pressure(value: number | null | undefined) {
+  return value == null || !Number.isFinite(value) ? 'No pressure history' : `${value.toFixed(1)} PSI`;
+}
+
 export function CycleAveragesLive({ siteId, timezone, initialRows, initialError = false }: { siteId: string; timezone: string; initialRows: CycleAverageRows; initialError?: boolean }) {
   const [rows, setRows] = useState(initialRows);
   const [error, setError] = useState(initialError);
@@ -59,7 +63,7 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
         <span className="salinas-dashboard__countdown-copy"><strong>{updating ? 'Updating cycle statistics' : 'Next averages update'}</strong><small>{updating ? 'Checking latest history…' : `in ${Math.floor(secondsRemaining / 60)}m ${String(secondsRemaining % 60).padStart(2, '0')}s`}</small></span>
       </span>
     </div>
-    <details className="cycle-summary-details"><summary>How these numbers are calculated</summary><p>Shutdown time and telemetry gaps are excluded. Completed, uninterrupted cycles only. Uses the latest 50,000 system-state samples per unit, within 30 days. Average, low, and high update every 30 minutes while this page is visible; results are cached for 30 minutes. Returning to a hidden tab only checks when the interval is due.</p></details>
+    <details className="cycle-summary-details"><summary>How these numbers are calculated</summary><p>Shutdown time and telemetry gaps are excluded. Cycle statistics use completed, uninterrupted cycles only. Pressure boxes show the lowest recorded low-side pressure and highest recorded high-side pressure during the same observed system-on window, including normal temperature cycling. Uses the latest 50,000 system-state samples per unit, within 30 days. All statistics update every 30 minutes while this page is visible; results are cached for 30 minutes. Returning to a hidden tab only checks when the interval is due. Missing pressure history is not displayed as zero.</p></details>
     <p role="status">{error ? 'Automatic update delayed — showing the last available results; retrying at the next 30-minute interval.' : checked ? '30-minute updates · Last checked at ' + new Date(checked).toLocaleTimeString('en-US', { timeZone: timezone }) : 'Updates automatically every 30 minutes'}</p>
     {!rows.length && <p>Waiting for recorded system-on history.</p>}
     {rows.map(row => <div key={row.id}>
@@ -81,6 +85,13 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
         <div className="equipment-off-cycle equipment-off-cycle--interval"><span><ArrowUp size={15} aria-hidden="true" /> High</span><strong>{duration(row.betweenHigh)}</strong></div>
       </div>
       </div>
+      </div>
+      <div className="cycle-summary-section">
+        <p className="cycle-summary-label">Pressure · Last 8 system-on hours</p>
+        <div className="cycle-summary-boxes" role="group" aria-label="Pressure extremes">
+          <div className="equipment-off-cycle cycle-summary-average"><span><ArrowDown size={15} aria-hidden="true" /> Low-side low</span><strong>{pressure(row.pressureLow)}</strong></div>
+          <div className="equipment-off-cycle equipment-off-cycle--interval cycle-summary-average"><span><ArrowUp size={15} aria-hidden="true" /> High-side high</span><strong>{pressure(row.pressureHigh)}</strong></div>
+        </div>
       </div>
       <p>{row.hours >= 7.999 ? 'Full 8-hour window' : `Partial history: ${row.hours.toFixed(2)} of 8 system-on hours`}{row.asOf ? ` · Last included on-time: ${new Date(row.asOf).toLocaleString('en-US', { timeZone: timezone })}` : ' · No observed on-time available'}</p>
     </div>)}
