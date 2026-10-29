@@ -5874,6 +5874,23 @@
   margin-bottom: 0.65rem;
 }
 .cycle-summary-heading h3 { margin: 0; }
+.cycle-summary-heading .salinas-dashboard__countdown {
+  --sd-cyan: #258363;
+  --sd-panel-strong: #fffffc;
+}
+.cycle-summary-heading .salinas-dashboard__countdown-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid transparent;
+  border-top-color: #258363;
+  border-radius: 50%;
+  animation: cycle-countdown-spin 3s linear infinite;
+}
+@keyframes cycle-countdown-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .cycle-summary-heading .salinas-dashboard__countdown-ring::before { animation: none; }
+}
 
 .cycle-summary-boxes > .equipment-off-cycle {
   margin: 0;
