@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { Clock3, ArrowDown, ArrowUp } from 'lucide-react';
 import type { CycleAverageRows } from '@/server/repositories/cycle-averages';
 
@@ -15,6 +16,8 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
   const [rows, setRows] = useState(initialRows);
   const [error, setError] = useState(initialError);
   const [checked, setChecked] = useState<string | null>(null);
+  const [secondsRemaining, setSecondsRemaining] = useState(1800);
+  const [updating, setUpdating] = useState(false);
   useEffect(() => {
     let stopped = false, busy = false;
     const refreshMs = 30 * 60 * 1000;
@@ -25,6 +28,7 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
       if (Date.now() - lastAttempt < refreshMs) return;
       lastAttempt = Date.now();
       busy = true;
+      setUpdating(true);
       try {
         const response = await fetch('/api/sites/' + encodeURIComponent(siteId) + '/cycle-averages', { cache: 'no-store', signal: controller.signal });
         if (!response.ok) throw new Error('Refresh failed');
@@ -32,16 +36,27 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
         if (!Array.isArray(data.rows)) throw new Error('Invalid response');
         if (!stopped) { setRows(data.rows); setError(false); setChecked(new Date().toISOString()); }
       } catch { if (!stopped) setError(true); }
-      finally { busy = false; }
+      finally { busy = false; if (!stopped) setUpdating(false); }
     }
-    const interval = setInterval(update, refreshMs);
-    const visible = () => { if (document.visibilityState === 'visible') void update(); };
+    function tick() {
+      if (document.visibilityState === 'hidden') return;
+      setSecondsRemaining(Math.max(0, Math.ceil((lastAttempt + refreshMs - Date.now()) / 1000)));
+      void update();
+    }
+    const interval = setInterval(tick, 1000);
+    const visible = () => { if (document.visibilityState === 'visible') tick(); };
     document.addEventListener('visibilitychange', visible);
     if (initialError) void update();
     return () => { stopped = true; controller.abort(); clearInterval(interval); document.removeEventListener('visibilitychange', visible); };
   }, [siteId, initialError]);
   return <section aria-label="Cycle averages">
-    <h3>Cycle averages · Last 8 system-on hours</h3>
+    <div className="cycle-summary-heading">
+      <h3>Cycle averages · Last 8 system-on hours</h3>
+      <span className="salinas-dashboard__refresh-label salinas-dashboard__countdown" role="timer" aria-label={updating ? 'Updating cycle statistics' : `Cycle statistics update in ${Math.floor(secondsRemaining / 60)} minutes ${secondsRemaining % 60} seconds`}>
+        <span className="salinas-dashboard__countdown-ring" style={{ '--telemetry-countdown-progress': `${secondsRemaining / 1800 * 360}deg` } as CSSProperties} aria-hidden="true"><b>{updating ? '…' : Math.ceil(secondsRemaining / 60)}</b></span>
+        <span className="salinas-dashboard__countdown-copy"><strong>{updating ? 'Updating cycle statistics' : 'Next averages update'}</strong><small>{updating ? 'Checking latest history…' : `in ${Math.floor(secondsRemaining / 60)}m ${String(secondsRemaining % 60).padStart(2, '0')}s`}</small></span>
+      </span>
+    </div>
     <details className="cycle-summary-details"><summary>How these numbers are calculated</summary><p>Shutdown time and telemetry gaps are excluded. Completed, uninterrupted cycles only. Uses the latest 50,000 system-state samples per unit, within 30 days. Average, low, and high update every 30 minutes while this page is visible; results are cached for 30 minutes. Returning to a hidden tab only checks when the interval is due.</p></details>
     <p role="status">{error ? 'Automatic update delayed — showing the last available results; retrying at the next 30-minute interval.' : checked ? '30-minute updates · Last checked at ' + new Date(checked).toLocaleTimeString('en-US', { timeZone: timezone }) : 'Updates automatically every 30 minutes'}</p>
     {!rows.length && <p>Waiting for recorded system-on history.</p>}
