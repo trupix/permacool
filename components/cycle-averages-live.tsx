@@ -16,6 +16,10 @@ function pressure(value: number | null | undefined) {
   return value == null || !Number.isFinite(value) ? 'No pressure history' : `${value.toFixed(1)} PSI`;
 }
 
+function temperature(value: number | null | undefined) {
+  return value == null || !Number.isFinite(value) ? 'No temperature history' : `${value.toFixed(1)} °F`;
+}
+
 export function CycleAveragesLive({ siteId, timezone, initialRows, initialError = false }: { siteId: string; timezone: string; initialRows: CycleAverageRows; initialError?: boolean }) {
   const [rows, setRows] = useState(initialRows);
   const [error, setError] = useState(initialError);
@@ -90,6 +94,13 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
         <div className="cycle-summary-boxes" role="group" aria-label="Pressure extremes">
           <div className="equipment-off-cycle pressure-summary-low"><span><ArrowDown size={15} aria-hidden="true" /> Low-side low</span><strong>{pressure(row.pressureLow)}</strong></div>
           <div className="equipment-off-cycle pressure-summary-high"><span><ArrowUp size={15} aria-hidden="true" /> High-side high</span><strong>{pressure(row.pressureHigh)}</strong></div>
+        </div>
+      </div>
+      <div className="cycle-summary-section">
+        <p className="cycle-summary-label">Temperature · Last 8 system-on hours</p>
+        <div className="cycle-summary-boxes" role="group" aria-label="Temperature extremes" title="Lowest and highest recorded Fahrenheit process temperatures during observed system-on time. No conversion or offset is applied.">
+          <div className="equipment-off-cycle pressure-summary-low"><span><ArrowDown size={15} aria-hidden="true" /> Temp low</span><strong>{temperature(row.temperatureLow)}</strong></div>
+          <div className="equipment-off-cycle pressure-summary-high"><span><ArrowUp size={15} aria-hidden="true" /> Temp high</span><strong>{temperature(row.temperatureHigh)}</strong></div>
         </div>
       </div>
       </div>
