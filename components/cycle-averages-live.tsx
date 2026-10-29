@@ -5,7 +5,9 @@ import type { CycleAverageRows } from '@/server/repositories/cycle-averages';
 function duration(value: number | null) {
   if (value === null) return 'Not enough completed cycles';
   const seconds = Math.round(value);
-  return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  return `${hours ? `${hours}h ` : ''}${minutes}m ${seconds % 60}s`;
 }
 
 export function CycleAveragesLive({ siteId, timezone, initialRows, initialError = false }: { siteId: string; timezone: string; initialRows: CycleAverageRows; initialError?: boolean }) {
