@@ -68,14 +68,20 @@ export function EquipmentEventList({
             </div>
             <p>{formatEventTime(event.occurredAt, timezone)} · {event.deviceName ?? event.deviceId}</p>
             {event.offCycleSeconds != null && (
-              <div className="equipment-off-cycle" title="Recorded time from reaching temperature to the next compressor start. Approximate to the telemetry sampling interval.">
-                <strong><Clock3 size={20} aria-hidden="true" /> Off cycle: {formatCycleDuration(event.offCycleSeconds)}</strong>
-                <span>Reached temperature → cooling resumed</span>
+              <div className="cycle-summary-boxes" title="Recorded time from reaching temperature to the next compressor start. Approximate to the telemetry sampling interval.">
+                <div className="equipment-off-cycle cycle-summary-average">
+                  <span><Clock3 size={15} aria-hidden="true" /> Off cycle</span>
+                  <strong>{formatCycleDuration(event.offCycleSeconds)}</strong>
+                </div>
+                <div className="equipment-off-cycle"><span>Reached temperature → cooling resumed</span></div>
               </div>
             )}
             {event.sincePreviousOffCycleSeconds != null && (
-              <div className="equipment-off-cycle equipment-off-cycle--interval" title="Recorded time between successive reached-temperature events, with cooling resumed in between.">
-                <strong><Clock3 size={20} aria-hidden="true" /> Since previous off cycle: {formatCycleDuration(event.sincePreviousOffCycleSeconds)}</strong>
+              <div className="cycle-summary-boxes" title="Recorded time between successive reached-temperature events, with cooling resumed in between.">
+                <div className="equipment-off-cycle equipment-off-cycle--interval cycle-summary-average">
+                  <span><Clock3 size={15} aria-hidden="true" /> Since previous off cycle</span>
+                  <strong>{formatCycleDuration(event.sincePreviousOffCycleSeconds)}</strong>
+                </div>
               </div>
             )}
             <div className="equipment-event-snapshot">
