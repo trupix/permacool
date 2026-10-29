@@ -40,8 +40,16 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
     {!rows.length && <p>Waiting for recorded system-on history.</p>}
     {rows.map(row => <div key={row.id}>
       <h4>{row.deviceName} · {row.channel}</h4>
-      <div className="equipment-off-cycle"><strong>Average off cycle: {duration(row.off)}</strong><span><b>Low: {duration(row.offLow)} · High: {duration(row.offHigh)}</b></span><span>{row.offCount} completed cycles</span></div>
-      <div className="equipment-off-cycle equipment-off-cycle--interval"><strong>Average between off cycles: {duration(row.between)}</strong><span><b>Low: {duration(row.betweenLow)} · High: {duration(row.betweenHigh)}</b></span><span>{row.betweenCount} intervals · reached temperature → next reached temperature</span></div>
+      <div className="cycle-summary-boxes" role="group" aria-label="Off-cycle statistics">
+        <div className="equipment-off-cycle"><strong>Average off cycle: {duration(row.off)}</strong><span>{row.offCount} completed cycles</span></div>
+        <div className="equipment-off-cycle"><strong>Low: {duration(row.offLow)}</strong></div>
+        <div className="equipment-off-cycle"><strong>High: {duration(row.offHigh)}</strong></div>
+      </div>
+      <div className="cycle-summary-boxes" role="group" aria-label="Time between off-cycle statistics">
+        <div className="equipment-off-cycle equipment-off-cycle--interval"><strong>Average between off cycles: {duration(row.between)}</strong><span>{row.betweenCount} intervals · reached temperature → next reached temperature</span></div>
+        <div className="equipment-off-cycle equipment-off-cycle--interval"><strong>Low: {duration(row.betweenLow)}</strong></div>
+        <div className="equipment-off-cycle equipment-off-cycle--interval"><strong>High: {duration(row.betweenHigh)}</strong></div>
+      </div>
       <p>{row.hours >= 7.999 ? 'Full 8-hour window' : `Partial history: ${row.hours.toFixed(2)} of 8 system-on hours`}{row.asOf ? ` · Last included on-time: ${new Date(row.asOf).toLocaleString('en-US', { timeZone: timezone })}` : ' · No observed on-time available'}</p>
     </div>)}
   </section>;
