@@ -64,17 +64,23 @@ export function CycleAveragesLive({ siteId, timezone, initialRows, initialError 
     {!rows.length && <p>Waiting for recorded system-on history.</p>}
     {rows.map(row => <div key={row.id}>
       <h4>{row.deviceName} · {row.channel}</h4>
+      <div className="cycle-summary-pair">
+      <div className="cycle-summary-section">
       <p className="cycle-summary-label">Off cycle <span>· {row.offCount} completed cycles</span></p>
       <div className="cycle-summary-boxes" role="group" aria-label="Off-cycle statistics">
         <div className="equipment-off-cycle cycle-summary-average"><span><Clock3 size={15} aria-hidden="true" /> Average</span><strong>{duration(row.off)}</strong></div>
         <div className="equipment-off-cycle"><span><ArrowDown size={15} aria-hidden="true" /> Low</span><strong>{duration(row.offLow)}</strong></div>
         <div className="equipment-off-cycle"><span><ArrowUp size={15} aria-hidden="true" /> High</span><strong>{duration(row.offHigh)}</strong></div>
       </div>
+      </div>
+      <div className="cycle-summary-section">
       <p className="cycle-summary-label">Between off cycles <span>· {row.betweenCount} intervals</span></p>
       <div className="cycle-summary-boxes" role="group" aria-label="Time between off-cycle statistics">
         <div className="equipment-off-cycle equipment-off-cycle--interval cycle-summary-average"><span><Clock3 size={15} aria-hidden="true" /> Average</span><strong>{duration(row.between)}</strong></div>
         <div className="equipment-off-cycle equipment-off-cycle--interval"><span><ArrowDown size={15} aria-hidden="true" /> Low</span><strong>{duration(row.betweenLow)}</strong></div>
         <div className="equipment-off-cycle equipment-off-cycle--interval"><span><ArrowUp size={15} aria-hidden="true" /> High</span><strong>{duration(row.betweenHigh)}</strong></div>
+      </div>
+      </div>
       </div>
       <p>{row.hours >= 7.999 ? 'Full 8-hour window' : `Partial history: ${row.hours.toFixed(2)} of 8 system-on hours`}{row.asOf ? ` · Last included on-time: ${new Date(row.asOf).toLocaleString('en-US', { timeZone: timezone })}` : ' · No observed on-time available'}</p>
     </div>)}
