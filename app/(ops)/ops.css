@@ -5853,12 +5853,53 @@
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  gap: 0.65rem;
+  gap: 0.3rem;
   margin: 0.65rem 0;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.35rem;
+  border: 1px solid rgba(17, 44, 34, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 252, 0.9);
+  box-shadow: 0 12px 30px rgba(17, 44, 34, 0.08);
+  backdrop-filter: blur(16px);
 }
 
 .cycle-summary-boxes > .equipment-off-cycle {
   margin: 0;
+  flex: 1 1 145px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #124e7d;
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+
+.cycle-summary-boxes > .equipment-off-cycle:hover { background: #eaf4ff; }
+.cycle-summary-boxes > .equipment-off-cycle--interval { color: #185b36; }
+.cycle-summary-boxes > .equipment-off-cycle--interval:hover { background: #eaf7ee; }
+.cycle-summary-boxes > .cycle-summary-average {
+  background: #124e7d;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(17, 44, 34, 0.13);
+}
+.cycle-summary-boxes > .cycle-summary-average:hover { background: #195f95; }
+.cycle-summary-boxes > .cycle-summary-average.equipment-off-cycle--interval { background: var(--ops-deep); color: #fff; }
+.cycle-summary-boxes > .cycle-summary-average.equipment-off-cycle--interval:hover { background: #23533f; }
+.cycle-summary-boxes > .equipment-off-cycle > span { display: inline-flex; align-items: center; gap: 0.42rem; font-size: 0.75rem; font-weight: 850; }
+.cycle-summary-boxes > .equipment-off-cycle strong { font-variant-numeric: tabular-nums; }
+.cycle-summary-label { margin: 1rem 0 0; font-weight: 800; }
+.cycle-summary-label span { font-size: 0.8rem; color: #65766e; font-weight: 500; }
+.cycle-summary-details { color: #65766e; font-size: 0.85rem; }
+.cycle-summary-details summary { cursor: pointer; width: fit-content; }
+@media (prefers-reduced-motion: reduce) {
+  .cycle-summary-boxes > .equipment-off-cycle { transition: none; }
 }
 
 .equipment-off-cycle {
