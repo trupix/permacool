@@ -106,6 +106,18 @@ export function EquipmentEventList({
                 </div>
               </div>
             )}
+            {event.onCycleSeconds != null && (
+              <div className="cycle-summary-boxes" title="Completed compressor-on run, from compressor start through reaching temperature. Peak fluid temperature is based on saved telemetry samples.">
+                <div className="equipment-off-cycle equipment-off-cycle--interval cycle-summary-average">
+                  <span><Zap size={15} aria-hidden="true" /> Cycle on</span>
+                  <strong>{formatCycleDuration(event.onCycleSeconds)}</strong>
+                </div>
+                <div className="equipment-off-cycle equipment-off-cycle--interval">
+                  <span><Thermometer size={15} aria-hidden="true" /> Cycle high temp</span>
+                  <strong>{formatValue(event.cycleHighTemperatureF ?? null, '°F')}</strong>
+                </div>
+              </div>
+            )}
             <div className="equipment-event-snapshot">
               <span><Gauge size={13} /> High {formatValue(event.highPressure, 'PSI')}</span>
               <span><Gauge size={13} /> Low {formatValue(event.lowPressure, 'PSI')}</span>

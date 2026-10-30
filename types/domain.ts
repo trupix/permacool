@@ -71,6 +71,7 @@ export interface Alert {
 export interface EquipmentEvent {
   offCycleSeconds?: number | null;
   cycleHighTemperatureF?: number | null;
+  onCycleSeconds?: number | null;
   sincePreviousOffCycleSeconds?: number | null;
   id: string;
   siteId: string;
