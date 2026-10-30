@@ -92,6 +92,10 @@ export function EquipmentEventList({
                   <strong>{formatCycleDuration(event.offCycleSeconds)}</strong>
                 </div>
                 <div className="equipment-off-cycle"><span>Reached temperature → cooling resumed</span></div>
+                <div className="equipment-off-cycle" title="Highest recorded fluid temperature during the preceding compressor-on run, from compressor start through reaching temperature. Based on saved telemetry samples, not outdoor weather.">
+                  <span><Thermometer size={15} aria-hidden="true" /> Cycle high temp</span>
+                  <strong>{formatValue(event.cycleHighTemperatureF ?? null, '°F')}</strong>
+                </div>
               </div>
             )}
             {event.sincePreviousOffCycleSeconds != null && (
