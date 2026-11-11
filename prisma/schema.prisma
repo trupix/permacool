@@ -156,8 +156,19 @@ model Device {
   alerts           Alert[]
   equipmentEvents  EquipmentEvent[]
   vpnEnrollment    VpnEnrollment?
+  displaySnapshot  DeviceDisplaySnapshot?
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
+}
+
+model DeviceDisplaySnapshot {
+  deviceId          String @id
+  lastObservedRunAt DateTime?
+  lastSeenAt        DateTime?
+  lastRanAt         DateTime?
+  runningSignalAt   DateTime?
+  capturedAt        DateTime?
+  device            Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
 }
 
 model SiteProvisioningDetails {
