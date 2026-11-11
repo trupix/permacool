@@ -1,4 +1,5 @@
 import { db } from '@/lib/db';
+import { Prisma } from '@prisma/client';
 import {
   getAlertsForSite,
   getDevicesForSite,
@@ -47,13 +48,31 @@ function filterMockSites(scope: AccessScope) {
   });
 }
 
-export async function getSites(scope: AccessScope): Promise<Site[]> {
+// Dashboard cards need only these fields, not telemetry or operating history.
+export async function getDashboardSites(
+  scope: AccessScope
+): Promise<Array<Pick<Site, 'id' | 'name' | 'region' | 'gatewayStatus'>>> {
+  if (!shouldUseDatabase()) {
+    return sites.filter((site) =>
+      isStaffScope(scope) || scope.allDeviceOrganizationIds.includes(site.organizationId) ||
+      getDevicesForSite(site.id).some((device) => scope.deviceIds.includes(device.id))
+    ).map(({ id, name, region, gatewayStatus }) => ({ id, name, region, gatewayStatus }));
+  }
+
+  return db.site.findMany({
+    where: siteWhere(scope),
+    select: { id: true, name: true, region: true, gatewayStatus: true },
+    orderBy: { name: 'asc' }
+  });
+}
+
+export async function getSites(scope: AccessScope, options: { includeAddresses?: boolean } = {}): Promise<Site[]> {
   if (!shouldUseDatabase()) return filterMockSites(scope);
 
   const rows = await db.site.findMany({
     where: siteWhere(scope),
     include: {
-      provisioningDetails: true,
+      provisioningDetails: options.includeAddresses !== false,
       devices: {
         select: {
           id: true,
@@ -68,25 +87,27 @@ export async function getSites(scope: AccessScope): Promise<Site[]> {
   const deviceToSite = new Map(rows.flatMap((row) => row.devices.map((device) => [device.id, row.id] as const)));
   const deviceIds = [...deviceToSite.keys()];
   const historicalRuns = deviceIds.length
-    ? await db.telemetrySample.groupBy({
-        by: ['deviceId', 'key'],
-        where: {
-          deviceId: { in: deviceIds },
-          value: { gt: 0.5 },
-          OR: [
-            { key: { contains: 'chiller', mode: 'insensitive' } },
-            { key: { contains: 'compressor', mode: 'insensitive' } }
-          ]
-        },
-        _max: { capturedAt: true }
-      })
+    ? await db.$queryRaw<Array<{ deviceId: string; capturedAt: Date }>>(Prisma.sql`
+        SELECT requested.id AS "deviceId", latest."capturedAt"
+        FROM (VALUES ${Prisma.join(deviceIds.map((id) => Prisma.sql`(${id})`))}) AS requested(id)
+        CROSS JOIN LATERAL (
+          SELECT sample."capturedAt"
+          FROM "TelemetrySample" sample
+          WHERE sample."deviceId" = requested.id
+            AND sample.value > 0.5
+            AND (sample.key ILIKE '%chiller%' OR sample.key ILIKE '%compressor%')
+            AND regexp_replace(lower(sample.key), '[^a-z0-9]', '', 'g')
+              ~ '^(compressorstatus|(ch[0-9]+)?(chiller|compressor)run(output)?|(ch[0-9]+)?do(chiller|compressor)run)$'
+          ORDER BY sample."capturedAt" DESC
+          LIMIT 1
+        ) latest
+      `)
     : [];
   const historicalRunsBySite = new Map<string, Date[]>();
   for (const run of historicalRuns) {
-    if (!isEquipmentRunKey(run.key) || !run._max.capturedAt) continue;
     const siteId = deviceToSite.get(run.deviceId);
     if (!siteId) continue;
-    historicalRunsBySite.set(siteId, [...(historicalRunsBySite.get(siteId) ?? []), run._max.capturedAt]);
+    historicalRunsBySite.set(siteId, [...(historicalRunsBySite.get(siteId) ?? []), run.capturedAt]);
   }
 
   return rows.map((row) => {

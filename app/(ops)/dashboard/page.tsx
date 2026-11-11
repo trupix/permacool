@@ -3,12 +3,13 @@ import Link from 'next/link';
 import { MetricCard } from '@/components/metric-card';
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
-import { getAlerts } from '@/server/repositories/alerts';
+import { getAlerts, getOpenAlertCount } from '@/server/repositories/alerts';
 import { getDevices } from '@/server/repositories/devices';
-import { getOverviewMetrics } from '@/server/repositories/overview';
-import { getSites } from '@/server/repositories/sites';
+import { getDashboardSites } from '@/server/repositories/sites';
 import { requireUser } from '@/lib/auth';
 import { isStaffScope } from '@/lib/access';
+import { telemetryFreshness } from '@/lib/telemetry-freshness';
+import { latestSiteActivity } from '@/lib/site-activity';
 
 export const metadata: Metadata = {
   title: 'SOUL Matrix',
@@ -17,12 +18,22 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const user = await requireUser();
-  const [alerts, devices, sites, dashboardSummary] = await Promise.all([
-    getAlerts(user),
+  const [alerts, devices, sites, openAlerts] = await Promise.all([
+    getAlerts(user, 10),
     getDevices(user),
-    getSites(user),
-    getOverviewMetrics(user)
+    getDashboardSites(user),
+    getOpenAlertCount(user)
   ]);
+  const now = Date.now();
+  const siteFreshness = (siteId: string) => telemetryFreshness(latestSiteActivity(
+    devices.filter((device) => device.siteId === siteId).map((device) => device.lastSeenAt)
+  ), now);
+  const dashboardSummary = {
+    totalSites: sites.length,
+    onlineDevices: devices.filter((device) => telemetryFreshness(device.lastSeenAt, now).tone === 'online').length,
+    openAlerts,
+    degradedSites: sites.filter((site) => siteFreshness(site.id).tone !== 'online').length
+  };
   return (
     <main className="page-stack">
       <header>
@@ -33,11 +44,15 @@ export default async function DashboardPage() {
         </p>
       </header>
 
+      <Link href="/dashboard/telemetry-flow" className="list-row link-row">
+        <div><strong>Explore the telemetry flow →</strong><p>Animated guide to sampling, resting mode, safe uploads, and Degrees Per Min. Planned system—not live status.</p></div>
+      </Link>
+
       <section className="metric-grid">
         <MetricCard label="Sites" value={dashboardSummary.totalSites} detail="Customer locations onboarded" />
-        <MetricCard label="Online Devices" value={dashboardSummary.onlineDevices} detail="Controllers reporting normally" />
+        <MetricCard label="Reporting Devices" value={dashboardSummary.onlineDevices} detail="Telemetry received within five minutes" />
         <MetricCard label="Open Alerts" value={dashboardSummary.openAlerts} detail="Requires review or acknowledgement" />
-        <MetricCard label="Degraded Sites" value={dashboardSummary.degradedSites} detail="Connectivity or telemetry lag detected" />
+        <MetricCard label="Stale / Unreported Sites" value={dashboardSummary.degradedSites} detail="No telemetry received within five minutes" />
       </section>
 
       <div className="content-grid">
@@ -49,13 +64,13 @@ export default async function DashboardPage() {
                   <strong>{site.name}</strong>
                   <p>{site.region}</p>
                 </div>
-                <StatusBadge tone={site.gatewayStatus} />
+                <StatusBadge {...siteFreshness(site.id)} />
               </Link>
             ))}
           </div>
         </SectionCard>
 
-        <SectionCard title="Recent alerts" eyebrow="Attention">
+        <SectionCard title="Recent alerts" eyebrow="Latest 10" action={<Link href="/alerts">View all alerts</Link>}>
           <div className="list-stack">
             {alerts.map((alert) => (
               <div key={alert.id} className="list-row list-row-start">
@@ -77,7 +92,7 @@ export default async function DashboardPage() {
               <span>{device.name}</span>
               <span>{device.protocol}</span>
               <span>{device.firmwareVersion}</span>
-              <StatusBadge tone={device.status} />
+              <StatusBadge {...telemetryFreshness(device.lastSeenAt, now)} />
             </Link>
           ))}
         </div>

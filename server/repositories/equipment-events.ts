@@ -17,7 +17,7 @@ function isMissingEquipmentEventTable(error: unknown) {
 
 export async function getSiteEquipmentEvents(
   siteId: string,
-  options: { limit?: number; offset?: number } = {}
+  options: { limit?: number; offset?: number; includeTotal?: boolean } = {}
 ): Promise<EquipmentEventPage> {
   const limit = Math.min(Math.max(options.limit ?? 100, 1), 10_000);
   const offset = Math.max(options.offset ?? 0, 0);
@@ -42,7 +42,7 @@ export async function getSiteEquipmentEvents(
         skip: offset,
         take: limit
       }),
-      db.equipmentEvent.count({ where: { siteId } })
+      options.includeTotal === false ? Promise.resolve(0) : db.equipmentEvent.count({ where: { siteId } })
     ]);
 
     return {

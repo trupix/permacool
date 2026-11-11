@@ -25,7 +25,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
   const [siteDevices, siteAlerts, siteEvents, equipmentConfiguration] = await Promise.all([
     getDevicesBySite(user, site.id),
     getSiteAlerts(user, site.id),
-    getSiteEquipmentEvents(site.id, { limit: 5 }),
+    getSiteEquipmentEvents(site.id, { limit: 5, includeTotal: false }),
     getEquipmentConfiguration(site.id)
   ]);
   const controllerManageUrl = groovManageUrlForDevices(siteDevices);
