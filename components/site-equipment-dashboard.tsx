@@ -838,6 +838,7 @@ export function SiteEquipmentDashboard({
   view = 'overview',
   initialConfiguration = null,
   equipmentStorageReady = false,
+  initialTelemetry = null,
   canEdit = false
 }: {
   siteId: string;
@@ -850,6 +851,7 @@ export function SiteEquipmentDashboard({
   view?: 'overview' | 'connectivity' | 'specs';
   initialConfiguration?: StoredEquipmentConfiguration | null;
   equipmentStorageReady?: boolean;
+  initialTelemetry?: { points: TelemetryPoint[]; fetchedAt: string } | null;
   canEdit?: boolean;
 }) {
   const system = equipmentRecord.processSystems[0];
@@ -931,6 +933,16 @@ export function SiteEquipmentDashboard({
   const [weather, setWeather] = useState<WeatherState>({ status: 'loading', data: null, error: null });
   const liveTelemetryActive = facilityLiveUntil > Date.now();
   const localDialDemoEnabled = process.env.NODE_ENV === 'development';
+
+  // Seed immediately on hydration, before waiting for any browser telemetry request.
+  // This also keeps locale-dependent timestamp text consistent during hydration.
+  useEffect(() => {
+    if (!initialTelemetry) return;
+    setTelemetry(current => current.source !== null ? current : {
+      status: 'ready', points: initialTelemetry.points, source: 'saved-database',
+      fetchedAt: initialTelemetry.fetchedAt, error: null
+    });
+  }, [initialTelemetry]);
 
   useEffect(() => {
     if (!localDialDemoEnabled) return;
@@ -1482,7 +1494,9 @@ export function SiteEquipmentDashboard({
                         : 'Equipment model ready'}
             </strong>
             <p>
-              {telemetry.status === 'loading'
+              {telemetry.source === 'saved-database' && telemetry.status !== 'error'
+                ? 'Showing saved readings while live updates connect…'
+                : telemetry.status === 'loading'
                 ? 'Checking the protected telemetry feed...'
                 : telemetry.status === 'error'
                   ? telemetry.error
