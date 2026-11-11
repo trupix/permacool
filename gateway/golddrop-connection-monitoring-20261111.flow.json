@@ -1,0 +1,556 @@
+[
+  {
+    "id": "permacool-telemetry-tab",
+    "type": "tab",
+    "label": "GoldDrop CH1 Telemetry",
+    "disabled": false,
+    "info": "Read-only single condenser. Not commissioned. Set credentials and verify temperature units before enabling.",
+    "env": [
+      {
+        "name": "GOLDDROP_TEMPERATURE_UNIT",
+        "value": "F",
+        "type": "str"
+      },
+      {
+        "name": "TELEMETRY_INGEST_TOKEN",
+        "value": "",
+        "type": "str"
+      }
+    ]
+  },
+  {
+    "id": "gd-mmp-health-20261111",
+    "type": "tab",
+    "label": "GoldDrop I/O health - READ ONLY",
+    "disabled": false,
+    "info": "Four documented OptoMMP read quadlets only. Expected OACIS-12 + IMA-24, presence bits and advancing aggregate analog scan. Does not verify output actuation or every channel.",
+    "env": [
+      {
+        "name": "GOLDDROP_TEMPERATURE_UNIT",
+        "value": "F",
+        "type": "str"
+      },
+      {
+        "name": "TELEMETRY_INGEST_TOKEN",
+        "value": "",
+        "type": "str"
+      }
+    ]
+  },
+  {
+    "id": "permacool-flow-notes",
+    "type": "comment",
+    "z": "permacool-telemetry-tab",
+    "name": "Setup notes",
+    "info": "Read-only single condenser. Not commissioned. Set credentials and verify temperature units before enabling.",
+    "x": 250,
+    "y": 60,
+    "wires": []
+  },
+  {
+    "id": "permacool-interval",
+    "type": "inject",
+    "z": "permacool-telemetry-tab",
+    "name": "GoldDrop CH1 telemetry",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "15",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 170,
+    "y": 130,
+    "wires": [
+      [
+        "golddrop-poll-gate"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-01",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH1_Temperature",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_temperature_c",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Temperature",
+    "x": 220,
+    "y": 210,
+    "wires": [
+      [
+        "permacool-read-02"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-02",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH1_TemperatureSetpointC_pstv",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_setpoint_c",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Setpoint",
+    "x": 470,
+    "y": 210,
+    "wires": [
+      [
+        "permacool-read-03"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-03",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH1_HighPressure",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_high_pressure",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 High Pressure",
+    "x": 720,
+    "y": 210,
+    "wires": [
+      [
+        "permacool-read-04"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-04",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "float-variable",
+    "tagName": "CH1_LowPressure",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_low_pressure",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Low Pressure",
+    "x": 970,
+    "y": 210,
+    "wires": [
+      [
+        "permacool-read-05"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-05",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int32-variable",
+    "tagName": "CH1_ChillerRun",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_chiller_run",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Chiller Run",
+    "x": 220,
+    "y": 280,
+    "wires": [
+      [
+        "permacool-read-06"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-06",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int32-variable",
+    "tagName": "CH1_SystemOn",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_system_on",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 System On",
+    "x": 470,
+    "y": 280,
+    "wires": [
+      [
+        "permacool-read-07"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-07",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int32-variable",
+    "tagName": "CH1_HighPressureStop",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_high_pressure_stop",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 High Pressure Stop",
+    "x": 720,
+    "y": 280,
+    "wires": [
+      [
+        "permacool-read-08"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-read-08",
+    "type": "pac-read",
+    "z": "permacool-telemetry-tab",
+    "device": "permacool-pac-device",
+    "dataType": "int64-variable",
+    "tagName": "CH1_CompressorTotalRunTimeMin",
+    "tableStartIndex": "",
+    "tableLength": "",
+    "value": "permacoolValues.ch1_compressor_runtime_min",
+    "valueType": "msg",
+    "topic": "",
+    "topicType": "none",
+    "name": "CH1 Runtime Minutes",
+    "x": 970,
+    "y": 280,
+    "wires": [
+      [
+        "permacool-build-request"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-build-request",
+    "type": "function",
+    "z": "permacool-telemetry-tab",
+    "name": "Validate and build telemetry request",
+    "func": "const started=msg._goldDropReadStarted;\nif(!Number.isFinite(started)||flow.get('golddropBusy')!==started||Date.now()-started>=30000) return null;\n\nconst token = env.get('TELEMETRY_INGEST_TOKEN');\nconst unit = env.get('GOLDDROP_TEMPERATURE_UNIT');\nif (!token || !['C','F'].includes(unit)) {\n  node.error('Commissioning incomplete: credential or verified temperature unit missing',msg);\n  return null;\n}\nconst values = msg.permacoolValues || {};\n// PAC Int64 values arrive as strings; accept only a nonnegative safe integer.\nconst runtime = values.ch1_compressor_runtime_min;\nif (typeof runtime === 'string' && /^\\d+$/.test(runtime) && Number.isSafeInteger(Number(runtime))) values.ch1_compressor_runtime_min=Number(runtime);\nconst definitions = [\n ['ch1_temperature_c',unit],['ch1_setpoint_c',unit],\n ['ch1_high_pressure','psi'],['ch1_low_pressure','psi'],\n ['ch1_chiller_run','bool'],['ch1_system_on','bool'],\n ['ch1_high_pressure_stop','bool'],['ch1_compressor_runtime_min','min']\n];\nif (definitions.some(([key,u]) => typeof values[key] !== 'number' || !Number.isFinite(values[key]) || (u === 'bool' && ![0,1].includes(values[key])))) {\n node.error('Invalid or missing CH1 reading; batch not sent',msg); return null;\n}\nmsg.method='POST';\nmsg.url='https://perma.cool/api/ingest/telemetry';\nmsg.headers={'content-type':'application/json','x-telemetry-token':token};\nmsg.payload={gatewayId:'golddrop-epic-01',siteId:'site-golddrop',deviceId:'epic-golddrop-golddrop-epic-01-4oic',capturedAt:new Date().toISOString(),points:[...definitions.map(([key,unit])=>({key,unit,value:values[key]})),{key:'controller_heartbeat',unit:'ms',value:Date.now()}]};\nmsg.payload.points.push({key:'node_red_pac_read_ok',unit:'bool',value:1});\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1210,
+    "y": 420,
+    "wires": [
+      [
+        "permacool-http-request"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-http-request",
+    "type": "http request",
+    "z": "permacool-telemetry-tab",
+    "name": "POST to PermaCool",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 1470,
+    "y": 420,
+    "wires": [
+      [
+        "golddrop-release"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-response-switch",
+    "type": "switch",
+    "z": "permacool-telemetry-tab",
+    "name": "HTTP 2xx?",
+    "property": "statusCode",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "btwn",
+        "v": "200",
+        "vt": "num",
+        "v2": "299",
+        "v2t": "num"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 2,
+    "x": 1690,
+    "y": 420,
+    "wires": [
+      [
+        "permacool-success-debug"
+      ],
+      [
+        "permacool-error-debug"
+      ]
+    ]
+  },
+  {
+    "id": "permacool-success-debug",
+    "type": "debug",
+    "z": "permacool-telemetry-tab",
+    "name": "PermaCool accepted",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1910,
+    "y": 390,
+    "wires": []
+  },
+  {
+    "id": "permacool-error-debug",
+    "type": "debug",
+    "z": "permacool-telemetry-tab",
+    "name": "PermaCool error",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1900,
+    "y": 460,
+    "wires": []
+  },
+  {
+    "id": "golddrop-poll-gate",
+    "type": "function",
+    "z": "permacool-telemetry-tab",
+    "name": "One read batch at a time",
+    "func": "const now=Date.now(); const active=flow.get('golddropBusy');\nif(typeof active==='number' && now-active<30000) return null;\nflow.set('golddropBusy',now); msg._goldDropReadStarted=now; return msg;",
+    "outputs": 1,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "flow.set('golddropBusy',false);",
+    "finalize": "",
+    "libs": [],
+    "x": 480,
+    "y": 130,
+    "wires": [
+      [
+        "permacool-read-01"
+      ]
+    ]
+  },
+  {
+    "id": "golddrop-release",
+    "type": "function",
+    "z": "permacool-telemetry-tab",
+    "name": "Release poll lock",
+    "func": "if(flow.get('golddropBusy')===msg._goldDropReadStarted) flow.set('golddropBusy',false); delete msg.headers; return msg;",
+    "outputs": 1,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1650,
+    "y": 600,
+    "wires": [
+      [
+        "permacool-response-switch"
+      ]
+    ]
+  },
+  {
+    "id": "golddrop-catch",
+    "type": "catch",
+    "z": "permacool-telemetry-tab",
+    "name": "Read or delivery failure",
+    "scope": null,
+    "uncaught": false,
+    "x": 460,
+    "y": 650,
+    "wires": [
+      [
+        "golddrop-safe-error"
+      ]
+    ]
+  },
+  {
+    "id": "golddrop-safe-error",
+    "type": "function",
+    "z": "permacool-telemetry-tab",
+    "name": "Release lock and redact error",
+    "func": "if(flow.get('golddropBusy')===msg._goldDropReadStarted) flow.set('golddropBusy',false); node.status({fill:'red',shape:'ring',text:'Telemetry read/delivery failed; next timer retries'}); return {payload:'GoldDrop telemetry failed; no fabricated readings sent'};",
+    "outputs": 1,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 750,
+    "y": 650,
+    "wires": [
+      [
+        "permacool-error-debug"
+      ]
+    ]
+  },
+  {
+    "id": "gd-mmp-tick",
+    "type": "inject",
+    "z": "gd-mmp-health-20261111",
+    "name": "I/O check every 15 seconds",
+    "props": [
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "15",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "poll",
+    "x": 190,
+    "y": 100,
+    "wires": [
+      [
+        "gd-mmp-check"
+      ]
+    ]
+  },
+  {
+    "id": "gd-mmp-check",
+    "type": "function",
+    "z": "gd-mmp-health-20261111",
+    "name": "Read module IDs, presence and scan only",
+    "func": "// OptoMMP Form 1465: four read-only quadlets; no writes.\nconst addresses=[0xF0100000,0xF0103000,0xF030007C,0xF0300060];\nlet s=context.get('batch');\nfunction report(value,values){return {ioHealth:value,ioValues:values||[],capturedAt:new Date().toISOString()};}\nfunction request(i){const b=Buffer.from('000000400000ffff00000000','hex');b[2]=s.label<<2;b.writeUInt32BE(addresses[i],8);return {payload:b,reset:i===0};}\nfunction finish(value){clearTimeout(context.get('timer'));context.set('batch',null);node.status({fill:value===1?'green':value===0?'red':'yellow',shape:'dot',text:value===1?'Both modules present; scan advancing':value===0?'I/O check failed':'Waiting for scan progress'});return [{reset:true},report(value,s.values)];}\nif(msg.topic==='poll'){\n if(s)return null;\n const label=((context.get('label')||0)+1)%64;context.set('label',label);\n s={label,index:0,values:[],bytes:[],started:Date.now()};context.set('batch',s);\n const timer=setTimeout(()=>{if(context.get('batch')===s){context.set('batch',null);context.set('previous',null);node.status({fill:'red',shape:'ring',text:'I/O timeout; next poll retries'});node.send([{reset:true},report(0)]);}},2500);context.set('timer',timer);\n return [request(0),null];\n}\nif(!s||!Buffer.isBuffer(msg.payload))return null;\ns.bytes.push(...msg.payload);\nif(s.bytes.length<16)return null;\nconst b=Buffer.from(s.bytes);s.bytes=[];\nif(b.length!==16||b[2]!==s.label<<2||b[3]!==0x60||b[6]!==0){context.set('previous',null);return finish(-1);}\ns.values.push(b.readUInt32BE(12));s.index++;\nif(s.index<4)return [request(s.index),null];\nconst previous=context.get('previous');context.set('previous',{scan:s.values[3],at:Date.now()});\nconst present=s.values[0]===0x94000017&&s.values[1]===0x60000001&&(s.values[2]&3)===3;\nconst progress=previous&&Date.now()-previous.at<30000?s.values[3]!==previous.scan:null;\nreturn finish(!present?0:progress===null?-1:progress?1:0);",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "clearTimeout(context.get('timer')); context.set('batch',null); context.set('previous',null);",
+    "libs": [],
+    "x": 510,
+    "y": 100,
+    "wires": [
+      [
+        "gd-mmp-tcp"
+      ],
+      [
+        "gd-mmp-build"
+      ]
+    ]
+  },
+  {
+    "id": "gd-mmp-tcp",
+    "type": "tcp request",
+    "z": "gd-mmp-health-20261111",
+    "name": "Local OptoMMP READ requests",
+    "server": "127.0.0.1",
+    "port": "2001",
+    "out": "sit",
+    "ret": "buffer",
+    "splitc": "0",
+    "newline": "",
+    "trim": false,
+    "tls": "",
+    "x": 810,
+    "y": 100,
+    "wires": [
+      [
+        "gd-mmp-check"
+      ]
+    ]
+  },
+  {
+    "id": "gd-mmp-build",
+    "type": "function",
+    "z": "gd-mmp-health-20261111",
+    "name": "Publish fresh I/O check only",
+    "func": "const token=env.get('TELEMETRY_INGEST_TOKEN'); if(!token)return null; const now=Date.now();if(now<(flow.get('postingUntil')||0))return null;flow.set('postingUntil',now+14000);const points=[{key:'controller_io_communication_ok',unit:'bool',value:msg.ioHealth}];return {method:'POST',url:'https://perma.cool/api/ingest/telemetry',headers:{'content-type':'application/json','x-telemetry-token':token},payload:{gatewayId:'golddrop-epic-01',siteId:'site-golddrop',deviceId:'epic-golddrop-golddrop-epic-01-4oic',capturedAt:msg.capturedAt,points}};",
+    "outputs": 1,
+    "x": 500,
+    "y": 210,
+    "wires": [
+      [
+        "gd-mmp-post"
+      ]
+    ]
+  },
+  {
+    "id": "gd-mmp-post",
+    "type": "http request",
+    "z": "gd-mmp-health-20261111",
+    "name": "Send I/O health to GoldDrop",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 810,
+    "y": 210,
+    "wires": [
+      [
+        "gd-mmp-done"
+      ]
+    ]
+  },
+  {
+    "id": "gd-mmp-done",
+    "type": "function",
+    "z": "gd-mmp-health-20261111",
+    "name": "Confirm saved; redact response",
+    "func": "flow.set('postingUntil',0);const ok=msg.statusCode===200&&msg.payload&&msg.payload.persisted===true;node.status({fill:ok?'green':'red',shape:'dot',text:ok?'I/O health saved':'Delivery failed; next poll retries'});return null;",
+    "outputs": 1,
+    "x": 800,
+    "y": 300,
+    "wires": [
+      []
+    ]
+  }
+]

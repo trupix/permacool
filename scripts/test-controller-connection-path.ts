@@ -101,5 +101,13 @@ assert.equal(ioOnly([point('pac_io_communication_ok',-1)]).state,'checking');
 assert.notEqual(ioOnly([point('io_channel_fault_count',0)]).state,'healthy');
 assert.equal(ioOnly([point('pac_io_communication_ok',1,'2026-08-28T19:00:00.000Z')]).state,'healthy');
 assert.equal(ioOnly([point('pac_io_communication_ok',1,'2026-08-28T18:59:00.000Z')]).state,'stale');
+const mixedDelivery = resolveControllerConnectionPath({points:[point('controller_heartbeat',1,'2026-08-28T18:00:00.000Z'),point('pac_strategy_running',1)],deviceIds:[DEVICE],referenceTimestamp:NOW,feedStatus:'ready'});
+assert.equal(mixedDelivery.stages.find(s=>s.id==='delivery').state,'healthy');
+assert.doesNotMatch(mixedDelivery.stages.find(s=>s.id==='delivery').detail,/heartbeat is current/);
+assert.equal(mixedDelivery.stages.find(s=>s.id==='pacRead').state,'unmonitored');
+const goldId='epic-golddrop-golddrop-epic-01-4oic';
+const directIo=resolveControllerConnectionPath({points:[point('controller_io_communication_ok',1,NOW,goldId)],deviceIds:[goldId],referenceTimestamp:NOW,feedStatus:'ready'});
+assert.match(directIo.stages.find(s=>s.id==='io').detail,/OptoMMP/);
+assert.equal(directIo.stages.find(s=>s.id==='vpn').state,'unmonitored');
 console.log('Controller connection-path tests passed for healthy, split-brain, stale, missing, and site-scoped states.');
 }
