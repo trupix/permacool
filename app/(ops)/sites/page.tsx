@@ -3,7 +3,8 @@ import Image from 'next/image';
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
 import { getOrganizations } from '@/server/repositories/organizations';
-import { getSites } from '@/server/repositories/sites';
+import { getSavedSiteDisplay } from '@/server/repositories/site-display';
+import { SitesSnapshotRefresh } from '@/components/sites-snapshot-refresh';
 import { requireUser } from '@/lib/auth';
 import { formatSiteActivity } from '@/lib/site-activity';
 import { SiteOperatingActivityIcon } from '@/components/site-operating-activity';
@@ -11,7 +12,8 @@ import { deriveSiteOperatingActivity } from '@/lib/site-operating-activity';
 
 export default async function SitesPage() {
   const user = await requireUser();
-  const [organizations, sites] = await Promise.all([getOrganizations(user), getSites(user)]);
+  const [organizations, snapshot] = await Promise.all([getOrganizations(user), getSavedSiteDisplay(user)]);
+  const { sites, capturedAt } = snapshot;
   return (
     <main className="page-stack">
       <header>
@@ -19,6 +21,7 @@ export default async function SitesPage() {
         <h1>Locations and gateways</h1>
       </header>
 
+      <SitesSnapshotRefresh capturedAt={capturedAt} />
       <SectionCard title="Managed sites" eyebrow={organizations[0]?.name}>
         <div className="list-stack">
           {sites.map((site) => (

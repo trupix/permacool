@@ -4,6 +4,8 @@ import type { TelemetryIngestPayload } from '@/types/domain';
 import { evaluateEquipmentTransitions } from '@/server/equipment-events';
 import { ensureEquipmentEventStorage } from '@/server/equipment-event-storage';
 import { attachSavedEventWeather } from '@/server/saved-event-weather';
+import { isEquipmentRunKey } from '@/lib/site-operating-activity';
+import { recordObservedRun } from '@/server/site-display-snapshots';
 
 function telemetryLabel(key: string) {
   return key
@@ -115,6 +117,11 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
     )
   ]);
 
+  // Ancillary display bookkeeping must never reject an already-saved telemetry batch.
+  if (payload.points.some(point => isEquipmentRunKey(point.key) && point.value > 0.5)) {
+    await recordObservedRun(payload.deviceId, capturedAt)
+      .catch(() => console.error('Sites display last-running timestamp update failed.'));
+  }
   let eventsPersisted = true;
   if (transitions.events.length) {
     try {
