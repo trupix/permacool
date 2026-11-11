@@ -39,7 +39,7 @@ export function Ke2DashboardSection({ points, fetchFailed }: { points: Ke2Point[
           {!state.alarmsKnown ? <span>Unknown — awaiting verified readings</span> : state.alarms.length ?
             <ul>{state.alarms.map(alarm => <li key={alarm}>{alarm}</li>)}</ul> : <span>No active alarms</span>}
         </div></div>
-        <span className={styles.updated}>{state.observedAt === null ? 'Waiting for the first update' :
+        <span className={styles.updated}>{state.observedAt === null ? 'Waiting for the first update' : now === 0 ? 'Checking latest update' :
           `Last observed ${new Date(state.observedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })}`}</span>
       </footer>
     </section>
