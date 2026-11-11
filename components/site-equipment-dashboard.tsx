@@ -3,6 +3,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useVpnSessionStatus } from './use-vpn-session-status';
+import { Ke2DashboardSection } from './ke2-dashboard-section';
 import {
   BookOpen,
   CheckCircle2,
@@ -2561,6 +2562,10 @@ export function SiteEquipmentDashboard({
         </div>
       </section>
         </>
+      ) : null}
+
+      {view === 'overview' && siteId === 'site-golddrop' ? (
+        <Ke2DashboardSection points={telemetry.points} fetchFailed={telemetry.status === 'error'} />
       ) : null}
 
       {view === 'connectivity' ? (
