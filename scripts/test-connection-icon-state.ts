@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const { connectionIconState } = require('../lib/equipment/connection-icon-state.ts');
 const { hasConnectionHealthNav, hasConnectionHealthPanel } = require('../lib/equipment/connection-health-sites.ts');
-for (const site of ['site-cannon-falls', 'site-muhameds-los-angeles']) {
+for (const site of ['site-cannon-falls', 'site-muhameds-los-angeles', 'site-golddrop']) {
   assert.equal(hasConnectionHealthNav(site), true);
   assert.equal(hasConnectionHealthPanel(site), true);
 }
