@@ -1391,6 +1391,8 @@ export function SiteEquipmentDashboard({
   const vpnStatus = useVpnSessionStatus(siteId, hasConnectionHealthPanel(siteId) && (view === 'overview' || view === 'connectivity'));
   const controllerConnectionPath = resolveControllerConnectionPath({
     vpnStatus,
+    // VPN polling is independent of telemetry; new VPN checks can postdate the last telemetry fetch.
+    vpnReferenceTimestamp: siteId === 'site-golddrop' ? new Date().toISOString() : undefined,
     points: telemetry.points,
     deviceIds: [...new Set([
       ...siteDeviceIds,

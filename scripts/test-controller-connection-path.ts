@@ -109,5 +109,9 @@ const goldId='epic-golddrop-golddrop-epic-01-4oic';
 const directIo=resolveControllerConnectionPath({points:[point('controller_io_communication_ok',1,NOW,goldId)],deviceIds:[goldId],referenceTimestamp:NOW,feedStatus:'ready'});
 assert.match(directIo.stages.find(s=>s.id==='io').detail,/OptoMMP/);
 assert.equal(directIo.stages.find(s=>s.id==='vpn').state,'unmonitored');
+const independentVpn=resolveControllerConnectionPath({points:[],deviceIds:[goldId],referenceTimestamp:'2026-08-28T18:59:00.000Z',vpnReferenceTimestamp:NOW,feedStatus:'ready',vpnStatus:{source:'openvpn-session',state:'connected',observedAt:NOW}});
+assert.equal(independentVpn.stages.find(s=>s.id==='vpn').state,'healthy');
+const expiredVpn=resolveControllerConnectionPath({points:[],deviceIds:[goldId],referenceTimestamp:NOW,vpnReferenceTimestamp:NOW,feedStatus:'ready',vpnStatus:{source:'openvpn-session',state:'connected',observedAt:'2026-08-28T18:50:00.000Z'}});
+assert.equal(expiredVpn.stages.find(s=>s.id==='vpn').state,'unmonitored');
 console.log('Controller connection-path tests passed for healthy, split-brain, stale, missing, and site-scoped states.');
 }

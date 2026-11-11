@@ -9,3 +9,5 @@ The monitor publishes controller_io_communication_ok to the existing GoldDrop in
 Website delivery freshness now uses the newest site-scoped health signal instead of letting an old heartbeat hide newer successful delivery. GoldDrop I/O explanatory text identifies the actual read-only diagnostic source.
 
 No PAC strategy download, output write, controller restart, permission or network change. KE2 and Events implementation preserved. Before-flow and credential-free final exports are in C:\AgenticalyCool\Golddrop\connection-monitoring-2026-11-11.
+
+VPN: direct relay and authenticated website API both confirmed the GoldDrop session connected. The dashboard compared independent VPN observation time to the older telemetry fetch time, so a new VPN result more than five seconds later was incorrectly classified as future/unverified. GoldDrop now assesses VPN freshness against current time; the 60-second expiry and future-date guard remain. No VPN relay or access settings changed.

@@ -112,13 +112,15 @@ export function resolveControllerConnectionPath({
   referenceTimestamp,
   feedStatus,
   maximumAgeMs = DEFAULT_MAXIMUM_AGE_MS,
-  vpnStatus
+  vpnStatus,
+  vpnReferenceTimestamp
 }: {
   points: ConnectionTelemetryPoint[];
   deviceIds: string[];
   referenceTimestamp: string | null;
   feedStatus: 'loading' | 'ready' | 'error';
   maximumAgeMs?: number;
+  vpnReferenceTimestamp?: string;
   vpnStatus?: { source: 'openvpn-session'; state: 'connected' | 'disconnected' | 'unknown'; observedAt: string | null };
 }): ControllerConnectionPath {
   const scopedDeviceIds = [...new Set(deviceIds.filter(Boolean))];
@@ -130,7 +132,7 @@ export function resolveControllerConnectionPath({
   const ioChannelFaultCount = resolveSignal(points, scopedDeviceIds, signalAliases.ioChannelFaultCount, referenceTimestamp, maximumAgeMs);
 
   const vpnTime = vpnStatus?.observedAt ? Date.parse(vpnStatus.observedAt) : NaN;
-  const vpnReference = referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
+  const vpnReference = vpnReferenceTimestamp ? Date.parse(vpnReferenceTimestamp) : referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
   const vpnFresh = Number.isFinite(vpnTime) && vpnReference - vpnTime <= 60_000 && vpnTime - vpnReference <= 5_000;
   const vpnVerified = vpnStatus?.source === 'openvpn-session' && vpnFresh && ['connected', 'disconnected'].includes(vpnStatus.state);
   const vpn: ConnectionStage = {
