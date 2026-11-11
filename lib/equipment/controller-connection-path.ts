@@ -24,6 +24,7 @@ export type ControllerConnectionPath = {
 };
 
 type ResolvedSignal = {
+  key: string;
   value: number;
   fresh: boolean;
   timestamp: string;
@@ -81,7 +82,7 @@ function resolveSignal(
   const referenceTime = referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
   const fresh = Number.isFinite(observedAt) && Number.isFinite(referenceTime) &&
     referenceTime - observedAt <= maximumAgeMs && observedAt - referenceTime <= FUTURE_TOLERANCE_MS;
-  return { value, fresh, timestamp: point.latestTimestamp };
+  return { key: point.key, value, fresh, timestamp: point.latestTimestamp };
 }
 
 function booleanStage(
@@ -111,13 +112,15 @@ export function resolveControllerConnectionPath({
   referenceTimestamp,
   feedStatus,
   maximumAgeMs = DEFAULT_MAXIMUM_AGE_MS,
-  vpnStatus
+  vpnStatus,
+  vpnReferenceTimestamp
 }: {
   points: ConnectionTelemetryPoint[];
   deviceIds: string[];
   referenceTimestamp: string | null;
   feedStatus: 'loading' | 'ready' | 'error';
   maximumAgeMs?: number;
+  vpnReferenceTimestamp?: string;
   vpnStatus?: { source: 'openvpn-session'; state: 'connected' | 'disconnected' | 'unknown'; observedAt: string | null };
 }): ControllerConnectionPath {
   const scopedDeviceIds = [...new Set(deviceIds.filter(Boolean))];
@@ -129,7 +132,7 @@ export function resolveControllerConnectionPath({
   const ioChannelFaultCount = resolveSignal(points, scopedDeviceIds, signalAliases.ioChannelFaultCount, referenceTimestamp, maximumAgeMs);
 
   const vpnTime = vpnStatus?.observedAt ? Date.parse(vpnStatus.observedAt) : NaN;
-  const vpnReference = referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
+  const vpnReference = vpnReferenceTimestamp ? Date.parse(vpnReferenceTimestamp) : referenceTimestamp ? Date.parse(referenceTimestamp) : Date.now();
   const vpnFresh = Number.isFinite(vpnTime) && vpnReference - vpnTime <= 60_000 && vpnTime - vpnReference <= 5_000;
   const vpnVerified = vpnStatus?.source === 'openvpn-session' && vpnFresh && ['connected', 'disconnected'].includes(vpnStatus.state);
   const vpn: ConnectionStage = {
@@ -192,7 +195,9 @@ export function resolveControllerConnectionPath({
       detail: healthy
           ? (ioChannelFaultCount
             ? 'PAC reports I/O communication available and zero reported channel faults. This does not prove physical output operation.'
-            : 'PAC reports I/O communication available. Individual sensor/channel faults and physical output operation are not verified by this check.')
+            : (scopedDeviceIds.includes('epic-golddrop-golddrop-epic-01-4oic') && ioCommunicationOk?.key === 'controller_io_communication_ok'
+              ? 'Read-only OptoMMP checks confirm the expected slot 0 and 1 modules are present and the aggregate analog scan is advancing. Individual channel health and physical output operation are not verified.'
+              : 'PAC reports I/O communication available. Individual sensor/channel faults and physical output operation are not verified by this check.'))
         : `PAC reports ${communicationHealthy ? 'communication enabled' : 'communication unavailable'}, ${ioUnitReady ? 'I/O unit ready' : 'I/O unit not ready'}, and ${ioChannelFaultCount?.value ?? 'unknown'} channel fault(s).`,
       observedAt: ioCommunicationOk?.timestamp ?? ioReady?.timestamp ?? ioChannelFaultCount?.timestamp ?? null
     };
@@ -209,7 +214,9 @@ export function resolveControllerConnectionPath({
     'Node-RED is running but its PAC API read is failing.'
   );
 
-  const deliveryEvidence = heartbeat ?? pacReadOk ?? strategyRunning ?? ioCommunicationOk ?? ioChannelFaultCount;
+  const deliveryEvidence = [heartbeat, pacReadOk, strategyRunning, ioCommunicationOk, ioChannelFaultCount]
+    .filter((signal): signal is ResolvedSignal => signal !== null)
+    .sort((left, right) => Date.parse(right.timestamp) - Date.parse(left.timestamp))[0] ?? null;
   const delivery: ConnectionStage = !deliveryEvidence
     ? {
         id: 'delivery', label: 'Telemetry delivery', state: 'unmonitored', status: 'Not monitored',
@@ -222,7 +229,7 @@ export function resolveControllerConnectionPath({
         }
       : {
           id: 'delivery', label: 'Telemetry delivery', state: 'healthy', status: 'Current',
-          detail: heartbeat ? 'The dedicated controller heartbeat is current.' : 'A current site-scoped health signal proves Node-RED delivery.',
+          detail: deliveryEvidence === heartbeat ? 'The dedicated controller heartbeat is current.' : 'A current site-scoped health signal proves Node-RED delivery.',
           observedAt: deliveryEvidence.timestamp
         };
 
