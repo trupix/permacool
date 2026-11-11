@@ -17,6 +17,8 @@ import { getDevicesBySite } from '@/server/repositories/devices';
 import { getSiteEquipmentEvents } from '@/server/repositories/equipment-events';
 import { getEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 import { getSite, getSiteAlerts } from '@/server/repositories/sites';
+import { getInitialSiteTelemetry } from '@/server/repositories/initial-site-telemetry';
+import type { AppUser } from '@/types/domain';
 
 export default async function SiteDetailPage({ params }: { params: Promise<{ siteid: string }> }) {
   const { siteid: siteId } = await params;
@@ -25,11 +27,10 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
 
   if (!site) notFound();
 
-  const [siteDevices, siteAlerts, siteEvents, equipmentConfiguration] = await Promise.all([
+  const [siteDevices, equipmentConfiguration, initialTelemetry] = await Promise.all([
     getDevicesBySite(user, site.id),
-    getSiteAlerts(user, site.id),
-    getSiteEquipmentEvents(site.id, { limit: 5 }),
-    getEquipmentConfiguration(site.id)
+    getEquipmentConfiguration(site.id),
+    getInitialSiteTelemetry(user, site.id)
   ]);
   const controllerManageUrl = groovManageUrlForDevices(siteDevices);
   const nodeRedUrl = nodeRedUrlForDevices(siteDevices);
@@ -60,6 +61,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
       </header>
 
       <SiteEquipmentDashboard
+        key={site.id}
         siteId={site.id}
         siteName={site.name}
         siteDeviceIds={siteDevices.map((device) => device.id)}
@@ -75,6 +77,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
         catalogs={equipmentCatalogRecords}
         initialConfiguration={siteFoundation.dashboardConfiguration}
         equipmentStorageReady={equipmentConfiguration.storageReady}
+        initialTelemetry={initialTelemetry}
         canEdit={false}
       />
 
@@ -88,10 +91,31 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
         }
       >
         <Suspense fallback={<p>Loading cycle averages…</p>}><CycleAverages siteId={site.id} timezone={site.timezone} /></Suspense>
-        <EquipmentEventList events={siteEvents.events} timezone={site.timezone} />
+        <Suspense fallback={<p>Loading recent events…</p>}>
+          <RecentSiteEvents siteId={site.id} timezone={site.timezone} />
+        </Suspense>
       </SectionCard>
 
       <SectionCard title="Alerts" eyebrow="Recent activity">
+        <Suspense fallback={<p>Loading alerts…</p>}><SiteAlerts user={user} siteId={site.id} /></Suspense>
+      </SectionCard>
+    </main>
+  );
+}
+
+async function RecentSiteEvents({ siteId, timezone }: { siteId: string; timezone: string }) {
+  try {
+    const siteEvents = await getSiteEquipmentEvents(siteId, { limit: 5 });
+    return <EquipmentEventList events={siteEvents.events} timezone={timezone} />;
+  } catch {
+    return <p>Recent events are temporarily unavailable. Telemetry updates continue independently.</p>;
+  }
+}
+
+async function SiteAlerts({ user, siteId }: { user: AppUser; siteId: string }) {
+  const siteAlerts = await getSiteAlerts(user, siteId).catch(() => null);
+  if (!siteAlerts) return <p>Alerts are temporarily unavailable; this does not mean there are no alerts.</p>;
+  return (
         <div className="list-stack">
           {siteAlerts.length ? (
             siteAlerts.map((alert) => (
@@ -107,7 +131,5 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ sit
             <p className="empty-state">No active site alerts.</p>
           )}
         </div>
-      </SectionCard>
-    </main>
   );
 }
