@@ -1,5 +1,5 @@
 export function hasConnectionHealthNav(siteId: string | null): boolean {
-  return siteId === 'site-cannon-falls' || siteId === 'site-muhameds-los-angeles';
+  return siteId === 'site-cannon-falls' || siteId === 'site-muhameds-los-angeles' || siteId === 'site-golddrop';
 }
 
 export function hasConnectionHealthPanel(siteId: string): boolean {
