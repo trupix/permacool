@@ -5849,6 +5849,139 @@
   margin-top: 0.52rem;
 }
 
+.site-company-logo { display: block; width: min(100%, 340px); height: auto; margin: 0.5rem 0; }
+.cycle-summary-pair { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: flex-end; }
+.cycle-summary-section { min-width: 0; max-width: 100%; }
+.cycle-summary-boxes {
+  display: flex;
+  align-items: stretch;
+  gap: 0.3rem;
+  margin: 0.65rem 0;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  padding: 0.35rem;
+  border: 1px solid rgba(17, 44, 34, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 252, 0.9);
+  box-shadow: 0 12px 30px rgba(17, 44, 34, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.cycle-summary-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+.cycle-summary-heading h3 { margin: 0; }
+.cycle-summary-heading .salinas-dashboard__countdown {
+  --sd-cyan: #258363;
+  --sd-panel-strong: #fffffc;
+}
+.cycle-summary-heading .salinas-dashboard__countdown-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid transparent;
+  border-top-color: #258363;
+  border-radius: 50%;
+  animation: cycle-countdown-spin 3s linear infinite;
+}
+@keyframes cycle-countdown-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .cycle-summary-heading .salinas-dashboard__countdown-ring::before { animation: none; }
+}
+
+.cycle-summary-boxes > .equipment-off-cycle {
+  margin: 0;
+  width: auto;
+  min-width: 0;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 0.78rem;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #6b369b;
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+
+.cycle-summary-boxes > .equipment-off-cycle:hover { background: #f3eafa; }
+.cycle-summary-boxes > .equipment-off-cycle--interval { color: #0f6868; }
+.cycle-summary-boxes > .equipment-off-cycle--interval:hover { background: #e5f5f3; }
+.cycle-summary-boxes > .cycle-summary-average {
+  background: #6b369b;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(17, 44, 34, 0.13);
+}
+.cycle-summary-boxes > .cycle-summary-average:hover { background: #7c43ae; }
+.cycle-summary-boxes > .cycle-summary-average.equipment-off-cycle--interval { background: #0f6868; color: #fff; }
+.cycle-summary-boxes > .cycle-summary-average.equipment-off-cycle--interval:hover { background: #147c7c; }
+.cycle-summary-boxes > .pressure-summary-low { background: #175ca4; color: #fff; }
+.cycle-summary-boxes > .pressure-summary-low:hover { background: #1d6ebf; }
+.cycle-summary-boxes > .pressure-summary-high { background: #b52e38; color: #fff; }
+.cycle-summary-boxes > .pressure-summary-high:hover { background: #cb3944; }
+.cycle-summary-boxes > .equipment-off-cycle > span { display: inline-flex; align-items: center; gap: 0.42rem; font-size: 0.7rem; font-weight: 850; }
+.cycle-summary-boxes > .equipment-off-cycle strong { font-size: 0.7rem; font-weight: 850; font-variant-numeric: tabular-nums; }
+.cycle-summary-label { margin: 1rem 0 0; font-weight: 800; }
+.cycle-summary-label span { font-size: 0.8rem; color: #65766e; font-weight: 500; }
+.cycle-summary-details { color: #65766e; font-size: 0.85rem; }
+.cycle-summary-details summary { cursor: pointer; width: fit-content; }
+@media (prefers-reduced-motion: reduce) {
+  .cycle-summary-boxes > .equipment-off-cycle { transition: none; }
+}
+
+.equipment-off-cycle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0.65rem 0;
+  padding: 0.75rem 1rem;
+  border: 2px solid #3984c0;
+  border-radius: 10px;
+  background: #eaf4ff;
+  color: #124e7d;
+}
+
+.equipment-off-cycle strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1.15rem;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.equipment-off-cycle svg { flex-shrink: 0; }
+
+.equipment-off-cycle--interval {
+  border-color: #38825b;
+  background: #eaf7ee;
+  color: #185b36;
+}
+
+.equipment-off-cycle > span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
 .equipment-event-snapshot span {
   display: inline-flex;
   align-items: center;

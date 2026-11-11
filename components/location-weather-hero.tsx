@@ -25,7 +25,7 @@ import {
 } from '@/lib/site-location';
 import type { SiteWeatherData } from '@/lib/site-weather';
 
-const WEATHER_REFRESH_MS = 5 * 60_000;
+const WEATHER_REFRESH_MS = 15 * 60_000;
 
 type WeatherState = {
   status: 'loading' | 'ready' | 'error';

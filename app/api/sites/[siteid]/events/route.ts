@@ -27,7 +27,9 @@ function eventsToCsv(events: EquipmentEvent[]) {
     'compressor_amps',
     'runtime_minutes',
     'setpoint',
-    'setpoint_unit'
+    'setpoint_unit',
+    'off_cycle_seconds',
+    'since_previous_off_cycle_seconds'
   ];
   const rows = events.map((event) => [
     event.occurredAt,
@@ -42,7 +44,9 @@ function eventsToCsv(events: EquipmentEvent[]) {
     event.compressorAmps,
     event.runtimeMinutes,
     event.setpoint,
-    event.setpointUnit
+    event.setpointUnit,
+    event.offCycleSeconds,
+    event.sincePreviousOffCycleSeconds
   ]);
   return [headers, ...rows].map((row) => row.map(csvCell).join(',')).join('\r\n');
 }
