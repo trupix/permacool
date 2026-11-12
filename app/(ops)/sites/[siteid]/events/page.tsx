@@ -5,6 +5,7 @@ import { CycleAverages } from '@/components/cycle-averages';
 import { Download } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { EquipmentEventList } from '@/components/equipment-event-list';
+import { EventsSnapshotRefresh } from '@/components/events-snapshot-refresh';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { requireUser } from '@/lib/auth';
 import { groovManageUrlForDevices, nodeRedUrlForDevices } from '@/lib/controller-links';
@@ -26,16 +27,9 @@ export default async function SiteEventsPage({
   if (!site) notFound();
 
   const pageNumber = Math.max(Number.parseInt(query.page ?? '1', 10) || 1, 1);
-  const [eventPage, siteDevices] = await Promise.all([
-    getSiteEquipmentEvents(site.id, {
-      limit: PAGE_SIZE,
-      offset: (pageNumber - 1) * PAGE_SIZE
-    }),
-    getDevicesBySite(user, site.id)
-  ]);
+  const siteDevices = await getDevicesBySite(user, site.id);
   const controllerManageUrl = groovManageUrlForDevices(siteDevices);
   const nodeRedUrl = nodeRedUrlForDevices(siteDevices);
-  const totalPages = Math.max(Math.ceil(eventPage.total / PAGE_SIZE), 1);
 
   return (
     <main className="page-stack">
@@ -61,13 +55,25 @@ export default async function SiteEventsPage({
         </div>
       </header>
 
+      <EventsSnapshotRefresh />
+      <Suspense fallback={<p>Loading cycle averages…</p>}><CycleAverages siteId={site.id} timezone={site.timezone} /></Suspense>
+      <Suspense fallback={<section className="panel"><p>Loading saved event history…</p></section>}>
+        <EventHistory siteId={site.id} timezone={site.timezone} pageNumber={pageNumber} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function EventHistory({ siteId, timezone, pageNumber }: { siteId: string; timezone: string; pageNumber: number }) {
+  const eventPage = await getSiteEquipmentEvents(siteId, { limit: PAGE_SIZE, offset: (pageNumber - 1) * PAGE_SIZE });
+  const totalPages = Math.max(Math.ceil(eventPage.total / PAGE_SIZE), 1);
+  return <>
       {!eventPage.persistenceReady ? (
         <div className="ops-notice">
           Event history storage is waiting for the production database migration. Live telemetry remains available.
         </div>
       ) : null}
 
-      <Suspense fallback={<p>Loading cycle averages…</p>}><CycleAverages siteId={site.id} timezone={site.timezone} /></Suspense>
       <section className="panel event-history-panel">
         <header className="section-card-heading">
           <div>
@@ -77,7 +83,7 @@ export default async function SiteEventsPage({
           <span className="event-page-count">Page {Math.min(pageNumber, totalPages)} of {totalPages}</span>
         </header>
         <div className="section-card-body event-history-scroll">
-          <EquipmentEventList events={eventPage.events} timezone={site.timezone} />
+          <EquipmentEventList events={eventPage.events} timezone={timezone} />
         </div>
         {totalPages > 1 ? (
           <footer className="event-pagination">
@@ -86,6 +92,5 @@ export default async function SiteEventsPage({
           </footer>
         ) : null}
       </section>
-    </main>
-  );
+    </>;
 }

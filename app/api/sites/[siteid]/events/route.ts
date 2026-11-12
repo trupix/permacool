@@ -63,7 +63,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ site
   const download = url.searchParams.get('download') === 'csv';
   const requestedLimit = Number(url.searchParams.get('limit') ?? (download ? 10_000 : 250));
   const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(requestedLimit, 1), 10_000) : 250;
-  const page = await getSiteEquipmentEvents(site.id, { limit });
+  const page = await getSiteEquipmentEvents(site.id, { limit, fresh: download });
 
   if (download) {
     const filename = `${site.id}-equipment-events.csv`;
