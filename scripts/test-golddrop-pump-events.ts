@@ -1,7 +1,7 @@
 {
 const assert = require('node:assert/strict');
 const {evaluateEquipmentTransitions: evaluate} = require('../server/equipment-events.ts');
-const point = value => [{key:'golddrop_liquid_pump_on', value, unit:'bool'}];
+const point = (value: number) => [{key:'golddrop_liquid_pump_on', value, unit:'bool'}];
 const base = {siteId:'site-golddrop',siteName:'GoldDrop',deviceId:'epic-golddrop-golddrop-epic-01-4oic',capturedAt:new Date('2026-11-12T22:45:00Z'),previous:point(0),incoming:point(1)};
 assert.equal(evaluate(base).events[0].eventType,'liquid_pump_on');
 assert.equal(evaluate({...base,previous:point(1),incoming:point(0)}).events[0].eventType,'liquid_pump_off');
