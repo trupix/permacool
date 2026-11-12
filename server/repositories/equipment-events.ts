@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { unstable_cache } from 'next/cache';
 import { db } from '@/lib/db';
 import { getEquipmentEventsForSite } from '@/lib/mock-data';
 import type { EquipmentEvent } from '@/types/domain';
@@ -17,10 +18,24 @@ function isMissingEquipmentEventTable(error: unknown) {
 
 export async function getSiteEquipmentEvents(
   siteId: string,
-  options: { limit?: number; offset?: number } = {}
+  options: { limit?: number; offset?: number; fresh?: boolean } = {}
 ): Promise<EquipmentEventPage> {
   const limit = Math.min(Math.max(options.limit ?? 100, 1), 10_000);
   const offset = Math.max(options.offset ?? 0, 0);
+  // Callers must authorize site access before requesting this site-scoped snapshot.
+  // Exports bypass the display cache so they keep their existing fresh-read behavior.
+  return options.fresh
+    ? loadSiteEquipmentEvents(siteId, limit, offset)
+    : getSavedSiteEquipmentEvents(siteId, limit, offset);
+}
+
+const getSavedSiteEquipmentEvents = unstable_cache(
+  loadSiteEquipmentEvents,
+  ['site-equipment-event-details-v1'],
+  { revalidate: 30 }
+);
+
+async function loadSiteEquipmentEvents(siteId: string, limit: number, offset: number): Promise<EquipmentEventPage> {
 
   if (!shouldUseDatabase()) {
     const allEvents = getEquipmentEventsForSite(siteId);
