@@ -30,6 +30,8 @@ export type EquipmentEventDraft = EquipmentEventSnapshot & {
     | 'reached_temperature'
     | 'high_pressure_stop'
     | 'pump_off_timeout'
+    | 'liquid_pump_on'
+    | 'liquid_pump_off'
     | 'compressor_runtime_limit'
     | 'high_pressure_cleared';
   message: string;
@@ -189,6 +191,16 @@ export function evaluateEquipmentTransitions(
   // Re-emit on retry so a failed event insert can recover after telemetry saved.
   // The database dedupe key, not the latest telemetry value, provides idempotency.
   if (input.siteId === 'site-golddrop' && input.deviceId === 'epic-golddrop-golddrop-epic-01-4oic') {
+    // Direct channel-10 output command, not flow/motor feedback. Unknown is never Off.
+    const pumpKey = normalizeKey('golddrop_liquid_pump_on');
+    const previousPump = numericValue(previous.get(pumpKey));
+    const currentPump = numericValue(incoming.get(pumpKey));
+    if ((previousPump === 0 || previousPump === 1) &&
+        (currentPump === 0 || currentPump === 1) && previousPump !== currentPump) {
+      events.push(eventDraft(input, 'CH1', currentPump === 1 ? 'liquid_pump_on' : 'liquid_pump_off',
+        `Liquid pump turned ${currentPump === 1 ? 'on' : 'off'} (channel 10 command)`,
+        snapshotForChannel(incoming, 'ch1')));
+    }
     const read = (key: string) => numericValue(incoming.get(normalizeKey(`ch1_shutdown_${key}`)));
     const reason = read('reason');
     const sequence = read('sequence');
