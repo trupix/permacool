@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { LocationEquipmentWorkspace } from '@/components/location-equipment-workspace';
 import { SiteEquipmentDashboard } from '@/components/site-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
@@ -10,7 +9,9 @@ import { StatusBadge } from '@/components/status-badge';
 import { requireUser } from '@/lib/auth';
 import { groovManageUrlForDevices, nodeRedUrlForDevices } from '@/lib/controller-links';
 import { canManageSiteEquipment } from '@/lib/workspace-access';
-import { getEquipmentCatalogRecord, getSiteEquipmentRecord } from '@/lib/equipment/data';
+import { equipmentCatalogRecords, getSiteEquipmentRecord } from '@/lib/equipment/data';
+import { resolveSiteDashboardFoundation } from '@/lib/equipment/site-foundation';
+import { getInitialSiteTelemetry } from '@/server/repositories/initial-site-telemetry';
 import { getDevicesBySite } from '@/server/repositories/devices';
 import { getEquipmentConfiguration } from '@/server/repositories/equipment-configurations';
 import { getSite } from '@/server/repositories/sites';
@@ -31,16 +32,21 @@ export default async function SiteConnectivityPage({
 
   if (!site) notFound();
 
-  const [siteDevices, equipmentConfiguration] = await Promise.all([
+  const [siteDevices, equipmentConfiguration, initialTelemetry] = await Promise.all([
     getDevicesBySite(user, site.id),
-    getEquipmentConfiguration(site.id)
+    getEquipmentConfiguration(site.id),
+    getInitialSiteTelemetry(user, site.id)
   ]);
   const canEditEquipment = canManageSiteEquipment(user, site.organizationId);
   const controllerManageUrl = groovManageUrlForDevices(siteDevices);
   const nodeRedUrl = nodeRedUrlForDevices(siteDevices);
-  const equipmentRecord = getSiteEquipmentRecord(site.id);
-  const catalogRecordId = equipmentRecord?.processSystems[0]?.condensers[0]?.catalogRecordId;
-  const equipmentCatalog = catalogRecordId ? getEquipmentCatalogRecord(catalogRecordId) : undefined;
+  const siteFoundation = resolveSiteDashboardFoundation({
+    siteId: site.id,
+    siteName: site.name,
+    storedConfiguration: equipmentConfiguration.configuration,
+    verifiedRecord: getSiteEquipmentRecord(site.id),
+    catalogRecords: equipmentCatalogRecords
+  });
 
   return (
     <main className="page-stack">
@@ -65,7 +71,7 @@ export default async function SiteConnectivityPage({
           <div className="list-row">
             <div>
               <strong>Primary edge gateway</strong>
-              <p>Outbound secure tunnel expected for all telemetry traffic.</p>
+              <p>Saved gateway status. Telemetry delivery and VPN access are checked separately below.</p>
             </div>
             <StatusBadge tone={site.gatewayStatus} />
           </div>
@@ -88,34 +94,20 @@ export default async function SiteConnectivityPage({
         </SectionCard>
       </div>
 
-      {equipmentRecord && equipmentCatalog ? (
         <SiteEquipmentDashboard
+          key={site.id}
           siteId={site.id}
           siteName={site.name}
           siteDeviceIds={siteDevices.map((device) => device.id)}
-          equipmentRecord={equipmentRecord}
-          catalog={equipmentCatalog}
+          equipmentRecord={siteFoundation.equipmentRecord}
+          catalog={siteFoundation.primaryCatalog}
+          catalogs={equipmentCatalogRecords}
           view="connectivity"
-          initialConfiguration={equipmentConfiguration.configuration}
+          initialConfiguration={siteFoundation.dashboardConfiguration}
+          initialTelemetry={initialTelemetry}
           equipmentStorageReady={equipmentConfiguration.storageReady}
           canEdit={canEditEquipment}
         />
-      ) : (
-        <LocationEquipmentWorkspace
-          siteId={site.id}
-          siteName={site.name}
-          view="connectivity"
-          initialConfiguration={equipmentConfiguration.configuration}
-          equipmentStorageReady={equipmentConfiguration.storageReady}
-          canEdit={canEditEquipment}
-          controller={{
-            name: siteDevices[0]?.name ?? 'No PLC registered',
-            status: siteDevices[0]?.status ?? 'offline',
-            vpnIdentity: siteDevices[0]?.vpnIdentity ?? 'Not assigned',
-            tunnelIp: siteDevices[0]?.vpnTunnelIp ?? 'Not assigned'
-          }}
-        />
-      )}
     </main>
   );
 }

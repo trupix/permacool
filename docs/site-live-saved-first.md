@@ -1,5 +1,7 @@
 # Saved-first individual Live pages
 
+Connectivity uses the same saved-first telemetry and equipment foundation as Live. Sites without a hard-coded equipment record now resolve their stored configuration instead of falling back to static WAITING placeholders. Existing fifteen-second telemetry and independent VPN polling remain unchanged; saved telemetry is not proof of a current VPN session. No controller-side actions are introduced.
+
 The individual Live page loads the latest authorized `TelemetryPoint` rows on the server and includes them in its initial page payload. The display consumes this snapshot immediately on hydration, without waiting for a browser telemetry request; locale-dependent timestamp formatting therefore stays consistent. This is not the ten-minute overview snapshot: it uses the most recently stored individual readings and preserves every original sample timestamp.
 
 The existing authenticated client request starts after hydration, then continues every fifteen seconds. Optional two-second fast mode is unchanged. Timestamp-aware merging prevents an older API response from overwriting a newer reading. No localStorage, shared cross-user cache, PLC request, or controller setting change is introduced.
