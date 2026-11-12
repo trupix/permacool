@@ -29,6 +29,8 @@ export type EquipmentEventDraft = EquipmentEventSnapshot & {
     | 'system_off'
     | 'reached_temperature'
     | 'high_pressure_stop'
+    | 'pump_off_timeout'
+    | 'compressor_runtime_limit'
     | 'high_pressure_cleared';
   message: string;
   occurredAt: Date;
@@ -183,6 +185,33 @@ export function evaluateEquipmentTransitions(
   const aggregateHighPressureStop = booleanValue(current.get(aggregateStopKey));
   const events: EquipmentEventDraft[] = [];
   const alertActions: HighPressureAlertAction[] = [];
+  // A retained PAC trip is evidence; an ordinary Off transition is not.
+  // Re-emit on retry so a failed event insert can recover after telemetry saved.
+  // The database dedupe key, not the latest telemetry value, provides idempotency.
+  if (input.siteId === 'site-golddrop' && input.deviceId === 'epic-golddrop-golddrop-epic-01-4oic') {
+    const read = (key: string) => numericValue(incoming.get(normalizeKey(`ch1_shutdown_${key}`)));
+    const reason = read('reason');
+    const sequence = read('sequence');
+    const occurredMs = read('at_ms');
+    const elapsed = read('elapsed_sec');
+    const limit = read('limit_sec');
+    if ((reason === 1 || reason === 2) && sequence !== null && Number.isInteger(sequence) && sequence > 0 &&
+        occurredMs !== null && Number.isFinite(occurredMs) && occurredMs >= Date.UTC(2026, 0, 1) &&
+        occurredMs <= input.capturedAt.getTime() + 60_000 && elapsed !== null && limit !== null &&
+        Number.isInteger(elapsed) && Number.isInteger(limit) && elapsed >= 0 && limit > 0 && elapsed >= limit) {
+      const type = reason === 1 ? 'pump_off_timeout' : 'compressor_runtime_limit';
+      const minutes = formatReading(limit / 60, 'minutes');
+      const message = reason === 1
+        ? `CH1 shutdown — pump remained off with compressor on for ${minutes} (PAC recorded)`
+        : `CH1 shutdown — compressor runtime limit of ${minutes} reached (PAC recorded)`;
+      // Trip-time readings were not captured by the PAC record: do not attach current readings to an older trip.
+      events.push({
+        ...eventDraft(input, 'CH1', type, message, snapshotForChannel(new Map(), 'ch1')),
+        occurredAt: new Date(occurredMs),
+        dedupeKey: [input.siteId, input.deviceId, 'CH1', type, sequence, occurredMs].join(':')
+      });
+    }
+  }
   let activeChannelStopIdentified = false;
 
   for (const channelNumber of [1, 2] as const) {
