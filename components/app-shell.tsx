@@ -30,6 +30,7 @@ import {
   isPlatformStaff
 } from '@/lib/workspace-access';
 import type { AppUser } from '@/types/domain';
+import { canAccessPlcOperations } from '@/lib/plc-operations-access';
 import { ActiveSiteContext } from './active-site-context';
 import type { ActiveSiteContextValue } from './active-site-context';
 import { ConnectionHealthContext, type ConnectionHealthSnapshot } from './connection-health-context';
@@ -97,6 +98,7 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
           ? { ...item, label: 'My Equipment' }
           : item
     ),
+    ...(canAccessPlcOperations(user) ? [{ href: '/dashboard/plc-operations', label: 'PLC Operations', icon: BookOpen }] : []),
     ...(canAccessProvisioning(user) ? [provisioningNavItem] : []),
     ...(isStaff ? staffNavItemsBeforeLogic : []),
     ...(canManageLogicDefinitions(user) ? [logicNavItem] : []),
@@ -126,7 +128,7 @@ export function AppShell({ user, children }: { user: AppUser; children: ReactNod
           <p className="nav-section-label">Workspace</p>
           {navItems.map((item) => {
             const active = (item.matches ?? [item.href]).some(
-              (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+              (prefix) => pathname === prefix || (prefix !== '/dashboard' && pathname.startsWith(`${prefix}/`))
             );
             const Icon = item.icon;
 
