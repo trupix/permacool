@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Activity, BookOpen, ClipboardList, ExternalLink, FolderArchive, LayoutDashboard, ShieldCheck } from 'lucide-react';
-import { requireStaff } from '@/lib/auth';
+import { requireUser } from '@/lib/auth';
+import { canAccessPlcOperations } from '@/lib/plc-operations-access';
 import { isSupabaseAuthEnabled } from '@/lib/env';
 import { SectionCard } from '@/components/section-card';
 import { MetricCard } from '@/components/metric-card';
@@ -29,7 +30,8 @@ function Resource({ href, children }: { href: string; children: React.ReactNode 
 export default async function PlcOperationsPage({ searchParams }: { searchParams: Promise<{ section?: string | string[] }> }) {
   // Never expose internal records through the application's production mock fallback.
   if (process.env.NODE_ENV === 'production' && !isSupabaseAuthEnabled()) notFound();
-  await requireStaff();
+  const user = await requireUser();
+  if (!canAccessPlcOperations(user)) notFound();
   const requested = (await searchParams).section;
   const active = sections.find(section => section.id === requested)?.id ?? 'overview';
 

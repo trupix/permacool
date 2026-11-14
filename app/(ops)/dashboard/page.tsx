@@ -7,6 +7,7 @@ import { getDashboardSnapshot } from '@/server/repositories/dashboard';
 import { DashboardSnapshotRefresh } from '@/components/dashboard-snapshot-refresh';
 import { requireUser } from '@/lib/auth';
 import { isStaffScope } from '@/lib/access';
+import { canAccessPlcOperations } from '@/lib/plc-operations-access';
 
 export const metadata: Metadata = {
   title: 'SOUL Matrix',
@@ -26,7 +27,7 @@ export default async function DashboardPage() {
         </p>
       </header>
 
-      {isStaffScope(user) ? (
+      {canAccessPlcOperations(user) ? (
         <Link href="/dashboard/plc-operations" className="list-row link-row">
           <div><strong>PLC Operations</strong><p>Private planning, standards, maintenance history and controller records</p></div>
           <span aria-hidden="true">→</span>
