@@ -10,7 +10,7 @@ import { MetricCard } from '@/components/metric-card';
 import { PlcLibraryDocument } from '@/components/plc-library-document';
 import { PlcLibraryRefresh } from '@/components/plc-library-refresh';
 import { getPlcLibrary } from '@/server/plc-library';
-import { LIBRARY_CUSTOMERS, GOLDDROP_NOTEBOOKS, CANNON_FALLS_NOTEBOOKS, libraryDocumentTitle, libraryUrl, openIssueSections, type LibraryDocument } from '@/lib/plc-library-contract';
+import { LIBRARY_CUSTOMERS, GOLDDROP_NOTEBOOKS, CANNON_FALLS_NOTEBOOKS, ADDITIONAL_NOTEBOOKS, libraryDocumentTitle, libraryUrl, openIssueSections, type LibraryDocument } from '@/lib/plc-library-contract';
 import styles from './plc-operations.module.css';
 
 export const metadata: Metadata = { title: 'PLC Operations', robots: { index: false, follow: false } };
@@ -42,7 +42,7 @@ export default async function PlcOperationsPage({ searchParams }: { searchParams
   const customerDocs = docs.filter(doc => doc.path.startsWith(prefix) || (customer.id === 'golddrop' && doc.path === 'research/ke2-temp-valve/notebook.html'));
   const overview = customerDocs.find(doc => doc.path === `${prefix}README.md`);
   const notebook = customerDocs.find(doc => doc.path === `${prefix}controller-notebook.md`);
-  const notebooks = customerDocs.filter(doc => doc.path === `${prefix}controller-notebook.md` || GOLDDROP_NOTEBOOKS.includes(doc.path) || CANNON_FALLS_NOTEBOOKS.includes(doc.path));
+  const notebooks = customerDocs.filter(doc => doc.path === `${prefix}controller-notebook.md` || GOLDDROP_NOTEBOOKS.includes(doc.path) || CANNON_FALLS_NOTEBOOKS.includes(doc.path) || ADDITIONAL_NOTEBOOKS.includes(doc.path));
   const issues = notebook ? openIssueSections(notebook.content) : [];
   const plans = customerDocs.filter(doc => doc.path.includes('/plans/'));
   const history = customerDocs.filter(doc => doc.path.includes('/changes/')).sort((a, b) => b.path.localeCompare(a.path));
