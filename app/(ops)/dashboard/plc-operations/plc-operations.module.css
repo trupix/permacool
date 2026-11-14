@@ -1,4 +1,8 @@
 .workspace { max-width: 1400px; margin-inline: auto; }
+.customers { display: flex; flex-wrap: wrap; gap: .6rem; }
+.customers a { border: 1px solid #cbdad0; border-radius: 999px; padding: .65rem 1.2rem; font-size: .9rem; font-weight: 700; background: #fff; color: #254e3c; }
+.customers a[aria-current="page"] { background: #173e2e; color: #fff; border-color: #173e2e; }
+.customers a:focus-visible { outline: 3px solid #578b6e; outline-offset: 3px; }
 .sync { padding: 1rem 1.3rem; border: 1px solid #cbdad0; border-radius: 16px; background: #edf5ef; color: #254e3c; }
 .sync p { margin: .4rem 0; font-size: .85rem; }
 .failure { color: #992f26; font-weight: 700; }
