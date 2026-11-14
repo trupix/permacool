@@ -1,4 +1,19 @@
 .workspace { max-width: 1400px; margin-inline: auto; }
+.sync { padding: 1rem 1.3rem; border: 1px solid #cbdad0; border-radius: 16px; background: #edf5ef; color: #254e3c; }
+.sync p { margin: .4rem 0; font-size: .85rem; }
+.failure { color: #992f26; font-weight: 700; }
+.document { background: #fff; border: 1px solid #d8e2d9; border-radius: 14px; padding: 1.2rem; margin-block: .8rem; min-width: 0; }
+.document summary { cursor: pointer; font-size: 1.05rem; font-weight: 700; }
+.document summary small { display: block; margin-top: .4rem; color: #65766e; font-size: .75rem; font-weight: 400; }
+.markdown { line-height: 1.65; overflow-wrap: anywhere; font-size: .92rem; }
+.markdown h1 { font-size: 1.65rem; }
+.markdown h2 { font-size: 1.25rem; margin-top: 1.8rem; }
+.markdown h3 { font-size: 1.05rem; }
+.markdown table { border-collapse: collapse; width: 100%; font-size: .82rem; }
+.markdown th, .markdown td { padding: .7rem; border: 1px solid #d8e2d9; vertical-align: top; text-align: left; min-width: 120px; }
+.markdown th { background: #edf5ef; }
+.markdown pre { white-space: pre-wrap; background: #f3f6f2; padding: 1rem; border-radius: 10px; }
+.markdown a { color: #24523e; text-decoration: underline; }
 .header { display: flex; justify-content: space-between; align-items: start; gap: 1rem; flex-wrap: wrap; }
 .private { display: inline-flex; align-items: center; gap: .5rem; border: 1px solid #cbdad0; border-radius: 999px; padding: .6rem .9rem; color: #254e3c; background: #edf5ef; font-size: .75rem; font-weight: 700; }
 .provenance { display: flex; gap: .65rem; align-items: start; color: #596c63; font-size: .8rem; }

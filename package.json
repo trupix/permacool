@@ -4,7 +4,7 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && node scripts/setup-plc-library.cjs && next build",
     "start": "next start",
     "telemetry:test": "node scripts/send-test-telemetry.js",
     "equipment:events:test": "node scripts/test-equipment-events.ts",
@@ -44,10 +44,13 @@
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.104.1",
     "@vercel/oidc": "^3.8.1",
+    "jose": "^6.2.17",
     "lucide-react": "^1.11.0",
     "next": "^16.3.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "resend": "^6.18.1",
     "three": "^0.185.1"
   },

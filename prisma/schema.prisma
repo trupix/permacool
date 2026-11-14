@@ -7,6 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Private documentation publication only; no controller/telemetry relationship.
+model PlcLibrarySnapshot {
+  id            String   @id
+  snapshot      Json?
+  receivedAt    DateTime? @db.Timestamptz
+  lastAttemptAt DateTime  @db.Timestamptz
+  lastError     String?
+  runNumber     BigInt
+  runAttempt    Int
+}
+
 enum OrganizationStatus {
   active
   trial
