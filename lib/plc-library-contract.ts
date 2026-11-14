@@ -3,11 +3,12 @@ export const LIBRARY_WORKFLOW = `${LIBRARY_REPOSITORY}/.github/workflows/plc-ope
 export const LIBRARY_AUDIENCE = 'https://perma.cool/api/plc-operations/sync';
 export type LibraryDocument = { path: string; content: string; updatedAt: string };
 export type LibrarySnapshot = { version: 1; revision: string; documents: LibraryDocument[] };
-export const LIBRARY_CUSTOMERS = [{ id: 'baldwin-park', name: 'Baldwin Park' }, { id: 'golddrop', name: 'GoldDrop' }] as const;
+export const LIBRARY_CUSTOMERS = [{ id: 'baldwin-park', name: 'Baldwin Park' }, { id: 'golddrop', name: 'GoldDrop' }, { id: 'cannon-falls', name: 'Cannon Falls' }] as const;
+export const CANNON_FALLS_NOTEBOOKS = ['customers/cannon-falls/notebooks/node-red-notebook.md', 'customers/cannon-falls/notebooks/website-notebook.md'];
 export const GOLDDROP_NOTEBOOKS = ['customers/golddrop/notebooks/PAC and groov Change Notebook.md', 'customers/golddrop/notebooks/node-red-notebook.html', 'customers/golddrop/notebooks/dashboard-notebook.html', 'research/ke2-temp-valve/notebook.html'];
 
 export function allowedLibraryPath(path: string) {
-  return /^(?:standards\/[a-z0-9-]+\.md|customers\/(?:baldwin-park|golddrop)\/(?:README|controller-notebook|build-profile|backups|release)\.md|customers\/(?:baldwin-park|golddrop)\/(?:changes|plans)\/[a-zA-Z0-9-]+\.md)$/.test(path) || GOLDDROP_NOTEBOOKS.includes(path);
+  return /^(?:standards\/[a-z0-9-]+\.md|customers\/(?:baldwin-park|golddrop|cannon-falls)\/(?:README|controller-notebook|build-profile|backups|release)\.md|customers\/(?:baldwin-park|golddrop|cannon-falls)\/(?:changes|plans)\/[a-zA-Z0-9-]+\.md)$/.test(path) || GOLDDROP_NOTEBOOKS.includes(path) || CANNON_FALLS_NOTEBOOKS.includes(path);
 }
 
 export function validateLibrarySnapshot(value: unknown): LibrarySnapshot {
@@ -26,6 +27,9 @@ export function validateLibrarySnapshot(value: unknown): LibrarySnapshot {
   // Accept the prior Baldwin-only snapshot during rollout, but never partial GoldDrop imports.
   if (data.documents.some(doc => doc.path.startsWith('customers/golddrop/'))) {
     for (const required of ['customers/golddrop/README.md', 'customers/golddrop/build-profile.md', ...GOLDDROP_NOTEBOOKS]) if (!seen.has(required)) throw new Error('Incomplete GoldDrop snapshot');
+  }
+  if (data.documents.some(doc => doc.path.startsWith('customers/cannon-falls/'))) {
+    for (const required of ['customers/cannon-falls/README.md', 'customers/cannon-falls/build-profile.md', 'customers/cannon-falls/controller-notebook.md', ...CANNON_FALLS_NOTEBOOKS]) if (!seen.has(required)) throw new Error('Incomplete Cannon Falls snapshot');
   }
   return data;
 }
