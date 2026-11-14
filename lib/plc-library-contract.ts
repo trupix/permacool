@@ -8,7 +8,7 @@ export const CANNON_FALLS_NOTEBOOKS = ['customers/cannon-falls/notebooks/node-re
 export const GOLDDROP_NOTEBOOKS = ['customers/golddrop/notebooks/PAC and groov Change Notebook.md', 'customers/golddrop/notebooks/node-red-notebook.html', 'customers/golddrop/notebooks/dashboard-notebook.html', 'research/ke2-temp-valve/notebook.html'];
 
 export function allowedLibraryPath(path: string) {
-  return /^(?:standards\/[a-z0-9-]+\.md|customers\/(?:baldwin-park|golddrop|cannon-falls)\/(?:README|controller-notebook|build-profile|backups|release)\.md|customers\/(?:baldwin-park|golddrop|cannon-falls)\/(?:changes|plans)\/[a-zA-Z0-9-]+\.md)$/.test(path) || GOLDDROP_NOTEBOOKS.includes(path) || CANNON_FALLS_NOTEBOOKS.includes(path);
+  return /^(?:standards\/[a-z0-9-]+\.md|customers\/(?:baldwin-park|golddrop|cannon-falls)\/(?:README|controller-notebook|build-profile|backups|release|standards-adoption)\.md|customers\/(?:baldwin-park|golddrop|cannon-falls)\/(?:changes|plans)\/[a-zA-Z0-9-]+\.md)$/.test(path) || GOLDDROP_NOTEBOOKS.includes(path) || CANNON_FALLS_NOTEBOOKS.includes(path);
 }
 
 export function validateLibrarySnapshot(value: unknown): LibrarySnapshot {
