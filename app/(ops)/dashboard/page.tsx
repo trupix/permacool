@@ -26,6 +26,13 @@ export default async function DashboardPage() {
         </p>
       </header>
 
+      {isStaffScope(user) ? (
+        <Link href="/dashboard/plc-operations" className="list-row link-row">
+          <div><strong>PLC Operations</strong><p>Private planning, standards, maintenance history and controller records</p></div>
+          <span aria-hidden="true">→</span>
+        </Link>
+      ) : null}
+
       <DashboardSnapshotRefresh capturedAt={capturedAt} nextRefreshAt={nextRefreshAt} />
       <section className="metric-grid">
         <MetricCard label="Sites" value={dashboardSummary.totalSites} detail="Customer locations onboarded" />
