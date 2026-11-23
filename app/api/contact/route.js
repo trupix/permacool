@@ -54,7 +54,7 @@ export async function POST(req) {
   try {
     const resendKey = process.env.RESEND_API_KEY
     const toEmail = 'david@perma.cool'
-    const fromEmail = 'david@perma.cool'
+    const fromEmail = process.env.QUOTE_FROM_EMAIL || 'david@perma.cool'
 
     if (!resendKey) {
       console.error('Contact form is unavailable: RESEND_API_KEY is not configured')
