@@ -34,7 +34,23 @@ const getSavedSiteEquipmentEvents = unstable_cache(
   { revalidate: 30 }
 );
 
-async function loadSiteEquipmentEvents(siteId: string, limit: number, offset: number): Promise<EquipmentEventPage> {
+// Only the entry page is shared. Do not cache arbitrary user-provided cutoffs.
+const getLatestHistoryPage = unstable_cache(
+  async (siteId: string, limit: number) => {
+    const through = new Date().toISOString();
+    return { ...await loadSiteEquipmentEvents(siteId, limit, 0, through), through };
+  },
+  ['event-history-entry-v2'],
+  { revalidate: 30 }
+);
+
+export async function getHistoryPage(siteId: string, limit: number, offset: number, through?: string) {
+  if (!through && offset === 0) return getLatestHistoryPage(siteId, limit);
+  const cutoff = through ?? new Date().toISOString();
+  return { ...await loadSiteEquipmentEvents(siteId, limit, offset, cutoff), through: cutoff };
+}
+
+async function loadSiteEquipmentEvents(siteId: string, limit: number, offset: number, through?: string): Promise<EquipmentEventPage> {
 
   if (!shouldUseDatabase()) {
     const allEvents = getEquipmentEventsForSite(siteId);
@@ -48,14 +64,17 @@ async function loadSiteEquipmentEvents(siteId: string, limit: number, offset: nu
   try {
     // The schema is provisioned separately. Reading a page must not create tables
     // or indexes; a missing table is handled by P2021 below.
+    // Freeze membership by insertion time, not PLC time: a delayed upload may
+    // describe an old event. Break same-time ties deterministically across pages.
+    const where = { siteId, ...(through ? { createdAt: { lte: new Date(through) } } : {}) };
     const rows = await db.equipmentEvent.findMany({
-      where: { siteId },
+      where,
       include: { device: { select: { name: true } } },
-      orderBy: { occurredAt: 'desc' },
+      orderBy: [{ occurredAt: 'desc' }, { id: 'desc' }],
       skip: offset,
       take: limit
     });
-    const total = await db.equipmentEvent.count({ where: { siteId } });
+    const total = await db.equipmentEvent.count({ where });
 
     // Use persisted history, not the visible page, so pagination cannot change timing.
     // Temperature cycling is distinct from operator shutdowns and fault stops.
