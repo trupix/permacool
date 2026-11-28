@@ -6,6 +6,7 @@ import { ensureEquipmentEventStorage } from '@/server/equipment-event-storage';
 import { attachSavedEventWeather } from '@/server/saved-event-weather';
 import { isEquipmentRunKey } from '@/lib/site-operating-activity';
 import { recordObservedRun } from '@/server/site-display-snapshots';
+import { timeDbStep, type DbStep } from '@/server/ingest-db-timing';
 
 function telemetryLabel(key: string) {
   return key
@@ -20,26 +21,26 @@ function normalizeTelemetryUnit(unit: string) {
   return unit;
 }
 
-export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
+export async function persistTelemetryPayload(payload: TelemetryIngestPayload, steps: DbStep[]) {
   if (!hasDatabaseUrl()) {
     return { persisted: false, pointCount: payload.points.length, reason: 'database-not-configured' } as const;
   }
 
   const capturedAt = new Date(payload.capturedAt);
 
-  const device = await db.device.findUnique({
+  const device = await timeDbStep(steps, 'device_lookup', () => db.device.findUnique({
     where: { id: payload.deviceId },
     select: { id: true, siteId: true, site: { select: { name: true } } }
-  });
+  }));
 
   if (!device || device.siteId !== payload.siteId) {
     return { persisted: false, pointCount: 0, reason: 'unknown-device' } as const;
   }
 
-  const previousPoints = await db.telemetryPoint.findMany({
+  const previousPoints = await timeDbStep(steps, 'previous_readings', () => db.telemetryPoint.findMany({
     where: { deviceId: payload.deviceId },
     select: { key: true, latestValue: true, unit: true }
-  });
+  }));
   const transitions = evaluateEquipmentTransitions({
     siteId: payload.siteId,
     siteName: device.site.name,
@@ -53,7 +54,7 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
     incoming: payload.points
   });
 
-  await db.$transaction([
+  await timeDbStep(steps, 'save_batch', () => db.$transaction([
     db.site.update({
       where: { id: payload.siteId },
       data: { gatewayStatus: 'online' }
@@ -115,18 +116,18 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
             data: { status: 'resolved', endedAt: alert.occurredAt }
           })
     )
-  ]);
+  ]));
 
   // Ancillary display bookkeeping must never reject an already-saved telemetry batch.
   if (payload.points.some(point => isEquipmentRunKey(point.key) && point.value > 0.5)) {
-    await recordObservedRun(payload.deviceId, capturedAt)
+    await timeDbStep(steps, 'activity', () => recordObservedRun(payload.deviceId, capturedAt))
       .catch(() => console.error('Sites display last-running timestamp update failed.'));
   }
   let eventsPersisted = true;
   if (transitions.events.length) {
     try {
-      if (!(await ensureEquipmentEventStorage())) throw new Error('Equipment event storage is unavailable.');
-      await db.equipmentEvent.createMany({
+      if (!(await timeDbStep(steps, 'event_storage', () => ensureEquipmentEventStorage()))) throw new Error('Equipment event storage is unavailable.');
+      await timeDbStep(steps, 'events', () => db.equipmentEvent.createMany({
         data: transitions.events.map((event) => ({
           dedupeKey: event.dedupeKey,
           siteId: event.siteId,
@@ -145,12 +146,12 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload) {
           setpointUnit: event.setpointUnit
         })),
         skipDuplicates: true
-      });
+      }));
       // Weather failure must not reject telemetry or lose the equipment event.
-      await attachSavedEventWeather(payload.siteId).catch(() => console.error('Event weather attachment delayed.'));
-    } catch (error) {
+      await timeDbStep(steps, 'event_weather', () => attachSavedEventWeather(payload.siteId)).catch(() => console.error('Event weather attachment delayed.'));
+    } catch {
       eventsPersisted = false;
-      console.error('Equipment event persistence failed after telemetry was saved.', error);
+      console.warn('Equipment event persistence failed after telemetry was saved.');
     }
   }
 
