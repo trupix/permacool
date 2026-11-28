@@ -9,6 +9,7 @@ import { attachSavedEventWeather } from '@/server/saved-event-weather';
 import { isEquipmentRunKey } from '@/lib/site-operating-activity';
 import { recordObservedRun } from '@/server/site-display-snapshots';
 import { timeDbStep, type DbStep } from '@/server/ingest-db-timing';
+import { normalizeTelemetryUnit, saveHistory, type identifyTelemetryBatch } from '@/server/telemetry-history';
 
 function telemetryLabel(key: string) {
   return key
@@ -16,11 +17,6 @@ function telemetryLabel(key: string) {
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
-}
-
-function normalizeTelemetryUnit(unit: string) {
-  if (unit === '°C' || unit === 'Â°C' || unit === '?C') return 'C';
-  return unit;
 }
 
 function saveLatestReadings(payload: TelemetryIngestPayload, capturedAt: Date, siteName: string) {
@@ -83,7 +79,7 @@ function saveLatestReadings(payload: TelemetryIngestPayload, capturedAt: Date, s
     WHERE old.status = 'resolved' AND EXCLUDED."startedAt" > GREATEST(old."startedAt", old."endedAt")`;
 }
 
-export async function persistTelemetryPayload(payload: TelemetryIngestPayload, steps: DbStep[]) {
+export async function persistTelemetryPayload(payload: TelemetryIngestPayload, steps: DbStep[], batch: ReturnType<typeof identifyTelemetryBatch>) {
   if (!hasDatabaseUrl()) {
     return { persisted: false, pointCount: payload.points.length, reason: 'database-not-configured' } as const;
   }
@@ -116,7 +112,7 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
     incoming: payload.points
   });
 
-  await timeDbStep(steps, 'save_batch', () => db.$transaction([
+  const [, , historyRowsInserted] = await timeDbStep(steps, 'save_batch', () => db.$transaction([
     db.site.update({
       where: { id: payload.siteId },
       data: { gatewayStatus: 'online' }
@@ -126,15 +122,7 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
         "lastSeenAt" = GREATEST("lastSeenAt", ${capturedAt.toISOString()}::timestamp),
         "updatedAt" = CURRENT_TIMESTAMP AT TIME ZONE 'UTC'
       WHERE "id" = ${payload.deviceId}`,
-    db.telemetrySample.createMany({
-      data: payload.points.map((point) => ({
-        deviceId: payload.deviceId,
-        key: point.key,
-        value: point.value,
-        unit: normalizeTelemetryUnit(point.unit),
-        capturedAt
-      }))
-    }),
+    saveHistory(payload.deviceId, capturedAt, batch),
     saveLatestReadings(payload, capturedAt, device.site.name)
   ]));
 
@@ -178,6 +166,8 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
   return {
     persisted: true,
     pointCount: payload.points.length,
+    historyRowsInserted,
+    historyRowsAlreadySaved: payload.points.length - historyRowsInserted,
     eventCount: transitions.events.length,
     eventsPersisted
   } as const;
