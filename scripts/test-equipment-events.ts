@@ -181,5 +181,24 @@ const aggregateWithClearChannels = evaluateEquipmentTransitions({
 assert.equal(aggregateWithClearChannels.events[0].channel, 'SYSTEM');
 assert.equal(aggregateWithClearChannels.alertActions[0].action, 'open');
 
+// MuhaMeds sends separate run-state and Fahrenheit sensor packets, with no "_c" suffix.
+const muha = { ...base, siteId: 'site-muhameds-los-angeles' };
+const off = [1,2].map(n => ({key: 'ch'+n+'_chiller_run', value: 0, unit: 'state'}));
+const on = off.map(p => ({...p, value: 1}));
+const temps = [
+  {key: 'ch1_temperature', value: -38.997177, unit: 'F'},
+  {key: 'ch2_temperature', value: -39.007317, unit: '°F'}
+];
+const starts = evaluateEquipmentTransitions({...muha, previous: [...off, ...temps,
+  {key:'ch1_temperature_c',value:123,unit:'C'}], incoming:on}).events;
+assert.deepEqual(starts.map((e: any) => [e.channel,e.processTemperature,e.temperatureUnit]), [
+  ['CH1', -38.997177, '°F'], ['CH2', -39.007317, '°F']
+]);
+const inPacket = evaluateEquipmentTransitions({...muha, previous:[...off,...temps], incoming:[
+  ...on, {...temps[0],value:0}, {...temps[1],unit:'C'}
+]}).events;
+assert.deepEqual(inPacket.map((e: any) => [e.processTemperature,e.temperatureUnit]), [[0,'°F'],[null,null]]);
+const otherSite = evaluateEquipmentTransitions({...base, previous:[...off,...temps], incoming:on}).events;
+assert.deepEqual(otherSite.map((e: any) => e.processTemperature), [null,null]);
 console.log('Equipment event tests passed.');
 }

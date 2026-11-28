@@ -95,18 +95,25 @@ function normalizeTemperatureUnit(unit: string | null | undefined): string | nul
   return normalized.toUpperCase() === 'F' ? '°F' : normalized || null;
 }
 
+export const MUHAMEDS_SITE_ID = 'site-muhameds-los-angeles';
+
 function snapshotForChannel(
   current: Map<string, EquipmentSignalValue>,
-  prefix: 'ch1' | 'ch2'
+  prefix: 'ch1' | 'ch2',
+  siteId: string
 ): EquipmentEventSnapshot {
-  const temperature = current.get(normalizeKey(`${prefix}_temperature_c`));
+  // MuhaMeds' direct tags are already Fahrenheit. Never substitute another tag,
+  // assume a unit, or convert the numeric reading.
+  const direct = siteId === MUHAMEDS_SITE_ID;
+  const point = current.get(normalizeKey(prefix + (direct ? '_temperature' : '_temperature_c')));
+  const temperature = !direct || /^°?F$/i.test(point?.unit.trim() ?? '') ? point : undefined;
   const setpoint = current.get(normalizeKey(`${prefix}_setpoint_c`));
 
   return {
     highPressure: numericValue(current.get(normalizeKey(`${prefix}_high_pressure`))),
     lowPressure: numericValue(current.get(normalizeKey(`${prefix}_low_pressure`))),
     processTemperature: numericValue(temperature),
-    temperatureUnit: normalizeTemperatureUnit(temperature?.unit),
+    temperatureUnit: direct ? (temperature ? '°F' : null) : normalizeTemperatureUnit(temperature?.unit),
     compressorAmps: numericValue(
       current.get(normalizeKey(`${prefix}_compressor_amps`)) ??
         current.get(normalizeKey(`${prefix}compressoramps`))
@@ -119,10 +126,10 @@ function snapshotForChannel(
   };
 }
 
-function snapshotForSystem(current: Map<string, EquipmentSignalValue>): EquipmentEventSnapshot {
+function snapshotForSystem(current: Map<string, EquipmentSignalValue>, siteId: string): EquipmentEventSnapshot {
   const snapshots = [
-    snapshotForChannel(current, 'ch1'),
-    snapshotForChannel(current, 'ch2')
+    snapshotForChannel(current, 'ch1', siteId),
+    snapshotForChannel(current, 'ch2', siteId)
   ];
   const score = (snapshot: EquipmentEventSnapshot) => {
     const availableReadingCount = [
@@ -207,7 +214,7 @@ export function evaluateEquipmentTransitions(
         (currentPump === 0 || currentPump === 1) && previousPump !== currentPump) {
       events.push(eventDraft(input, 'CH1', currentPump === 1 ? 'liquid_pump_on' : 'liquid_pump_off',
         `Liquid pump turned ${currentPump === 1 ? 'on' : 'off'} (channel 10 command)`,
-        snapshotForChannel(incoming, 'ch1')));
+        snapshotForChannel(incoming, 'ch1', input.siteId)));
     }
     const read = (key: string) => numericValue(incoming.get(normalizeKey(`ch1_shutdown_${key}`)));
     const reason = read('reason');
@@ -226,7 +233,7 @@ export function evaluateEquipmentTransitions(
         : `CH1 shutdown — compressor runtime limit of ${minutes} reached (PAC recorded)`;
       // Trip-time readings were not captured by the PAC record: do not attach current readings to an older trip.
       events.push({
-        ...eventDraft(input, 'CH1', type, message, snapshotForChannel(new Map(), 'ch1')),
+        ...eventDraft(input, 'CH1', type, message, snapshotForChannel(new Map(), 'ch1', input.siteId)),
         occurredAt: new Date(occurredMs),
         dedupeKey: [input.siteId, input.deviceId, 'CH1', type, sequence, occurredMs].join(':')
       });
@@ -237,7 +244,7 @@ export function evaluateEquipmentTransitions(
   for (const channelNumber of [1, 2] as const) {
     const prefix = `ch${channelNumber}` as const;
     const channel = prefix.toUpperCase() as 'CH1' | 'CH2';
-    const snapshot = snapshotForChannel(current, prefix);
+    const snapshot = snapshotForChannel(current, prefix, input.siteId);
     const previousRun = booleanValue(previous.get(normalizeKey(`${prefix}_chiller_run`)));
     const currentRun = snapshot.chillerRun;
     const previousSystemOn = booleanValue(previous.get(normalizeKey(`${prefix}_system_on`)));
@@ -310,7 +317,7 @@ export function evaluateEquipmentTransitions(
   if (!activeChannelStopIdentified && incoming.has(aggregateStopKey)) {
     const previousAggregateStop = booleanValue(previous.get(aggregateStopKey));
     const currentAggregateStop = booleanValue(current.get(aggregateStopKey));
-    const systemSnapshot = snapshotForSystem(current);
+    const systemSnapshot = snapshotForSystem(current, input.siteId);
 
     if (becameActive(previousAggregateStop, currentAggregateStop)) {
       const alert = alertAction(input, 'SYSTEM', 'open');

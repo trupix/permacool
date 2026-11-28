@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 import { db } from '@/lib/db';
 import { hasDatabaseUrl } from '@/lib/env';
 import type { TelemetryIngestPayload } from '@/types/domain';
-import { evaluateEquipmentTransitions, pressureObservations } from '@/server/equipment-events';
+import { evaluateEquipmentTransitions, MUHAMEDS_SITE_ID, pressureObservations, type EquipmentSignalValue } from '@/server/equipment-events';
 import { ensureEquipmentEventStorage } from '@/server/equipment-event-storage';
 import { attachSavedEventWeather } from '@/server/saved-event-weather';
 import { isEquipmentRunKey } from '@/lib/site-operating-activity';
@@ -98,20 +98,38 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
 
   const previousPoints = await timeDbStep(steps, 'previous_readings', () => db.telemetryPoint.findMany({
     where: { deviceId: payload.deviceId },
-    select: { key: true, latestValue: true, unit: true }
+    select: { key: true, latestValue: true, unit: true, latestTimestamp: true }
   }));
-  const transitions = evaluateEquipmentTransitions({
+  // A split sensor packet can arrive ahead of an older status packet. Never
+  // attach a future temperature to a historical event.
+  const ahead = new Set(payload.siteId !== MUHAMEDS_SITE_ID ? [] : previousPoints
+    .filter(p => /^ch[12]_temperature$/i.test(p.key) && p.latestTimestamp > capturedAt)
+    .map(p => p.key));
+  const eventInput = {
     siteId: payload.siteId,
     siteName: device.site.name,
     deviceId: payload.deviceId,
     capturedAt,
-    previous: previousPoints.map((point) => ({
+    previous: previousPoints.filter(p => !ahead.has(p.key)).map((point) => ({
       key: point.key,
       value: point.latestValue,
       unit: point.unit
     })),
     incoming: payload.points
-  });
+  };
+  let transitions = evaluateEquipmentTransitions(eventInput);
+  if (ahead.size && transitions.events.length) {
+    const keys = [...ahead].filter(key => !payload.points.some(p => p.key.toLowerCase() === key.toLowerCase()));
+    if (keys.length) {
+      // At most two indexed seeks; no extra checkout on normal in-order uploads.
+      const earlier = await timeDbStep(steps, 'event_temperatures_as_of', () => db.$queryRaw<EquipmentSignalValue[]>`
+        SELECT s.key, s.value, s.unit FROM unnest(ARRAY[${Prisma.join(keys)}]::text[]) k(key)
+        CROSS JOIN LATERAL (SELECT t.key,t.value,t.unit FROM "TelemetrySample" t
+          WHERE t."deviceId"=${payload.deviceId} AND t.key=k.key AND t."capturedAt"<=${capturedAt.toISOString()}::timestamp
+          ORDER BY t."capturedAt" DESC, t."receivedAt" DESC, t.id DESC LIMIT 1) s`);
+      transitions = evaluateEquipmentTransitions({...eventInput, previous: [...eventInput.previous, ...earlier]});
+    }
+  }
 
   const [, , [history]] = await timeDbStep(steps, 'save_batch', () => db.$transaction([
     db.site.update({
