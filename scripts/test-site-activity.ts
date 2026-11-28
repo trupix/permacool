@@ -1,7 +1,7 @@
 // @ts-nocheck
 const assert = require('node:assert/strict');
 const path = require('node:path');
-const { formatSiteActivity, latestSiteActivity } = require(
+const { formatSiteActivity, latestSiteActivity, telemetryReceiptStatus } = require(
   path.join(__dirname, '..', 'lib', 'site-activity.ts')
 );
 
@@ -12,5 +12,13 @@ assert.equal(
 assert.equal(latestSiteActivity(['Never', null, undefined]), null);
 assert.match(formatSiteActivity('2026-08-28T13:15:00Z', 'America/Chicago'), /Aug 28, 2026/);
 assert.equal(formatSiteActivity(null, 'America/Chicago'), 'Never');
+
+const observed = Date.parse('2026-11-28T07:00:00Z');
+for (const value of [null, 'Never', 'invalid', new Date(observed - 300001), new Date(observed + 300001)]) {
+  assert.equal(telemetryReceiptStatus(value, observed), 'offline');
+}
+for (const value of [new Date(observed - 300000), new Date(observed - 125000), new Date(observed).toISOString()]) {
+  assert.equal(telemetryReceiptStatus(value, observed), 'online');
+}
 
 console.log('Site last-active time selects the newest valid gateway/device timestamp and safely handles never-seen locations.');

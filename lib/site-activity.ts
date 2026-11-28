@@ -1,5 +1,12 @@
 type ActivityValue = Date | string | null | undefined;
 
+// Website receipt freshness, not VPN reachability or mechanical operating state.
+export function telemetryReceiptStatus(value: ActivityValue, now = Date.now()): 'online' | 'offline' {
+  const time = value instanceof Date ? value.getTime() : value ? Date.parse(value) : NaN;
+  const age = now - time;
+  return Math.abs(age) <= 5 * 60_000 ? 'online' : 'offline';
+}
+
 export function latestSiteActivity(values: ActivityValue[]): string | null {
   const latest = values.reduce<number | null>((current, value) => {
     if (!value) return current;

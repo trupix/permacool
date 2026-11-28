@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { SectionCard } from '@/components/section-card';
 import { StatusBadge } from '@/components/status-badge';
+import { telemetryReceiptStatus } from '@/lib/site-activity';
 import { requireUser } from '@/lib/auth';
 import { displayTelemetryUnit, isTemperatureTelemetryKey } from '@/lib/telemetry-units';
 import { getDevice, getDeviceTelemetry } from '@/server/repositories/devices';
@@ -46,6 +47,7 @@ export default async function DeviceDetailPage({ params }: { params: Promise<{ d
 
   if (!site) notFound();
   const lastSeen = formatControllerDateTime(device.lastSeenAt, site.timezone);
+  const receipt = telemetryReceiptStatus(device.lastSeenAt);
 
   return (
     <main className="page-stack">
@@ -65,11 +67,13 @@ export default async function DeviceDetailPage({ params }: { params: Promise<{ d
             <p><span>Date:</span> {lastSeen.date}</p>
             <small>{site.timezone}</small>
           </div>
-          <StatusBadge tone={device.status} />
+          <StatusBadge tone={receipt} label={device.lastSeenAt === 'Never' ? 'Never reported' : undefined} />
         </div>
       </SectionCard>
 
-      <SectionCard title="Latest telemetry" eyebrow="Read-only values">
+      <SectionCard title="Latest saved telemetry" eyebrow="Read-only values">
+        {!telemetry.length ? <p>No telemetry readings on record.</p> :
+          receipt === 'offline' ? <p>Historical readings only. This controller has not reported current telemetry.</p> : null}
         <div className="table-like">
           {telemetry.map((point) => (
             <div key={point.id} className="table-row">
