@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
+import { Prisma } from '@prisma/client';
 import { db } from '@/lib/db';
 import { hasDatabaseUrl } from '@/lib/env';
 import type { TelemetryIngestPayload } from '@/types/domain';
-import { evaluateEquipmentTransitions } from '@/server/equipment-events';
+import { evaluateEquipmentTransitions, pressureObservations } from '@/server/equipment-events';
 import { ensureEquipmentEventStorage } from '@/server/equipment-event-storage';
 import { attachSavedEventWeather } from '@/server/saved-event-weather';
 import { isEquipmentRunKey } from '@/lib/site-operating-activity';
@@ -22,7 +23,7 @@ function normalizeTelemetryUnit(unit: string) {
   return unit;
 }
 
-function saveLatestReadings(payload: TelemetryIngestPayload, capturedAt: Date) {
+function saveLatestReadings(payload: TelemetryIngestPayload, capturedAt: Date, siteName: string) {
   // History retains every occurrence. For the current view, the last occurrence
   // of a key within one packet wins, as it did with sequential upserts.
   const unique = new Map(payload.points.map(point => [point.key, point]));
@@ -32,7 +33,7 @@ function saveLatestReadings(payload: TelemetryIngestPayload, capturedAt: Date) {
   }));
   // One bound JSON parameter regardless of batch size. The guard is evaluated
   // under the row lock; an older concurrent writer cannot undo a newer one.
-  return db.$executeRaw`
+  const upsert = Prisma.sql`
     INSERT INTO "TelemetryPoint" AS current_point
       ("id", "deviceId", "key", "label", "unit", "latestValue", "latestTimestamp", "updatedAt")
     SELECT p.id, ${payload.deviceId}, p.key, p.label, p.unit, p.value, ${capturedAt.toISOString()}::timestamp,
@@ -44,6 +45,42 @@ function saveLatestReadings(payload: TelemetryIngestPayload, capturedAt: Date) {
       "unit" = EXCLUDED."unit", "latestValue" = EXCLUDED."latestValue",
       "latestTimestamp" = EXCLUDED."latestTimestamp", "updatedAt" = EXCLUDED."updatedAt"
     WHERE current_point."latestTimestamp" < EXCLUDED."latestTimestamp"`;
+  const signals = pressureObservations({ ...payload, siteName, incoming: payload.points });
+  if (!signals.length) return db.$executeRaw(upsert);
+
+  // The existing transaction locks Site before this statement. Its snapshot sees
+  // the previous committed readings; RETURNING contains only the readings this
+  // upload actually advanced. Never drive a live alert from historical drafts.
+  return db.$executeRaw`
+    WITH accepted AS (${upsert} RETURNING "key", "latestTimestamp" AS ts, "latestValue" <> 0 AS active),
+    signals AS (
+      SELECT * FROM jsonb_to_recordset(${JSON.stringify(signals)}::jsonb)
+        AS s("alertId" text, channel text, message text, signal text, key text)
+    ), previous AS (
+      SELECT DISTINCT ON (signal) signal, t."latestTimestamp" AS ts, t."latestValue" <> 0 AS active
+      FROM "TelemetryPoint" t
+      JOIN signals s ON s.signal = regexp_replace(lower(t.key), '[^a-z0-9]', '', 'g')
+      WHERE t."deviceId" = ${payload.deviceId}
+      ORDER BY signal, t."latestTimestamp" DESC, t."updatedAt", t.key
+    ), readings AS (
+      SELECT s.*, a.ts, p.active AS was_active,
+        CASE WHEN a.ts > p.ts OR p.ts IS NULL THEN a.active ELSE p.active END AS active,
+        a.ts IS NOT NULL AND (p.ts IS NULL OR a.ts > p.ts) AS fresh
+      FROM signals s LEFT JOIN accepted a ON a.key = s.key LEFT JOIN previous p USING (signal)
+    ), edges AS (
+      SELECT * FROM readings r WHERE fresh AND active <> COALESCE(was_active, false)
+        AND (channel <> 'SYSTEM' OR NOT EXISTS (SELECT 1 FROM readings WHERE channel <> 'SYSTEM' AND active))
+    ), clears AS (
+      UPDATE "Alert" old SET status = 'resolved', "endedAt" = e.ts, "updatedAt" = CURRENT_TIMESTAMP AT TIME ZONE 'UTC'
+      FROM edges e WHERE NOT e.active AND old.id = e."alertId" AND old.status <> 'resolved'
+        AND e.ts > GREATEST(old."startedAt", old."endedAt")
+    )
+    INSERT INTO "Alert" AS old (id, "siteId", "deviceId", severity, status, message, "startedAt", "updatedAt")
+    SELECT "alertId", ${payload.siteId}, ${payload.deviceId}, 'critical', 'open', message, ts, CURRENT_TIMESTAMP AT TIME ZONE 'UTC'
+    FROM edges WHERE active
+    ON CONFLICT (id) DO UPDATE SET status = 'open', severity = 'critical', message = EXCLUDED.message,
+      "startedAt" = EXCLUDED."startedAt", "endedAt" = NULL, "updatedAt" = EXCLUDED."updatedAt"
+    WHERE old.status = 'resolved' AND EXCLUDED."startedAt" > GREATEST(old."startedAt", old."endedAt")`;
 }
 
 export async function persistTelemetryPayload(payload: TelemetryIngestPayload, steps: DbStep[]) {
@@ -98,33 +135,7 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
         capturedAt
       }))
     }),
-    saveLatestReadings(payload, capturedAt),
-    ...transitions.alertActions.map((alert) =>
-      alert.action === 'open'
-        ? db.alert.upsert({
-            where: { id: alert.alertId },
-            update: {
-              severity: 'critical',
-              status: 'open',
-              message: alert.message,
-              startedAt: alert.occurredAt,
-              endedAt: null
-            },
-            create: {
-              id: alert.alertId,
-              siteId: payload.siteId,
-              deviceId: payload.deviceId,
-              severity: 'critical',
-              status: 'open',
-              message: alert.message,
-              startedAt: alert.occurredAt
-            }
-          })
-        : db.alert.updateMany({
-            where: { id: alert.alertId, status: { not: 'resolved' } },
-            data: { status: 'resolved', endedAt: alert.occurredAt }
-          })
-    )
+    saveLatestReadings(payload, capturedAt, device.site.name)
   ]));
 
   // Ancillary display bookkeeping must never reject an already-saved telemetry batch.

@@ -159,21 +159,29 @@ function eventDraft(
   };
 }
 
-function alertAction(
-  input: EvaluateEquipmentTransitionsInput,
-  channel: 'CH1' | 'CH2' | 'SYSTEM',
-  action: 'open' | 'resolve'
-): HighPressureAlertAction {
+function pressureAlert(input: Pick<EvaluateEquipmentTransitionsInput, 'siteId' | 'siteName' | 'deviceId'>, channel: HighPressureAlertAction['channel']) {
   return {
-    action,
     alertId: `high-pressure-stop:${input.siteId}:${input.deviceId}:${channel}`,
     channel,
     message:
       channel === 'SYSTEM'
         ? `${input.siteName} system - HIGH PRESSURE STOP`
-        : `${input.siteName} compressor - ${channel} - HIGH PRESSURE STOP`,
-    occurredAt: input.capturedAt
+        : `${input.siteName} compressor - ${channel} - HIGH PRESSURE STOP`
   };
+}
+
+function alertAction(input: EvaluateEquipmentTransitionsInput, channel: HighPressureAlertAction['channel'], action: HighPressureAlertAction['action']): HighPressureAlertAction {
+  return { ...pressureAlert(input, channel), action, occurredAt: input.capturedAt };
+}
+
+// Include all three signals for aggregate fallback, but a missing input is never a clear.
+export function pressureObservations(input: Pick<EvaluateEquipmentTransitionsInput, 'siteId' | 'siteName' | 'deviceId' | 'incoming'>) {
+  const points = asMap(input.incoming);
+  const signals = (['CH1', 'CH2', 'SYSTEM'] as const).map(channel => {
+    const signal = normalizeKey(channel === 'SYSTEM' ? 'high_pressure_stop' : channel + '_high_pressure_stop');
+    return { ...pressureAlert(input, channel), signal, key: points.get(signal)?.key ?? null };
+  });
+  return signals.some(s => s.key !== null) ? signals : [];
 }
 
 export function evaluateEquipmentTransitions(
