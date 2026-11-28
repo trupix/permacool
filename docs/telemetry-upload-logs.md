@@ -48,6 +48,15 @@ The device's last-seen timestamp cannot go backwards. Existing point IDs and
 custom labels are preserved. A bulk write error identifies the packet, not
 an individual sensor; input validation can still identify a specific bad tag.
 
+High-pressure stops have two separate records. The Events timeline can show a
+late clear at its capture time; this is history, not an instruction to clear
+the active alert. The Alerts page follows strictly newer stop-bit readings for
+that device and channel (or the system bit when no channel is identified).
+A delayed clear cannot resolve a newer stop, and a delayed stop cannot reopen a
+newer clear. Replays do not reset an acknowledgment or the alert's start time.
+This rule runs in the existing latest-reading write, without an additional
+database round trip, a migration or a change to the connection limit.
+
 Local regression: build the website, apply its schema to a disposable loopback
 PostgreSQL fixture, then set `INGEST_TEST_DATABASE_URL` and run
 `node scripts/test-ingest-diagnostics.cjs`. The test requires the dedicated
