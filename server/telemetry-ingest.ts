@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { db } from '@/lib/db';
 import { hasDatabaseUrl } from '@/lib/env';
 import type { TelemetryIngestPayload } from '@/types/domain';
@@ -19,6 +20,30 @@ function telemetryLabel(key: string) {
 function normalizeTelemetryUnit(unit: string) {
   if (unit === '°C' || unit === 'Â°C' || unit === '?C') return 'C';
   return unit;
+}
+
+function saveLatestReadings(payload: TelemetryIngestPayload, capturedAt: Date) {
+  // History retains every occurrence. For the current view, the last occurrence
+  // of a key within one packet wins, as it did with sequential upserts.
+  const unique = new Map(payload.points.map(point => [point.key, point]));
+  const rows = Array.from(unique.values(), p => ({
+    id: randomUUID(), key: p.key, label: telemetryLabel(p.key),
+    unit: normalizeTelemetryUnit(p.unit), value: String(p.value)
+  }));
+  // One bound JSON parameter regardless of batch size. The guard is evaluated
+  // under the row lock; an older concurrent writer cannot undo a newer one.
+  return db.$executeRaw`
+    INSERT INTO "TelemetryPoint" AS current_point
+      ("id", "deviceId", "key", "label", "unit", "latestValue", "latestTimestamp", "updatedAt")
+    SELECT p.id, ${payload.deviceId}, p.key, p.label, p.unit, p.value, ${capturedAt.toISOString()}::timestamp,
+           (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
+    FROM jsonb_to_recordset(${JSON.stringify(rows)}::jsonb)
+         AS p(id text, key text, label text, unit text, value double precision)
+    ORDER BY p.key
+    ON CONFLICT ("deviceId", "key") DO UPDATE SET
+      "unit" = EXCLUDED."unit", "latestValue" = EXCLUDED."latestValue",
+      "latestTimestamp" = EXCLUDED."latestTimestamp", "updatedAt" = EXCLUDED."updatedAt"
+    WHERE current_point."latestTimestamp" < EXCLUDED."latestTimestamp"`;
 }
 
 export async function persistTelemetryPayload(payload: TelemetryIngestPayload, steps: DbStep[]) {
@@ -59,10 +84,11 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
       where: { id: payload.siteId },
       data: { gatewayStatus: 'online' }
     }),
-    db.device.update({
-      where: { id: payload.deviceId },
-      data: { status: 'online', lastSeenAt: capturedAt }
-    }),
+    db.$executeRaw`
+      UPDATE "Device" SET "status" = 'online',
+        "lastSeenAt" = GREATEST("lastSeenAt", ${capturedAt.toISOString()}::timestamp),
+        "updatedAt" = CURRENT_TIMESTAMP AT TIME ZONE 'UTC'
+      WHERE "id" = ${payload.deviceId}`,
     db.telemetrySample.createMany({
       data: payload.points.map((point) => ({
         deviceId: payload.deviceId,
@@ -72,24 +98,7 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
         capturedAt
       }))
     }),
-    ...payload.points.map((point) =>
-      db.telemetryPoint.upsert({
-        where: { deviceId_key: { deviceId: payload.deviceId, key: point.key } },
-        update: {
-          latestValue: point.value,
-          unit: normalizeTelemetryUnit(point.unit),
-          latestTimestamp: capturedAt
-        },
-        create: {
-          deviceId: payload.deviceId,
-          key: point.key,
-          label: telemetryLabel(point.key),
-          unit: normalizeTelemetryUnit(point.unit),
-          latestValue: point.value,
-          latestTimestamp: capturedAt
-        }
-      })
-    ),
+    saveLatestReadings(payload, capturedAt),
     ...transitions.alertActions.map((alert) =>
       alert.action === 'open'
         ? db.alert.upsert({

@@ -38,6 +38,16 @@ The private trace processor has no external exporter and runs no additional
 database queries. It does not change transaction boundaries, connection limits
 or controller behavior. No database migration is needed.
 
+For the batched latest-value writer, compare `db[phase=save_batch].heldMinMs`
+between releases for the same site and point count; compare `waitMs` separately.
+History keeps every incoming point, including late readings and repeated keys.
+The current dashboard row changes only for a strictly newer capture time for
+that device and key. Within one packet the final occurrence of a key wins; at
+the same timestamp across packets the first accepted current value stays.
+The device's last-seen timestamp cannot go backwards. Existing point IDs and
+custom labels are preserved. A bulk write error identifies the packet, not
+an individual sensor; input validation can still identify a specific bad tag.
+
 Local regression: build the website, apply its schema to a disposable loopback
 PostgreSQL fixture, then set `INGEST_TEST_DATABASE_URL` and run
 `node scripts/test-ingest-diagnostics.cjs`. The test requires the dedicated

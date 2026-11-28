@@ -59,11 +59,9 @@ export async function POST(request: NextRequest) {
     const lastStep = log.steps.at(-1);
     const phase = lastStep?.failed ? lastStep.phase : 'prepare';
     const code = dbErrorCode(error);
-    const index = (error as {batchRequestIdx?: number} | null)?.batchRequestIdx;
-    // Only identify an individual upsert on an indexed data error, never on a checkout failure.
-    const point = phase === 'save_batch' && code && ['P2000','P2002','P2003','P2004','P2006','P2011','P2020'].includes(code) &&
-      typeof index === 'number' && Number.isInteger(index) && index >= 3 && index < 3 + payload.points.length ? index - 3 : undefined;
-    log.finish('failed', phase, code, point);
+    // A transaction operation index identifies a batch statement, not a sensor.
+    // Validation above can still identify a particular malformed input.
+    log.finish('failed', phase, code);
     return NextResponse.json({ok:false, error:'Telemetry upload failed.'}, {status:500});
   }
 
