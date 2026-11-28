@@ -1,6 +1,7 @@
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { db } from '@/lib/db';
 import type { TelemetryIngestPayload } from '@/types/domain';
+import type { EquipmentEventDraft } from './equipment-events';
 
 export function normalizeTelemetryUnit(unit: string) {
   if (unit === '°C' || unit === 'Â°C' || unit === '?C') return 'C';
@@ -28,7 +29,7 @@ export function identifyTelemetryBatch(payload: TelemetryIngestPayload) {
   };
 }
 
-export function saveHistory(deviceId: string, capturedAt: Date, batch: ReturnType<typeof identifyTelemetryBatch>) {
+export function saveHistory(siteId: string, deviceId: string, capturedAt: Date, batch: ReturnType<typeof identifyTelemetryBatch>, events: EquipmentEventDraft[]) {
   const points = batch.orderedPoints.map((p,i) => ({
     id: batch.rowPrefix + i.toString(36), key: p.key, value: String(p.value), unit: normalizeTelemetryUnit(p.unit)
   }));
@@ -37,11 +38,14 @@ export function saveHistory(deviceId: string, capturedAt: Date, batch: ReturnTyp
   // Old writers used random sample IDs. Use the existing device/time index to
   // compare only legacy packets at this exact instant, separately by receipt.
   // Compare sorted multisets, not a distinct set or a mere row count.
-  return db.$executeRaw`
+  // Commit the *original* event text/time/snapshot in the same transaction as
+  // its first readings. A replay must not invent a new edge from later live tags.
+  const drafts = events.map(event => ({...event, id:randomUUID()}));
+  return db.$queryRaw<Array<{inserted:number; eventCount:number; hasPending:boolean}>>`
     WITH incoming AS (
       SELECT * FROM jsonb_to_recordset(${JSON.stringify(points)}::jsonb)
         AS p(id text, key text, value double precision, unit text)
-    )
+    ), saved AS (
     INSERT INTO "TelemetrySample" (id, "deviceId", key, value, unit, "capturedAt")
     SELECT p.id, ${deviceId}, p.key, p.value, p.unit, ${ts}::timestamp FROM incoming p
     WHERE NOT EXISTS (
@@ -54,5 +58,15 @@ export function saveHistory(deviceId: string, capturedAt: Date, batch: ReturnTyp
         (SELECT jsonb_agg(jsonb_build_array(i.key,i.value,i.unit) ORDER BY i.key COLLATE "C",i.value,i.unit COLLATE "C") FROM incoming i)
     )
     ORDER BY p.id
-    ON CONFLICT (id) DO NOTHING`;
+    ON CONFLICT (id) DO NOTHING RETURNING 1
+    ), queued AS (
+      INSERT INTO "TimelinePendingBatch" ("batchKey","siteId","deviceId",drafts)
+      SELECT ${batch.rowPrefix}, ${siteId}, ${deviceId}, ${JSON.stringify(drafts)}::jsonb
+      WHERE ${drafts.length} > 0 AND EXISTS (SELECT FROM saved)
+      ON CONFLICT ("batchKey") DO NOTHING RETURNING jsonb_array_length(drafts) AS n
+    )
+    SELECT (SELECT count(*)::int FROM saved) AS inserted,
+      COALESCE((SELECT n FROM queued),
+        (SELECT jsonb_array_length(drafts) FROM "TimelinePendingBatch" WHERE "batchKey" = ${batch.rowPrefix}),0) AS "eventCount",
+      EXISTS (SELECT FROM "TimelinePendingBatch" WHERE "siteId" = ${siteId} AND "deviceId" = ${deviceId}) AS "hasPending"`;
 }

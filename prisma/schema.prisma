@@ -134,6 +134,7 @@ model Site {
   devices                Device[]
   alerts                 Alert[]
   equipmentEvents        EquipmentEvent[]
+  timelinePendingBatches TimelinePendingBatch[]
   equipmentConfiguration SiteEquipmentConfiguration?
   provisioningDetails    SiteProvisioningDetails?
   createdAt              DateTime                    @default(now())
@@ -166,6 +167,7 @@ model Device {
   userAccess       UserDeviceAccess[]
   alerts           Alert[]
   equipmentEvents  EquipmentEvent[]
+  timelinePendingBatches TimelinePendingBatch[]
   vpnEnrollment    VpnEnrollment?
   displaySnapshot  DeviceDisplaySnapshot?
   createdAt        DateTime           @default(now())
@@ -262,6 +264,18 @@ model Alert {
   device    Device        @relation(fields: [deviceId], references: [id], onDelete: Cascade)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+}
+
+model TimelinePendingBatch {
+  batchKey String @id
+  siteId String
+  deviceId String
+  drafts Json
+  queuedAt DateTime @default(now())
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, deviceId, queuedAt, batchKey], map: "TimelinePendingBatch_scope_idx")
 }
 
 model EquipmentEvent {

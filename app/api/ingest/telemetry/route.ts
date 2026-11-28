@@ -74,14 +74,15 @@ export async function POST(request: NextRequest) {
 
   if (!result.persisted) log.finish('not_saved', 'database_not_configured');
   else log.finish(result.eventsPersisted ? 'saved' : 'partial', result.eventsPersisted ? 'complete' : 'event_history',
-    {historyRowsInserted:result.historyRowsInserted});
+    {historyRowsInserted:result.historyRowsInserted,timelineEventsInserted:result.timelineEventsInserted,timelineDelivery:result.timelineDelivery});
+  const pendingTimeline = result.persisted && !result.eventsPersisted;
   return NextResponse.json({
-    ok: true,
-    accepted: true,
+    ok: !pendingTimeline,
+    accepted: !pendingTimeline,
     persisted: result.persisted,
     pointCount: result.pointCount,
     ...(result.persisted ? {historyRowsInserted:result.historyRowsInserted, historyRowsAlreadySaved:result.historyRowsAlreadySaved} : {}),
     eventCount: 'eventCount' in result ? result.eventCount : 0,
     eventsPersisted: 'eventsPersisted' in result ? result.eventsPersisted : false
-  });
+  }, pendingTimeline ? {status:503,headers:{'Retry-After':'15'}} : undefined);
 }

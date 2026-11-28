@@ -15,7 +15,9 @@ traffic does not produce this diagnostic.
   a different batch, not proof that the original was recovered.
 - `failed` means the handler did not acknowledge a save; an ambiguous connection
   loss at commit is not proof of rollback. A `partial/event_history` result
-  means readings were saved but the separate event history operation failed.
+  means readings and original event details were saved, but timeline delivery
+  for this batch was not confirmed. This returns HTTP 503 with `Retry-After: 15`,
+  `persisted: true`, and `eventsPersisted: false`; retry the identical batch.
   Rejections and configuration issues are distinct from DB errors.
 - On failure, inspect `phase`, Prisma `code`, and `readingKeys` (up to 64 unique
   safe tag identifiers; `extraKeys` counts further safe keys). `failedPointKey`
@@ -38,7 +40,7 @@ traffic does not produce this diagnostic.
 
 The private trace processor has no external exporter and runs no additional
 database queries. It does not change transaction boundaries, connection limits
-or controller behavior. No database migration is needed.
+or controller behavior.
 
 For the batched latest-value writer, compare `db[phase=save_batch].heldMinMs`
 between releases for the same site and point count; compare `waitMs` separately.
@@ -61,6 +63,26 @@ matching old-format receipt at the exact device and capture time. It does not
 combine separate legacy receipts or remove any historical duplicates. The
 existing `pointCount` acknowledgment still means points in the accepted upload;
 event history continues to be reported separately via `eventsPersisted`.
+
+### Timeline recovery
+
+For new uploads, the database commits the detected event's original timestamp,
+message and readings to a private pending table in the same transaction as
+the sample history, latest readings and alert state. If that pending write fails,
+none of the batch commits. Retries use these saved events, not the current state.
+A later ordinary upload from the same device also attempts delivery, oldest
+first, up to 32 pending batches per upload. A silent device's pending work stays
+on disk until its next upload. The timeline's unique event key prevents duplicates;
+pending work is removed only when every key is confirmed. Weather remains optional.
+No records from before the release are rewritten or reconstructed.
+
+In a committed upload log, `timelineEventsInserted` counts newly written events
+for that device, including older pending work. `timelineDelivery: idle` means
+there was nothing to drain; `checked` means delivery ran and this batch has no
+unconfirmed events; `deferred` means delivery needs another attempt. An upload
+with no events of its own may still succeed while older work is deferred.
+Repeated deferred results warrant checking the event-storage and events phases.
+The website build applies only the additive, server-private pending-table migration.
 
 High-pressure stops have two separate records. The Events timeline can show a
 late clear at its capture time; this is history, not an instruction to clear

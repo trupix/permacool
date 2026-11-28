@@ -10,6 +10,7 @@ import { isEquipmentRunKey } from '@/lib/site-operating-activity';
 import { recordObservedRun } from '@/server/site-display-snapshots';
 import { timeDbStep, type DbStep } from '@/server/ingest-db-timing';
 import { normalizeTelemetryUnit, saveHistory, type identifyTelemetryBatch } from '@/server/telemetry-history';
+import { deliverPendingEvents } from '@/server/timeline-outbox';
 
 function telemetryLabel(key: string) {
   return key
@@ -112,7 +113,7 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
     incoming: payload.points
   });
 
-  const [, , historyRowsInserted] = await timeDbStep(steps, 'save_batch', () => db.$transaction([
+  const [, , [history]] = await timeDbStep(steps, 'save_batch', () => db.$transaction([
     db.site.update({
       where: { id: payload.siteId },
       data: { gatewayStatus: 'online' }
@@ -122,7 +123,7 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
         "lastSeenAt" = GREATEST("lastSeenAt", ${capturedAt.toISOString()}::timestamp),
         "updatedAt" = CURRENT_TIMESTAMP AT TIME ZONE 'UTC'
       WHERE "id" = ${payload.deviceId}`,
-    saveHistory(payload.deviceId, capturedAt, batch),
+    saveHistory(payload.siteId, payload.deviceId, capturedAt, batch, transitions.events),
     saveLatestReadings(payload, capturedAt, device.site.name)
   ]));
 
@@ -131,44 +132,34 @@ export async function persistTelemetryPayload(payload: TelemetryIngestPayload, s
     await timeDbStep(steps, 'activity', () => recordObservedRun(payload.deviceId, capturedAt))
       .catch(() => console.error('Sites display last-running timestamp update failed.'));
   }
-  let eventsPersisted = true;
-  if (transitions.events.length) {
+  let eventsPersisted = history.eventCount === 0;
+  let timelineEventsInserted = 0;
+  let timelineDelivery: 'idle' | 'checked' | 'deferred' = 'idle';
+  if (history.eventCount || history.hasPending) {
     try {
       if (!(await timeDbStep(steps, 'event_storage', () => ensureEquipmentEventStorage()))) throw new Error('Equipment event storage is unavailable.');
-      await timeDbStep(steps, 'events', () => db.equipmentEvent.createMany({
-        data: transitions.events.map((event) => ({
-          dedupeKey: event.dedupeKey,
-          siteId: event.siteId,
-          deviceId: event.deviceId,
-          channel: event.channel,
-          eventType: event.eventType,
-          message: event.message,
-          occurredAt: event.occurredAt,
-          highPressure: event.highPressure,
-          lowPressure: event.lowPressure,
-          processTemperature: event.processTemperature,
-          temperatureUnit: event.temperatureUnit,
-          compressorAmps: event.compressorAmps,
-          runtimeMinutes: event.runtimeMinutes,
-          setpoint: event.setpoint,
-          setpointUnit: event.setpointUnit
-        })),
-        skipDuplicates: true
-      }));
+      const [[delivery], pendingThisBatch] = await timeDbStep(steps, 'events',
+        () => deliverPendingEvents(payload.siteId, payload.deviceId, batch.rowPrefix));
+      timelineEventsInserted = delivery.inserted;
+      eventsPersisted = pendingThisBatch === 0;
+      timelineDelivery = eventsPersisted ? 'checked' : 'deferred';
       // Weather failure must not reject telemetry or lose the equipment event.
-      await timeDbStep(steps, 'event_weather', () => attachSavedEventWeather(payload.siteId)).catch(() => console.error('Event weather attachment delayed.'));
+      if (timelineEventsInserted) await timeDbStep(steps, 'event_weather', () => attachSavedEventWeather(payload.siteId)).catch(() => console.error('Event weather attachment delayed.'));
     } catch {
-      eventsPersisted = false;
-      console.warn('Equipment event persistence failed after telemetry was saved.');
+      timelineDelivery = 'deferred';
+      // No affirmative acknowledgment for a packet with unconfirmed events.
+      // Other packets with no events of their own can continue to be accepted.
     }
   }
 
   return {
     persisted: true,
     pointCount: payload.points.length,
-    historyRowsInserted,
-    historyRowsAlreadySaved: payload.points.length - historyRowsInserted,
-    eventCount: transitions.events.length,
+    historyRowsInserted:history.inserted,
+    historyRowsAlreadySaved: payload.points.length - history.inserted,
+    eventCount: history.eventCount,
+    timelineEventsInserted,
+    timelineDelivery,
     eventsPersisted
   } as const;
 }

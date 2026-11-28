@@ -4,7 +4,7 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "next dev",
-    "build": "prisma generate && node scripts/setup-plc-library.cjs && next build",
+    "build": "prisma generate && node scripts/setup-plc-library.cjs && node scripts/setup-timeline-outbox.cjs && next build",
     "start": "next start",
     "telemetry:test": "node scripts/send-test-telemetry.js",
     "equipment:events:test": "node scripts/test-equipment-events.ts",
