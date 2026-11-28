@@ -47,6 +47,7 @@ export function SiteSectionNav({
           <Link
             key={section.id}
             href={`/sites/${siteId}${section.suffix}`}
+            prefetch={false}
             className={isActive ? 'is-active' : undefined}
             aria-current={isActive ? 'page' : undefined}
           >

@@ -3,7 +3,6 @@ import { unstable_cache } from 'next/cache';
 import { db } from '@/lib/db';
 import { getEquipmentEventsForSite } from '@/lib/mock-data';
 import type { EquipmentEvent } from '@/types/domain';
-import { ensureEquipmentEventStorage } from '@/server/equipment-event-storage';
 import { shouldUseDatabase } from './shared';
 
 export type EquipmentEventPage = {
@@ -47,18 +46,16 @@ async function loadSiteEquipmentEvents(siteId: string, limit: number, offset: nu
   }
 
   try {
-    const storageReady = await ensureEquipmentEventStorage();
-    if (!storageReady) return { events: [], total: 0, persistenceReady: false };
-    const [rows, total] = await Promise.all([
-      db.equipmentEvent.findMany({
-        where: { siteId },
-        include: { device: { select: { name: true } } },
-        orderBy: { occurredAt: 'desc' },
-        skip: offset,
-        take: limit
-      }),
-      db.equipmentEvent.count({ where: { siteId } })
-    ]);
+    // The schema is provisioned separately. Reading a page must not create tables
+    // or indexes; a missing table is handled by P2021 below.
+    const rows = await db.equipmentEvent.findMany({
+      where: { siteId },
+      include: { device: { select: { name: true } } },
+      orderBy: { occurredAt: 'desc' },
+      skip: offset,
+      take: limit
+    });
+    const total = await db.equipmentEvent.count({ where: { siteId } });
 
     // Use persisted history, not the visible page, so pagination cannot change timing.
     // Temperature cycling is distinct from operator shutdowns and fault stops.
