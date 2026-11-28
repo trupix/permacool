@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { alertWhere, siteWhere, type AccessScope } from '@/lib/access';
 import { sites as mockSites } from '@/lib/mock-data';
 import { getDevices } from './devices';
+import { telemetryReceiptStatus } from '@/lib/site-activity';
 import { getAlerts } from './alerts';
 import { shouldUseDatabase } from './shared';
 
@@ -16,8 +17,7 @@ const readSnapshot = unstable_cache(async (scope: AccessScope, window: number) =
     shouldUseDatabase() ? db.alert.count({ where: { AND: [alertWhere(scope), { status: 'open' }] } }) : Promise.resolve(0)
   ]);
   const capturedAt = Date.now();
-  const fresh = (value: string) => Number.isFinite(Date.parse(value)) && capturedAt - Date.parse(value) <= 300000;
-  const deviceRows = devices.map(d => ({ ...d, status: fresh(d.lastSeenAt) ? 'online' as const : 'offline' as const }));
+  const deviceRows = devices.map(d => ({ ...d, status: telemetryReceiptStatus(d.lastSeenAt, capturedAt) }));
   const allowedSites = new Set(devices.map(d => d.siteId));
   const siteRows = sites.filter(s => shouldUseDatabase() || allowedSites.has(s.id)).map(s => ({ ...s,
     gatewayStatus: deviceRows.some(d => d.siteId === s.id && d.status === 'online') ? 'online' as const : 'offline' as const }));

@@ -6,6 +6,7 @@ import { SiteEquipmentDashboard } from '@/components/site-equipment-dashboard';
 import { SectionCard } from '@/components/section-card';
 import { SiteSectionNav } from '@/components/site-section-nav';
 import { StatusBadge } from '@/components/status-badge';
+import { telemetryReceiptStatus } from '@/lib/site-activity';
 import { requireUser } from '@/lib/auth';
 import { groovManageUrlForDevices, nodeRedUrlForDevices } from '@/lib/controller-links';
 import { canManageSiteEquipment } from '@/lib/workspace-access';
@@ -71,9 +72,9 @@ export default async function SiteConnectivityPage({
           <div className="list-row">
             <div>
               <strong>Primary edge gateway</strong>
-              <p>Saved gateway status. Telemetry delivery and VPN access are checked separately below.</p>
+              <p>Based on stored controller timestamps at page load (5-minute freshness window). VPN access is separate.</p>
             </div>
-            <StatusBadge tone={site.gatewayStatus} />
+            <StatusBadge tone={siteDevices.some(d => telemetryReceiptStatus(d.lastSeenAt) === 'online') ? 'online' : 'offline'} />
           </div>
         </SectionCard>
 
@@ -84,7 +85,7 @@ export default async function SiteConnectivityPage({
                 <Link key={device.id} href={`/devices/${device.id}`} className="table-row link-row">
                   <span>{device.name}</span>
                   <span>{device.protocol}</span>
-                  <StatusBadge tone={device.status} />
+                  <StatusBadge tone={telemetryReceiptStatus(device.lastSeenAt)} label={device.lastSeenAt === 'Never' ? 'Never reported' : undefined} />
                 </Link>
               ))}
             </div>
