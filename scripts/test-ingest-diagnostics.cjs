@@ -59,6 +59,7 @@ async function until(fn,desc) {for(let i=0;i<90;i++){if(await fn())return;await 
   console.log(JSON.stringify({failedWaitMs:fail.waitMs,failedHeldMaxMs:fail.heldMaxMs,writerHeldMinMs:writer.heldMinMs,writerHeldMaxMs:writer.heldMaxMs}));
   await require('./verify-batch-latest.cjs')({db, blocker, deviceId, payload, post, until, deferred});
   await require('./verify-pressure-alert-order.cjs')({db, deviceId, siteId, payload, post});
+  await require('./verify-history-retries.cjs')({db, deviceId, siteId, payload, post, records, until});
 })().catch(e=>{console.error(e.message);console.error(JSON.stringify(records()));process.exitCode=1}).finally(async()=>{
   release.resolve();if(lockTask)await lockTask.catch(()=>{});
   if(server && server.exitCode===null){const exit=once(server,'exit');server.kill();await exit;}

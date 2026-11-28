@@ -5,6 +5,7 @@ import { firstInvalidTelemetryPoint, validateTelemetryPayload } from '@/server/t
 import type { TelemetryIngestPayload } from '@/types/domain';
 import { dbErrorCode, initializeIngestTiming } from '@/server/ingest-db-timing';
 import { makeUploadLog } from '@/server/ingest-upload-log';
+import { identifyTelemetryBatch } from '@/server/telemetry-history';
 
 initializeIngestTiming();
 
@@ -47,21 +48,22 @@ export async function POST(request: NextRequest) {
 
   if (!validateTelemetryPayload(payload)) {
     const i = Array.isArray(payload?.points) ? firstInvalidTelemetryPoint(payload.points) : -1;
-    makeUploadLog(payload, started, false).finish('rejected', 'validation', null, i < 0 ? undefined : i);
+    makeUploadLog(payload, started).finish('rejected', 'validation', {pointIndex:i < 0 ? undefined : i});
     return NextResponse.json({ ok: false, error: 'Invalid telemetry payload.' }, { status: 400 });
   }
 
-  const log = makeUploadLog(payload, started);
+  const batch = identifyTelemetryBatch(payload);
+  const log = makeUploadLog(payload, started, batch.logId);
   let result: Awaited<ReturnType<typeof persistTelemetryPayload>>;
   try {
-    result = await persistTelemetryPayload(payload, log.steps);
+    result = await persistTelemetryPayload(payload, log.steps, batch);
   } catch (error) {
     const lastStep = log.steps.at(-1);
     const phase = lastStep?.failed ? lastStep.phase : 'prepare';
     const code = dbErrorCode(error);
     // A transaction operation index identifies a batch statement, not a sensor.
     // Validation above can still identify a particular malformed input.
-    log.finish('failed', phase, code);
+    log.finish('failed', phase, {code});
     return NextResponse.json({ok:false, error:'Telemetry upload failed.'}, {status:500});
   }
 
@@ -71,13 +73,14 @@ export async function POST(request: NextRequest) {
   }
 
   if (!result.persisted) log.finish('not_saved', 'database_not_configured');
-  else if (!result.eventsPersisted) log.finish('partial', 'event_history');
-  else log.finish('saved', 'complete');
+  else log.finish(result.eventsPersisted ? 'saved' : 'partial', result.eventsPersisted ? 'complete' : 'event_history',
+    {historyRowsInserted:result.historyRowsInserted});
   return NextResponse.json({
     ok: true,
     accepted: true,
     persisted: result.persisted,
     pointCount: result.pointCount,
+    ...(result.persisted ? {historyRowsInserted:result.historyRowsInserted, historyRowsAlreadySaved:result.historyRowsAlreadySaved} : {}),
     eventCount: 'eventCount' in result ? result.eventCount : 0,
     eventsPersisted: 'eventsPersisted' in result ? result.eventsPersisted : false
   });

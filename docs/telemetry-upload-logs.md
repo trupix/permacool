@@ -8,8 +8,10 @@ traffic does not produce this diagnostic.
 
 - Match `siteId`, `deviceId`, original UTC `capturedAt` and `batchId`. Retries of
   identical readings have the same fingerprint but a new `attemptId`. A later
-  `saved` for the same fingerprint is evidence of a successful save. This does
-  not add a retry or change deduplication. An upload with a new capture time is
+  `saved` for the same fingerprint is evidence of a successful acknowledgment.
+  `historyRowsInserted` and `historyRowsAlreadySaved` on committed attempts
+  distinguish a new save from an acknowledged replay. A failed attempt does not
+  report committed row counts. An upload with a new capture time is
   a different batch, not proof that the original was recovered.
 - `failed` means the handler did not acknowledge a save; an ambiguous connection
   loss at commit is not proof of rollback. A `partial/event_history` result
@@ -40,13 +42,25 @@ or controller behavior. No database migration is needed.
 
 For the batched latest-value writer, compare `db[phase=save_batch].heldMinMs`
 between releases for the same site and point count; compare `waitMs` separately.
-History keeps every incoming point, including late readings and repeated keys.
+History keeps every point in a distinct batch, including late readings and
+repeated keys within that batch. A retry does not append a second copy.
 The current dashboard row changes only for a strictly newer capture time for
 that device and key. Within one packet the final occurrence of a key wins; at
 the same timestamp across packets the first accepted current value stays.
 The device's last-seen timestamp cannot go backwards. Existing point IDs and
 custom labels are preserved. A bulk write error identifies the packet, not
 an individual sensor; input validation can still identify a specific bad tag.
+
+The website identifies a batch by site, device, normalized capture time and
+the full collection of key/value/unit tuples, including their multiplicity.
+Reordering the same points does not change its identity. Each sorted position
+has a stable sample ID protected by the existing database primary key. There
+is no expiring cache, new receipt table, change to the PLC packet, or extra
+database round trip. At the rollout boundary the writer also checks for a whole
+matching old-format receipt at the exact device and capture time. It does not
+combine separate legacy receipts or remove any historical duplicates. The
+existing `pointCount` acknowledgment still means points in the accepted upload;
+event history continues to be reported separately via `eventsPersisted`.
 
 High-pressure stops have two separate records. The Events timeline can show a
 late clear at its capture time; this is history, not an instruction to clear
