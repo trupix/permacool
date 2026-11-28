@@ -1,5 +1,10 @@
 import type { TelemetryIngestPayload } from '@/types/domain';
 
+export function firstInvalidTelemetryPoint(points: TelemetryIngestPayload['points']) {
+  return points.findIndex(point => !point || typeof point.key !== 'string' || !point.key.length ||
+    typeof point.value !== 'number' || typeof point.unit !== 'string');
+}
+
 export function validateTelemetryPayload(payload: TelemetryIngestPayload) {
   if (!payload || typeof payload !== 'object') return false;
 
@@ -12,8 +17,6 @@ export function validateTelemetryPayload(payload: TelemetryIngestPayload) {
       Number.isFinite(capturedAt.getTime()) &&
       Array.isArray(payload.points) &&
       payload.points.length > 0 &&
-      payload.points.every(
-        (point) => point && typeof point.key === 'string' && point.key.length > 0 && typeof point.value === 'number' && typeof point.unit === 'string'
-      )
+      firstInvalidTelemetryPoint(payload.points) === -1
   );
 }
