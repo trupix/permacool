@@ -10,7 +10,7 @@ import { SiteSectionNav } from '@/components/site-section-nav';
 import { requireUser } from '@/lib/auth';
 import { groovManageUrlForDevices, nodeRedUrlForDevices } from '@/lib/controller-links';
 import { getDevicesBySite } from '@/server/repositories/devices';
-import { getSiteEquipmentEvents } from '@/server/repositories/equipment-events';
+import { getHistoryPage } from '@/server/repositories/equipment-events';
 import { getSite } from '@/server/repositories/sites';
 
 const PAGE_SIZE = 100;
@@ -20,13 +20,16 @@ export default async function SiteEventsPage({
   searchParams
 }: {
   params: Promise<{ siteid: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; through?: string }>;
 }) {
   const [{ siteid: siteId }, query, user] = await Promise.all([params, searchParams, requireUser()]);
   const site = await getSite(user, siteId);
   if (!site) notFound();
 
-  const pageNumber = Math.max(Number.parseInt(query.page ?? '1', 10) || 1, 1);
+  const pageNumber = Math.min(10_000_000, Math.max(Number.parseInt(query.page ?? '1', 10) || 1, 1));
+  const candidate = typeof query.through === 'string' ? query.through : '';
+  const timestamp = Date.parse(candidate);
+  const through = Number.isFinite(timestamp) && timestamp <= Date.now() && new Date(timestamp).toISOString() === candidate ? candidate : undefined;
   const siteDevices = await getDevicesBySite(user, site.id);
   const controllerManageUrl = groovManageUrlForDevices(siteDevices);
   const nodeRedUrl = nodeRedUrlForDevices(siteDevices);
@@ -55,17 +58,18 @@ export default async function SiteEventsPage({
         </div>
       </header>
 
-      <EventsSnapshotRefresh />
+      {through ? <p className="page-copy">Viewing a fixed history · <Link href={`/sites/${site.id}/events`} prefetch={false}>Show latest events</Link></p> : <EventsSnapshotRefresh />}
       <Suspense fallback={<p>Loading cycle averages…</p>}><CycleAverages siteId={site.id} timezone={site.timezone} /></Suspense>
       <Suspense fallback={<section className="panel"><p>Loading saved event history…</p></section>}>
-        <EventHistory siteId={site.id} timezone={site.timezone} pageNumber={pageNumber} />
+        <EventHistory siteId={site.id} timezone={site.timezone} pageNumber={pageNumber} through={through} />
       </Suspense>
     </main>
   );
 }
 
-async function EventHistory({ siteId, timezone, pageNumber }: { siteId: string; timezone: string; pageNumber: number }) {
-  const eventPage = await getSiteEquipmentEvents(siteId, { limit: PAGE_SIZE, offset: (pageNumber - 1) * PAGE_SIZE });
+async function EventHistory({ siteId, timezone, pageNumber, through }: { siteId: string; timezone: string; pageNumber: number; through?: string }) {
+  const eventPage = await getHistoryPage(siteId, PAGE_SIZE, (pageNumber - 1) * PAGE_SIZE, through);
+  const href = (n: number) => `/sites/${siteId}/events?page=${n}&through=${encodeURIComponent(eventPage.through)}`;
   const totalPages = Math.max(Math.ceil(eventPage.total / PAGE_SIZE), 1);
   return <>
       {!eventPage.persistenceReady ? (
@@ -87,8 +91,8 @@ async function EventHistory({ siteId, timezone, pageNumber }: { siteId: string; 
         </div>
         {totalPages > 1 ? (
           <footer className="event-pagination">
-            {pageNumber > 1 ? <Link href={`?page=${pageNumber - 1}`}>Newer events</Link> : <span />}
-            {pageNumber < totalPages ? <Link href={`?page=${pageNumber + 1}`}>Older events</Link> : null}
+            {pageNumber > 1 ? <Link href={href(pageNumber - 1)} prefetch={false}>Newer events</Link> : <span />}
+            {pageNumber < totalPages ? <Link href={href(pageNumber + 1)} prefetch={false}>Older events</Link> : null}
           </footer>
         ) : null}
       </section>
