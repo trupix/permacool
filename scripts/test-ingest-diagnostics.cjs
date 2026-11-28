@@ -61,6 +61,7 @@ async function until(fn,desc) {for(let i=0;i<90;i++){if(await fn())return;await 
   await require('./verify-pressure-alert-order.cjs')({db, deviceId, siteId, payload, post});
   await require('./verify-history-retries.cjs')({db, deviceId, siteId, payload, post, records, until});
   await require('./verify-timeline-recovery.cjs')({db, deviceId, siteId, payload, post, records, until});
+  await require('./verify-muhameds-event-temperatures.cjs')({db, orgId, deviceId, payload, post});
 })().catch(e=>{console.error(e.message);console.error(JSON.stringify(records()));process.exitCode=1}).finally(async()=>{
   release.resolve();if(lockTask)await lockTask.catch(()=>{});
   if(server && server.exitCode===null){const exit=once(server,'exit');server.kill();await exit;}
